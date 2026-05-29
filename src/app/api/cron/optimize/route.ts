@@ -25,10 +25,12 @@ const BATTERY_TYPES = [
 ]
 
 export async function GET(req: Request) {
-  // Beveilig de cron route
-  const secret = req.headers.get('x-cron-secret')
-  if (secret !== process.env.CRON_SECRET && process.env.NODE_ENV === 'production') {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  // Beveilig de cron route — Vercel stuurt automatisch Authorization: Bearer {CRON_SECRET}
+  if (process.env.NODE_ENV === 'production') {
+    const auth = req.headers.get('authorization')
+    if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
   }
 
   const supabase = await createClient()
