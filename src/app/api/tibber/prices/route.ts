@@ -54,13 +54,17 @@ export async function GET() {
     tomorrowPrices = await fetchDayAheadPrices(tomorrow)
   }
 
-  // Optimalisatie berekenen
+  // Optimalisatie berekenen (vandaag + morgen)
   const optimization = optimizeSchedule(todayPrices, mode)
+  const tomorrowOptimization = tomorrowPrices.length > 0
+    ? optimizeSchedule(tomorrowPrices, mode)
+    : null
 
   return NextResponse.json({
     current,
     today: todayPrices,
     tomorrow: tomorrowPrices,
     optimization,
+    tomorrowOptimization,
   })
 }

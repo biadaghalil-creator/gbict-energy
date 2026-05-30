@@ -7,6 +7,7 @@ import PriceChart from './PriceChart'
 
 type DashboardData = TibberPriceData & {
   optimization: OptimizationResult
+  tomorrowOptimization: OptimizationResult | null
 }
 
 export default function TibberData() {
@@ -24,6 +25,7 @@ export default function TibberData() {
   const todayPrices = data?.today ?? []
   const tomorrowPrices = data?.tomorrow ?? []
   const optimization = data?.optimization
+  const tomorrowOptimization = data?.tomorrowOptimization ?? null
   const level = current ? priceLevel(current.total, todayPrices) : null
 
   const levelConfig = {
@@ -109,11 +111,45 @@ export default function TibberData() {
         </div>
       )}
 
-      {/* Morgen's prijzen */}
+      {/* Morgen — prijsgrafiek + schema */}
       {!loading && tomorrowPrices.length > 0 && (
-        <div className="col-span-full">
-          <PriceChart prices={tomorrowPrices} label="Prijzen morgen (€/kWh)" />
-        </div>
+        <>
+          <div className="col-span-full">
+            <PriceChart prices={tomorrowPrices} schedule={tomorrowOptimization?.schedule} label="Prijzen morgen (€/kWh)" />
+          </div>
+
+          {tomorrowOptimization && (
+            <div className="col-span-full rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
+              <div className="mb-4 flex items-center justify-between">
+                <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
+                  Gepland schema morgen
+                </p>
+                <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-500 dark:bg-zinc-800">
+                  ~€{tomorrowOptimization.estimatedSavings.toFixed(2)} verwacht
+                </span>
+              </div>
+              <div className="space-y-2">
+                {tomorrowOptimization.schedule
+                  .filter((s) => s.action !== 'idle')
+                  .map((slot) => (
+                    <div key={slot.hour} className="flex items-center gap-3">
+                      <span className="w-12 text-sm font-medium tabular-nums text-zinc-700 dark:text-zinc-300">
+                        {String(slot.hour).padStart(2, '0')}:00
+                      </span>
+                      <span className={`flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                        slot.action === 'charge'
+                          ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400'
+                          : 'bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-400'
+                      }`}>
+                        {slot.action === 'charge' ? '↓ Laden' : '↑ Ontladen'}
+                      </span>
+                      <span className="text-xs text-zinc-400">€{slot.price.toFixed(4)}/kWh</span>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          )}
+        </>
       )}
 
       {/* Morgen nog niet beschikbaar */}

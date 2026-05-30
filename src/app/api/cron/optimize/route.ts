@@ -8,10 +8,12 @@
  */
 
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { getSessyToken, setSessySetpoint } from '@/lib/sessy'
 import { getVictronToken } from '@/lib/victron'
 import { fetchDayAheadPrices, currentHourPrice } from '@/lib/energyzero'
 import { optimizeSchedule } from '@/lib/optimize'
+import { sendDailySummary, sendCheapHourAlert } from '@/lib/email'
 import { NextResponse } from 'next/server'
 
 const BATTERY_KWH = 1.0  // kWh per uur actie
@@ -141,11 +143,63 @@ export async function GET(req: Request) {
     }
   }
 
+  // ── E-mail notificaties ──────────────────────────────────────────────────
+  const hour = new Date().getHours()
+
+  if (process.env.RESEND_API_KEY) {
+    try {
+      const adminSupabase = createAdminClient()
+
+      // 08:00 → stuur dagelijkse samenvatting + goedkope uren alert
+      if (hour === 8) {
+        const { data: users } = await adminSupabase
+          .from('profiles')
+          .select('id')
+          .not('id', 'is', null)
+
+        if (users) {
+          for (const u of users) {
+            try {
+              const { data: authUser } = await adminSupabase.auth.admin.getUserById(u.id)
+              const email = authUser?.user?.email
+              if (!email) continue
+
+              // Haal vandaag-stats op
+              const today = new Date(); today.setHours(0, 0, 0, 0)
+              const month = new Date(today.getFullYear(), today.getMonth(), 1)
+
+              const [{ data: todayLogs }, { data: monthLogs }] = await Promise.all([
+                adminSupabase.from('optimization_logs').select('action, savings_eur').eq('user_id', u.id).gte('created_at', today.toISOString()),
+                adminSupabase.from('optimization_logs').select('savings_eur').eq('user_id', u.id).gte('created_at', month.toISOString()),
+              ])
+
+              const savingsToday = (todayLogs ?? []).reduce((s, l) => s + (l.savings_eur ?? 0), 0)
+              const savingsMonth = (monthLogs ?? []).reduce((s, l) => s + (l.savings_eur ?? 0), 0)
+              const chargeCount = (todayLogs ?? []).filter(l => l.action === 'charge').length
+              const dischargeCount = (todayLogs ?? []).filter(l => l.action === 'discharge').length
+
+              // Goedkope uren vandaag
+              const cheapSlots = optimizeSchedule(todayPrices, 'max_savings').schedule
+                .filter(s => s.action === 'charge')
+                .map(s => s.hour)
+              const minPrice = Math.min(...cheapSlots.map(h => todayPrices.find(p => new Date(p.startsAt).getHours() === h)?.total ?? 999))
+
+              await Promise.all([
+                sendDailySummary({ to: email, savingsToday, savingsMonth, chargeCount, dischargeCount }),
+                sendCheapHourAlert({ to: email, hours: cheapSlots, minPrice }),
+              ])
+            } catch { /* door met volgende user */ }
+          }
+        }
+      }
+    } catch { /* e-mails zijn niet kritisch */ }
+  }
+
   return NextResponse.json({
     ok: true,
     processed,
     errors,
-    hour: new Date().getHours(),
+    hour,
     price: currentPrice.total,
     results,
   })
