@@ -14,36 +14,48 @@ function detectLocale(acceptLanguage: string | null): Locale {
   return 'en'
 }
 
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
+const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
 export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll()
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value)
-          )
-          supabaseResponse = NextResponse.next({ request })
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          )
-        },
-      },
-    }
-  )
-
-  // Sessie verversen — NOOIT verwijderen, anders worden sessies niet bijgewerkt
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
   const { pathname } = request.nextUrl
+
+  // Resolve the signed-in user only when Supabase is configured. A missing or
+  // failing auth backend must NEVER take down the public site, so this is
+  // best-effort: on any problem we treat the visitor as logged out and let the
+  // request continue. The auth-gating below still applies when it works.
+  let user = null
+  if (SUPABASE_URL && SUPABASE_ANON_KEY) {
+    try {
+      const supabase = createServerClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+        cookies: {
+          getAll() {
+            return request.cookies.getAll()
+          },
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value }) =>
+              request.cookies.set(name, value)
+            )
+            supabaseResponse = NextResponse.next({ request })
+            cookiesToSet.forEach(({ name, value, options }) =>
+              supabaseResponse.cookies.set(name, value, options)
+            )
+          },
+        },
+      })
+
+      // Sessie verversen — NOOIT verwijderen, anders worden sessies niet bijgewerkt
+      const {
+        data: { user: signedInUser },
+      } = await supabase.auth.getUser()
+      user = signedInUser
+    } catch {
+      // Supabase niet bereikbaar of niet geconfigureerd — ga verder als
+      // uitgelogd zodat de publieke pagina's blijven werken.
+      user = null
+    }
+  }
 
   // ── FRAMER REDIRECT ────────────────────────────────────────────
   // Zodra NEXT_PUBLIC_FRAMER_URL is ingesteld in Vercel, worden de
