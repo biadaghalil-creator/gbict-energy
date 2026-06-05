@@ -12,6 +12,8 @@ import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet'
 import { cn } from '@/lib/utils'
+import { useIsNative } from '@/lib/native'
+import NativeTabBar from './NativeTabBar'
 
 const navItems = [
   { href: '/dashboard',               label: 'Dashboard',   icon: LayoutDashboard, exact: true },
@@ -180,6 +182,7 @@ export default function DashboardShell({
   userEmail: string
 }) {
   const pathname = usePathname()
+  const native = useIsNative()
   const [collapsed, setCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
 
@@ -227,12 +230,14 @@ export default function DashboardShell({
       <div className="relative z-10 flex min-w-0 flex-1 flex-col">
         {/* Top bar */}
         <header className="sticky top-0 z-20 flex h-[68px] items-center gap-4 border-b border-white/[0.06] bg-[#07080D]/80 px-5 backdrop-blur-md">
-          <button
-            className="text-slate-500 transition-colors hover:text-slate-100 md:hidden"
-            onClick={() => setMobileOpen(true)}
-          >
-            <Menu className="h-5 w-5" />
-          </button>
+          {!native && (
+            <button
+              className="text-slate-500 transition-colors hover:text-slate-100 md:hidden"
+              onClick={() => setMobileOpen(true)}
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+          )}
 
           {/* Breadcrumb */}
           <div className="flex items-center gap-2 text-[13.5px]">
@@ -262,11 +267,14 @@ export default function DashboardShell({
 
         {/* Content */}
         <main className="flex-1 overflow-auto">
-          <div className="mx-auto w-full max-w-6xl px-5 py-8">
+          <div className={cn('mx-auto w-full max-w-6xl px-5 py-8', native && 'pb-28')}>
             {children}
           </div>
         </main>
       </div>
+
+      {/* Native bottom tab bar (app only) */}
+      <NativeTabBar />
     </div>
   )
 }

@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import {
   Zap, BatteryCharging, Radio, Sun, Lock, LineChart,
   Check, Menu, Share2, Link, GitFork, Globe,
 } from "lucide-react";
 import { useLocale } from "@/hooks/use-locale";
+import { useIsNative } from "@/lib/native";
 
 /* ============================================================
    GBICT Energy — landing page (Next.js App Router page.tsx)
@@ -436,6 +438,21 @@ function Footer() {
 }
 
 export default function Page() {
+  const native = useIsNative()
+  const router = useRouter()
+
+  // In the native app there is no marketing site — go straight to the product.
+  // Existing users land on the dashboard (proxy sends them to login if needed),
+  // new users continue from there to sign up + onboarding.
+  useEffect(() => {
+    if (native) router.replace('/dashboard')
+  }, [native, router])
+
+  if (native) {
+    // Dark holding screen while redirecting (hidden behind the native splash).
+    return <main className="min-h-screen bg-[#07080D]" />
+  }
+
   return (
     <main className="relative min-h-screen overflow-x-hidden bg-[#07080D] font-sans text-slate-100 antialiased">
       {/* atmosphere */}

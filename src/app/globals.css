@@ -263,6 +263,22 @@ body {
   box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.1), inset 0 1px 0 rgba(255,255,255,0.04);
 }
 
+/* ─── NATIVE APP (Capacitor) ─────────────────────────── */
+/* Applied only inside the iOS/Android shell — never on the website. */
+.native-app {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  overscroll-behavior-y: none;
+}
+.native-app input,
+.native-app textarea,
+.native-app [contenteditable] {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
 /* ─── SCROLLBAR ──────────────────────────────────────── */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: #0f172a; }
