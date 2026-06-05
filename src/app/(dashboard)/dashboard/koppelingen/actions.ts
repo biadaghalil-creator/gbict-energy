@@ -11,6 +11,10 @@ export type DeviceType =
   | 'battery_victron'
   | 'battery_enphase'
   | 'battery_solaredge'
+  | 'solar_solaredge'
+  | 'solar_enphase'
+  | 'solar_sma'
+  | 'solar_fronius'
 
 export type NewDevice = {
   type: DeviceType
@@ -159,4 +163,23 @@ export async function testSolarEdgeCredentials(
 ): Promise<{ ok: boolean; siteName?: string; error?: string }> {
   const { testSolarEdgeCredentials: _test } = await import('@/lib/solaredge')
   return _test(apiKey, siteId)
+}
+
+// ── Fronius ──────────────────────────────────────────────────────────────────
+
+export async function testFroniusConnection(
+  ip: string
+): Promise<{ ok: boolean; error?: string }> {
+  const { testFroniusConnection: _test } = await import('@/lib/fronius')
+  return _test(ip)
+}
+
+// ── SMA ──────────────────────────────────────────────────────────────────────
+
+export async function testSmaCredentials(
+  email: string,
+  password: string
+): Promise<{ ok: boolean; plantName?: string; error?: string }> {
+  const { testSmaCredentials: _test } = await import('@/lib/sma')
+  return _test(email, password)
 }

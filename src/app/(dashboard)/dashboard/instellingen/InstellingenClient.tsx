@@ -1,7 +1,10 @@
 'use client'
 
 import { useState, useTransition } from 'react'
+import { User, Zap, FileText, Home, Check, AlertCircle, TrendingUp, Sliders, Leaf } from 'lucide-react'
 import { saveSettings, type ProfileSettings } from './actions'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { cn } from '@/lib/utils'
 
 type Props = {
   profile: {
@@ -16,21 +19,36 @@ type Props = {
 const OPTIMIZE_OPTIONS = [
   {
     id: 'max_savings',
-    label: 'Max besparing',
-    icon: '💰',
-    desc: 'Laadt en ontlaadt zo vaak mogelijk op de beste prijsmomenten.',
+    label: 'Max savings',
+    Icon: TrendingUp,
+    desc: 'Charges and discharges as often as possible at the best price moments.',
+    activeClass: 'border-violet-500/40 bg-violet-500/[0.06] ring-1 ring-violet-500/20',
+    idleClass: 'border-white/[0.06] bg-white/[0.02] hover:border-violet-500/20 hover:bg-white/[0.04]',
+    labelColor: 'text-violet-400',
+    iconColor: 'text-violet-400',
+    dotClass: 'border-violet-500 bg-violet-500',
   },
   {
     id: 'comfort',
     label: 'Comfort',
-    icon: '⚖️',
-    desc: 'Balans tussen besparing en een altijd beschikbare batterij.',
+    Icon: Sliders,
+    desc: 'Balance between savings and always having a charged battery.',
+    activeClass: 'border-blue-500/40 bg-blue-500/[0.06] ring-1 ring-blue-500/20',
+    idleClass: 'border-white/[0.06] bg-white/[0.02] hover:border-blue-500/20 hover:bg-white/[0.04]',
+    labelColor: 'text-blue-400',
+    iconColor: 'text-blue-400',
+    dotClass: 'border-blue-400 bg-blue-400',
   },
   {
     id: 'eco',
     label: 'Eco',
-    icon: '🌱',
-    desc: 'Laadt alleen op zonne-energie en goedkoopste uren.',
+    Icon: Leaf,
+    desc: 'Charges only on solar energy and cheapest grid hours.',
+    activeClass: 'border-emerald-500/40 bg-emerald-500/[0.06] ring-1 ring-emerald-500/20',
+    idleClass: 'border-white/[0.06] bg-white/[0.02] hover:border-emerald-500/20 hover:bg-white/[0.04]',
+    labelColor: 'text-emerald-400',
+    iconColor: 'text-emerald-400',
+    dotClass: 'border-emerald-400 bg-emerald-400',
   },
 ]
 
@@ -41,11 +59,31 @@ const CONTRACT_OPTIONS = [
 
 const HOUSEHOLD_SIZES = [1, 2, 3, 4, 5, 6, 7]
 
+function Section({ icon: Icon, title, sub, children }: {
+  icon: React.ElementType
+  title: string
+  sub?: string
+  children: React.ReactNode
+}) {
+  return (
+    <div className="overflow-hidden rounded-2xl border border-white/[0.06] bg-[#0D0E16]">
+      <div className="border-b border-white/[0.06] px-6 py-4">
+        <h2 className="flex items-center gap-2 text-[13px] font-semibold text-slate-200">
+          <Icon className="h-4 w-4 text-slate-500" />
+          {title}
+        </h2>
+        {sub && <p className="mt-0.5 text-[12px] text-slate-600">{sub}</p>}
+      </div>
+      <div className="px-6 py-5">{children}</div>
+    </div>
+  )
+}
+
 export default function InstellingenClient({ profile, email }: Props) {
-  const [optimizeMode, setOptimizeMode] = useState<string>(profile.optimize_mode ?? 'max_savings')
-  const [contractType, setContractType] = useState<string>(profile.contract_type ?? '')
-  const [postcode, setPostcode] = useState<string>(profile.postcode ?? '')
-  const [householdSize, setHouseholdSize] = useState<number>(profile.household_size ?? 2)
+  const [optimizeMode, setOptimizeMode] = useState(profile.optimize_mode ?? 'max_savings')
+  const [contractType, setContractType] = useState(profile.contract_type ?? '')
+  const [postcode, setPostcode] = useState(profile.postcode ?? '')
+  const [householdSize, setHouseholdSize] = useState(profile.household_size ?? 2)
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState('')
   const [isPending, startTransition] = useTransition()
@@ -70,126 +108,108 @@ export default function InstellingenClient({ profile, email }: Props) {
   }
 
   return (
-    <div className="max-w-2xl space-y-8">
-      {/* Header */}
+    <div className="max-w-2xl space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
-          Instellingen
-        </h1>
-        <p className="mt-1 text-sm text-zinc-500">
-          Beheer je profiel en optimalisatievoorkeuren.
-        </p>
+        <h1 className="text-[28px] font-extrabold tracking-[-0.035em] text-slate-50">Settings</h1>
+        <p className="mt-1.5 text-[14px] text-slate-500">Manage your profile and optimization preferences.</p>
       </div>
 
       {/* Account */}
-      <section className="rounded-2xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="border-b border-zinc-100 px-6 py-4 dark:border-zinc-800">
-          <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">Account</h2>
-        </div>
-        <div className="px-6 py-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500 text-sm font-bold text-white">
+      <Section icon={User} title="Account">
+        <div className="flex items-center gap-4">
+          <Avatar className="h-11 w-11">
+            <AvatarFallback className="bg-violet-500/10 text-[15px] font-bold text-violet-400 ring-1 ring-violet-500/20">
               {email[0].toUpperCase()}
-            </div>
-            <div>
-              <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">{email}</p>
-              <p className="text-xs text-zinc-400">GBICT Energy account</p>
-            </div>
+            </AvatarFallback>
+          </Avatar>
+          <div>
+            <p className="text-[14px] font-medium text-slate-200">{email}</p>
+            <p className="mt-0.5 text-[12px] text-slate-600">GBICT Energy account</p>
           </div>
+          <span className="ml-auto rounded-lg border border-white/[0.06] bg-white/[0.03] px-2.5 py-1 text-[11px] font-medium text-slate-500">
+            Free plan
+          </span>
         </div>
-      </section>
+      </Section>
 
-      {/* Optimalisatie modus */}
-      <section className="rounded-2xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="border-b border-zinc-100 px-6 py-4 dark:border-zinc-800">
-          <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">Optimalisatie modus</h2>
-          <p className="mt-0.5 text-xs text-zinc-400">Hoe wil je dat GBICT Energy je batterij aanstuurt?</p>
+      {/* Optimization mode */}
+      <Section icon={Zap} title="Optimization mode" sub="How should GBICT Energy control your battery?">
+        <div className="space-y-2">
+          {OPTIMIZE_OPTIONS.map((opt) => {
+            const isActive = optimizeMode === opt.id
+            return (
+              <button
+                key={opt.id}
+                onClick={() => setOptimizeMode(opt.id)}
+                className={cn(
+                  'flex w-full items-start gap-4 rounded-xl border px-4 py-3.5 text-left transition-all',
+                  isActive ? opt.activeClass : opt.idleClass
+                )}
+              >
+                <opt.Icon className={cn('mt-0.5 h-4 w-4 shrink-0', isActive ? opt.iconColor : 'text-slate-600')} />
+                <div className="flex-1">
+                  <p className={cn('text-[13.5px] font-semibold', isActive ? opt.labelColor : 'text-slate-400')}>
+                    {opt.label}
+                  </p>
+                  <p className="mt-0.5 text-[12.5px] text-slate-600">{opt.desc}</p>
+                </div>
+                <div className={cn(
+                  'mt-0.5 h-4 w-4 shrink-0 rounded-full border-2 transition-all',
+                  isActive ? opt.dotClass : 'border-slate-700'
+                )} />
+              </button>
+            )
+          })}
         </div>
-        <div className="space-y-2 px-6 py-4">
-          {OPTIMIZE_OPTIONS.map((opt) => (
+      </Section>
+
+      {/* Energy contract */}
+      <Section icon={FileText} title="Energy contract">
+        <div className="flex flex-wrap gap-2">
+          {CONTRACT_OPTIONS.map((c) => (
             <button
-              key={opt.id}
-              onClick={() => setOptimizeMode(opt.id)}
-              className={`flex w-full items-start gap-4 rounded-xl border px-4 py-3 text-left transition-colors ${
-                optimizeMode === opt.id
-                  ? 'border-emerald-400 bg-emerald-50 dark:border-emerald-600 dark:bg-emerald-950/30'
-                  : 'border-zinc-100 bg-white hover:border-zinc-200 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:bg-zinc-800'
-              }`}
+              key={c}
+              onClick={() => setContractType(c)}
+              className={cn(
+                'rounded-full border px-3 py-1.5 text-[13px] font-medium transition-all',
+                contractType === c
+                  ? 'border-violet-500/40 bg-violet-500/10 text-violet-400'
+                  : 'border-white/[0.06] text-slate-500 hover:border-violet-500/20 hover:text-slate-300'
+              )}
             >
-              <span className="text-xl">{opt.icon}</span>
-              <div className="flex-1">
-                <p className={`text-sm font-medium ${optimizeMode === opt.id ? 'text-emerald-700 dark:text-emerald-400' : 'text-zinc-800 dark:text-zinc-200'}`}>
-                  {opt.label}
-                </p>
-                <p className="mt-0.5 text-xs text-zinc-400">{opt.desc}</p>
-              </div>
-              <div className={`mt-0.5 h-4 w-4 flex-shrink-0 rounded-full border-2 transition-colors ${
-                optimizeMode === opt.id
-                  ? 'border-emerald-500 bg-emerald-500'
-                  : 'border-zinc-300 dark:border-zinc-600'
-              }`} />
+              {c}
             </button>
           ))}
         </div>
-      </section>
+      </Section>
 
-      {/* Energiecontract */}
-      <section className="rounded-2xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="border-b border-zinc-100 px-6 py-4 dark:border-zinc-800">
-          <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">Energiecontract</h2>
-        </div>
-        <div className="px-6 py-4">
-          <div className="flex flex-wrap gap-2">
-            {CONTRACT_OPTIONS.map((c) => (
-              <button
-                key={c}
-                onClick={() => setContractType(c)}
-                className={`rounded-full border px-3 py-1.5 text-sm transition-colors ${
-                  contractType === c
-                    ? 'border-emerald-400 bg-emerald-500 text-white'
-                    : 'border-zinc-200 text-zinc-600 hover:border-zinc-300 dark:border-zinc-700 dark:text-zinc-400'
-                }`}
-              >
-                {c}
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Huishouden */}
-      <section className="rounded-2xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="border-b border-zinc-100 px-6 py-4 dark:border-zinc-800">
-          <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">Huishouden</h2>
-        </div>
-        <div className="space-y-4 px-6 py-4">
+      {/* Household */}
+      <Section icon={Home} title="Household">
+        <div className="space-y-5">
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-zinc-600 dark:text-zinc-400">
-              Postcode
-            </label>
+            <label className="mb-2 block text-[12.5px] font-medium text-slate-500">Postcode</label>
             <input
               type="text"
               value={postcode}
               onChange={(e) => setPostcode(e.target.value)}
               placeholder="1234 AB"
               maxLength={7}
-              className="w-40 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-300 outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:focus:ring-emerald-900"
+              className="w-40 rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-[13.5px] text-slate-200 placeholder-slate-700 outline-none transition-all focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/10"
             />
           </div>
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-zinc-600 dark:text-zinc-400">
-              Aantal personen
-            </label>
+            <label className="mb-2 block text-[12.5px] font-medium text-slate-500">Number of people</label>
             <div className="flex gap-2">
               {HOUSEHOLD_SIZES.map((n) => (
                 <button
                   key={n}
                   onClick={() => setHouseholdSize(n)}
-                  className={`h-9 w-9 rounded-xl border text-sm font-medium transition-colors ${
+                  className={cn(
+                    'h-9 w-9 rounded-xl border text-[13px] font-semibold transition-all',
                     householdSize === n
-                      ? 'border-emerald-400 bg-emerald-500 text-white'
-                      : 'border-zinc-200 text-zinc-600 hover:border-zinc-300 dark:border-zinc-700 dark:text-zinc-400'
-                  }`}
+                      ? 'border-violet-500/40 bg-violet-500/10 text-violet-400'
+                      : 'border-white/[0.06] text-slate-600 hover:border-violet-500/20 hover:text-slate-300'
+                  )}
                 >
                   {n === 7 ? '7+' : n}
                 </button>
@@ -197,29 +217,29 @@ export default function InstellingenClient({ profile, email }: Props) {
             </div>
           </div>
         </div>
-      </section>
+      </Section>
 
-      {/* Opslaan */}
+      {/* Error */}
       {error && (
-        <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-500 dark:bg-red-950/30">
-          {error}
-        </p>
+        <div className="flex items-center gap-3 rounded-xl border border-red-500/20 bg-red-950/20 px-4 py-3">
+          <AlertCircle className="h-4 w-4 shrink-0 text-red-400" />
+          <p className="text-[13px] text-red-400">{error}</p>
+        </div>
       )}
 
-      <div className="flex items-center gap-3">
+      {/* Save button */}
+      <div className="flex items-center gap-4">
         <button
           onClick={handleSave}
           disabled={isPending}
-          className="inline-flex h-10 items-center rounded-full bg-emerald-500 px-6 text-sm font-medium text-white transition-colors hover:bg-emerald-600 disabled:opacity-50"
+          className="inline-flex h-11 items-center gap-2 rounded-full bg-[#5B21B6] px-7 text-[14px] font-semibold text-white shadow-[0_1px_3px_rgba(0,0,0,0.3)] transition-colors hover:bg-[#6D28D9] disabled:opacity-50"
         >
-          {isPending ? 'Opslaan…' : 'Wijzigingen opslaan'}
+          {isPending ? 'Saving…' : 'Save changes'}
         </button>
         {saved && (
-          <span className="flex items-center gap-1.5 text-sm text-emerald-600 dark:text-emerald-400">
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-            </svg>
-            Opgeslagen
+          <span className="flex items-center gap-1.5 text-[13px] text-emerald-400">
+            <Check className="h-4 w-4" />
+            Saved
           </span>
         )}
       </div>

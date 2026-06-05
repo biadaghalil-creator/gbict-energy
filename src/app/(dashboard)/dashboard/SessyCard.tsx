@@ -1,7 +1,9 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { Zap } from 'lucide-react'
 import { type SessyStatus, sessyStateLabel } from '@/lib/sessy'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export default function SessyCard() {
   const [status, setStatus] = useState<SessyStatus | null>(null)
@@ -13,7 +15,6 @@ export default function SessyCard() {
       .then(d => { setStatus(d); setLoading(false) })
       .catch(() => setLoading(false))
 
-    // Ververs elke 30 seconden
     const interval = setInterval(() => {
       fetch('/api/sessy/status')
         .then(r => r.json())
@@ -27,61 +28,83 @@ export default function SessyCard() {
   const stateInfo = status ? sessyStateLabel(status.system_state) : null
 
   return (
-    <div className="rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
-      <div className="flex items-center justify-between">
-        <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">Batterij status</p>
-        <span className="text-lg">🔋</span>
+    <div className="overflow-hidden rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-6">
+      {/* Header */}
+      <div className="mb-5 flex items-center justify-between">
+        <span className="flex items-center gap-2 text-[13px] font-medium text-slate-400">
+           Home battery · Sessy
+        </span>
+        {stateInfo && (
+          <span className="flex items-center gap-1.5 text-[12px] font-medium text-slate-500">
+            <span className="h-[14px] w-[3px] rounded-sm bg-emerald-400" />
+            {stateInfo.label}
+          </span>
+        )}
       </div>
 
       {loading ? (
-        <div className="mt-3 space-y-2">
-          <div className="h-6 w-16 animate-pulse rounded bg-zinc-100 dark:bg-zinc-800" />
-          <div className="h-2 w-full animate-pulse rounded-full bg-zinc-100 dark:bg-zinc-800" />
+        <div className="space-y-4">
+          <Skeleton className="h-10 w-24 bg-white/[0.04]" />
+          <Skeleton className="h-2 w-full rounded-full bg-white/[0.04]" />
+          <div className="grid grid-cols-2 gap-3">
+            <Skeleton className="h-16 rounded-xl bg-white/[0.04]" />
+            <Skeleton className="h-16 rounded-xl bg-white/[0.04]" />
+          </div>
         </div>
       ) : status ? (
         <>
-          {/* State of charge */}
-          <div className="mt-3">
-            <div className="flex items-end justify-between">
-              <p className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
-                {status.state_of_charge}%
-              </p>
-              <p className={`text-xs font-medium ${stateInfo?.color}`}>
-                {status.power !== 0 && (
-                  <span>{status.power > 0 ? '+' : ''}{status.power}W </span>
-                )}
-                {stateInfo?.label}
-              </p>
-            </div>
-
-            {/* Progress bar */}
-            <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800">
-              <div
-                className={`h-full rounded-full transition-all duration-500 ${
-                  status.state_of_charge > 60 ? 'bg-emerald-500'
-                  : status.state_of_charge > 25 ? 'bg-amber-500'
-                  : 'bg-red-500'
-                }`}
-                style={{ width: `${status.state_of_charge}%` }}
-              />
-            </div>
+          {/* SoC number */}
+          <div className="flex items-baseline gap-2">
+            <span className="font-mono text-[44px] font-semibold leading-none tracking-[-0.03em] text-slate-50">
+              {status.state_of_charge}
+            </span>
+            <span className="text-[13px] text-slate-500">% state of charge</span>
           </div>
 
-          {/* Vermogen details */}
-          <div className="mt-3 flex gap-4 text-xs text-zinc-400">
+          {status.power !== 0 && (
+            <p className="mt-1 text-[11.5px] text-slate-600">
+              {status.power > 0 ? 'charging' : 'discharging'} · {Math.abs(status.power)}W
+            </p>
+          )}
+
+          {/* Gradient progress bar — same as hero */}
+          <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/[0.05]">
+            <div
+              className="h-full rounded-full transition-all duration-700"
+              style={{
+                width: `${status.state_of_charge}%`,
+                background: 'linear-gradient(90deg, #5B21B6, #A78BFA)',
+              }}
+            />
+          </div>
+
+          {/* Mini stat cards */}
+          <div className="mt-5 grid grid-cols-2 gap-3">
             {status.renewable_energy > 0 && (
-              <span>☀️ {status.renewable_energy}W zon</span>
+              <div className="rounded-xl border border-white/[0.06] bg-white/[0.025] px-4 py-3">
+                <p className="text-[11px] text-slate-500">Solar</p>
+                <p className="mt-1 font-mono text-[17px] text-amber-400">
+                  {status.renewable_energy}W
+                </p>
+              </div>
             )}
             {status.grid_power !== 0 && (
-              <span>🔌 {Math.abs(status.grid_power)}W {status.grid_power > 0 ? 'net in' : 'net uit'}</span>
+              <div className="rounded-xl border border-white/[0.06] bg-white/[0.025] px-4 py-3">
+                <p className="text-[11px] text-slate-500">Grid</p>
+                <p className="mt-1 font-mono text-[17px] text-slate-300">
+                  {Math.abs(status.grid_power)}W
+                  <span className="ml-1 text-[11px] text-slate-600">
+                    {status.grid_power > 0 ? 'in' : 'out'}
+                  </span>
+                </p>
+              </div>
             )}
           </div>
 
-          {/* Optimalisatie knop */}
           <OptimizeButton />
         </>
       ) : (
-        <p className="mt-2 text-sm text-zinc-400">Niet bereikbaar</p>
+        <p className="mt-4 text-[13px] text-slate-600">Battery not reachable</p>
       )}
     </div>
   )
@@ -93,7 +116,6 @@ function OptimizeButton() {
   async function applySchedule() {
     setState('loading')
     try {
-      // Haal huidig uur op en stuur juiste setpoint
       const hour = new Date().getHours()
       const pricesRes = await fetch('/api/tibber/prices')
       const pricesData = await pricesRes.json()
@@ -101,8 +123,8 @@ function OptimizeButton() {
       const slot = schedule.find((s: { hour: number }) => s.hour === hour)
 
       let setpoint = 0
-      if (slot?.action === 'charge')    setpoint = 1500   // 1500W laden
-      if (slot?.action === 'discharge') setpoint = -1500  // 1500W ontladen
+      if (slot?.action === 'charge') setpoint = 1500
+      if (slot?.action === 'discharge') setpoint = -1500
 
       const res = await fetch('/api/sessy/setpoint', {
         method: 'POST',
@@ -121,16 +143,19 @@ function OptimizeButton() {
     <button
       onClick={applySchedule}
       disabled={state === 'loading'}
-      className={`mt-3 w-full rounded-xl py-2 text-xs font-medium transition-colors ${
-        state === 'done'  ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400'
-        : state === 'error' ? 'bg-red-100 text-red-600 dark:bg-red-950/30'
-        : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700'
+      className={`mt-5 flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-[12.5px] font-medium transition-colors ${
+        state === 'done'
+          ? 'bg-emerald-950/40 text-emerald-400 ring-1 ring-emerald-500/20'
+          : state === 'error'
+            ? 'bg-red-950/30 text-red-400'
+            : 'bg-white/[0.04] text-slate-400 hover:bg-violet-500/10 hover:text-violet-400 ring-1 ring-white/[0.06]'
       }`}
     >
-      {state === 'loading' ? 'Toepassen…'
-        : state === 'done'    ? '✓ Schema toegepast'
-        : state === 'error'   ? '✗ Mislukt — probeer opnieuw'
-        : '⚡ Pas optimalisatie toe'}
+      <Zap className="h-3.5 w-3.5" />
+      {state === 'loading' ? 'Applying…'
+        : state === 'done' ? 'Schedule applied'
+        : state === 'error' ? 'Failed — try again'
+        : 'Apply optimization'}
     </button>
   )
 }

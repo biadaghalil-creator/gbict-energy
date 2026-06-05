@@ -1,0 +1,141 @@
+name: Build & Submit iOS → App Store
+
+on:
+  push:
+    branches: [main]
+    # Only trigger when iOS-relevant files change
+    paths:
+      - 'ios/**'
+      - 'capacitor.config.ts'
+      - 'public/**'
+      - '.github/workflows/deploy-ios.yml'
+
+  # Allow manual trigger from GitHub Actions tab
+  workflow_dispatch:
+    inputs:
+      submit_to_store:
+        description: 'Submit to App Store after build?'
+        required: true
+        default: 'true'
+        type: boolean
+
+jobs:
+  build-ios:
+    name: Build & Submit to App Store
+    runs-on: macos-latest          # Must be macOS for Xcode
+
+    steps:
+      # ── 1. Checkout ─────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── 2. Setup Node (for Capacitor sync) ──────────────────
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      # ── 3. Sync Capacitor → iOS ──────────────────────────────
+      - name: Sync Capacitor
+        run: npx cap sync ios
+
+      # ── 4. Setup Ruby + Fastlane ────────────────────────────
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+
+      - name: Install Fastlane
+        run: gem install fastlane
+
+      # ── 5. Import signing certificate ───────────────────────
+      - name: Import Apple Distribution Certificate
+        uses: apple-actions/import-codesign-certs@v3
+        with:
+          p12-file-base64: ${{ secrets.APPLE_DISTRIBUTION_CERTIFICATE_P12 }}
+          p12-password: ${{ secrets.APPLE_DISTRIBUTION_CERTIFICATE_PASSWORD }}
+
+      # ── 6. Download provisioning profile ────────────────────
+      - name: Download Provisioning Profile
+        uses: apple-actions/download-provisioning-profiles@v3
+        with:
+          bundle-id: nl.gbict.energy
+          issuer-id: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          api-key-id: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          api-private-key: ${{ secrets.APP_STORE_CONNECT_API_PRIVATE_KEY }}
+
+      # ── 7. Build & Archive ───────────────────────────────────
+      - name: Build iOS Archive
+        run: |
+          xcodebuild \
+            -workspace ios/App/App.xcworkspace \
+            -scheme App \
+            -configuration Release \
+            -destination generic/platform=iOS \
+            -archivePath ${{ runner.temp }}/App.xcarchive \
+            CODE_SIGN_STYLE=Manual \
+            DEVELOPMENT_TEAM=${{ secrets.APPLE_TEAM_ID }} \
+            CODE_SIGN_IDENTITY="Apple Distribution" \
+            PROVISIONING_PROFILE_SPECIFIER="nl.gbict.energy AppStore" \
+            archive
+
+      # ── 8. Export IPA ────────────────────────────────────────
+      - name: Create ExportOptions.plist
+        run: |
+          cat > /tmp/ExportOptions.plist << EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>app-store-connect</string>
+            <key>teamID</key>
+            <string>${{ secrets.APPLE_TEAM_ID }}</string>
+            <key>uploadBitcode</key>
+            <false/>
+            <key>compileBitcode</key>
+            <false/>
+            <key>uploadSymbols</key>
+            <true/>
+            <key>signingStyle</key>
+            <string>manual</string>
+            <key>provisioningProfiles</key>
+            <dict>
+              <key>nl.gbict.energy</key>
+              <string>nl.gbict.energy AppStore</string>
+            </dict>
+          </dict>
+          </plist>
+          EOF
+
+      - name: Export IPA
+        run: |
+          xcodebuild \
+            -exportArchive \
+            -archivePath ${{ runner.temp }}/App.xcarchive \
+            -exportOptionsPlist /tmp/ExportOptions.plist \
+            -exportPath ${{ runner.temp }}/ipa
+
+      # ── 9. Upload to App Store Connect ───────────────────────
+      - name: Upload to App Store Connect
+        if: github.ref == 'refs/heads/main' && (github.event.inputs.submit_to_store != 'false')
+        run: |
+          xcrun altool \
+            --upload-app \
+            --type ios \
+            --file "${{ runner.temp }}/ipa/App.ipa" \
+            --apiKey ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }} \
+            --apiIssuer ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+
+      # ── 10. Save IPA as artifact ─────────────────────────────
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: GBICT-Energy-${{ github.sha }}
+          path: ${{ runner.temp }}/ipa/App.ipa
+          retention-days: 30

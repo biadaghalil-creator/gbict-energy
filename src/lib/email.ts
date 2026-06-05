@@ -6,8 +6,7 @@ import { Resend } from 'resend'
 const FROM = 'GBICT Energy <noreply@gbict.nl>'
 
 function getResend() {
-  const resend = getResend()
-  if (!resend) return null
+  if (!process.env.RESEND_API_KEY) return null
   return new Resend(process.env.RESEND_API_KEY)
 }
 

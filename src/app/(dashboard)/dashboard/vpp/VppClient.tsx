@@ -1,9 +1,46 @@
 'use client'
 
 import { useState, useTransition } from 'react'
+import { Zap, Shield, Settings, BarChart3, CheckCircle, Users } from 'lucide-react'
 import { enrollVpp, unenrollVpp } from './actions'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
 
 const YEARLY_ESTIMATE = { min: 280, max: 650 }
+
+const HOW_IT_WORKS = [
+  {
+    icon: Zap,
+    title: 'Netbeheerder vraagt balans',
+    body: 'TenneT heeft te veel of te weinig stroom op het net. Ze sturen een signaal naar onze pool.',
+    iconClass: 'text-violet-400 bg-violet-500/10',
+  },
+  {
+    icon: Settings,
+    title: 'GBICT AI beslist',
+    body: 'Onze algoritme checkt jouw SoC, comfort-instellingen en schema — en beslist of jij meedoet.',
+    iconClass: 'text-blue-400 bg-blue-400/10',
+  },
+  {
+    icon: Zap,
+    title: 'Batterij reageert in seconden',
+    body: 'Jouw Sessy laadt of ontlaadt automatisch. Je merkt er niets van — behalve de uitbetaling.',
+    iconClass: 'text-emerald-400 bg-emerald-400/10',
+  },
+  {
+    icon: BarChart3,
+    title: 'Maandelijkse uitbetaling',
+    body: 'Inkomsten worden maandelijks bijgeschreven. Transparant per dag inzichtelijk in je dashboard.',
+    iconClass: 'text-purple-400 bg-purple-400/10',
+  },
+]
+
+const GUARANTEES = [
+  { icon: Shield, label: 'Batterij altijd jouw eigendom' },
+  { icon: Settings, label: 'Zelf in/uitschakelen' },
+  { icon: BarChart3, label: 'Volledige transparantie' },
+]
 
 export default function VppClient({
   enrolled,
@@ -29,160 +66,148 @@ export default function VppClient({
     })
   }
 
-  // Schatting op basis van huishouden grootte
   const sizeMultiplier = Math.min(householdSize / 3, 1.5)
   const estMin = Math.round(YEARLY_ESTIMATE.min * sizeMultiplier)
   const estMax = Math.round(YEARLY_ESTIMATE.max * sizeMultiplier)
 
   return (
-    <div className="max-w-2xl">
+    <div className="max-w-2xl space-y-6">
       {/* Header */}
-      <div className="mb-8">
-        <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/50 dark:text-emerald-400">
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
+      <div>
+        <Badge className="mb-3 border-violet-500/30 bg-violet-500/10 text-violet-400">
+          <span className="mr-1.5 h-1.5 w-1.5 animate-pulse rounded-full bg-yellow-400 inline-block" />
           Bèta — beperkt aantal plekken
-        </div>
-        <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+        </Badge>
+        <h1 className="text-2xl font-bold tracking-tight text-slate-50" style={{ letterSpacing: '-0.02em' }}>
           Virtueel Energienet
         </h1>
-        <p className="mt-2 text-sm leading-relaxed text-zinc-500">
+        <p className="mt-2 text-sm leading-relaxed text-slate-400">
           Verdien extra geld door jouw batterij beschikbaar te stellen aan het energienet
-          op momenten dat Nederland extra stroom nodig heeft — of juist te veel heeft.
-          Volledig automatisch, volledig onder jouw controle.
+          op momenten dat Nederland extra stroom nodig heeft. Volledig automatisch, volledig onder jouw controle.
         </p>
       </div>
 
-      {/* Verdien kaart */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-700 p-6 text-white">
-        <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-white/10" />
-        <div className="absolute -bottom-4 -right-4 h-20 w-20 rounded-full bg-white/5" />
-        <p className="text-sm font-medium text-emerald-100">Jouw geschatte extra verdienste</p>
-        <p className="mt-1 text-4xl font-bold tracking-tight">
+      {/* Earning estimate card */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-yellow-950/40 via-slate-900 to-slate-900 p-6 ring-1 ring-violet-500/20">
+        <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-violet-500/5" />
+        <div className="absolute -bottom-4 -right-4 h-20 w-20 rounded-full bg-violet-500/5" />
+        <p className="text-sm font-medium text-violet-200/70">Jouw geschatte extra verdienste</p>
+        <p className="mt-1 text-4xl font-bold tracking-tight text-violet-400">
           €{estMin} – €{estMax}
         </p>
-        <p className="mt-1 text-sm text-emerald-200">per jaar, bovenop je normale besparing</p>
-        <div className="mt-4 flex flex-wrap gap-3 text-xs text-emerald-100">
+        <p className="mt-1 text-sm text-violet-400/60">per jaar, bovenop je normale besparing</p>
+        <div className="mt-4 flex flex-wrap gap-3 text-xs text-slate-500">
           <span className="flex items-center gap-1.5">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" />
+            <span className="h-1.5 w-1.5 rounded-full bg-violet-400/60" />
             Gebaseerd op EPEX FCR/aFRR marktprijzen
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" />
+            <span className="h-1.5 w-1.5 rounded-full bg-violet-400/60" />
             5 kWh batterij aanname
           </span>
         </div>
       </div>
 
-      {/* Hoe het werkt */}
-      <div className="mt-6 rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
-        <h2 className="mb-4 text-sm font-semibold text-zinc-900 dark:text-zinc-50">
-          Hoe het Virtueel Energienet werkt
-        </h2>
-        <div className="space-y-4">
-          {[
-            {
-              icon: '📡',
-              title: 'Netbeheerder vraagt balans',
-              body: 'TenneT heeft te veel of te weinig stroom op het net. Ze sturen een signaal naar onze pool.',
-            },
-            {
-              icon: '🧠',
-              title: 'GBICT AI beslist',
-              body: 'Onze algoritme checkt jouw SoC, jouw comfort-instellingen en jouw schema — en beslist of jij meedoet.',
-            },
-            {
-              icon: '⚡',
-              title: 'Batterij reageert in seconden',
-              body: 'Jouw Sessy laadt of ontlaadt automatisch. Je merkt er niets van — behalve de uitbetaling.',
-            },
-            {
-              icon: '💶',
-              title: 'Maandelijkse uitbetaling',
-              body: 'Inkomsten worden maandelijks bijgeschreven. Transparant per dag inzichtelijk in je dashboard.',
-            },
-          ].map((step) => (
-            <div key={step.title} className="flex gap-4">
-              <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-zinc-100 text-lg dark:bg-zinc-800">
-                {step.icon}
-              </span>
-              <div>
-                <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">{step.title}</p>
-                <p className="mt-0.5 text-xs text-zinc-500">{step.body}</p>
+      {/* How it works */}
+      <Card className="border-white/[0.06] bg-[#0D0E16]">
+        <CardHeader>
+          <CardTitle className="text-sm font-semibold text-slate-200">
+            Hoe het Virtueel Energienet werkt
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-5">
+          {HOW_IT_WORKS.map((step, i) => {
+            const Icon = step.icon
+            return (
+              <div key={step.title} className="flex gap-4">
+                <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${step.iconClass} ring-1 ring-white/5`}>
+                  <Icon className="h-4 w-4" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-slate-200">{step.title}</p>
+                  <p className="mt-0.5 text-xs text-slate-500">{step.body}</p>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      </div>
+            )
+          })}
+        </CardContent>
+      </Card>
 
-      {/* Garanties */}
-      <div className="mt-4 grid grid-cols-3 gap-3">
-        {[
-          { icon: '🔒', label: 'Batterij altijd jouw eigendom' },
-          { icon: '⚙️', label: 'Zelf in/uitschakelen' },
-          { icon: '📊', label: 'Volledige transparantie' },
-        ].map((g) => (
-          <div key={g.label} className="rounded-xl border border-zinc-200 bg-white p-3 text-center dark:border-zinc-800 dark:bg-zinc-900">
-            <span className="text-xl">{g.icon}</span>
-            <p className="mt-1 text-xs text-zinc-500">{g.label}</p>
-          </div>
-        ))}
+      {/* Guarantees */}
+      <div className="grid grid-cols-3 gap-3">
+        {GUARANTEES.map((g) => {
+          const Icon = g.icon
+          return (
+            <Card key={g.label} className="border-white/[0.06] bg-[#0D0E16] text-center">
+              <CardContent className="flex flex-col items-center py-4">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/[0.04]">
+                  <Icon className="h-4 w-4 text-slate-400" />
+                </div>
+                <p className="mt-2 text-xs text-slate-400">{g.label}</p>
+              </CardContent>
+            </Card>
+          )
+        })}
       </div>
 
       {/* Social proof */}
-      <div className="mt-4 rounded-xl bg-zinc-50 px-4 py-3 dark:bg-zinc-900/50">
-        <div className="flex items-center gap-3">
-          <div className="flex -space-x-2">
-            {['bg-emerald-400', 'bg-blue-400', 'bg-purple-400', 'bg-amber-400'].map((c, i) => (
-              <div key={i} className={`h-6 w-6 rounded-full ${c} border-2 border-white dark:border-zinc-900`} />
-            ))}
+      <Card className="border-white/[0.06] bg-slate-900/40">
+        <CardContent className="py-4">
+          <div className="flex items-center gap-3">
+            <div className="flex -space-x-2">
+              {['bg-yellow-400', 'bg-blue-400', 'bg-purple-400', 'bg-emerald-400'].map((c, i) => (
+                <div key={i} className={`h-6 w-6 rounded-full ${c} ring-2 ring-slate-900`} />
+              ))}
+            </div>
+            <p className="text-xs text-slate-500">
+              <strong className="text-slate-300">{enrolledCount} gebruikers</strong>{' '}
+              hebben zich al aangemeld voor het VPP bèta-programma.
+            </p>
           </div>
-          <p className="text-xs text-zinc-500">
-            <strong className="text-zinc-900 dark:text-zinc-100">{enrolledCount} gebruikers</strong>{' '}
-            hebben zich al aangemeld voor het VPP bèta-programma.
-          </p>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
       {/* CTA */}
-      <div className="mt-6">
-        {isEnrolled ? (
-          <div className="space-y-3">
-            <div className="flex items-center gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-4 dark:border-emerald-900 dark:bg-emerald-950/30">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500 text-white">
-                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                </svg>
+      {isEnrolled ? (
+        <div className="space-y-3">
+          <Card className="border-emerald-800/40 bg-emerald-950/20">
+            <CardContent className="flex items-center gap-4 py-5">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-500">
+                <CheckCircle className="h-5 w-5 text-white" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-emerald-800 dark:text-emerald-300">
+                <p className="text-sm font-semibold text-emerald-300">
                   Je staat op de wachtlijst!
                 </p>
-                <p className="text-xs text-emerald-600 dark:text-emerald-500">
+                <p className="text-xs text-emerald-500">
                   We activeren jouw VPP deelname zodra we live gaan in jouw regio.
                 </p>
               </div>
-            </div>
-            <button
-              onClick={toggle}
-              disabled={isPending}
-              className="text-xs text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300"
-            >
-              Aanmelding intrekken
-            </button>
-          </div>
-        ) : (
+            </CardContent>
+          </Card>
           <button
             onClick={toggle}
             disabled={isPending}
-            className="w-full rounded-2xl bg-emerald-500 py-4 text-sm font-semibold text-white transition-colors hover:bg-emerald-600 disabled:opacity-50"
+            className="text-xs text-slate-600 transition-colors hover:text-slate-400"
           >
-            {isPending ? 'Aanmelden…' : '⚡ Meld je aan voor het VPP bèta-programma'}
+            Aanmelding intrekken
           </button>
-        )}
-        <p className="mt-2 text-center text-xs text-zinc-400">
-          Geen verplichtingen. Je kunt je op elk moment afmelden.
-        </p>
-      </div>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          <button
+            onClick={toggle}
+            disabled={isPending}
+            className="inline-flex w-full h-11 items-center justify-center gap-2 rounded-full bg-[#5B21B6] px-7 text-[14px] font-semibold text-white shadow-[0_1px_3px_rgba(0,0,0,0.3)] transition-colors hover:bg-[#6D28D9] disabled:opacity-50"
+          >
+            <Zap className="h-4 w-4" />
+            {isPending ? 'Aanmelden…' : 'Meld je aan voor het VPP bèta-programma'}
+          </button>
+          <p className="text-center text-xs text-slate-600">
+            Geen verplichtingen. Je kunt je op elk moment afmelden.
+          </p>
+        </div>
+      )}
     </div>
   )
 }

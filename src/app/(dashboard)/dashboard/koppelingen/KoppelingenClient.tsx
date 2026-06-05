@@ -5,6 +5,7 @@ import {
   saveDevice, deleteDevice,
   testTibberToken, testSessyCredentials,
   testVictronCredentials, testEnphaseCredentials, testSolarEdgeCredentials,
+  testFroniusConnection, testSmaCredentials,
   type DeviceType,
 } from './actions'
 
@@ -23,15 +24,20 @@ type Step =
   | 'sessy-setup'
   | 'victron-setup' | 'enphase-setup' | 'solaredge-setup'
   | 'battery-other'
+  | 'solar-solaredge-setup' | 'solar-fronius-setup' | 'solar-sma-setup'
   | 'done'
 
 const DEVICE_ICONS: Record<string, string> = {
-  meter_tibber:       '⚡',
-  meter_p1:           '📡',
-  battery_sessy:      '🔋',
-  battery_victron:    '🔋',
-  battery_enphase:    '☀️',
-  battery_solaredge:  '🌤️',
+  meter_tibber:         '⚡',
+  meter_p1:             '📡',
+  battery_sessy:        '🔋',
+  battery_victron:      '🔋',
+  battery_enphase:      '☀️',
+  battery_solaredge:    '🌤️',
+  solar_solaredge:      '☀️',
+  solar_enphase:        '☀️',
+  solar_sma:            '☀️',
+  solar_fronius:        '☀️',
 }
 
 const STATUS_LABEL: Record<string, { label: string; color: string }> = {
@@ -41,15 +47,18 @@ const STATUS_LABEL: Record<string, { label: string; color: string }> = {
 }
 
 const MODAL_TITLES: Partial<Record<Step, string>> = {
-  category:        'Wat wil je koppelen?',
-  'tibber-token':  'Tibber koppelen',
-  'p1-setup':      'P1 Meter koppelen',
-  'sessy-setup':   'Sessy batterij koppelen',
-  'victron-setup': 'Victron Energy koppelen',
-  'enphase-setup': 'Enphase koppelen',
-  'solaredge-setup': 'SolarEdge koppelen',
-  'battery-other': 'Batterij koppelen',
-  done:            'Gekoppeld!',
+  category:              'Wat wil je koppelen?',
+  'tibber-token':        'Tibber koppelen',
+  'p1-setup':            'P1 Meter koppelen',
+  'sessy-setup':         'Sessy batterij koppelen',
+  'victron-setup':       'Victron Energy koppelen',
+  'enphase-setup':       'Enphase koppelen',
+  'solaredge-setup':     'SolarEdge koppelen',
+  'battery-other':       'Batterij koppelen',
+  'solar-solaredge-setup': 'SolarEdge zonnepanelen',
+  'solar-fronius-setup': 'Fronius omvormer koppelen',
+  'solar-sma-setup':     'SMA koppelen',
+  done:                  'Gekoppeld!',
 }
 
 export default function KoppelingenClient({ initialDevices }: { initialDevices: Device[] }) {
@@ -94,13 +103,33 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
   const [enphaseError,   setEnphaseError]   = useState('')
   const [enphaseTesting, setEnphaseTesting] = useState(false)
 
-  // SolarEdge
+  // SolarEdge (battery)
   const [seKey,     setSeKey]     = useState('')
   const [seSiteId,  setSeSiteId]  = useState('')
   const [seName,    setSeName]    = useState('')
   const [seOk,      setSeOk]      = useState(false)
   const [seError,   setSeError]   = useState('')
   const [seTesting, setSeTesting] = useState(false)
+
+  // SolarEdge Solar (zonnepanelen)
+  const [solarSeKey,     setSolarSeKey]     = useState('')
+  const [solarSeSiteId,  setSolarSeSiteId]  = useState('')
+  const [solarSeName,    setSolarSeName]    = useState('')
+  const [solarSeOk,      setSolarSeOk]      = useState(false)
+  const [solarSeError,   setSolarSeError]   = useState('')
+  const [solarSeTesting, setSolarSeTesting] = useState(false)
+
+  // Fronius
+  const [froniusIp,      setFroniusIp]      = useState('')
+  const [froniusOk,      setFroniusOk]      = useState(false)
+  const [froniusError,   setFroniusError]   = useState('')
+  const [froniusTesting, setFroniusTesting] = useState(false)
+
+  // SMA
+  const [smaEmail,   setSmaEmail]   = useState('')
+  const [smaPass,    setSmaPass]    = useState('')
+  const [smaError,   setSmaError]   = useState('')
+  const [smaTesting, setSmaTesting] = useState(false)
 
   function openModal() {
     setStep('category')
@@ -112,6 +141,9 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
     setVictronOk(false); setVictronError('')
     setEnphaseKey(''); setEnphaseId(''); setEnphaseName(''); setEnphaseOk(false); setEnphaseError('')
     setSeKey(''); setSeSiteId(''); setSeName(''); setSeOk(false); setSeError('')
+    setSolarSeKey(''); setSolarSeSiteId(''); setSolarSeName(''); setSolarSeOk(false); setSolarSeError('')
+    setFroniusIp(''); setFroniusOk(false); setFroniusError('')
+    setSmaEmail(''); setSmaPass(''); setSmaError('')
   }
   function closeModal() { setStep('idle') }
 
@@ -262,6 +294,68 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
       if (r.error) { setSeError(r.error); return }
       addDevice({ type: 'battery_solaredge', brand: 'SolarEdge', name: seName, status: 'active' })
     })
+  }
+
+  // ── SolarEdge Solar ──────────────────────────────────────────────────────
+  async function handleTestSolarSe() {
+    setSolarSeError(''); setSolarSeOk(false); setSolarSeName('')
+    if (!solarSeKey.trim() || !solarSeSiteId.trim()) { setSolarSeError('Vul je API key en site ID in.'); return }
+    setSolarSeTesting(true)
+    const r = await testSolarEdgeCredentials(solarSeKey.trim(), solarSeSiteId.trim())
+    setSolarSeTesting(false)
+    if (!r.ok) { setSolarSeError(r.error ?? 'Verificatie mislukt.'); return }
+    setSolarSeName(r.siteName ?? `Site ${solarSeSiteId}`)
+    setSolarSeOk(true)
+  }
+
+  function handleSaveSolarSe() {
+    if (!solarSeOk) return
+    startTransition(async () => {
+      const r = await saveDevice({
+        type: 'solar_solaredge',
+        brand: 'SolarEdge',
+        label: solarSeName,
+        config: { apiKey: solarSeKey.trim(), siteId: solarSeSiteId.trim() },
+        status: 'active',
+      })
+      if (r.error) { setSolarSeError(r.error); return }
+      addDevice({ type: 'solar_solaredge', brand: 'SolarEdge', name: solarSeName, status: 'active' })
+    })
+  }
+
+  // ── Fronius ──────────────────────────────────────────────────────────────
+  async function handleTestFronius() {
+    setFroniusError(''); setFroniusOk(false)
+    if (!froniusIp.trim()) { setFroniusError('Voer het IP-adres in.'); return }
+    setFroniusTesting(true)
+    const r = await testFroniusConnection(froniusIp.trim())
+    setFroniusTesting(false)
+    r.ok ? setFroniusOk(true) : setFroniusError(r.error ?? 'Verbinding mislukt.')
+  }
+
+  function handleSaveFronius() {
+    if (!froniusOk) return
+    startTransition(async () => {
+      const r = await saveDevice({
+        type: 'solar_fronius',
+        brand: 'Fronius',
+        label: `Fronius (${froniusIp.trim()})`,
+        config: { ip: froniusIp.trim() },
+        status: 'active',
+      })
+      if (r.error) { setFroniusError(r.error); return }
+      addDevice({ type: 'solar_fronius', brand: 'Fronius', name: `Fronius (${froniusIp.trim()})`, status: 'active' })
+    })
+  }
+
+  // ── SMA ──────────────────────────────────────────────────────────────────
+  async function handleTestSma() {
+    setSmaError('')
+    if (!smaEmail.trim() || !smaPass.trim()) { setSmaError('Vul je e-mail en wachtwoord in.'); return }
+    setSmaTesting(true)
+    const r = await testSmaCredentials(smaEmail.trim(), smaPass.trim())
+    setSmaTesting(false)
+    setSmaError(r.error ?? 'Onbekende fout.')
   }
 
   // ── Verwijderen ──────────────────────────────────────────────────────────
@@ -417,6 +511,37 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
                 />
               )}
 
+              {step === 'solar-solaredge-setup' && (
+                <SolarSolarEdgeStep
+                  apiKey={solarSeKey} siteId={solarSeSiteId}
+                  onApiKeyChange={setSolarSeKey} onSiteIdChange={setSolarSeSiteId}
+                  siteName={solarSeName}
+                  onTest={handleTestSolarSe} onSave={handleSaveSolarSe}
+                  onBack={() => setStep('category')}
+                  testPending={solarSeTesting} savePending={isPending}
+                  verified={solarSeOk} error={solarSeError}
+                />
+              )}
+
+              {step === 'solar-fronius-setup' && (
+                <FroniusStep
+                  ip={froniusIp} onIpChange={setFroniusIp}
+                  onTest={handleTestFronius} onSave={handleSaveFronius}
+                  onBack={() => setStep('category')}
+                  testPending={froniusTesting} savePending={isPending}
+                  verified={froniusOk} error={froniusError}
+                />
+              )}
+
+              {step === 'solar-sma-setup' && (
+                <SmaStep
+                  email={smaEmail} password={smaPass}
+                  onEmailChange={setSmaEmail} onPasswordChange={setSmaPass}
+                  onTest={handleTestSma} onBack={() => setStep('category')}
+                  testPending={smaTesting} error={smaError}
+                />
+              )}
+
               {step === 'battery-other' && <BatteryOtherStep onBack={() => setStep('category')} />}
 
               {step === 'done' && (
@@ -435,9 +560,12 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
 
 // ── Category step ──────────────────────────────────────────────────────────
 
-const CATEGORIES = [
-  { id: 'tibber-token'   as Step, icon: '⚡',  title: 'Tibber',           sub: 'Dynamisch energiecontract' },
-  { id: 'p1-setup'       as Step, icon: '📡',  title: 'P1 Meter',         sub: 'HomeWizard via lokaal netwerk' },
+const METER_CATEGORIES = [
+  { id: 'tibber-token' as Step, icon: '⚡', title: 'Tibber',   sub: 'Dynamisch energiecontract' },
+  { id: 'p1-setup'     as Step, icon: '📡', title: 'P1 Meter', sub: 'HomeWizard via lokaal netwerk' },
+] as const
+
+const BATTERY_CATEGORIES = [
   { id: 'sessy-setup'    as Step, icon: '🔋',  title: 'Sessy',            sub: 'Thuisbatterij via my.sessy.nl' },
   { id: 'victron-setup'  as Step, icon: '🔋',  title: 'Victron Energy',   sub: 'Via VRM cloud portal' },
   { id: 'enphase-setup'  as Step, icon: '☀️',  title: 'Enphase',          sub: 'Encharge via Enlighten portal' },
@@ -445,11 +573,23 @@ const CATEGORIES = [
   { id: 'battery-other'  as Step, icon: '🔌',  title: 'Andere batterij',  sub: 'Tesla, GoodWe, Growatt…', soon: true },
 ] as const
 
-function CategoryStep({ onSelect }: { onSelect: (s: Step) => void }) {
+const SOLAR_CATEGORIES = [
+  { id: 'solar-solaredge-setup' as Step, icon: '☀️', title: 'SolarEdge',  sub: 'Via monitoring portal API' },
+  { id: 'solar-fronius-setup'   as Step, icon: '☀️', title: 'Fronius',    sub: 'Lokale omvormer via IP-adres' },
+  { id: 'solar-sma-setup'       as Step, icon: '☀️', title: 'SMA',        sub: 'Sunny Portal', soon: true },
+] as const
+
+function CategoryList({
+  items,
+  onSelect,
+}: {
+  items: ReadonlyArray<{ id: Step; icon: string; title: string; sub: string; soon?: boolean }>
+  onSelect: (s: Step) => void
+}) {
   return (
-    <div className="grid gap-2.5">
-      {CATEGORIES.map((cat) => {
-        const isSoon = 'soon' in cat && cat.soon
+    <>
+      {items.map((cat) => {
+        const isSoon = cat.soon === true
         return (
           <button
             key={cat.id}
@@ -478,6 +618,31 @@ function CategoryStep({ onSelect }: { onSelect: (s: Step) => void }) {
           </button>
         )
       })}
+    </>
+  )
+}
+
+function CategoryStep({ onSelect }: { onSelect: (s: Step) => void }) {
+  return (
+    <div className="space-y-5">
+      <div>
+        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-zinc-400">Energie & meter</p>
+        <div className="grid gap-2">
+          <CategoryList items={[...METER_CATEGORIES]} onSelect={onSelect} />
+        </div>
+      </div>
+      <div>
+        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-zinc-400">Thuisbatterij</p>
+        <div className="grid gap-2">
+          <CategoryList items={[...BATTERY_CATEGORIES]} onSelect={onSelect} />
+        </div>
+      </div>
+      <div>
+        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-zinc-400">Zonnepanelen</p>
+        <div className="grid gap-2">
+          <CategoryList items={[...SOLAR_CATEGORIES]} onSelect={onSelect} />
+        </div>
+      </div>
     </div>
   )
 }
@@ -761,6 +926,116 @@ function P1Step({ ip, onIpChange, onSave, onBack, pending, error }: {
       <div className="flex gap-2 pt-1">
         <BackBtn onClick={onBack} />
         <SaveBtn onClick={onSave} pending={pending || !ip.trim()} />
+      </div>
+    </div>
+  )
+}
+
+// ── SolarEdge Solar step ───────────────────────────────────────────────────
+
+function SolarSolarEdgeStep({
+  apiKey, siteId, onApiKeyChange, onSiteIdChange,
+  siteName, onTest, onSave, onBack,
+  testPending, savePending, verified, error,
+}: {
+  apiKey: string; siteId: string
+  onApiKeyChange: (v: string) => void; onSiteIdChange: (v: string) => void
+  siteName: string
+  onTest: () => void; onSave: () => void; onBack: () => void
+  testPending: boolean; savePending: boolean; verified: boolean; error: string
+}) {
+  return (
+    <div className="space-y-4">
+      <div className="rounded-xl bg-zinc-50 px-4 py-3 dark:bg-zinc-800">
+        <p className="text-xs font-medium text-zinc-700 dark:text-zinc-300">Monitoring portal toegang</p>
+        <p className="mt-0.5 text-xs text-zinc-400">
+          Activeer API toegang via{' '}
+          <a href="https://monitoring.solaredge.com" target="_blank" rel="noopener noreferrer" className="text-emerald-500 hover:underline">monitoring.solaredge.com</a>{' '}
+          → Admin → Site Access → API Access.
+        </p>
+      </div>
+      <Field label="API key">
+        <Input type="password" value={apiKey} onChange={e => onApiKeyChange(e.target.value)} placeholder="••••••••••••••••" />
+      </Field>
+      <Field label="Site ID" hint="Te vinden in de URL: monitoring.solaredge.com/solaredge-web/p/site/123456">
+        <Input type="text" value={siteId} onChange={e => onSiteIdChange(e.target.value)} placeholder="123456" />
+      </Field>
+      {error && <ErrorBox msg={error} />}
+      {verified && <SuccessBox msg={`✓ Site gevonden: ${siteName}`} />}
+      <div className="flex gap-2 pt-1">
+        <BackBtn onClick={onBack} />
+        {!verified
+          ? <TestBtn onClick={onTest} pending={testPending || !apiKey.trim() || !siteId.trim()} />
+          : <SaveBtn onClick={onSave} pending={savePending} label="Zonnepanelen koppelen" />
+        }
+      </div>
+    </div>
+  )
+}
+
+// ── Fronius step ───────────────────────────────────────────────────────────
+
+function FroniusStep({
+  ip, onIpChange, onTest, onSave, onBack,
+  testPending, savePending, verified, error,
+}: {
+  ip: string; onIpChange: (v: string) => void
+  onTest: () => void; onSave: () => void; onBack: () => void
+  testPending: boolean; savePending: boolean; verified: boolean; error: string
+}) {
+  return (
+    <div className="space-y-4">
+      <div className="rounded-xl bg-zinc-50 px-4 py-3 dark:bg-zinc-800">
+        <p className="text-xs font-medium text-zinc-700 dark:text-zinc-300">Lokale netwerkkoppeling</p>
+        <p className="mt-0.5 text-xs text-zinc-400">
+          Je Fronius omvormer moet op hetzelfde lokale netwerk zitten. Zoek het IP-adres via je router of de Fronius Solar.web app.
+        </p>
+      </div>
+      <Field label="IP-adres van de omvormer" hint="Bijv. 192.168.1.100">
+        <Input type="text" value={ip} onChange={e => onIpChange(e.target.value)} placeholder="192.168.1.100" />
+      </Field>
+      {error && <ErrorBox msg={error} />}
+      {verified && <SuccessBox msg="✓ Fronius omvormer bereikbaar — klaar om te koppelen" />}
+      <div className="flex gap-2 pt-1">
+        <BackBtn onClick={onBack} />
+        {!verified
+          ? <TestBtn onClick={onTest} pending={testPending || !ip.trim()} label="Verbinding testen" />
+          : <SaveBtn onClick={onSave} pending={savePending} label="Omvormer koppelen" />
+        }
+      </div>
+    </div>
+  )
+}
+
+// ── SMA step ───────────────────────────────────────────────────────────────
+
+function SmaStep({
+  email, password, onEmailChange, onPasswordChange,
+  onTest, onBack, testPending, error,
+}: {
+  email: string; password: string
+  onEmailChange: (v: string) => void; onPasswordChange: (v: string) => void
+  onTest: () => void; onBack: () => void
+  testPending: boolean; error: string
+}) {
+  return (
+    <div className="space-y-4">
+      <div className="rounded-xl bg-amber-50 px-4 py-3 dark:bg-amber-950/20">
+        <p className="text-xs font-medium text-amber-700 dark:text-amber-400">Binnenkort beschikbaar</p>
+        <p className="mt-0.5 text-xs text-amber-600/80 dark:text-amber-500/80">
+          SMA Sunny Portal integratie is in ontwikkeling. Neem contact op voor vroege toegang.
+        </p>
+      </div>
+      <Field label="E-mailadres (Sunny Portal)">
+        <Input type="email" value={email} onChange={e => onEmailChange(e.target.value)} placeholder="naam@email.nl" />
+      </Field>
+      <Field label="Wachtwoord">
+        <Input type="password" value={password} onChange={e => onPasswordChange(e.target.value)} placeholder="••••••••" />
+      </Field>
+      {error && <ErrorBox msg={error} />}
+      <div className="flex gap-2 pt-1">
+        <BackBtn onClick={onBack} />
+        <TestBtn onClick={onTest} pending={testPending || !email.trim() || !password.trim()} label="Status controleren" />
       </div>
     </div>
   )

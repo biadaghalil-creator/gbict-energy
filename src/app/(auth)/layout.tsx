@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default function AuthLayout({
   children,
@@ -6,16 +7,24 @@ export default function AuthLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-zinc-50 px-4 dark:bg-zinc-950">
+    <div className="flex min-h-screen flex-col items-center justify-center px-4 hero-bg">
       <div className="w-full max-w-sm">
-        <div className="mb-8 flex justify-center">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500 font-bold text-white">
-              G
+        {/* Logo */}
+        <div className="mb-10 flex justify-center">
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="relative w-11 h-11 shrink-0">
+              <Image
+                src="/gbict-logo.webp"
+                alt="GBICT logo"
+                width={44}
+                height={44}
+                className="rounded-xl logo-glow group-hover:scale-105 transition-transform duration-200"
+              />
             </div>
-            <span className="text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
-              GBICT Energy
-            </span>
+            <div className="flex flex-col leading-none">
+              <span className="text-base font-bold tracking-tight text-slate-50">GBICT</span>
+              <span className="text-sm font-medium text-gradient-blue">Energy</span>
+            </div>
           </Link>
         </div>
         {children}

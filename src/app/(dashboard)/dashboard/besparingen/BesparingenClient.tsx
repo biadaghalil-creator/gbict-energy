@@ -1,92 +1,54 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { TrendingUp, TrendingDown, ArrowUpRight } from 'lucide-react'
+import { Skeleton } from '@/components/ui/skeleton'
+import { cn } from '@/lib/utils'
 
-type DayData = {
-  date: string
-  savings: number
-  charge: number
-  discharge: number
-}
-
-type RecentLog = {
-  action: string
-  price_eur: number
-  kwh: number
-  savings_eur: number
-  created_at: string
-}
-
+type DayData   = { date: string; savings: number; charge: number; discharge: number }
+type RecentLog = { action: string; price_eur: number; kwh: number; savings_eur: number; created_at: string }
 type HistoryData = {
   days: DayData[]
-  totals: {
-    today: number
-    month: number
-    total: number
-    actions: number
-  }
+  totals: { today: number; month: number; total: number; actions: number }
   recent: RecentLog[]
 }
 
-const RANGES = [
-  { label: '7 dagen', days: 7 },
-  { label: '30 dagen', days: 30 },
-  { label: '90 dagen', days: 90 },
-]
+const RANGES = [{ label: '7d', days: 7 }, { label: '30d', days: 30 }, { label: '90d', days: 90 }]
+const fmt   = (n: number) => `€${n.toFixed(2).replace('.', ',')}`
+const fmtDt = (iso: string) => new Date(iso).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
+const fmtD  = (iso: string) => new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
 
-function fmt(n: number) {
-  return `€${n.toFixed(2).replace('.', ',')}`
-}
+function SavingsChart({ days, loading, activeDays }: { days: DayData[]; loading: boolean; activeDays: number }) {
+  if (loading) return (
+    <div className="flex h-[120px] items-end gap-[3px]">
+      {Array.from({ length: activeDays }).map((_, i) => (
+        <div key={i} className="flex-1 animate-pulse rounded-t-[3px] bg-white/[0.04]" style={{ height: `${20 + (i % 7) * 10}%` }} />
+      ))}
+    </div>
+  )
+  if (!days.length) return (
+    <div className="flex h-[120px] items-center justify-center rounded-xl bg-white/[0.02]">
+      <p className="text-[13px] text-slate-700">No savings data yet</p>
+    </div>
+  )
 
-function fmtDate(iso: string) {
-  return new Date(iso).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' })
-}
-
-function fmtDateTime(iso: string) {
-  return new Date(iso).toLocaleString('nl-NL', {
-    day: 'numeric',
-    month: 'short',
-    hour: '2-digit',
-    minute: '2-digit',
-  })
-}
-
-// ─── SVG-free bar chart ───────────────────────────────────────────────────────
-function SavingsChart({ days }: { days: DayData[] }) {
-  const maxSavings = Math.max(...days.map((d) => d.savings), 0.01)
-
-  // Show only every Nth label to avoid clutter
+  const max = Math.max(...days.map(d => d.savings), 0.01)
   const labelEvery = days.length <= 7 ? 1 : days.length <= 30 ? 5 : 10
 
   return (
-    <div className="mt-4">
-      <div className="flex h-40 items-end gap-[2px]">
-        {days.map((day, i) => {
-          const pct = (day.savings / maxSavings) * 100
+    <div>
+      <div className="flex h-[120px] items-end gap-[3px]">
+        {days.map((day) => {
+          const pct = (day.savings / max) * 100
           const isToday = day.date === new Date().toISOString().split('T')[0]
           return (
-            <div
-              key={day.date}
-              className="group relative flex flex-1 flex-col items-center"
-            >
-              {/* Tooltip */}
-              <div className="pointer-events-none absolute bottom-full mb-1 hidden -translate-x-1/2 left-1/2 z-10 whitespace-nowrap rounded-lg bg-zinc-900 px-2 py-1 text-xs text-white group-hover:block dark:bg-zinc-700">
-                {fmtDate(day.date)}: {fmt(day.savings)}
-                {(day.charge + day.discharge) > 0 && (
-                  <span className="ml-1 text-zinc-400">
-                    ({day.charge}↑ {day.discharge}↓)
-                  </span>
-                )}
+            <div key={day.date} className="group relative flex flex-1 flex-col items-center">
+              <div className="pointer-events-none absolute bottom-[calc(100%+4px)] left-1/2 z-20 hidden -translate-x-1/2 whitespace-nowrap rounded-lg border border-white/[0.08] bg-[#07080D] px-2 py-1.5 text-[10.5px] text-slate-300 shadow-xl group-hover:block">
+                {fmtD(day.date)}: {fmt(day.savings)}
               </div>
-
-              {/* Bar */}
               <div
-                className={`w-full rounded-t-sm transition-all ${
-                  day.savings > 0
-                    ? isToday
-                      ? 'bg-emerald-400 dark:bg-emerald-500'
-                      : 'bg-emerald-500/70 dark:bg-emerald-600/70 group-hover:bg-emerald-500'
-                    : 'bg-zinc-100 dark:bg-zinc-800'
+                className={`w-full rounded-t-[3px] transition-all ${
+                  day.savings > 0 ? isToday ? 'bg-violet-500' : 'bg-emerald-500/60 group-hover:bg-emerald-500/80' : 'bg-white/[0.03]'
                 }`}
                 style={{ height: `${Math.max(pct, day.savings > 0 ? 4 : 2)}%` }}
               />
@@ -94,16 +56,10 @@ function SavingsChart({ days }: { days: DayData[] }) {
           )
         })}
       </div>
-
-      {/* X-axis labels */}
-      <div className="mt-1 flex gap-[2px]">
+      <div className="mt-1.5 flex gap-[3px]">
         {days.map((day, i) => (
           <div key={day.date} className="flex flex-1 justify-center">
-            {i % labelEvery === 0 && (
-              <span className="text-[9px] text-zinc-400 dark:text-zinc-600">
-                {fmtDate(day.date).split(' ')[0]}
-              </span>
-            )}
+            {i % labelEvery === 0 && <span className="text-[9px] tabular-nums text-slate-700">{fmtD(day.date).split(' ')[0]}</span>}
           </div>
         ))}
       </div>
@@ -111,197 +67,174 @@ function SavingsChart({ days }: { days: DayData[] }) {
   )
 }
 
-// ─── Main component ───────────────────────────────────────────────────────────
+function TopSavingsList({ recent, loading }: { recent: RecentLog[]; loading: boolean }) {
+  const top = recent.filter(r => (r.savings_eur ?? 0) > 0).slice(0, 5)
+  const maxSaving = Math.max(...top.map(r => r.savings_eur), 0.01)
+
+  return (
+    <div className="rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-6">
+      <div className="mb-5 flex items-center justify-between">
+        <div>
+          <p className="text-[14px] font-semibold text-slate-200">Top savings</p>
+          <p className="mt-0.5 text-[11px] text-slate-600">Best performing actions</p>
+        </div>
+        <ArrowUpRight className="h-4 w-4 text-slate-700" />
+      </div>
+      {loading ? (
+        <div className="space-y-4">{[1,2,3,4].map(i => <Skeleton key={i} className="h-8 w-full bg-white/[0.04]" />)}</div>
+      ) : top.length === 0 ? (
+        <p className="py-6 text-center text-[13px] text-slate-700">No savings recorded yet</p>
+      ) : (
+        <div className="space-y-4">
+          {top.map((log, i) => {
+            const isCharge = log.action === 'charge'
+            return (
+              <div key={i}>
+                <div className="mb-1.5 flex items-center justify-between">
+                  <span className="flex items-center gap-2 text-[12.5px] text-slate-300">
+                    <span className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${isCharge ? 'bg-violet-500/10 text-violet-400' : 'bg-amber-500/10 text-amber-400'}`}>
+                      {isCharge ? '↑ Charge' : '↓ Sell'}
+                    </span>
+                    {fmtDt(log.created_at)}
+                  </span>
+                  <span className="font-mono text-[12.5px] font-semibold text-emerald-400">+{fmt(log.savings_eur)}</span>
+                </div>
+                <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.04]">
+                  <div className={`h-full rounded-full ${isCharge ? 'bg-violet-500' : 'bg-amber-500'}`}
+                    style={{ width: `${(log.savings_eur / maxSaving) * 100}%` }} />
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function BesparingenClient() {
   const [activeDays, setActiveDays] = useState(30)
   const [data, setData] = useState<HistoryData | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    setLoading(true)
-    setData(null)
+    setLoading(true); setData(null)
     fetch(`/api/savings/history?days=${activeDays}`)
-      .then((r) => r.json())
-      .then((d) => {
-        setData(d)
-        setLoading(false)
-      })
-      .catch(() => setLoading(false))
+      .then(r => r.json()).then(d => { setData(d); setLoading(false) }).catch(() => setLoading(false))
   }, [activeDays])
+
+  const stats = [
+    { label: 'Today',      value: data?.totals.today   ?? 0, money: true,  color: 'text-emerald-400' },
+    { label: 'This month', value: data?.totals.month   ?? 0, money: true,  color: 'text-emerald-400' },
+    { label: 'All time',   value: data?.totals.total   ?? 0, money: true,  color: 'text-violet-400'  },
+    { label: 'Actions',    value: data?.totals.actions ?? 0, money: false, color: 'text-slate-300'   },
+  ]
 
   return (
     <div className="space-y-6">
-      {/* Summary cards */}
-      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
-        {[
-          { label: 'Vandaag', value: data?.totals.today ?? 0, sub: 'bespaard' },
-          { label: 'Deze maand', value: data?.totals.month ?? 0, sub: 'bespaard' },
-          { label: 'Totaal ooit', value: data?.totals.total ?? 0, sub: 'bespaard' },
-          { label: 'Acties', value: null, count: data?.totals.actions ?? 0, sub: 'geautomatiseerd' },
-        ].map((card) => (
-          <div
-            key={card.label}
-            className="rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900"
-          >
-            <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
-              {card.label}
-            </p>
-            {loading ? (
-              <div className="mt-2 h-8 w-24 animate-pulse rounded-lg bg-zinc-100 dark:bg-zinc-800" />
-            ) : (
-              <>
-                <p
-                  className={`mt-2 text-2xl font-semibold tracking-tight ${
-                    (card.value ?? 0) > 0 || (card.count ?? 0) > 0
-                      ? 'text-emerald-600 dark:text-emerald-400'
-                      : 'text-zinc-400 dark:text-zinc-500'
-                  }`}
-                >
-                  {card.value !== null ? fmt(card.value ?? 0) : (card.count ?? 0)}
-                </p>
-                <p className="mt-1 text-xs text-zinc-400">{card.sub}</p>
-              </>
-            )}
+
+      {/* Page header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-[26px] font-extrabold tracking-[-0.035em] text-slate-50">Savings overview</h1>
+          <p className="mt-1 text-[13px] text-slate-600">Your automatic energy savings</p>
+        </div>
+      </div>
+
+      {/* Stat cards */}
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+        {stats.map(s => (
+          <div key={s.label} className="rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-5">
+            <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-600">{s.label}</p>
+            {loading
+              ? <Skeleton className="mt-3 h-8 w-20 bg-white/[0.04]" />
+              : <>
+                  <p className={`mt-3 font-mono text-[26px] font-bold tracking-[-0.03em] ${s.value > 0 ? s.color : 'text-slate-700'}`}>
+                    {s.money ? fmt(s.value) : s.value}
+                  </p>
+                  <p className="mt-1 text-[11px] text-slate-700">{s.money ? 'saved' : 'automated'}</p>
+                </>
+            }
           </div>
         ))}
       </div>
 
-      {/* Chart card */}
-      <div className="rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="flex items-center justify-between">
-          <p className="text-sm font-medium text-zinc-900 dark:text-zinc-50">
-            Dagelijkse besparingen
-          </p>
-          <div className="flex gap-1">
-            {RANGES.map((r) => (
-              <button
-                key={r.days}
-                onClick={() => setActiveDays(r.days)}
-                className={`rounded-lg px-3 py-1 text-xs font-medium transition-colors ${
-                  activeDays === r.days
-                    ? 'bg-emerald-500 text-white'
-                    : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700'
-                }`}
-              >
-                {r.label}
-              </button>
-            ))}
+      {/* Chart + top list */}
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1.5fr_1fr]">
+        <div className="rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-6">
+          <div className="mb-5 flex items-center justify-between">
+            <div>
+              <p className="text-[14px] font-semibold text-slate-200">Savings Breakdown</p>
+              <p className="mt-0.5 text-[11px] text-slate-600">Daily savings (€)</p>
+            </div>
+            <div className="flex gap-1 rounded-lg bg-white/[0.04] p-1">
+              {RANGES.map(r => (
+                <button key={r.days} onClick={() => setActiveDays(r.days)}
+                  className={cn('rounded-md px-3 py-1 text-[11px] font-semibold transition-colors',
+                    activeDays === r.days ? 'bg-violet-500/15 text-violet-400' : 'text-slate-600 hover:text-slate-300')}>
+                  {r.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <SavingsChart days={data?.days ?? []} loading={loading} activeDays={activeDays} />
+          <div className="mt-4 flex gap-5 text-[11px] text-slate-600">
+            <span className="flex items-center gap-1.5"><i className="inline-block h-2 w-2 rounded-sm bg-emerald-500/60" />Savings</span>
+            <span className="flex items-center gap-1.5"><i className="inline-block h-2 w-2 rounded-sm bg-violet-500" />Today</span>
           </div>
         </div>
-
-        {loading ? (
-          <div className="mt-4 flex h-40 items-end gap-[2px]">
-            {Array.from({ length: activeDays }).map((_, i) => (
-              <div
-                key={i}
-                className="flex-1 animate-pulse rounded-t-sm bg-zinc-100 dark:bg-zinc-800"
-                style={{ height: `${20 + Math.random() * 60}%` }}
-              />
-            ))}
-          </div>
-        ) : data && data.days.length > 0 ? (
-          <SavingsChart days={data.days} />
-        ) : (
-          <div className="mt-4 flex h-40 flex-col items-center justify-center rounded-xl bg-zinc-50 dark:bg-zinc-800/50">
-            <p className="text-sm text-zinc-400">Nog geen besparingsdata</p>
-            <p className="mt-1 text-xs text-zinc-400">
-              Koppel een batterij om automatisch te besparen
-            </p>
-          </div>
-        )}
-
-        {/* Legend */}
-        <div className="mt-3 flex items-center gap-4">
-          <div className="flex items-center gap-1.5">
-            <div className="h-2.5 w-2.5 rounded-sm bg-emerald-500" />
-            <span className="text-xs text-zinc-500">Besparing</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="h-2.5 w-2.5 rounded-sm bg-zinc-100 dark:bg-zinc-700" />
-            <span className="text-xs text-zinc-500">Geen actie</span>
-          </div>
-        </div>
+        <TopSavingsList recent={data?.recent ?? []} loading={loading} />
       </div>
 
-      {/* Recent actions table */}
-      <div className="rounded-2xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="border-b border-zinc-100 px-5 py-4 dark:border-zinc-800">
-          <p className="text-sm font-medium text-zinc-900 dark:text-zinc-50">
-            Recente acties
-          </p>
+      {/* Transaction table */}
+      <div className="rounded-2xl border border-white/[0.06] bg-[#0D0E16]">
+        <div className="flex items-center justify-between border-b border-white/[0.06] px-6 py-4">
+          <p className="text-[14px] font-semibold text-slate-200">Transaction history</p>
+          <span className="text-[11px] text-slate-600">Last {activeDays} days</span>
         </div>
-
+        <div className="grid grid-cols-[auto_1fr_auto_auto] gap-4 border-b border-white/[0.04] px-6 py-2.5">
+          {['Action','Time','kWh','Saved'].map(h => (
+            <span key={h} className={cn('text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-700', h === 'kWh' || h === 'Saved' ? 'text-right' : '')}>{h}</span>
+          ))}
+        </div>
         {loading ? (
-          <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="flex items-center gap-4 px-5 py-3.5">
-                <div className="h-7 w-7 animate-pulse rounded-full bg-zinc-100 dark:bg-zinc-800" />
-                <div className="flex-1 space-y-1.5">
-                  <div className="h-3.5 w-32 animate-pulse rounded bg-zinc-100 dark:bg-zinc-800" />
-                  <div className="h-3 w-20 animate-pulse rounded bg-zinc-100 dark:bg-zinc-800" />
-                </div>
-                <div className="h-4 w-12 animate-pulse rounded bg-zinc-100 dark:bg-zinc-800" />
+          <div className="divide-y divide-white/[0.04]">
+            {[1,2,3,4,5].map(i => (
+              <div key={i} className="grid grid-cols-[auto_1fr_auto_auto] items-center gap-4 px-6 py-3.5">
+                <Skeleton className="h-8 w-8 rounded-xl bg-white/[0.04]" />
+                <Skeleton className="h-3.5 w-32 bg-white/[0.04]" />
+                <Skeleton className="h-3.5 w-10 bg-white/[0.04]" />
+                <Skeleton className="h-3.5 w-14 bg-white/[0.04]" />
               </div>
             ))}
           </div>
-        ) : data && data.recent.length > 0 ? (
-          <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
+        ) : !data?.recent.length ? (
+          <div className="flex flex-col items-center justify-center py-14">
+            <TrendingDown className="h-8 w-8 text-slate-800" />
+            <p className="mt-3 text-[13px] text-slate-700">No transactions yet</p>
+          </div>
+        ) : (
+          <div className="divide-y divide-white/[0.04]">
             {data.recent.map((log, i) => {
               const isCharge = log.action === 'charge'
-              const isDischarge = log.action === 'discharge'
               return (
-                <div key={i} className="flex items-center gap-4 px-5 py-3.5">
-                  {/* Icon */}
-                  <div
-                    className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-sm ${
-                      isCharge
-                        ? 'bg-emerald-100 dark:bg-emerald-950'
-                        : isDischarge
-                        ? 'bg-orange-100 dark:bg-orange-950'
-                        : 'bg-zinc-100 dark:bg-zinc-800'
-                    }`}
-                  >
-                    {isCharge ? '⬆' : isDischarge ? '⬇' : '—'}
+                <div key={i} className="grid grid-cols-[auto_1fr_auto_auto] items-center gap-4 px-6 py-3.5">
+                  <div className={`flex h-8 w-8 items-center justify-center rounded-xl ${
+                    isCharge ? 'bg-violet-500/10 ring-1 ring-violet-500/20' : 'bg-amber-500/10 ring-1 ring-amber-500/20'
+                  }`}>
+                    {isCharge ? <TrendingDown className="h-3.5 w-3.5 text-violet-400" /> : <TrendingUp className="h-3.5 w-3.5 text-amber-400" />}
                   </div>
-
-                  {/* Info */}
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-zinc-900 dark:text-zinc-50">
-                      {isCharge ? 'Opladen' : isDischarge ? 'Ontladen' : 'Inactief'}
-                      {log.kwh > 0 && (
-                        <span className="ml-1.5 font-normal text-zinc-500">
-                          {log.kwh.toFixed(1)} kWh
-                        </span>
-                      )}
-                    </p>
-                    <p className="mt-0.5 text-xs text-zinc-400">
-                      {fmtDateTime(log.created_at)}
-                      {log.price_eur > 0 && (
-                        <span className="ml-1.5">@ €{log.price_eur.toFixed(4)}/kWh</span>
-                      )}
-                    </p>
+                  <div>
+                    <p className="text-[13px] font-medium text-slate-300">{isCharge ? 'Battery charged' : 'Battery discharged'}</p>
+                    <p className="mt-0.5 text-[11.5px] text-slate-600">{fmtDt(log.created_at)}{log.price_eur > 0 && <span className="ml-2">@ €{log.price_eur.toFixed(4)}/kWh</span>}</p>
                   </div>
-
-                  {/* Savings */}
-                  <div className="text-right">
-                    {(log.savings_eur ?? 0) > 0 ? (
-                      <span className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
-                        +{fmt(log.savings_eur)}
-                      </span>
-                    ) : (
-                      <span className="text-sm text-zinc-400">—</span>
-                    )}
-                  </div>
+                  <span className="font-mono text-[12.5px] text-slate-500 text-right">{log.kwh > 0 ? log.kwh.toFixed(1) : '—'}</span>
+                  <span className={`font-mono text-[13px] font-semibold text-right ${(log.savings_eur ?? 0) > 0 ? 'text-emerald-400' : 'text-slate-700'}`}>
+                    {(log.savings_eur ?? 0) > 0 ? `+${fmt(log.savings_eur)}` : '—'}
+                  </span>
                 </div>
               )
             })}
-          </div>
-        ) : (
-          <div className="flex flex-col items-center justify-center py-12">
-            <p className="text-sm text-zinc-400">Nog geen acties uitgevoerd</p>
-            <p className="mt-1 text-xs text-zinc-400">
-              De optimizer runt elk uur automatisch
-            </p>
           </div>
         )}
       </div>

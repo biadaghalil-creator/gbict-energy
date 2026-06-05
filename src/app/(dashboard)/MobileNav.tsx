@@ -8,6 +8,8 @@ const navLinks = [
   { href: '/dashboard', label: 'Dashboard', icon: '📊' },
   { href: '/dashboard/koppelingen', label: 'Koppelingen', icon: '🔌' },
   { href: '/dashboard/besparingen', label: 'Besparingen', icon: '💶' },
+  { href: '/dashboard/notificaties', label: 'Activiteit', icon: '🔔' },
+  { href: '/dashboard/referral', label: 'Vrienden', icon: '🎁' },
   { href: '/dashboard/vpp', label: 'Virtueel Energienet', icon: '⚡', badge: 'Bèta' },
   { href: '/dashboard/instellingen', label: 'Instellingen', icon: '⚙️' },
 ]

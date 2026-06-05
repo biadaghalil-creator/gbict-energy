@@ -1,0 +1,184 @@
+'use client'
+
+import { useState } from 'react'
+import { Zap, BatteryCharging, Activity } from 'lucide-react'
+import { cn } from '@/lib/utils'
+
+interface OptimizationLog {
+  id: string; action: string; price_eur: number; savings_eur: number; created_at: string
+}
+
+type FilterTab = 'all' | 'charge' | 'discharge' | 'savings'
+
+const tabs: { id: FilterTab; label: string }[] = [
+  { id: 'all',       label: 'All' },
+  { id: 'charge',    label: 'Charge' },
+  { id: 'discharge', label: 'Discharge' },
+  { id: 'savings',   label: 'With savings' },
+]
+
+function timeAgo(dateStr: string): string {
+  const diff = Date.now() - new Date(dateStr).getTime()
+  const s = Math.floor(diff / 1000), m = Math.floor(s / 60), h = Math.floor(m / 60), d = Math.floor(h / 24)
+  if (s < 60) return 'just now'
+  if (m < 60) return `${m}m ago`
+  if (h < 24) return `${h}h ago`
+  if (d === 1) return 'yesterday'
+  if (d < 7)  return `${d}d ago`
+  return new Date(dateStr).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
+}
+
+function formatDateGroup(dateStr: string): string {
+  const date = new Date(dateStr)
+  const now = new Date()
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  const yesterday = new Date(today.getTime() - 86400000)
+  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+  if (d.getTime() === today.getTime()) return 'Today'
+  if (d.getTime() === yesterday.getTime()) return 'Yesterday'
+  return date.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })
+}
+
+function isChargeAction(action: string): boolean {
+  return action.toLowerCase().includes('charge') || action.toLowerCase().includes('laden')
+}
+
+export default function NotificatiesClient({ logs }: { logs: OptimizationLog[] }) {
+  const [activeTab, setActiveTab] = useState<FilterTab>('all')
+
+  const filtered = logs.filter(log => {
+    if (activeTab === 'all')        return true
+    if (activeTab === 'charge')     return isChargeAction(log.action)
+    if (activeTab === 'discharge')  return !isChargeAction(log.action)
+    if (activeTab === 'savings')    return log.savings_eur > 0
+    return true
+  })
+
+  /* Group by date */
+  const grouped: Record<string, OptimizationLog[]> = {}
+  for (const log of filtered) {
+    const key = formatDateGroup(log.created_at)
+    if (!grouped[key]) grouped[key] = []
+    grouped[key].push(log)
+  }
+
+  /* Stats from all logs */
+  const totalSaved   = logs.reduce((sum, l) => sum + (l.savings_eur ?? 0), 0)
+  const chargeCount  = logs.filter(l => isChargeAction(l.action)).length
+  const dischargeCount = logs.filter(l => !isChargeAction(l.action)).length
+
+  return (
+    <div className="space-y-6">
+
+      {/* Page header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-[26px] font-extrabold tracking-[-0.035em] text-slate-50">Activity</h1>
+          <p className="mt-1 text-[13px] text-slate-600">All optimization actions from your battery</p>
+        </div>
+      </div>
+
+      {/* Mini stats row */}
+      <div className="grid grid-cols-3 gap-4">
+        <div className="rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-5">
+          <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-600">Total actions</p>
+          <p className="mt-3 font-mono text-[26px] font-bold tracking-[-0.03em] text-slate-200">{logs.length}</p>
+          <p className="mt-1 text-[11px] text-slate-700">automated</p>
+        </div>
+        <div className="rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-5">
+          <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-600">Charge / Sell</p>
+          <p className="mt-3 font-mono text-[26px] font-bold tracking-[-0.03em] text-slate-200">
+            {chargeCount}<span className="text-slate-700">/</span>{dischargeCount}
+          </p>
+          <p className="mt-1 text-[11px] text-slate-700">split</p>
+        </div>
+        <div className="rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-5">
+          <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-600">Total saved</p>
+          <p className={`mt-3 font-mono text-[26px] font-bold tracking-[-0.03em] ${totalSaved > 0 ? 'text-emerald-400' : 'text-slate-700'}`}>
+            €{totalSaved.toFixed(2)}
+          </p>
+          <p className="mt-1 text-[11px] text-slate-700">all time</p>
+        </div>
+      </div>
+
+      {/* Filter tabs */}
+      <div className="flex gap-1 rounded-xl bg-[#0D0E16] p-1 ring-1 ring-white/[0.06]">
+        {tabs.map(tab => (
+          <button key={tab.id} type="button" onClick={() => setActiveTab(tab.id)}
+            className={cn(
+              'flex-1 rounded-lg px-3 py-2 text-[12px] font-semibold transition-all',
+              activeTab === tab.id ? 'bg-violet-500/15 text-violet-400' : 'text-slate-600 hover:text-slate-300'
+            )}>
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Activity feed */}
+      {filtered.length === 0 ? (
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-white/[0.06] bg-[#0D0E16] py-16">
+          <Activity className="h-10 w-10 text-slate-800" />
+          <p className="mt-4 text-[13px] text-slate-700">No activity yet.</p>
+          <p className="mt-1 text-[12px] text-slate-800">The optimizer logs every action here.</p>
+        </div>
+      ) : (
+        <div className="space-y-5">
+          {Object.entries(grouped).map(([dateLabel, dayLogs]) => (
+            <div key={dateLabel}>
+              {/* Date group header */}
+              <p className="mb-3 flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.1em] text-slate-700">
+                {dateLabel}
+                <span className="flex-1 border-t border-white/[0.04]" />
+              </p>
+
+              {/* Log items */}
+              <div className="overflow-hidden rounded-2xl border border-white/[0.06] bg-[#0D0E16]">
+                {dayLogs.map((log, index) => {
+                  const charging = isChargeAction(log.action)
+                  return (
+                    <div key={log.id}
+                      className={cn('flex items-center gap-4 px-5 py-4', index < dayLogs.length - 1 && 'border-b border-white/[0.04]')}>
+                      {/* Icon */}
+                      <div className={cn(
+                        'flex h-9 w-9 shrink-0 items-center justify-center rounded-xl',
+                        charging ? 'bg-violet-500/10 ring-1 ring-violet-500/20' : 'bg-amber-500/10 ring-1 ring-amber-500/20'
+                      )}>
+                        {charging
+                          ? <BatteryCharging className="h-4 w-4 text-violet-400" />
+                          : <Zap className="h-4 w-4 text-amber-400" />
+                        }
+                      </div>
+
+                      {/* Info */}
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[13.5px] font-medium text-slate-200">
+                          {charging ? 'Battery charged' : 'Battery discharged'}
+                        </p>
+                        <p className="mt-0.5 truncate text-[12px] text-slate-600">
+                          €{log.price_eur.toFixed(4)}/kWh
+                          {log.savings_eur > 0 && (
+                            <span className="ml-2 text-emerald-400">· €{log.savings_eur.toFixed(3)} saved</span>
+                          )}
+                        </p>
+                      </div>
+
+                      {/* Right side */}
+                      <div className="flex shrink-0 flex-col items-end gap-1.5">
+                        {log.savings_eur > 0 && (
+                          <span className="rounded-md bg-emerald-500/10 px-2 py-0.5 font-mono text-[11px] font-semibold text-emerald-400 ring-1 ring-emerald-500/20">
+                            +€{log.savings_eur.toFixed(3)}
+                          </span>
+                        )}
+                        <time className="text-[11px] text-slate-700">{timeAgo(log.created_at)}</time>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}

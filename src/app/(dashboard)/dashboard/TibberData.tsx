@@ -1,13 +1,22 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { Zap, CalendarDays } from 'lucide-react'
 import { type TibberPriceData, priceLevel } from '@/lib/tibber'
 import { type OptimizationResult } from '@/lib/optimize'
+import { Badge } from '@/components/ui/badge'
+import { Skeleton } from '@/components/ui/skeleton'
 import PriceChart from './PriceChart'
 
 type DashboardData = TibberPriceData & {
   optimization: OptimizationResult
   tomorrowOptimization: OptimizationResult | null
+}
+
+const levelConfig = {
+  low:    { label: 'Cheap',  barColor: 'bg-emerald-400', textColor: 'text-emerald-400' },
+  normal: { label: 'Normal', barColor: 'bg-amber-400',   textColor: 'text-amber-400'   },
+  high:   { label: 'Peak',   barColor: 'bg-red-400',     textColor: 'text-red-400'     },
 }
 
 export default function TibberData() {
@@ -27,123 +36,131 @@ export default function TibberData() {
   const optimization = data?.optimization
   const tomorrowOptimization = data?.tomorrowOptimization ?? null
   const level = current ? priceLevel(current.total, todayPrices) : null
-
-  const levelConfig = {
-    low:    { label: 'Goedkoop', color: 'text-emerald-600 dark:text-emerald-400', dot: 'bg-emerald-500' },
-    normal: { label: 'Normaal',  color: 'text-amber-600 dark:text-amber-400',     dot: 'bg-amber-500'   },
-    high:   { label: 'Duur',     color: 'text-red-600 dark:text-red-400',          dot: 'bg-red-500'     },
-  }
-  const currentConfig = level ? levelConfig[level] : null
+  const cfg = level ? levelConfig[level] : null
 
   return (
     <>
-      {/* Huidige prijs kaart */}
-      <div className="rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
-        <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">Huidige prijs</p>
+      {/* Current price card */}
+      <div className="overflow-hidden rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-6">
+        <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-500">
+          Spot price now
+        </p>
         {loading ? (
-          <div className="mt-2 h-8 w-24 animate-pulse rounded-lg bg-zinc-100 dark:bg-zinc-800" />
+          <Skeleton className="mt-3 h-10 w-28 bg-white/[0.04]" />
         ) : current ? (
           <>
-            <div className="mt-2 flex items-end gap-2">
-              <p className={`text-2xl font-semibold tracking-tight ${currentConfig?.color}`}>
+            <div className="mt-3 flex items-baseline gap-1.5">
+              <span className="font-mono text-[32px] font-semibold leading-none tracking-[-0.03em] text-slate-50">
                 €{current.total.toFixed(4)}
-              </p>
-              <span className="mb-0.5 text-sm text-zinc-400">/kWh</span>
+              </span>
+              <span className="text-[12px] text-slate-500">/kWh</span>
             </div>
-            <div className="mt-1 flex items-center gap-1.5">
-              <span className={`h-1.5 w-1.5 rounded-full ${currentConfig?.dot}`} />
-              <p className="text-xs text-zinc-400">{currentConfig?.label}</p>
-            </div>
+            {cfg && (
+              <span className="mt-3 flex items-center gap-1.5 text-[12px] font-medium text-slate-500">
+                <span className={`h-[14px] w-[3px] rounded-sm ${cfg.barColor}`} />
+                <span className={cfg.textColor}>{cfg.label}</span>
+              </span>
+            )}
           </>
         ) : (
-          <p className="mt-2 text-2xl font-semibold text-zinc-400">€ —</p>
+          <p className="mt-3 font-mono text-[32px] font-semibold text-slate-700">€ —</p>
         )}
       </div>
 
-      {/* Geschatte besparing kaart */}
+      {/* Estimated savings card */}
       {!loading && optimization && (
-        <div className="rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
-          <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">Besparing vandaag</p>
-          <p className="mt-2 text-2xl font-semibold tracking-tight text-emerald-600 dark:text-emerald-400">
-            ~€{optimization.estimatedSavings.toFixed(2)}
+        <div className="overflow-hidden rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-6">
+          <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-500">
+            Estimated savings today
           </p>
-          <p className="mt-1 text-xs text-zinc-400">Schatting o.b.v. 5 kWh batterij</p>
+          <div className="mt-3 flex items-baseline gap-1.5">
+            <span className="font-mono text-[32px] font-semibold leading-none tracking-[-0.03em] text-emerald-400">
+              €{optimization.estimatedSavings.toFixed(2)}
+            </span>
+          </div>
+          <p className="mt-2 text-[11.5px] text-slate-600">Based on 5 kWh battery</p>
         </div>
       )}
 
-      {/* Prijsgrafiek vandaag */}
+      {/* Price chart today */}
       {!loading && todayPrices.length > 0 && (
         <div className="col-span-full">
           <PriceChart prices={todayPrices} schedule={optimization?.schedule} />
         </div>
       )}
 
-      {/* Optimalisatie schema */}
-      {!loading && optimization && (
-        <div className="col-span-full rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
-          <p className="mb-4 text-xs font-medium uppercase tracking-wide text-zinc-500">
-            Optimalisatie schema vandaag
+      {/* Optimization schedule today */}
+      {!loading && optimization && optimization.schedule.filter(s => s.action !== 'idle').length > 0 && (
+        <div className="col-span-full overflow-hidden rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-6">
+          <p className="mb-5 text-[11px] font-bold uppercase tracking-[0.1em] text-slate-500">
+            Optimization schedule · today
           </p>
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             {optimization.schedule
               .filter((s) => s.action !== 'idle')
               .map((slot) => (
-                <div key={slot.hour} className="flex items-center gap-3">
-                  <span className="w-12 text-sm font-medium tabular-nums text-zinc-700 dark:text-zinc-300">
+                <div key={slot.hour} className="flex items-center gap-4">
+                  <span className="w-12 font-mono text-[13px] font-medium tabular-nums text-slate-400">
                     {String(slot.hour).padStart(2, '0')}:00
                   </span>
-                  <span
-                    className={`flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                      slot.action === 'charge'
-                        ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400'
-                        : 'bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-400'
-                    }`}
-                  >
-                    {slot.action === 'charge' ? '↓ Laden' : '↑ Ontladen'}
+                  <span className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[12px] font-medium ${
+                    slot.action === 'charge'
+                      ? 'bg-violet-500/10 text-violet-400 ring-1 ring-violet-500/20'
+                      : 'bg-amber-500/10 text-amber-400 ring-1 ring-amber-500/20'
+                  }`}>
+                    {slot.action === 'charge' ? '↑ Charge' : '↓ Sell'}
                   </span>
-                  <span className="text-xs text-zinc-400">€{slot.price.toFixed(4)}/kWh</span>
+                  <span className="font-mono text-[12px] text-slate-600">
+                    €{slot.price.toFixed(4)}/kWh
+                  </span>
                 </div>
               ))}
           </div>
-          <p className="mt-4 text-xs text-zinc-400">
-            Schema wordt elke dag automatisch bijgewerkt op basis van de EPEX spotprijzen.
+          <p className="mt-5 text-[11.5px] text-slate-700">
+            Schedule updates daily based on EPEX spot prices.
           </p>
         </div>
       )}
 
-      {/* Morgen — prijsgrafiek + schema */}
+      {/* Tomorrow prices */}
       {!loading && tomorrowPrices.length > 0 && (
         <>
           <div className="col-span-full">
-            <PriceChart prices={tomorrowPrices} schedule={tomorrowOptimization?.schedule} label="Prijzen morgen (€/kWh)" />
+            <PriceChart
+              prices={tomorrowPrices}
+              schedule={tomorrowOptimization?.schedule}
+              label="Energy prices tomorrow (€/kWh)"
+            />
           </div>
 
-          {tomorrowOptimization && (
-            <div className="col-span-full rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
-              <div className="mb-4 flex items-center justify-between">
-                <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
-                  Gepland schema morgen
+          {tomorrowOptimization && tomorrowOptimization.schedule.filter(s => s.action !== 'idle').length > 0 && (
+            <div className="col-span-full overflow-hidden rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-6">
+              <div className="mb-5 flex items-center justify-between">
+                <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-500">
+                  Planned schedule · tomorrow
                 </p>
-                <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-500 dark:bg-zinc-800">
-                  ~€{tomorrowOptimization.estimatedSavings.toFixed(2)} verwacht
+                <span className="rounded-lg border border-white/[0.06] bg-white/[0.03] px-2.5 py-1 text-[11px] text-slate-500">
+                  ~€{tomorrowOptimization.estimatedSavings.toFixed(2)} expected
                 </span>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-2.5">
                 {tomorrowOptimization.schedule
                   .filter((s) => s.action !== 'idle')
                   .map((slot) => (
-                    <div key={slot.hour} className="flex items-center gap-3">
-                      <span className="w-12 text-sm font-medium tabular-nums text-zinc-700 dark:text-zinc-300">
+                    <div key={slot.hour} className="flex items-center gap-4">
+                      <span className="w-12 font-mono text-[13px] font-medium tabular-nums text-slate-400">
                         {String(slot.hour).padStart(2, '0')}:00
                       </span>
-                      <span className={`flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                      <span className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[12px] font-medium ${
                         slot.action === 'charge'
-                          ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400'
-                          : 'bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-400'
+                          ? 'bg-violet-500/10 text-violet-400 ring-1 ring-violet-500/20'
+                          : 'bg-amber-500/10 text-amber-400 ring-1 ring-amber-500/20'
                       }`}>
-                        {slot.action === 'charge' ? '↓ Laden' : '↑ Ontladen'}
+                        {slot.action === 'charge' ? '↑ Charge' : '↓ Sell'}
                       </span>
-                      <span className="text-xs text-zinc-400">€{slot.price.toFixed(4)}/kWh</span>
+                      <span className="font-mono text-[12px] text-slate-600">
+                        €{slot.price.toFixed(4)}/kWh
+                      </span>
                     </div>
                   ))}
               </div>
@@ -152,11 +169,11 @@ export default function TibberData() {
         </>
       )}
 
-      {/* Morgen nog niet beschikbaar */}
+      {/* Tomorrow not available yet */}
       {!loading && tomorrowPrices.length === 0 && todayPrices.length > 0 && (
-        <div className="col-span-full rounded-2xl border border-dashed border-zinc-200 bg-zinc-50 p-4 text-center dark:border-zinc-800 dark:bg-zinc-900/50">
-          <p className="text-xs text-zinc-400">
-            Prijzen van morgen worden gepubliceerd tussen 13:00 en 15:00 uur.
+        <div className="col-span-full rounded-2xl border border-dashed border-white/[0.06] bg-[#0D0E16]/50 p-5 text-center">
+          <p className="text-[12.5px] text-slate-700">
+            Tomorrow's prices are published between 13:00 and 15:00.
           </p>
         </div>
       )}
