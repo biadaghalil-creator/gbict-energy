@@ -33,7 +33,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: npm
 
       - name: Install Node dependencies
@@ -67,7 +67,7 @@ jobs:
           bundle-id: nl.gbict.energy
           issuer-id: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
           api-key-id: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
-          api-private-key: ${{ secrets.APP_STORE_CONNECT_API_PRIVATE_KEY }}
+          api-private-key: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
 
       # ── 7. Build & Archive ───────────────────────────────────
       - name: Build iOS Archive
@@ -121,7 +121,16 @@ jobs:
             -exportOptionsPlist /tmp/ExportOptions.plist \
             -exportPath ${{ runner.temp }}/ipa
 
-      # ── 9. Upload to App Store Connect ───────────────────────
+      # ── 9. Upload to App Store Connect (TestFlight) ──────────
+      # altool authenticates with an API key. It looks for a file named
+      # AuthKey_<KEY_ID>.p8 in ~/.appstoreconnect/private_keys, so we write
+      # the secret there before uploading.
+      - name: Write App Store Connect API key to disk
+        if: github.ref == 'refs/heads/main' && (github.event.inputs.submit_to_store != 'false')
+        run: |
+          mkdir -p ~/.appstoreconnect/private_keys
+          echo "${{ secrets.APP_STORE_CONNECT_API_KEY }}" > ~/.appstoreconnect/private_keys/AuthKey_${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}.p8
+
       - name: Upload to App Store Connect
         if: github.ref == 'refs/heads/main' && (github.event.inputs.submit_to_store != 'false')
         run: |
