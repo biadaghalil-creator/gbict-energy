@@ -24,6 +24,15 @@ jobs:
     name: Build & Submit to App Store
     runs-on: macos-latest          # Must be macOS for Xcode
 
+    # App Store Connect API key — used for cloud signing AND upload.
+    # No exported .p12 distribution certificate is required: Xcode creates
+    # and downloads the signing certificate + provisioning profile itself
+    # via -allowProvisioningUpdates.
+    env:
+      ASC_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+      TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+
     steps:
       # ── 1. Checkout ─────────────────────────────────────────
       - name: Checkout repository
@@ -43,33 +52,29 @@ jobs:
       - name: Sync Capacitor
         run: npx cap sync ios
 
-      # ── 4. Setup Ruby + Fastlane ────────────────────────────
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.2'
-          bundler-cache: true
+      # ── 4. Verify signing secrets are set ───────────────────
+      - name: Verify App Store Connect secrets
+        run: |
+          missing=""
+          [ -z "$ASC_KEY_ID" ]   && missing="$missing APP_STORE_CONNECT_API_KEY_ID"
+          [ -z "$ASC_ISSUER_ID" ] && missing="$missing APP_STORE_CONNECT_ISSUER_ID"
+          [ -z "$TEAM_ID" ]      && missing="$missing APPLE_TEAM_ID"
+          [ -z "${{ secrets.APP_STORE_CONNECT_API_KEY }}" ] && missing="$missing APP_STORE_CONNECT_API_KEY"
+          if [ -n "$missing" ]; then
+            echo "::error::Missing required secrets:$missing"
+            exit 1
+          fi
 
-      - name: Install Fastlane
-        run: gem install fastlane
+      # ── 5. Write App Store Connect API key (.p8) to disk ─────
+      # altool searches ~/.appstoreconnect/private_keys for AuthKey_<ID>.p8,
+      # and xcodebuild reads it via -authenticationKeyPath. The secret must be
+      # the raw .p8 contents (starts with -----BEGIN PRIVATE KEY-----).
+      - name: Write App Store Connect API key
+        run: |
+          mkdir -p ~/.appstoreconnect/private_keys
+          echo "${{ secrets.APP_STORE_CONNECT_API_KEY }}" > ~/.appstoreconnect/private_keys/AuthKey_${ASC_KEY_ID}.p8
 
-      # ── 5. Import signing certificate ───────────────────────
-      - name: Import Apple Distribution Certificate
-        uses: apple-actions/import-codesign-certs@v3
-        with:
-          p12-file-base64: ${{ secrets.APPLE_DISTRIBUTION_CERTIFICATE_P12 }}
-          p12-password: ${{ secrets.APPLE_DISTRIBUTION_CERTIFICATE_PASSWORD }}
-
-      # ── 6. Download provisioning profile ────────────────────
-      - name: Download Provisioning Profile
-        uses: apple-actions/download-provisioning-profiles@v3
-        with:
-          bundle-id: nl.gbict.energy
-          issuer-id: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
-          api-key-id: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
-          api-private-key: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
-
-      # ── 7. Build & Archive ───────────────────────────────────
+      # ── 6. Build & Archive (automatic cloud signing) ────────
       - name: Build iOS Archive
         run: |
           xcodebuild \
@@ -77,14 +82,16 @@ jobs:
             -scheme App \
             -configuration Release \
             -destination generic/platform=iOS \
-            -archivePath ${{ runner.temp }}/App.xcarchive \
-            CODE_SIGN_STYLE=Manual \
-            DEVELOPMENT_TEAM=${{ secrets.APPLE_TEAM_ID }} \
-            CODE_SIGN_IDENTITY="Apple Distribution" \
-            PROVISIONING_PROFILE_SPECIFIER="nl.gbict.energy AppStore" \
+            -archivePath "$RUNNER_TEMP/App.xcarchive" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$HOME/.appstoreconnect/private_keys/AuthKey_${ASC_KEY_ID}.p8" \
+            -authenticationKeyID "$ASC_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
+            CODE_SIGN_STYLE=Automatic \
+            DEVELOPMENT_TEAM="$TEAM_ID" \
             archive
 
-      # ── 8. Export IPA ────────────────────────────────────────
+      # ── 7. Export IPA (automatic signing) ────────────────────
       - name: Create ExportOptions.plist
         run: |
           cat > /tmp/ExportOptions.plist << EOF
@@ -95,7 +102,7 @@ jobs:
             <key>method</key>
             <string>app-store-connect</string>
             <key>teamID</key>
-            <string>${{ secrets.APPLE_TEAM_ID }}</string>
+            <string>${TEAM_ID}</string>
             <key>uploadBitcode</key>
             <false/>
             <key>compileBitcode</key>
@@ -103,12 +110,9 @@ jobs:
             <key>uploadSymbols</key>
             <true/>
             <key>signingStyle</key>
-            <string>manual</string>
-            <key>provisioningProfiles</key>
-            <dict>
-              <key>nl.gbict.energy</key>
-              <string>nl.gbict.energy AppStore</string>
-            </dict>
+            <string>automatic</string>
+            <key>destination</key>
+            <string>export</string>
           </dict>
           </plist>
           EOF
@@ -117,31 +121,26 @@ jobs:
         run: |
           xcodebuild \
             -exportArchive \
-            -archivePath ${{ runner.temp }}/App.xcarchive \
+            -archivePath "$RUNNER_TEMP/App.xcarchive" \
             -exportOptionsPlist /tmp/ExportOptions.plist \
-            -exportPath ${{ runner.temp }}/ipa
+            -exportPath "$RUNNER_TEMP/ipa" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$HOME/.appstoreconnect/private_keys/AuthKey_${ASC_KEY_ID}.p8" \
+            -authenticationKeyID "$ASC_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID"
 
-      # ── 9. Upload to App Store Connect (TestFlight) ──────────
-      # altool authenticates with an API key. It looks for a file named
-      # AuthKey_<KEY_ID>.p8 in ~/.appstoreconnect/private_keys, so we write
-      # the secret there before uploading.
-      - name: Write App Store Connect API key to disk
-        if: github.ref == 'refs/heads/main' && (github.event.inputs.submit_to_store != 'false')
-        run: |
-          mkdir -p ~/.appstoreconnect/private_keys
-          echo "${{ secrets.APP_STORE_CONNECT_API_KEY }}" > ~/.appstoreconnect/private_keys/AuthKey_${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}.p8
-
+      # ── 8. Upload to App Store Connect (TestFlight) ──────────
       - name: Upload to App Store Connect
-        if: github.ref == 'refs/heads/main' && (github.event.inputs.submit_to_store != 'false')
+        if: github.event.inputs.submit_to_store != 'false'
         run: |
           xcrun altool \
             --upload-app \
             --type ios \
-            --file "${{ runner.temp }}/ipa/App.ipa" \
-            --apiKey ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }} \
-            --apiIssuer ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+            --file "$RUNNER_TEMP/ipa/App.ipa" \
+            --apiKey "$ASC_KEY_ID" \
+            --apiIssuer "$ASC_ISSUER_ID"
 
-      # ── 10. Save IPA as artifact ─────────────────────────────
+      # ── 9. Save IPA as artifact ──────────────────────────────
       - name: Upload IPA artifact
         uses: actions/upload-artifact@v4
         with:
