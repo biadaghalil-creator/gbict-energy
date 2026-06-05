@@ -38,6 +38,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # ── 1b. Select newest Xcode ─────────────────────────────
+      # App Store Connect requires builds made with the latest iOS SDK
+      # (iOS 26 / Xcode 26). The runner defaults to an older Xcode, so
+      # pick the newest stable one that is installed.
+      - name: Select latest Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
       # ── 2. Setup Node (for Capacitor sync) ──────────────────
       - name: Setup Node
         uses: actions/setup-node@v4
