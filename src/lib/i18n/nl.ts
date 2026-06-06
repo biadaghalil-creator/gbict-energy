@@ -12,7 +12,7 @@ export const nl: TranslationDict = {
     savings: 'Besparingen',
     activity: 'Activiteit',
     friends: 'Vrienden uitnodigen',
-    vpp: 'VPP ⚡',
+    vpp: 'VPP',
     settings: 'Instellingen',
     logout: 'Uitloggen',
   },

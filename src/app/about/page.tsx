@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import { Code, Cloud, Globe, Monitor, Wrench, Bot } from 'lucide-react'
 
 export const metadata = {
   title: 'Over GBICT — Nederlands softwarebedrijf',
@@ -7,12 +8,12 @@ export const metadata = {
 }
 
 const services = [
-  { icon: '💻', title: 'Softwareontwikkeling', description: 'Van idee tot werkende app. Web, mobiel of intern platform — volledig op maat gebouwd.', color: 'rgba(250,204,21,0.1)' },
-  { icon: '☁️', title: 'Cloud oplossingen', description: 'Schaalbare infrastructuur die meegroeit met je bedrijf. Kosten omlaag, betrouwbaarheid omhoog.', color: 'rgba(34,211,238,0.1)' },
-  { icon: '🌐', title: 'Websites', description: 'Snelle, mooie websites die écht converteren. Geen templates — gebouwd op jouw merk.', color: 'rgba(99,102,241,0.1)' },
-  { icon: '🖥️', title: 'Werkplekbeheer', description: 'Je IT-omgeving, volledig geregeld. Zonder gedoe, zonder verrassingen op de factuur.', color: 'rgba(52,211,153,0.1)' },
-  { icon: '🛠️', title: 'Technische support', description: 'Directe hulp als er iets misgaat. Geen wachttijden, geen callcenters — wij zijn bereikbaar.', color: 'rgba(168,85,247,0.1)' },
-  { icon: '🤖', title: 'AI & Data', description: 'Slimme oplossingen die je processen automatiseren. Van chatbots tot voorspellende modellen.', color: 'rgba(251,146,60,0.1)' },
+  { icon: Code, title: 'Softwareontwikkeling', description: 'Van idee tot werkende app. Web, mobiel of intern platform — volledig op maat gebouwd.', color: 'rgba(250,204,21,0.1)' },
+  { icon: Cloud, title: 'Cloud oplossingen', description: 'Schaalbare infrastructuur die meegroeit met je bedrijf. Kosten omlaag, betrouwbaarheid omhoog.', color: 'rgba(34,211,238,0.1)' },
+  { icon: Globe, title: 'Websites', description: 'Snelle, mooie websites die écht converteren. Geen templates — gebouwd op jouw merk.', color: 'rgba(99,102,241,0.1)' },
+  { icon: Monitor, title: 'Werkplekbeheer', description: 'Je IT-omgeving, volledig geregeld. Zonder gedoe, zonder verrassingen op de factuur.', color: 'rgba(52,211,153,0.1)' },
+  { icon: Wrench, title: 'Technische support', description: 'Directe hulp als er iets misgaat. Geen wachttijden, geen callcenters — wij zijn bereikbaar.', color: 'rgba(168,85,247,0.1)' },
+  { icon: Bot, title: 'AI & Data', description: 'Slimme oplossingen die je processen automatiseren. Van chatbots tot voorspellende modellen.', color: 'rgba(251,146,60,0.1)' },
 ]
 
 const whyUs = [
@@ -123,18 +124,21 @@ export default function AboutPage() {
             van digitale oplossingen.
           </p>
           <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {services.map((service) => (
+            {services.map((service) => {
+              const Icon = service.icon
+              return (
               <div key={service.title} className="glow-card p-7">
-                <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl text-2xl"
+                <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl"
                   style={{ background: service.color }}>
-                  {service.icon}
+                  <Icon className="h-6 w-6 text-slate-100" />
                 </div>
                 <h3 className="text-lg font-bold text-slate-50 tracking-tight" style={{ letterSpacing: '-0.02em' }}>
                   {service.title}
                 </h3>
                 <p className="mt-2.5 text-sm leading-relaxed text-slate-400">{service.description}</p>
               </div>
-            ))}
+              )
+            })}
           </div>
         </section>
 
@@ -150,7 +154,7 @@ export default function AboutPage() {
               }}>
               <div className="mb-5">
                 <span className="inline-flex items-center rounded-full badge-glow px-3 py-1 text-xs font-bold text-yellow-300 uppercase tracking-widest">
-                  ⚡ Ons nieuwste product
+                  Ons nieuwste product
                 </span>
               </div>
               <div className="flex flex-col gap-10 md:flex-row md:items-center">

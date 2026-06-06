@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState } from 'react'
+import { Building2, Check } from 'lucide-react'
 import type { TranslationDict } from '@/lib/i18n'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 import type { Locale } from '@/lib/i18n'
@@ -243,9 +244,9 @@ export function PricingClient({ translations: t }: Props) {
           <div className="glow-card overflow-hidden">
             <div className="border-b border-white/[0.06] px-8 py-7">
               <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl text-2xl"
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl"
                   style={{ background: 'rgba(250,204,21,0.1)', border: '1px solid rgba(250,204,21,0.2)' }}>
-                  🏢
+                  <Building2 className="h-6 w-6 text-yellow-400" />
                 </div>
                 <div>
                   <h2 className="text-xl font-bold text-slate-50">{t.pricing.enterpriseTitle}</h2>
@@ -257,8 +258,8 @@ export function PricingClient({ translations: t }: Props) {
             <div className="p-8">
               {submitted ? (
                 <div className="py-10 text-center">
-                  <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full text-3xl step-circle">
-                    ✅
+                  <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full step-circle">
+                    <Check className="h-7 w-7 text-slate-900" />
                   </div>
                   <p className="text-lg font-bold text-slate-50">Aanvraag ontvangen!</p>
                   <p className="mt-2 text-sm text-slate-400">We nemen binnen 1 werkdag contact met je op.</p>
@@ -330,7 +331,7 @@ export function PricingClient({ translations: t }: Props) {
             </h2>
             <p className="mt-3 text-slate-300">{t.common.free14days}. {t.common.noCard}. {t.common.cancel}.</p>
             <Link href="/signup" className="btn-3d-primary mt-8 inline-flex">
-              ⚡ {t.landing.ctaPrimary}
+              {t.landing.ctaPrimary}
             </Link>
           </div>
         </div>

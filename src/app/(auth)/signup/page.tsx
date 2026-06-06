@@ -28,7 +28,7 @@ export default async function SignupPage({
 
       {isSuccess ? (
         <div className="mt-7 rounded-xl border border-emerald-500/30 bg-emerald-950/50 px-4 py-4 text-sm text-emerald-400">
-          ✅ Check je email! We hebben een bevestigingslink gestuurd naar je inbox.
+          Check je e-mail. We hebben een bevestigingslink gestuurd naar je inbox.
         </div>
       ) : (
         <form action={signup} className="mt-7 flex flex-col gap-5">

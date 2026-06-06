@@ -8,6 +8,7 @@ import {
   testFroniusConnection, testSmaCredentials,
   type DeviceType,
 } from './actions'
+import { Zap, Gauge, BatteryCharging, Sun, CloudSun, Plug } from 'lucide-react'
 
 type Device = {
   id: string
@@ -27,17 +28,17 @@ type Step =
   | 'solar-solaredge-setup' | 'solar-fronius-setup' | 'solar-sma-setup'
   | 'done'
 
-const DEVICE_ICONS: Record<string, string> = {
-  meter_tibber:         '⚡',
-  meter_p1:             '📡',
-  battery_sessy:        '🔋',
-  battery_victron:      '🔋',
-  battery_enphase:      '☀️',
-  battery_solaredge:    '🌤️',
-  solar_solaredge:      '☀️',
-  solar_enphase:        '☀️',
-  solar_sma:            '☀️',
-  solar_fronius:        '☀️',
+const DEVICE_ICONS: Record<string, React.ElementType> = {
+  meter_tibber:         Zap,
+  meter_p1:             Gauge,
+  battery_sessy:        BatteryCharging,
+  battery_victron:      BatteryCharging,
+  battery_enphase:      Sun,
+  battery_solaredge:    CloudSun,
+  solar_solaredge:      Sun,
+  solar_enphase:        Sun,
+  solar_sma:            Sun,
+  solar_fronius:        Sun,
 }
 
 const STATUS_LABEL: Record<string, { label: string; color: string }> = {
@@ -398,8 +399,8 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
               <div key={device.id} className="relative rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-100 text-xl dark:bg-zinc-800">
-                      {DEVICE_ICONS[device.type] ?? '🔌'}
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-100 dark:bg-zinc-800">
+                      {(() => { const Icon = DEVICE_ICONS[device.type] ?? Plug; return <Icon className="h-5 w-5 text-zinc-600 dark:text-zinc-300" /> })()}
                     </div>
                     <div>
                       <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">{device.name}</p>
@@ -561,35 +562,36 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
 // ── Category step ──────────────────────────────────────────────────────────
 
 const METER_CATEGORIES = [
-  { id: 'tibber-token' as Step, icon: '⚡', title: 'Tibber',   sub: 'Dynamisch energiecontract' },
-  { id: 'p1-setup'     as Step, icon: '📡', title: 'P1 Meter', sub: 'HomeWizard via lokaal netwerk' },
+  { id: 'tibber-token' as Step, icon: Zap,   title: 'Tibber',   sub: 'Dynamisch energiecontract' },
+  { id: 'p1-setup'     as Step, icon: Gauge, title: 'P1 Meter', sub: 'HomeWizard via lokaal netwerk' },
 ] as const
 
 const BATTERY_CATEGORIES = [
-  { id: 'sessy-setup'    as Step, icon: '🔋',  title: 'Sessy',            sub: 'Thuisbatterij via my.sessy.nl' },
-  { id: 'victron-setup'  as Step, icon: '🔋',  title: 'Victron Energy',   sub: 'Via VRM cloud portal' },
-  { id: 'enphase-setup'  as Step, icon: '☀️',  title: 'Enphase',          sub: 'Encharge via Enlighten portal' },
-  { id: 'solaredge-setup'as Step, icon: '🌤️', title: 'SolarEdge',        sub: 'StorEdge via monitoring portal' },
-  { id: 'battery-other'  as Step, icon: '🔌',  title: 'Andere batterij',  sub: 'Tesla, GoodWe, Growatt…', soon: true },
+  { id: 'sessy-setup'    as Step, icon: BatteryCharging, title: 'Sessy',            sub: 'Thuisbatterij via my.sessy.nl' },
+  { id: 'victron-setup'  as Step, icon: BatteryCharging, title: 'Victron Energy',   sub: 'Via VRM cloud portal' },
+  { id: 'enphase-setup'  as Step, icon: Sun,             title: 'Enphase',          sub: 'Encharge via Enlighten portal' },
+  { id: 'solaredge-setup'as Step, icon: CloudSun,        title: 'SolarEdge',        sub: 'StorEdge via monitoring portal' },
+  { id: 'battery-other'  as Step, icon: Plug,            title: 'Andere batterij',  sub: 'Tesla, GoodWe, Growatt…', soon: true },
 ] as const
 
 const SOLAR_CATEGORIES = [
-  { id: 'solar-solaredge-setup' as Step, icon: '☀️', title: 'SolarEdge',  sub: 'Via monitoring portal API' },
-  { id: 'solar-fronius-setup'   as Step, icon: '☀️', title: 'Fronius',    sub: 'Lokale omvormer via IP-adres' },
-  { id: 'solar-sma-setup'       as Step, icon: '☀️', title: 'SMA',        sub: 'Sunny Portal', soon: true },
+  { id: 'solar-solaredge-setup' as Step, icon: Sun, title: 'SolarEdge',  sub: 'Via monitoring portal API' },
+  { id: 'solar-fronius-setup'   as Step, icon: Sun, title: 'Fronius',    sub: 'Lokale omvormer via IP-adres' },
+  { id: 'solar-sma-setup'       as Step, icon: Sun, title: 'SMA',        sub: 'Sunny Portal', soon: true },
 ] as const
 
 function CategoryList({
   items,
   onSelect,
 }: {
-  items: ReadonlyArray<{ id: Step; icon: string; title: string; sub: string; soon?: boolean }>
+  items: ReadonlyArray<{ id: Step; icon: React.ElementType; title: string; sub: string; soon?: boolean }>
   onSelect: (s: Step) => void
 }) {
   return (
     <>
       {items.map((cat) => {
         const isSoon = cat.soon === true
+        const Icon = cat.icon
         return (
           <button
             key={cat.id}
@@ -601,7 +603,7 @@ function CategoryList({
                 : 'border-zinc-200 bg-white hover:border-emerald-400 hover:bg-emerald-50 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-emerald-600 dark:hover:bg-emerald-950/30'
             }`}
           >
-            <span className="text-2xl">{cat.icon}</span>
+            <Icon className="h-6 w-6 shrink-0 text-zinc-500 dark:text-zinc-300" />
             <div className="flex-1">
               <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">{cat.title}</p>
               <p className="text-xs text-zinc-400">{cat.sub}</p>

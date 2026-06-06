@@ -3,15 +3,16 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { LayoutDashboard, Plug, TrendingDown, Bell, Users, Zap, Settings } from 'lucide-react'
 
 const navLinks = [
-  { href: '/dashboard', label: 'Dashboard', icon: '📊' },
-  { href: '/dashboard/koppelingen', label: 'Koppelingen', icon: '🔌' },
-  { href: '/dashboard/besparingen', label: 'Besparingen', icon: '💶' },
-  { href: '/dashboard/notificaties', label: 'Activiteit', icon: '🔔' },
-  { href: '/dashboard/referral', label: 'Vrienden', icon: '🎁' },
-  { href: '/dashboard/vpp', label: 'Virtueel Energienet', icon: '⚡', badge: 'Bèta' },
-  { href: '/dashboard/instellingen', label: 'Instellingen', icon: '⚙️' },
+  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/dashboard/koppelingen', label: 'Koppelingen', icon: Plug },
+  { href: '/dashboard/besparingen', label: 'Besparingen', icon: TrendingDown },
+  { href: '/dashboard/notificaties', label: 'Activiteit', icon: Bell },
+  { href: '/dashboard/referral', label: 'Vrienden', icon: Users },
+  { href: '/dashboard/vpp', label: 'Virtueel Energienet', icon: Zap, badge: 'Bèta' },
+  { href: '/dashboard/instellingen', label: 'Instellingen', icon: Settings },
 ]
 
 export default function MobileNav() {
@@ -62,7 +63,7 @@ export default function MobileNav() {
                       : 'text-zinc-600 hover:bg-zinc-50 dark:text-zinc-400 dark:hover:bg-zinc-800'
                   }`}
                 >
-                  <span>{link.icon}</span>
+                  <link.icon className="h-4 w-4 shrink-0" />
                   <span className="flex-1">{link.label}</span>
                   {'badge' in link && link.badge && (
                     <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-medium text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400">

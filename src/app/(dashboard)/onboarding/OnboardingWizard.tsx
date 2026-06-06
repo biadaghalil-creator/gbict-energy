@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { saveOnboarding } from './actions'
+import { Sun, BatteryCharging, Zap, Car, Gauge, CheckCircle2 } from 'lucide-react'
 
 interface OnboardingWizardProps {
   userId: string
@@ -66,26 +67,26 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
     })
   }
 
-  const situationItems: { key: SituationKey; icon: string; label: string }[] = [
-    { key: 'zonnepanelen', icon: '☀️', label: 'Zonnepanelen' },
-    { key: 'thuisbatterij', icon: '🔋', label: 'Thuisbatterij' },
-    { key: 'dynamisch', icon: '⚡', label: 'Dynamisch energiecontract' },
-    { key: 'elektrischeAuto', icon: '🚗', label: 'Elektrische auto' },
+  const situationItems: { key: SituationKey; icon: React.ElementType; label: string }[] = [
+    { key: 'zonnepanelen', icon: Sun, label: 'Zonnepanelen' },
+    { key: 'thuisbatterij', icon: BatteryCharging, label: 'Thuisbatterij' },
+    { key: 'dynamisch', icon: Zap, label: 'Dynamisch energiecontract' },
+    { key: 'elektrischeAuto', icon: Car, label: 'Elektrische auto' },
   ]
 
-  const deviceCards = [
+  const deviceCards: { icon: React.ElementType; name: string; desc: string }[] = [
     {
-      icon: '🔋',
+      icon: BatteryCharging,
       name: 'Thuisbatterij',
       desc: 'Sessy, Enphase, Tesla Powerwall en meer',
     },
     {
-      icon: '☀️',
+      icon: Sun,
       name: 'Zonnepanelen',
       desc: 'SolarEdge, SMA, Fronius omvormer',
     },
     {
-      icon: '📡',
+      icon: Gauge,
       name: 'Slimme meter (P1)',
       desc: 'HomeWizard, DSMR-reader',
     },
@@ -96,10 +97,10 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
     return (
       <div className="flex min-h-[70vh] flex-col items-center justify-center px-4 text-center">
         <div className="mb-8 flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-lg shadow-emerald-500/30">
-          <span className="text-4xl">⚡</span>
+          <Zap className="h-9 w-9 text-white" />
         </div>
         <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-          Welkom bij GBICT Energy 👋
+          Welkom bij GBICT Energy
         </h1>
         <p className="mx-auto mt-4 max-w-md text-base text-zinc-500">
           We optimaliseren automatisch jouw thuisenergie. Laten we beginnen met een paar vragen.
@@ -132,7 +133,7 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          {situationItems.map(({ key, icon, label }) => {
+          {situationItems.map(({ key, icon: Icon, label }) => {
             const selected = state.situation.has(key)
             return (
               <button
@@ -145,7 +146,7 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
                     : 'border-zinc-200 bg-white hover:border-zinc-300 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-700'
                 }`}
               >
-                <span className="text-3xl">{icon}</span>
+                <Icon className={`h-7 w-7 ${selected ? 'text-emerald-600 dark:text-emerald-400' : 'text-zinc-500 dark:text-zinc-400'}`} />
                 <span className={`text-sm font-medium ${selected ? 'text-emerald-700 dark:text-emerald-300' : 'text-zinc-700 dark:text-zinc-300'}`}>
                   {label}
                 </span>
@@ -192,14 +193,16 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
         </div>
 
         <div className="flex flex-col gap-3">
-          {deviceCards.map((card) => (
+          {deviceCards.map((card) => {
+            const Icon = card.icon
+            return (
             <a
               key={card.name}
               href="/dashboard/koppelingen"
               className="flex items-center gap-4 rounded-2xl border-2 border-zinc-200 bg-white px-5 py-4 transition-all hover:border-emerald-500 hover:bg-emerald-50 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-emerald-500 dark:hover:bg-emerald-950/40"
             >
-              <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-zinc-100 text-2xl dark:bg-zinc-800">
-                {card.icon}
+              <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-zinc-100 dark:bg-zinc-800">
+                <Icon className="h-6 w-6 text-zinc-600 dark:text-zinc-300" />
               </div>
               <div>
                 <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">{card.name}</p>
@@ -209,7 +212,8 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 12l4-4-4-4" />
               </svg>
             </a>
-          ))}
+            )
+          })}
         </div>
 
         <div className="mt-6 text-center">
@@ -233,7 +237,7 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
   if (step === 4) {
     return (
       <div className="flex min-h-[70vh] flex-col items-center justify-center px-4 text-center">
-        <div className="mb-8 text-6xl">🎉</div>
+        <CheckCircle2 className="mb-8 h-16 w-16 text-emerald-500" />
         <h2 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
           Je bent klaar om te besparen!
         </h2>

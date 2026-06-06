@@ -32,13 +32,13 @@ export async function sendDailySummary({
 
   const fmt = (n: number) => `€${n.toFixed(2).replace('.', ',')}`
   const nextHourText = nextCheapHour !== undefined
-    ? `<p style="margin:0 0 8px">⚡ <strong>Goedkoop moment morgen:</strong> ${String(nextCheapHour).padStart(2, '0')}:00 uur</p>`
+    ? `<p style="margin:0 0 8px"><strong>Goedkoop moment morgen:</strong> ${String(nextCheapHour).padStart(2, '0')}:00 uur</p>`
     : ''
 
   await resend.emails.send({
     from: FROM,
     to,
-    subject: `Jouw besparing vandaag: ${fmt(savingsToday)} ⚡`,
+    subject: `Jouw besparing vandaag: ${fmt(savingsToday)}`,
     html: `
 <!DOCTYPE html>
 <html>
@@ -98,13 +98,12 @@ export async function sendCheapHourAlert({
   await resend.emails.send({
     from: FROM,
     to,
-    subject: `⚡ Goedkope uren vandaag: ${hoursText}`,
+    subject: `Goedkope uren vandaag: ${hoursText}`,
     html: `
 <!DOCTYPE html>
 <html>
 <body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f4f4f5;margin:0;padding:20px;">
   <div style="max-width:520px;margin:0 auto;background:white;border-radius:16px;padding:28px;box-shadow:0 1px 3px rgba(0,0,0,.1)">
-    <div style="font-size:40px;text-align:center;margin-bottom:16px">⚡</div>
     <h2 style="margin:0 0 8px;font-size:20px;font-weight:700;color:#111827;text-align:center">Goedkope uren aankomen</h2>
     <p style="margin:0 0 20px;color:#6b7280;text-align:center">Je batterij laadt automatisch op tijdens de goedkoopste uren van vandaag.</p>
     <div style="background:#f0fdf4;border-radius:12px;padding:16px;margin-bottom:20px;text-align:center">
