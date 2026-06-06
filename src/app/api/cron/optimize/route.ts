@@ -62,12 +62,19 @@ export async function GET(req: Request) {
 
   for (const device of batteryDevices) {
     try {
-      // Haal optimize_mode op voor deze gebruiker
+      // Haal optimize_mode + abonnementsstatus op voor deze gebruiker
       const { data: profile } = await supabase
         .from('profiles')
-        .select('optimize_mode')
+        .select('optimize_mode, subscription_status')
         .eq('id', device.user_id)
         .single()
+
+      // Alleen optimaliseren voor betalende of proef-gebruikers.
+      const subStatus = profile?.subscription_status as string | undefined
+      if (subStatus !== 'active' && subStatus !== 'trialing') {
+        results[device.id] = 'skipped:no_subscription'
+        continue
+      }
 
       const mode = (profile?.optimize_mode as 'max_savings' | 'comfort' | 'eco') ?? 'max_savings'
       const { schedule } = optimizeSchedule(todayPrices, mode)
