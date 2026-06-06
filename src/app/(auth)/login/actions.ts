@@ -7,12 +7,17 @@ export async function login(formData: FormData) {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
 
-  const supabase = await createClient()
+  let errorMessage: string | null = null
+  try {
+    const supabase = await createClient()
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) errorMessage = error.message
+  } catch (e) {
+    errorMessage = e instanceof Error ? e.message : 'Onbekende fout bij inloggen'
+  }
 
-  const { error } = await supabase.auth.signInWithPassword({ email, password })
-
-  if (error) {
-    redirect(`/login?error=${encodeURIComponent(error.message)}`)
+  if (errorMessage) {
+    redirect(`/login?error=${encodeURIComponent(errorMessage)}`)
   }
 
   redirect('/dashboard')

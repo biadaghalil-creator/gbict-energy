@@ -84,8 +84,13 @@ language plpgsql
 security definer set search_path = public
 as $$
 begin
-  insert into public.profiles (id) values (new.id)
-  on conflict (id) do nothing;
+  -- Best-effort: a failure here must NEVER block account signup.
+  begin
+    insert into public.profiles (id) values (new.id)
+    on conflict (id) do nothing;
+  exception when others then
+    raise warning 'handle_new_user failed for %: %', new.id, sqlerrm;
+  end;
   return new;
 end;
 $$;
