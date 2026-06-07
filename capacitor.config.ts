@@ -5,6 +5,10 @@ const config: CapacitorConfig = {
   appName: 'GBICT Energy',
   webDir: 'out',
 
+  // Marks the webview so the web app reliably knows it runs inside the app
+  // (server- and client-side), independent of the Capacitor bridge timing.
+  appendUserAgent: 'GBICTEnergyApp',
+
   /* ── Live server mode ──────────────────────────────────
      Because the app uses server-side auth and API routes,
      we load directly from the production Vercel deployment.
@@ -35,7 +39,7 @@ const config: CapacitorConfig = {
       splashImmersive: true,
     },
     StatusBar: {
-      style: 'dark',
+      style: 'light',
       backgroundColor: '#07080D',
     },
   },

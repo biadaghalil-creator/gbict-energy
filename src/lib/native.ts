@@ -12,8 +12,13 @@ import { useEffect, useState } from 'react'
  */
 export function isNativeApp(): boolean {
   if (typeof window === 'undefined') return false
-  const w = window as unknown as { Capacitor?: { isNativePlatform?: () => boolean } }
-  if (w.Capacitor?.isNativePlatform?.()) return true
+  const cap = (window as unknown as {
+    Capacitor?: { isNativePlatform?: () => boolean; getPlatform?: () => string }
+  }).Capacitor
+  if (cap) {
+    if (typeof cap.isNativePlatform === 'function' && cap.isNativePlatform()) return true
+    if (typeof cap.getPlatform === 'function' && cap.getPlatform() !== 'web') return true
+  }
   return /GBICTEnergyApp/i.test(navigator.userAgent)
 }
 
