@@ -398,7 +398,7 @@ function BigCTA() {
 
 function Footer() {
   const cols: [string, [string, string][]][] = [
-    ["Product",          [["Dashboard", "/dashboard"], ["Pricing", "#pricing"]]]],
+    ["Product",          [["Dashboard", "/dashboard"], ["Pricing", "#pricing"]]],
     ["Company",          [["Contact", "/contact"], ["Privacy Policy", "/privacy"], ["Terms of Service", "/terms"]]],
     ["Compatible with",  [["Sessy", "#features"], ["Tibber", "#features"], ["Victron", "#features"], ["SolarEdge", "#features"], ["Enphase", "#features"], ["Fronius", "#features"]]],
   ];
