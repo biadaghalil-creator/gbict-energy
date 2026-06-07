@@ -7,7 +7,7 @@ export async function signup(formData: FormData) {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://gbict-energy.vercel.app'
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://gbict-energy.vercel.app'
 
   // Never let an unexpected throw bubble up as an opaque "server error" screen —
   // surface the real message back on the form instead.

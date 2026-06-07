@@ -45,23 +45,28 @@ export async function POST(req: Request) {
   }
 
   const origin =
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    req.headers.get('origin') ??
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    req.headers.get('origin') ||
     'https://gbict-energy.vercel.app'
 
-  const session = await stripe.checkout.sessions.create({
-    mode: 'subscription',
-    customer: customerId,
-    line_items: [{ price: selected.priceId, quantity: 1 }],
-    subscription_data: {
-      trial_period_days: TRIAL_DAYS,
+  try {
+    const session = await stripe.checkout.sessions.create({
+      mode: 'subscription',
+      customer: customerId,
+      line_items: [{ price: selected.priceId, quantity: 1 }],
+      subscription_data: {
+        trial_period_days: TRIAL_DAYS,
+        metadata: { user_id: user.id, plan: selected.id },
+      },
       metadata: { user_id: user.id, plan: selected.id },
-    },
-    metadata: { user_id: user.id, plan: selected.id },
-    allow_promotion_codes: true,
-    success_url: `${origin}/dashboard?subscribed=1`,
-    cancel_url: `${origin}/dashboard/instellingen?canceled=1`,
-  })
-
-  return NextResponse.json({ url: session.url })
+      allow_promotion_codes: true,
+      success_url: `${origin}/dashboard?subscribed=1`,
+      cancel_url: `${origin}/dashboard/instellingen?canceled=1`,
+    })
+    return NextResponse.json({ url: session.url })
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : 'Onbekende fout bij Stripe'
+    console.error('checkout: stripe error', msg)
+    return NextResponse.json({ error: `Stripe: ${msg}` }, { status: 500 })
+  }
 }

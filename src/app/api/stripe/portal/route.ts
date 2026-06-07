@@ -31,8 +31,8 @@ export async function POST(req: Request) {
   const stripe = getStripe()
 
   const origin =
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    req.headers.get('origin') ??
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    req.headers.get('origin') ||
     'https://gbict-energy.vercel.app'
 
   const session = await stripe.billingPortal.sessions.create({
