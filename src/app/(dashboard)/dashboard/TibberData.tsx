@@ -117,7 +117,7 @@ export default function TibberData() {
               ))}
           </div>
           <p className="mt-5 text-[11.5px] text-slate-700">
-            Schedule updates daily based on EPEX spot prices.
+            Het schema wordt dagelijks bijgewerkt op basis van EPEX-spotprijzen.
           </p>
         </div>
       )}
@@ -173,7 +173,7 @@ export default function TibberData() {
       {!loading && tomorrowPrices.length === 0 && todayPrices.length > 0 && (
         <div className="col-span-full rounded-2xl border border-dashed border-white/[0.06] bg-[#0D0E16]/50 p-5 text-center">
           <p className="text-[12.5px] text-slate-700">
-            Tomorrow's prices are published between 13:00 and 15:00.
+            De prijzen van morgen verschijnen tussen 13:00 en 15:00.
           </p>
         </div>
       )}

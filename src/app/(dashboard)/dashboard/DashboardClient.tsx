@@ -53,7 +53,7 @@ function HeroCard({ savings, tibber, hasSessy }: {
         </h2>
         <p className="mt-2 max-w-md text-[14px] leading-[1.6] text-slate-500">
           {hasSessy
-            ? 'GBICT continuously monitors EPEX spot prices and optimizes your battery automatically.'
+            ? 'GBICT volgt continu de EPEX-spotprijzen en stuurt je batterij automatisch aan.'
             : 'Link your smart meter or battery in 2 minutes and start saving automatically.'}
         </p>
 
@@ -176,7 +176,7 @@ function VppCard({ enrolled }: { enrolled: boolean }) {
         href="/dashboard/vpp"
         className="relative mt-5 inline-flex h-8 items-center gap-1.5 rounded-lg bg-violet-500/10 px-3 text-[12px] font-semibold text-violet-400 ring-1 ring-violet-500/20 transition-colors hover:bg-violet-500/15"
       >
-        {enrolled ? 'Bekijk status' : 'Join beta'} <ExternalLink className="h-3 w-3" />
+        {enrolled ? 'Bekijk status' : 'Aanmelden bèta'} <ExternalLink className="h-3 w-3" />
       </Link>
     </div>
   )
@@ -194,12 +194,12 @@ function PriceChart({ prices, schedule }: { prices: PricePoint[]; schedule?: Sch
     <div className="rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-6">
       <div className="mb-5 flex items-center justify-between">
         <div>
-          <p className="text-[14px] font-semibold text-slate-200">Energy Price Breakdown</p>
-          <p className="mt-0.5 text-[11px] text-slate-600">EPEX spot prices today (€/kWh)</p>
+          <p className="text-[14px] font-semibold text-slate-200">Energieprijzen</p>
+          <p className="mt-0.5 text-[11px] text-slate-600">EPEX-spotprijzen vandaag (€/kWh)</p>
         </div>
         <div className="flex gap-1 rounded-lg bg-white/[0.04] p-1">
-          <span className="rounded-md bg-violet-500/15 px-3 py-1 text-[11px] font-semibold text-violet-400">Today</span>
-          <span className="px-3 py-1 text-[11px] font-medium text-slate-600">Tomorrow</span>
+          <span className="rounded-md bg-violet-500/15 px-3 py-1 text-[11px] font-semibold text-violet-400">Vandaag</span>
+          <span className="px-3 py-1 text-[11px] font-medium text-slate-600">Morgen</span>
         </div>
       </div>
 
@@ -227,10 +227,10 @@ function PriceChart({ prices, schedule }: { prices: PricePoint[]; schedule?: Sch
       </div>
 
       <div className="mt-4 flex gap-5 text-[11px] text-slate-600">
-        <span className="flex items-center gap-1.5"><i className="inline-block h-2 w-2 rounded-sm bg-violet-500" />Charge</span>
-        <span className="flex items-center gap-1.5"><i className="inline-block h-2 w-2 rounded-sm bg-amber-500" />Sell</span>
-        <span className="flex items-center gap-1.5"><i className="inline-block h-2 w-2 rounded-sm bg-emerald-500/50" />Cheap</span>
-        <span className="flex items-center gap-1.5"><i className="inline-block h-2 w-2 rounded-sm bg-red-500/50" />Peak</span>
+        <span className="flex items-center gap-1.5"><i className="inline-block h-2 w-2 rounded-sm bg-violet-500" />Laden</span>
+        <span className="flex items-center gap-1.5"><i className="inline-block h-2 w-2 rounded-sm bg-amber-500" />Verkopen</span>
+        <span className="flex items-center gap-1.5"><i className="inline-block h-2 w-2 rounded-sm bg-emerald-500/50" />Goedkoop</span>
+        <span className="flex items-center gap-1.5"><i className="inline-block h-2 w-2 rounded-sm bg-red-500/50" />Piek</span>
       </div>
     </div>
   )
@@ -248,8 +248,8 @@ function ScheduleList({ schedule, estimatedSavings }: {
     <div className="rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-6">
       <div className="mb-5 flex items-center justify-between">
         <div>
-          <p className="text-[14px] font-semibold text-slate-200">Optimization Schedule</p>
-          <p className="mt-0.5 text-[11px] text-slate-600">Today's planned actions</p>
+          <p className="text-[14px] font-semibold text-slate-200">Optimalisatieschema</p>
+          <p className="mt-0.5 text-[11px] text-slate-600">Geplande acties vandaag</p>
         </div>
         <span className="rounded-lg bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-400 ring-1 ring-emerald-500/20">
           ~{fmt(estimatedSavings)}
@@ -257,7 +257,7 @@ function ScheduleList({ schedule, estimatedSavings }: {
       </div>
 
       {active.length === 0 ? (
-        <p className="py-6 text-center text-[13px] text-slate-700">No actions planned for today</p>
+        <p className="py-6 text-center text-[13px] text-slate-700">Geen acties gepland voor vandaag</p>
       ) : (
         <div className="space-y-3">
           {active.slice(0, 6).map((slot) => {
@@ -306,7 +306,7 @@ function ActivityTable() {
   return (
     <div className="rounded-2xl border border-white/[0.06] bg-[#0D0E16]">
       <div className="flex items-center justify-between border-b border-white/[0.06] px-6 py-4">
-        <p className="text-[14px] font-semibold text-slate-200">Recent Activity</p>
+        <p className="text-[14px] font-semibold text-slate-200">Recente activiteit</p>
         <Link href="/dashboard/besparingen" className="flex items-center gap-1 text-[12px] font-medium text-violet-400 hover:text-violet-300">
           View all <ArrowUpRight className="h-3 w-3" />
         </Link>
@@ -327,8 +327,8 @@ function ActivityTable() {
         </div>
       ) : logs.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-12">
-          <p className="text-[13px] text-slate-700">No activity yet</p>
-          <p className="mt-1 text-[12px] text-slate-800">The optimizer runs every hour automatically</p>
+          <p className="text-[13px] text-slate-700">Nog geen activiteit</p>
+          <p className="mt-1 text-[12px] text-slate-800">De optimizer draait elk uur automatisch</p>
         </div>
       ) : (
         <div className="divide-y divide-white/[0.04]">
@@ -348,7 +348,7 @@ function ActivityTable() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-[13px] font-medium text-slate-300">
-                    {isCharge ? 'Battery charged' : 'Battery discharged'}
+                    {isCharge ? 'Batterij geladen' : 'Batterij ontladen'}
                     {log.kwh > 0 && <span className="ml-2 font-normal text-slate-600">{log.kwh.toFixed(1)} kWh</span>}
                   </p>
                   <p className="mt-0.5 text-[11.5px] text-slate-700">
@@ -412,7 +412,7 @@ export default function DashboardClient({
       ) : !hasTibber ? (
         <div className="rounded-2xl border border-dashed border-white/[0.06] bg-[#0D0E16] p-10 text-center">
           <Plug className="mx-auto h-8 w-8 text-slate-700" />
-          <p className="mt-4 text-[14px] font-medium text-slate-600">Connect Tibber to see live energy prices and charts</p>
+          <p className="mt-4 text-[14px] font-medium text-slate-600">Koppel Tibber om live energieprijzen en grafieken te zien</p>
           <Link href="/dashboard/koppelingen"
             className="mt-5 inline-flex h-9 items-center gap-2 rounded-full bg-[#5B21B6] px-5 text-[13px] font-semibold text-white hover:bg-[#6D28D9]">
             Connect Tibber

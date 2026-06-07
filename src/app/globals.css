@@ -285,6 +285,11 @@ body {
 ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: #475569; }
 
+/* In the native app: no scrollbars (it should feel like an app, not a page) */
+.native-app ::-webkit-scrollbar,
+.native-app *::-webkit-scrollbar { width: 0; height: 0; display: none; }
+.native-app, .native-app * { scrollbar-width: none; -ms-overflow-style: none; }
+
 :root {
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
