@@ -54,6 +54,9 @@ export async function POST(req: Request) {
       mode: 'subscription',
       customer: customerId,
       line_items: [{ price: selected.priceId, quantity: 1 }],
+      // Require a card up front; nothing is charged during the trial, then it
+      // auto-charges the full amount after TRIAL_DAYS.
+      payment_method_collection: 'always',
       subscription_data: {
         trial_period_days: TRIAL_DAYS,
         metadata: { user_id: user.id, plan: selected.id },
