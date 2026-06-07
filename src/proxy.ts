@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 
-type Locale = 'en' | 'nl' | 'de' | 'fr' | 'es'
+type Locale = 'en' | 'nl' | 'de' | 'fr'
 
 function detectLocale(acceptLanguage: string | null): Locale {
   if (!acceptLanguage) return 'en'
@@ -10,7 +10,6 @@ function detectLocale(acceptLanguage: string | null): Locale {
   if (primary.startsWith('nl')) return 'nl'
   if (primary.startsWith('de')) return 'de'
   if (primary.startsWith('fr')) return 'fr'
-  if (primary.startsWith('es')) return 'es'
   return 'en'
 }
 

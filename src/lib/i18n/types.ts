@@ -1,5 +1,5 @@
-export type Locale = 'en' | 'nl' | 'de' | 'fr' | 'es'
-export const LOCALES: Locale[] = ['en', 'nl', 'de', 'fr', 'es']
+export type Locale = 'en' | 'nl' | 'de' | 'fr'
+export const LOCALES: Locale[] = ['en', 'nl', 'de', 'fr']
 export const DEFAULT_LOCALE: Locale = 'en'
 
 export type TranslationDict = {
