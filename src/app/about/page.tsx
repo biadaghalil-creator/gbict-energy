@@ -32,7 +32,7 @@ export default function AboutPage() {
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <Link href="/" className="flex items-center gap-3 group">
             <div className="relative w-9 h-9 shrink-0">
-              <Image src="/gbict-logo.webp" alt="GBICT" width={36} height={36}
+              <Image src="/gbict-logo.png" alt="GBICT" width={36} height={36}
                 className="rounded-lg logo-glow group-hover:scale-105 transition-transform" />
             </div>
             <div className="flex flex-col leading-none">
@@ -61,8 +61,8 @@ export default function AboutPage() {
               style={{ background: 'radial-gradient(ellipse, rgba(29,78,216,0.8) 0%, transparent 70%)' }} />
           </div>
           <div className="relative mx-auto max-w-6xl px-6 py-28 md:py-40">
-            <div className="mb-8 inline-flex items-center gap-2.5 rounded-full badge-glow px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-yellow-300">
-              <span className="h-1.5 w-1.5 rounded-full bg-yellow-400" />
+            <div className="mb-8 inline-flex items-center gap-2.5 rounded-full badge-glow px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-violet-300">
+              <span className="h-1.5 w-1.5 rounded-full bg-violet-500" />
               Nederlands softwarebedrijf
             </div>
 
@@ -86,7 +86,7 @@ export default function AboutPage() {
                 <div className="relative">
                   <div className="absolute inset-0 rounded-full blur-3xl opacity-40"
                     style={{ background: 'radial-gradient(circle, rgba(29,78,216,0.8), rgba(8,145,178,0.4))' }} />
-                  <Image src="/gbict-logo.webp" alt="GBICT logo" width={180} height={180}
+                  <Image src="/gbict-logo.png" alt="GBICT logo" width={180} height={180}
                     className="relative rounded-3xl logo-glow"
                     style={{ boxShadow: '0 0 60px rgba(29,78,216,0.4), 0 0 120px rgba(8,145,178,0.2)' }}
                   />
@@ -114,7 +114,7 @@ export default function AboutPage() {
 
         {/* ── SERVICES ─────────────────────────────────────── */}
         <section className="mx-auto max-w-6xl px-6 py-28">
-          <div className="mb-4 text-xs font-bold uppercase tracking-widest text-yellow-400">Diensten</div>
+          <div className="mb-4 text-xs font-bold uppercase tracking-widest text-violet-400">Diensten</div>
           <h2 className="text-4xl font-extrabold tracking-tight text-slate-50 md:text-5xl max-w-2xl"
             style={{ letterSpacing: '-0.03em' }}>
             Wat we doen
@@ -153,14 +153,14 @@ export default function AboutPage() {
                 boxShadow: '0 0 60px rgba(250,204,21,0.05), 0 20px 60px rgba(0,0,0,0.4)',
               }}>
               <div className="mb-5">
-                <span className="inline-flex items-center rounded-full badge-glow px-3 py-1 text-xs font-bold text-yellow-300 uppercase tracking-widest">
+                <span className="inline-flex items-center rounded-full badge-glow px-3 py-1 text-xs font-bold text-violet-300 uppercase tracking-widest">
                   Ons nieuwste product
                 </span>
               </div>
               <div className="flex flex-col gap-10 md:flex-row md:items-center">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-5">
-                    <Image src="/gbict-logo.webp" alt="GBICT Energy" width={44} height={44}
+                    <Image src="/gbict-logo.png" alt="GBICT Energy" width={44} height={44}
                       className="rounded-xl logo-glow" />
                     <h2 className="text-3xl font-extrabold text-slate-50" style={{ letterSpacing: '-0.03em' }}>
                       GBICT Energy
@@ -192,7 +192,7 @@ export default function AboutPage() {
 
         {/* ── WHY GBICT ────────────────────────────────────── */}
         <section className="mx-auto max-w-6xl px-6 py-28">
-          <div className="mb-4 text-xs font-bold uppercase tracking-widest text-yellow-400">Waarom wij</div>
+          <div className="mb-4 text-xs font-bold uppercase tracking-widest text-violet-400">Waarom wij</div>
           <h2 className="text-4xl font-extrabold tracking-tight text-slate-50 mb-14"
             style={{ letterSpacing: '-0.03em' }}>
             Waarom{' '}
@@ -243,7 +243,7 @@ export default function AboutPage() {
       <footer className="border-t border-white/[0.06]" style={{ background: 'rgba(2,6,23,0.95)' }}>
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-10">
           <Link href="/" className="flex items-center gap-3">
-            <Image src="/gbict-logo.webp" alt="GBICT" width={32} height={32}
+            <Image src="/gbict-logo.png" alt="GBICT" width={32} height={32}
               className="rounded-lg logo-glow" />
             <div className="flex flex-col leading-none">
               <span className="text-sm font-bold text-slate-300">GBICT</span>

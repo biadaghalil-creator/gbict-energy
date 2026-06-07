@@ -28,7 +28,7 @@ function SavingsChart({ days, loading, activeDays }: { days: DayData[]; loading:
   )
   if (!days.length) return (
     <div className="flex h-[120px] items-center justify-center rounded-xl bg-white/[0.02]">
-      <p className="text-[13px] text-slate-700">No savings data yet</p>
+      <p className="text-[13px] text-slate-700">Nog geen besparingsdata</p>
     </div>
   )
 
@@ -75,15 +75,15 @@ function TopSavingsList({ recent, loading }: { recent: RecentLog[]; loading: boo
     <div className="rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-6">
       <div className="mb-5 flex items-center justify-between">
         <div>
-          <p className="text-[14px] font-semibold text-slate-200">Top savings</p>
-          <p className="mt-0.5 text-[11px] text-slate-600">Best performing actions</p>
+          <p className="text-[14px] font-semibold text-slate-200">Grootste besparingen</p>
+          <p className="mt-0.5 text-[11px] text-slate-600">Best presterende acties</p>
         </div>
         <ArrowUpRight className="h-4 w-4 text-slate-700" />
       </div>
       {loading ? (
         <div className="space-y-4">{[1,2,3,4].map(i => <Skeleton key={i} className="h-8 w-full bg-white/[0.04]" />)}</div>
       ) : top.length === 0 ? (
-        <p className="py-6 text-center text-[13px] text-slate-700">No savings recorded yet</p>
+        <p className="py-6 text-center text-[13px] text-slate-700">Nog geen besparingen vastgelegd</p>
       ) : (
         <div className="space-y-4">
           {top.map((log, i) => {
@@ -93,7 +93,7 @@ function TopSavingsList({ recent, loading }: { recent: RecentLog[]; loading: boo
                 <div className="mb-1.5 flex items-center justify-between">
                   <span className="flex items-center gap-2 text-[12.5px] text-slate-300">
                     <span className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${isCharge ? 'bg-violet-500/10 text-violet-400' : 'bg-amber-500/10 text-amber-400'}`}>
-                      {isCharge ? '↑ Charge' : '↓ Sell'}
+                      {isCharge ? '↑ Laden' : '↓ Verkopen'}
                     </span>
                     {fmtDt(log.created_at)}
                   </span>
@@ -124,10 +124,10 @@ export default function BesparingenClient() {
   }, [activeDays])
 
   const stats = [
-    { label: 'Today',      value: data?.totals.today   ?? 0, money: true,  color: 'text-emerald-400' },
-    { label: 'This month', value: data?.totals.month   ?? 0, money: true,  color: 'text-emerald-400' },
-    { label: 'All time',   value: data?.totals.total   ?? 0, money: true,  color: 'text-violet-400'  },
-    { label: 'Actions',    value: data?.totals.actions ?? 0, money: false, color: 'text-slate-300'   },
+    { label: 'Vandaag',      value: data?.totals.today   ?? 0, money: true,  color: 'text-emerald-400' },
+    { label: 'Deze maand', value: data?.totals.month   ?? 0, money: true,  color: 'text-emerald-400' },
+    { label: 'Totaal',   value: data?.totals.total   ?? 0, money: true,  color: 'text-violet-400'  },
+    { label: 'Acties',    value: data?.totals.actions ?? 0, money: false, color: 'text-slate-300'   },
   ]
 
   return (
@@ -136,8 +136,8 @@ export default function BesparingenClient() {
       {/* Page header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[26px] font-extrabold tracking-[-0.035em] text-slate-50">Savings overview</h1>
-          <p className="mt-1 text-[13px] text-slate-600">Your automatic energy savings</p>
+          <h1 className="text-[26px] font-extrabold tracking-[-0.035em] text-slate-50">Besparingsoverzicht</h1>
+          <p className="mt-1 text-[13px] text-slate-600">Je automatische energiebesparing</p>
         </div>
       </div>
 
@@ -164,7 +164,7 @@ export default function BesparingenClient() {
         <div className="rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-6">
           <div className="mb-5 flex items-center justify-between">
             <div>
-              <p className="text-[14px] font-semibold text-slate-200">Savings Breakdown</p>
+              <p className="text-[14px] font-semibold text-slate-200">Besparing uitgesplitst</p>
               <p className="mt-0.5 text-[11px] text-slate-600">Daily savings (€)</p>
             </div>
             <div className="flex gap-1 rounded-lg bg-white/[0.04] p-1">
@@ -179,8 +179,8 @@ export default function BesparingenClient() {
           </div>
           <SavingsChart days={data?.days ?? []} loading={loading} activeDays={activeDays} />
           <div className="mt-4 flex gap-5 text-[11px] text-slate-600">
-            <span className="flex items-center gap-1.5"><i className="inline-block h-2 w-2 rounded-sm bg-emerald-500/60" />Savings</span>
-            <span className="flex items-center gap-1.5"><i className="inline-block h-2 w-2 rounded-sm bg-violet-500" />Today</span>
+            <span className="flex items-center gap-1.5"><i className="inline-block h-2 w-2 rounded-sm bg-emerald-500/60" />Besparing</span>
+            <span className="flex items-center gap-1.5"><i className="inline-block h-2 w-2 rounded-sm bg-violet-500" />Vandaag</span>
           </div>
         </div>
         <TopSavingsList recent={data?.recent ?? []} loading={loading} />
@@ -189,7 +189,7 @@ export default function BesparingenClient() {
       {/* Transaction table */}
       <div className="rounded-2xl border border-white/[0.06] bg-[#0D0E16]">
         <div className="flex items-center justify-between border-b border-white/[0.06] px-6 py-4">
-          <p className="text-[14px] font-semibold text-slate-200">Transaction history</p>
+          <p className="text-[14px] font-semibold text-slate-200">Transactiehistorie</p>
           <span className="text-[11px] text-slate-600">Last {activeDays} days</span>
         </div>
         <div className="grid grid-cols-[auto_1fr_auto_auto] gap-4 border-b border-white/[0.04] px-6 py-2.5">
@@ -211,7 +211,7 @@ export default function BesparingenClient() {
         ) : !data?.recent.length ? (
           <div className="flex flex-col items-center justify-center py-14">
             <TrendingDown className="h-8 w-8 text-slate-800" />
-            <p className="mt-3 text-[13px] text-slate-700">No transactions yet</p>
+            <p className="mt-3 text-[13px] text-slate-700">Nog geen transacties</p>
           </div>
         ) : (
           <div className="divide-y divide-white/[0.04]">
@@ -225,7 +225,7 @@ export default function BesparingenClient() {
                     {isCharge ? <TrendingDown className="h-3.5 w-3.5 text-violet-400" /> : <TrendingUp className="h-3.5 w-3.5 text-amber-400" />}
                   </div>
                   <div>
-                    <p className="text-[13px] font-medium text-slate-300">{isCharge ? 'Battery charged' : 'Battery discharged'}</p>
+                    <p className="text-[13px] font-medium text-slate-300">{isCharge ? 'Batterij geladen' : 'Batterij ontladen'}</p>
                     <p className="mt-0.5 text-[11.5px] text-slate-600">{fmtDt(log.created_at)}{log.price_eur > 0 && <span className="ml-2">@ €{log.price_eur.toFixed(4)}/kWh</span>}</p>
                   </div>
                   <span className="font-mono text-[12.5px] text-slate-500 text-right">{log.kwh > 0 ? log.kwh.toFixed(1) : '—'}</span>

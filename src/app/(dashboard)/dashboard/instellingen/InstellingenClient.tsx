@@ -19,9 +19,9 @@ type Props = {
 const OPTIMIZE_OPTIONS = [
   {
     id: 'max_savings',
-    label: 'Max savings',
+    label: 'Maximale besparing',
     Icon: TrendingUp,
-    desc: 'Charges and discharges as often as possible at the best price moments.',
+    desc: 'Laadt en ontlaadt zo vaak mogelijk op de beste prijsmomenten.',
     activeClass: 'border-violet-500/40 bg-violet-500/[0.06] ring-1 ring-violet-500/20',
     idleClass: 'border-white/[0.06] bg-white/[0.02] hover:border-violet-500/20 hover:bg-white/[0.04]',
     labelColor: 'text-violet-400',
@@ -32,23 +32,23 @@ const OPTIMIZE_OPTIONS = [
     id: 'comfort',
     label: 'Comfort',
     Icon: Sliders,
-    desc: 'Balance between savings and always having a charged battery.',
-    activeClass: 'border-blue-500/40 bg-blue-500/[0.06] ring-1 ring-blue-500/20',
-    idleClass: 'border-white/[0.06] bg-white/[0.02] hover:border-blue-500/20 hover:bg-white/[0.04]',
-    labelColor: 'text-blue-400',
-    iconColor: 'text-blue-400',
-    dotClass: 'border-blue-400 bg-blue-400',
+    desc: 'Balans tussen besparing en altijd een geladen batterij.',
+    activeClass: 'border-violet-500/40 bg-violet-500/[0.06] ring-1 ring-violet-500/20',
+    idleClass: 'border-white/[0.06] bg-white/[0.02] hover:border-violet-500/20 hover:bg-white/[0.04]',
+    labelColor: 'text-violet-400',
+    iconColor: 'text-violet-400',
+    dotClass: 'border-violet-400 bg-violet-400',
   },
   {
     id: 'eco',
     label: 'Eco',
     Icon: Leaf,
-    desc: 'Charges only on solar energy and cheapest grid hours.',
-    activeClass: 'border-emerald-500/40 bg-emerald-500/[0.06] ring-1 ring-emerald-500/20',
-    idleClass: 'border-white/[0.06] bg-white/[0.02] hover:border-emerald-500/20 hover:bg-white/[0.04]',
-    labelColor: 'text-emerald-400',
-    iconColor: 'text-emerald-400',
-    dotClass: 'border-emerald-400 bg-emerald-400',
+    desc: 'Laadt alleen op zonne-energie en de goedkoopste uren.',
+    activeClass: 'border-violet-500/40 bg-violet-500/[0.06] ring-1 ring-violet-500/20',
+    idleClass: 'border-white/[0.06] bg-white/[0.02] hover:border-violet-500/20 hover:bg-white/[0.04]',
+    labelColor: 'text-violet-400',
+    iconColor: 'text-violet-400',
+    dotClass: 'border-violet-400 bg-violet-400',
   },
 ]
 
@@ -84,13 +84,13 @@ export default function InstellingenClient({ profile, email }: Props) {
   const [contractType, setContractType] = useState(profile.contract_type ?? '')
   const [postcode, setPostcode] = useState(profile.postcode ?? '')
   const [householdSize, setHouseholdSize] = useState(profile.household_size ?? 2)
-  const [saved, setSaved] = useState(false)
+  const [saved, setOpgeslagen] = useState(false)
   const [error, setError] = useState('')
   const [isPending, startTransition] = useTransition()
 
   function handleSave() {
     setError('')
-    setSaved(false)
+    setOpgeslagen(false)
     startTransition(async () => {
       const result = await saveSettings({
         optimize_mode: optimizeMode as ProfileSettings['optimize_mode'],
@@ -101,8 +101,8 @@ export default function InstellingenClient({ profile, email }: Props) {
       if (result.error) {
         setError(result.error)
       } else {
-        setSaved(true)
-        setTimeout(() => setSaved(false), 3000)
+        setOpgeslagen(true)
+        setTimeout(() => setOpgeslagen(false), 3000)
       }
     })
   }
@@ -110,8 +110,8 @@ export default function InstellingenClient({ profile, email }: Props) {
   return (
     <div className="max-w-2xl space-y-6">
       <div>
-        <h1 className="text-[28px] font-extrabold tracking-[-0.035em] text-slate-50">Settings</h1>
-        <p className="mt-1.5 text-[14px] text-slate-500">Manage your profile and optimization preferences.</p>
+        <h1 className="text-[28px] font-extrabold tracking-[-0.035em] text-slate-50">Instellingen</h1>
+        <p className="mt-1.5 text-[14px] text-slate-500">Beheer je profiel en optimalisatie-voorkeuren.</p>
       </div>
 
       {/* Account */}
@@ -133,7 +133,7 @@ export default function InstellingenClient({ profile, email }: Props) {
       </Section>
 
       {/* Optimization mode */}
-      <Section icon={Zap} title="Optimization mode" sub="How should GBICT Energy control your battery?">
+      <Section icon={Zap} title="Optimalisatiemodus" sub="Hoe moet GBICT Energy je batterij aansturen?">
         <div className="space-y-2">
           {OPTIMIZE_OPTIONS.map((opt) => {
             const isActive = optimizeMode === opt.id
@@ -164,7 +164,7 @@ export default function InstellingenClient({ profile, email }: Props) {
       </Section>
 
       {/* Energy contract */}
-      <Section icon={FileText} title="Energy contract">
+      <Section icon={FileText} title="Energiecontract">
         <div className="flex flex-wrap gap-2">
           {CONTRACT_OPTIONS.map((c) => (
             <button
@@ -184,7 +184,7 @@ export default function InstellingenClient({ profile, email }: Props) {
       </Section>
 
       {/* Household */}
-      <Section icon={Home} title="Household">
+      <Section icon={Home} title="Huishouden">
         <div className="space-y-5">
           <div>
             <label className="mb-2 block text-[12.5px] font-medium text-slate-500">Postcode</label>
@@ -198,7 +198,7 @@ export default function InstellingenClient({ profile, email }: Props) {
             />
           </div>
           <div>
-            <label className="mb-2 block text-[12.5px] font-medium text-slate-500">Number of people</label>
+            <label className="mb-2 block text-[12.5px] font-medium text-slate-500">Aantal personen</label>
             <div className="flex gap-2">
               {HOUSEHOLD_SIZES.map((n) => (
                 <button
@@ -234,12 +234,12 @@ export default function InstellingenClient({ profile, email }: Props) {
           disabled={isPending}
           className="inline-flex h-11 items-center gap-2 rounded-full bg-[#5B21B6] px-7 text-[14px] font-semibold text-white shadow-[0_1px_3px_rgba(0,0,0,0.3)] transition-colors hover:bg-[#6D28D9] disabled:opacity-50"
         >
-          {isPending ? 'Saving…' : 'Save changes'}
+          {isPending ? 'Opslaan…' : 'Wijzigingen opslaan'}
         </button>
         {saved && (
-          <span className="flex items-center gap-1.5 text-[13px] text-emerald-400">
+          <span className="flex items-center gap-1.5 text-[13px] text-violet-400">
             <Check className="h-4 w-4" />
-            Saved
+            Opgeslagen
           </span>
         )}
       </div>

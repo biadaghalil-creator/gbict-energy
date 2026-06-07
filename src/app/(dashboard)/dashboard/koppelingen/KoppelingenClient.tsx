@@ -43,7 +43,7 @@ const DEVICE_ICONS: Record<string, React.ElementType> = {
 
 const STATUS_LABEL: Record<string, { label: string; color: string }> = {
   pending: { label: 'Verbinden…', color: 'text-amber-500' },
-  active:  { label: 'Verbonden',  color: 'text-emerald-500' },
+  active:  { label: 'Verbonden',  color: 'text-violet-500' },
   error:   { label: 'Fout',       color: 'text-red-500' },
 }
 
@@ -374,12 +374,12 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
       {/* Header */}
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">Koppelingen</h1>
-          <p className="mt-1 text-sm text-zinc-500">Verbind je slimme meter, batterij of energiecontract.</p>
+          <h1 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-50">Koppelingen</h1>
+          <p className="mt-1 text-sm text-slate-500">Verbind je slimme meter, batterij of energiecontract.</p>
         </div>
         <button
           onClick={openModal}
-          className="inline-flex h-10 items-center gap-2 rounded-full bg-emerald-500 px-5 text-sm font-medium text-white transition-colors hover:bg-emerald-600"
+          className="inline-flex h-10 items-center gap-2 rounded-full bg-[#5B21B6] px-5 text-sm font-medium text-white transition-colors hover:bg-[#6D28D9]"
         >
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -396,21 +396,21 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
           {devices.map((device) => {
             const statusInfo = STATUS_LABEL[device.status] ?? STATUS_LABEL.pending
             return (
-              <div key={device.id} className="relative rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
+              <div key={device.id} className="relative rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-100 dark:bg-zinc-800">
-                      {(() => { const Icon = DEVICE_ICONS[device.type] ?? Plug; return <Icon className="h-5 w-5 text-zinc-600 dark:text-zinc-300" /> })()}
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800">
+                      {(() => { const Icon = DEVICE_ICONS[device.type] ?? Plug; return <Icon className="h-5 w-5 text-slate-600 dark:text-slate-300" /> })()}
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">{device.name}</p>
-                      <p className="text-xs text-zinc-400">{device.brand}</p>
+                      <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{device.name}</p>
+                      <p className="text-xs text-slate-400">{device.brand}</p>
                     </div>
                   </div>
                   <button
                     onClick={() => handleDelete(device.id)}
                     disabled={deletingId === device.id}
-                    className="text-zinc-300 transition-colors hover:text-red-400 dark:text-zinc-600"
+                    className="text-slate-300 transition-colors hover:text-red-400 dark:text-slate-600"
                     title="Verwijderen"
                   >
                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -419,7 +419,7 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
                   </button>
                 </div>
                 <div className="mt-4 flex items-center gap-1.5">
-                  <span className={`h-1.5 w-1.5 rounded-full ${device.status === 'active' ? 'bg-emerald-500' : device.status === 'error' ? 'bg-red-500' : 'bg-amber-500'}`} />
+                  <span className={`h-1.5 w-1.5 rounded-full ${device.status === 'active' ? 'bg-violet-500' : device.status === 'error' ? 'bg-red-500' : 'bg-amber-500'}`} />
                   <span className={`text-xs ${statusInfo.color}`}>{statusInfo.label}</span>
                 </div>
               </div>
@@ -431,12 +431,12 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
       {/* Modal */}
       {step !== 'idle' && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md rounded-2xl bg-white shadow-xl dark:bg-zinc-900">
-            <div className="flex items-center justify-between border-b border-zinc-100 px-6 py-4 dark:border-zinc-800">
-              <h2 className="text-base font-semibold text-zinc-900 dark:text-zinc-50">
+          <div className="w-full max-w-md rounded-2xl bg-white shadow-xl dark:bg-slate-900">
+            <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4 dark:border-slate-800">
+              <h2 className="text-base font-semibold text-slate-900 dark:text-slate-50">
                 {MODAL_TITLES[step] ?? ''}
               </h2>
-              <button onClick={closeModal} className="text-zinc-400 hover:text-zinc-600">
+              <button onClick={closeModal} className="text-slate-400 hover:text-slate-600">
                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -547,8 +547,8 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
 
               {step === 'done' && (
                 <div className="py-4 text-center">
-                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-2xl dark:bg-emerald-950">✓</div>
-                  <p className="mt-3 text-sm font-medium text-emerald-600">Apparaat opgeslagen!</p>
+                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-violet-100 text-2xl dark:bg-violet-950">✓</div>
+                  <p className="mt-3 text-sm font-medium text-violet-600">Apparaat opgeslagen!</p>
                 </div>
               )}
             </div>
@@ -599,21 +599,21 @@ function CategoryList({
             disabled={isSoon}
             className={`flex items-center gap-4 rounded-xl border px-4 py-3 text-left transition-colors ${
               isSoon
-                ? 'cursor-default border-zinc-100 bg-zinc-50 opacity-60 dark:border-zinc-800 dark:bg-zinc-800/50'
-                : 'border-zinc-200 bg-white hover:border-emerald-400 hover:bg-emerald-50 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-emerald-600 dark:hover:bg-emerald-950/30'
+                ? 'cursor-default border-slate-100 bg-slate-50 opacity-60 dark:border-slate-800 dark:bg-slate-800/50'
+                : 'border-slate-200 bg-white hover:border-violet-400 hover:bg-violet-50 dark:border-slate-700 dark:bg-slate-800 dark:hover:border-violet-600 dark:hover:bg-violet-950/30'
             }`}
           >
-            <Icon className="h-6 w-6 shrink-0 text-zinc-500 dark:text-zinc-300" />
+            <Icon className="h-6 w-6 shrink-0 text-slate-500 dark:text-slate-300" />
             <div className="flex-1">
-              <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">{cat.title}</p>
-              <p className="text-xs text-zinc-400">{cat.sub}</p>
+              <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{cat.title}</p>
+              <p className="text-xs text-slate-400">{cat.sub}</p>
             </div>
             {isSoon ? (
-              <span className="rounded-full bg-zinc-200 px-2 py-0.5 text-xs text-zinc-500 dark:bg-zinc-700 dark:text-zinc-400">
+              <span className="rounded-full bg-slate-200 px-2 py-0.5 text-xs text-slate-500 dark:bg-slate-700 dark:text-slate-400">
                 Binnenkort
               </span>
             ) : (
-              <svg className="h-4 w-4 shrink-0 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg className="h-4 w-4 shrink-0 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
               </svg>
             )}
@@ -628,19 +628,19 @@ function CategoryStep({ onSelect }: { onSelect: (s: Step) => void }) {
   return (
     <div className="space-y-5">
       <div>
-        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-zinc-400">Energie & meter</p>
+        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">Energie & meter</p>
         <div className="grid gap-2">
           <CategoryList items={[...METER_CATEGORIES]} onSelect={onSelect} />
         </div>
       </div>
       <div>
-        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-zinc-400">Thuisbatterij</p>
+        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">Thuisbatterij</p>
         <div className="grid gap-2">
           <CategoryList items={[...BATTERY_CATEGORIES]} onSelect={onSelect} />
         </div>
       </div>
       <div>
-        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-zinc-400">Zonnepanelen</p>
+        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">Zonnepanelen</p>
         <div className="grid gap-2">
           <CategoryList items={[...SOLAR_CATEGORIES]} onSelect={onSelect} />
         </div>
@@ -653,9 +653,9 @@ function CategoryStep({ onSelect }: { onSelect: (s: Step) => void }) {
 function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="mb-1.5 block text-xs font-medium text-zinc-600 dark:text-zinc-400">{label}</label>
+      <label className="mb-1.5 block text-xs font-medium text-slate-600 dark:text-slate-400">{label}</label>
       {children}
-      {hint && <p className="mt-1 text-[11px] text-zinc-400">{hint}</p>}
+      {hint && <p className="mt-1 text-[11px] text-slate-400">{hint}</p>}
     </div>
   )
 }
@@ -664,7 +664,7 @@ function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <input
       {...props}
-      className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+      className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
     />
   )
 }
@@ -674,12 +674,12 @@ function ErrorBox({ msg }: { msg: string }) {
 }
 
 function SuccessBox({ msg }: { msg: string }) {
-  return <p className="rounded-lg bg-emerald-50 px-3 py-2 text-xs text-emerald-600 dark:bg-emerald-950/30 dark:text-emerald-400">{msg}</p>
+  return <p className="rounded-lg bg-violet-50 px-3 py-2 text-xs text-violet-600 dark:bg-violet-950/30 dark:text-violet-400">{msg}</p>
 }
 
 function BackBtn({ onClick }: { onClick: () => void }) {
   return (
-    <button onClick={onClick} className="flex-1 rounded-xl border border-zinc-200 py-2.5 text-sm text-zinc-600 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-400">
+    <button onClick={onClick} className="flex-1 rounded-xl border border-slate-200 py-2.5 text-sm text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-400">
       Terug
     </button>
   )
@@ -687,7 +687,7 @@ function BackBtn({ onClick }: { onClick: () => void }) {
 
 function SaveBtn({ onClick, pending, label }: { onClick: () => void; pending: boolean; label?: string }) {
   return (
-    <button onClick={onClick} disabled={pending} className="flex-1 rounded-xl bg-emerald-500 py-2.5 text-sm font-medium text-white hover:bg-emerald-600 disabled:opacity-50">
+    <button onClick={onClick} disabled={pending} className="flex-1 rounded-xl bg-[#5B21B6] py-2.5 text-sm font-medium text-white hover:bg-[#6D28D9] disabled:opacity-50">
       {pending ? 'Opslaan…' : (label ?? 'Koppeling opslaan')}
     </button>
   )
@@ -695,7 +695,7 @@ function SaveBtn({ onClick, pending, label }: { onClick: () => void; pending: bo
 
 function TestBtn({ onClick, pending, label }: { onClick: () => void; pending: boolean; label?: string }) {
   return (
-    <button onClick={onClick} disabled={pending} className="flex-1 rounded-xl bg-emerald-500 py-2.5 text-sm font-medium text-white hover:bg-emerald-600 disabled:opacity-50">
+    <button onClick={onClick} disabled={pending} className="flex-1 rounded-xl bg-[#5B21B6] py-2.5 text-sm font-medium text-white hover:bg-[#6D28D9] disabled:opacity-50">
       {pending ? 'Verifiëren…' : (label ?? 'Verbinding testen')}
     </button>
   )
@@ -709,9 +709,9 @@ function TibberStep({ token, onTokenChange, onTest, onSave, onBack, testPending,
 }) {
   return (
     <div className="space-y-4">
-      <p className="text-sm text-zinc-500">
+      <p className="text-sm text-slate-500">
         Ga naar{' '}
-        <a href="https://developer.tibber.com/settings/access-token" target="_blank" rel="noopener noreferrer" className="text-emerald-500 hover:underline">
+        <a href="https://developer.tibber.com/settings/access-token" target="_blank" rel="noopener noreferrer" className="text-violet-400 hover:underline">
           developer.tibber.com
         </a>{' '}
         en kopieer je persoonlijke toegangstoken.
@@ -741,9 +741,9 @@ function SessyStep({ username, password, onUsernameChange, onPasswordChange, onT
 }) {
   return (
     <div className="space-y-4">
-      <div className="rounded-xl bg-zinc-50 px-4 py-3 dark:bg-zinc-800">
-        <p className="text-xs font-medium text-zinc-700 dark:text-zinc-300">Je Sessy account</p>
-        <p className="mt-0.5 text-xs text-zinc-400">Gebruik je inloggegevens van <strong>my.sessy.nl</strong>. Je batterij blijft volledig onder jouw controle.</p>
+      <div className="rounded-xl bg-slate-50 px-4 py-3 dark:bg-slate-800">
+        <p className="text-xs font-medium text-slate-700 dark:text-slate-300">Je Sessy account</p>
+        <p className="mt-0.5 text-xs text-slate-400">Gebruik je inloggegevens van <strong>my.sessy.nl</strong>. Je batterij blijft volledig onder jouw controle.</p>
       </div>
       <Field label="E-mailadres">
         <Input type="email" value={username} onChange={e => onUsernameChange(e.target.value)} placeholder="naam@email.nl" />
@@ -781,11 +781,11 @@ function VictronStep({
 }) {
   return (
     <div className="space-y-4">
-      <div className="rounded-xl bg-zinc-50 px-4 py-3 dark:bg-zinc-800">
-        <p className="text-xs font-medium text-zinc-700 dark:text-zinc-300">VRM Portal account</p>
-        <p className="mt-0.5 text-xs text-zinc-400">
+      <div className="rounded-xl bg-slate-50 px-4 py-3 dark:bg-slate-800">
+        <p className="text-xs font-medium text-slate-700 dark:text-slate-300">VRM Portal account</p>
+        <p className="mt-0.5 text-xs text-slate-400">
           Gebruik je inloggegevens van{' '}
-          <a href="https://vrm.victronenergy.com" target="_blank" rel="noopener noreferrer" className="text-emerald-500 hover:underline">vrm.victronenergy.com</a>.
+          <a href="https://vrm.victronenergy.com" target="_blank" rel="noopener noreferrer" className="text-violet-400 hover:underline">vrm.victronenergy.com</a>.
         </p>
       </div>
       <Field label="E-mailadres">
@@ -797,7 +797,7 @@ function VictronStep({
       {error && <ErrorBox msg={error} />}
       {verified && sites.length > 0 && (
         <div>
-          <p className="mb-2 text-xs font-medium text-zinc-600 dark:text-zinc-400">
+          <p className="mb-2 text-xs font-medium text-slate-600 dark:text-slate-400">
             ✓ {sites.length} installatie{sites.length !== 1 ? 's' : ''} gevonden — selecteer er één:
           </p>
           <div className="space-y-1.5">
@@ -807,8 +807,8 @@ function VictronStep({
                 onClick={() => onSelectSite(s.idSite, s.name)}
                 className={`w-full rounded-xl border px-3 py-2.5 text-left text-sm transition-colors ${
                   selectedSiteId === s.idSite
-                    ? 'border-emerald-400 bg-emerald-50 font-medium text-emerald-700 dark:border-emerald-600 dark:bg-emerald-950/30 dark:text-emerald-400'
-                    : 'border-zinc-200 hover:border-emerald-300 dark:border-zinc-700'
+                    ? 'border-violet-400 bg-violet-50 font-medium text-violet-700 dark:border-violet-600 dark:bg-violet-950/30 dark:text-violet-400'
+                    : 'border-slate-200 hover:border-violet-300 dark:border-slate-700'
                 }`}
               >
                 {s.name}
@@ -843,13 +843,13 @@ function EnphaseStep({
 }) {
   return (
     <div className="space-y-4">
-      <div className="rounded-xl bg-zinc-50 px-4 py-3 dark:bg-zinc-800">
-        <p className="text-xs font-medium text-zinc-700 dark:text-zinc-300">Enlighten API toegang</p>
-        <p className="mt-0.5 text-xs text-zinc-400">
+      <div className="rounded-xl bg-slate-50 px-4 py-3 dark:bg-slate-800">
+        <p className="text-xs font-medium text-slate-700 dark:text-slate-300">Enlighten API toegang</p>
+        <p className="mt-0.5 text-xs text-slate-400">
           Haal je API key op via{' '}
-          <a href="https://developer.enphase.com" target="_blank" rel="noopener noreferrer" className="text-emerald-500 hover:underline">developer.enphase.com</a>.
+          <a href="https://developer.enphase.com" target="_blank" rel="noopener noreferrer" className="text-violet-400 hover:underline">developer.enphase.com</a>.
           Je systeem ID staat in de URL van je{' '}
-          <a href="https://enlighten.enphaseenergy.com" target="_blank" rel="noopener noreferrer" className="text-emerald-500 hover:underline">Enlighten portal</a>.
+          <a href="https://enlighten.enphaseenergy.com" target="_blank" rel="noopener noreferrer" className="text-violet-400 hover:underline">Enlighten portal</a>.
         </p>
       </div>
       <Field label="API key">
@@ -886,11 +886,11 @@ function SolarEdgeStep({
 }) {
   return (
     <div className="space-y-4">
-      <div className="rounded-xl bg-zinc-50 px-4 py-3 dark:bg-zinc-800">
-        <p className="text-xs font-medium text-zinc-700 dark:text-zinc-300">Monitoring portal toegang</p>
-        <p className="mt-0.5 text-xs text-zinc-400">
+      <div className="rounded-xl bg-slate-50 px-4 py-3 dark:bg-slate-800">
+        <p className="text-xs font-medium text-slate-700 dark:text-slate-300">Monitoring portal toegang</p>
+        <p className="mt-0.5 text-xs text-slate-400">
           Activeer API toegang via{' '}
-          <a href="https://monitoring.solaredge.com" target="_blank" rel="noopener noreferrer" className="text-emerald-500 hover:underline">monitoring.solaredge.com</a>{' '}
+          <a href="https://monitoring.solaredge.com" target="_blank" rel="noopener noreferrer" className="text-violet-400 hover:underline">monitoring.solaredge.com</a>{' '}
           → Admin → Site Access → API Access.
         </p>
       </div>
@@ -920,7 +920,7 @@ function P1Step({ ip, onIpChange, onSave, onBack, pending, error }: {
 }) {
   return (
     <div className="space-y-4">
-      <p className="text-sm text-zinc-500">Zorg dat je HomeWizard P1 meter op hetzelfde netwerk zit. Vind het IP-adres via je router of de HomeWizard app.</p>
+      <p className="text-sm text-slate-500">Zorg dat je HomeWizard P1 meter op hetzelfde netwerk zit. Vind het IP-adres via je router of de HomeWizard app.</p>
       <Field label="IP-adres">
         <Input type="text" value={ip} onChange={e => onIpChange(e.target.value)} placeholder="192.168.1.42" />
       </Field>
@@ -948,11 +948,11 @@ function SolarSolarEdgeStep({
 }) {
   return (
     <div className="space-y-4">
-      <div className="rounded-xl bg-zinc-50 px-4 py-3 dark:bg-zinc-800">
-        <p className="text-xs font-medium text-zinc-700 dark:text-zinc-300">Monitoring portal toegang</p>
-        <p className="mt-0.5 text-xs text-zinc-400">
+      <div className="rounded-xl bg-slate-50 px-4 py-3 dark:bg-slate-800">
+        <p className="text-xs font-medium text-slate-700 dark:text-slate-300">Monitoring portal toegang</p>
+        <p className="mt-0.5 text-xs text-slate-400">
           Activeer API toegang via{' '}
-          <a href="https://monitoring.solaredge.com" target="_blank" rel="noopener noreferrer" className="text-emerald-500 hover:underline">monitoring.solaredge.com</a>{' '}
+          <a href="https://monitoring.solaredge.com" target="_blank" rel="noopener noreferrer" className="text-violet-400 hover:underline">monitoring.solaredge.com</a>{' '}
           → Admin → Site Access → API Access.
         </p>
       </div>
@@ -987,9 +987,9 @@ function FroniusStep({
 }) {
   return (
     <div className="space-y-4">
-      <div className="rounded-xl bg-zinc-50 px-4 py-3 dark:bg-zinc-800">
-        <p className="text-xs font-medium text-zinc-700 dark:text-zinc-300">Lokale netwerkkoppeling</p>
-        <p className="mt-0.5 text-xs text-zinc-400">
+      <div className="rounded-xl bg-slate-50 px-4 py-3 dark:bg-slate-800">
+        <p className="text-xs font-medium text-slate-700 dark:text-slate-300">Lokale netwerkkoppeling</p>
+        <p className="mt-0.5 text-xs text-slate-400">
           Je Fronius omvormer moet op hetzelfde lokale netwerk zitten. Zoek het IP-adres via je router of de Fronius Solar.web app.
         </p>
       </div>
@@ -1050,16 +1050,16 @@ const OTHER_BRANDS = ['Tesla Powerwall', 'GoodWe', 'Growatt', 'Huawei FusionSola
 function BatteryOtherStep({ onBack }: { onBack: () => void }) {
   return (
     <div className="space-y-4">
-      <p className="text-sm text-zinc-500">Directe koppelingen voor deze merken komen binnenkort via partner-API&apos;s.</p>
+      <p className="text-sm text-slate-500">Directe koppelingen voor deze merken komen binnenkort via partner-API&apos;s.</p>
       <div className="grid grid-cols-2 gap-2">
         {OTHER_BRANDS.map(b => (
-          <div key={b} className="flex items-center justify-between rounded-xl border border-zinc-100 bg-zinc-50 px-3 py-2.5 dark:border-zinc-800 dark:bg-zinc-800/50">
-            <span className="text-sm text-zinc-500">{b}</span>
-            <span className="rounded-full bg-zinc-200 px-1.5 py-0.5 text-[10px] text-zinc-400 dark:bg-zinc-700">Binnenkort</span>
+          <div key={b} className="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50 px-3 py-2.5 dark:border-slate-800 dark:bg-slate-800/50">
+            <span className="text-sm text-slate-500">{b}</span>
+            <span className="rounded-full bg-slate-200 px-1.5 py-0.5 text-[10px] text-slate-400 dark:bg-slate-700">Binnenkort</span>
           </div>
         ))}
       </div>
-      <button onClick={onBack} className="w-full rounded-xl border border-zinc-200 py-2.5 text-sm text-zinc-600 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-400">Terug</button>
+      <button onClick={onBack} className="w-full rounded-xl border border-slate-200 py-2.5 text-sm text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-400">Terug</button>
     </div>
   )
 }
@@ -1068,11 +1068,11 @@ function BatteryOtherStep({ onBack }: { onBack: () => void }) {
 
 function EmptyState({ onAdd }: { onAdd: () => void }) {
   return (
-    <div className="rounded-2xl border border-dashed border-zinc-300 bg-white p-10 text-center dark:border-zinc-700 dark:bg-zinc-900">
-      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-zinc-100 text-2xl dark:bg-zinc-800">🔌</div>
-      <h2 className="mt-4 text-base font-semibold text-zinc-900 dark:text-zinc-50">Nog geen apparaten gekoppeld</h2>
-      <p className="mt-2 text-sm text-zinc-500">Voeg je slimme meter, batterij of energiecontract toe om te beginnen.</p>
-      <button onClick={onAdd} className="mt-5 inline-flex h-10 items-center justify-center rounded-full bg-emerald-500 px-6 text-sm font-medium text-white transition-colors hover:bg-emerald-600">
+    <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center dark:border-slate-700 dark:bg-slate-900">
+      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-2xl dark:bg-slate-800">🔌</div>
+      <h2 className="mt-4 text-base font-semibold text-slate-900 dark:text-slate-50">Nog geen apparaten gekoppeld</h2>
+      <p className="mt-2 text-sm text-slate-500">Voeg je slimme meter, batterij of energiecontract toe om te beginnen.</p>
+      <button onClick={onAdd} className="mt-5 inline-flex h-10 items-center justify-center rounded-full bg-[#5B21B6] px-6 text-sm font-medium text-white transition-colors hover:bg-[#6D28D9]">
         Apparaat toevoegen
       </button>
     </div>

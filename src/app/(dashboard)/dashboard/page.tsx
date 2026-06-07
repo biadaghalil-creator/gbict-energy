@@ -26,17 +26,17 @@ export default async function DashboardPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-[26px] font-extrabold tracking-[-0.035em] text-slate-50">
-            Dashboard overview
+            Dashboardoverzicht
           </h1>
           <p className="mt-1 text-[13px] text-slate-600">
-            Your home energy at a glance
+            Je thuisenergie in één oogopslag
           </p>
         </div>
         <a
           href="/dashboard/besparingen"
           className="flex items-center gap-1 text-[13px] font-medium text-violet-400 transition-colors hover:text-violet-300"
         >
-          View more →
+          Meer bekijken →
         </a>
       </div>
 

@@ -64,11 +64,11 @@ body {
   height: 3.25rem;
   font-size: 0.9375rem;
   font-weight: 700;
-  color: #0f172a;
-  background: linear-gradient(180deg, #fef08a 0%, #facc15 40%, #eab308 100%);
+  color: #ffffff;
+  background: linear-gradient(180deg, #a78bfa 0%, #7c3aed 40%, #5b21b6 100%);
   box-shadow:
-    0 6px 0 0 #92400e,
-    0 8px 24px rgba(234, 179, 8, 0.45),
+    0 6px 0 0 #3b0d6b,
+    0 8px 24px rgba(124, 58, 237, 0.45),
     inset 0 1px 0 rgba(255, 255, 255, 0.5);
   transition: transform 80ms ease, box-shadow 80ms ease;
   user-select: none;
@@ -78,15 +78,15 @@ body {
 .btn-3d-primary:hover {
   transform: translateY(2px);
   box-shadow:
-    0 4px 0 0 #92400e,
-    0 6px 18px rgba(234, 179, 8, 0.35),
+    0 4px 0 0 #3b0d6b,
+    0 6px 18px rgba(124, 58, 237, 0.35),
     inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 .btn-3d-primary:active {
   transform: translateY(5px);
   box-shadow:
-    0 1px 0 0 #92400e,
-    0 2px 8px rgba(234, 179, 8, 0.2),
+    0 1px 0 0 #3b0d6b,
+    0 2px 8px rgba(124, 58, 237, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
@@ -139,11 +139,11 @@ body {
   height: 2.375rem;
   font-size: 0.8125rem;
   font-weight: 700;
-  color: #0f172a;
-  background: linear-gradient(180deg, #fef08a 0%, #facc15 40%, #eab308 100%);
+  color: #ffffff;
+  background: linear-gradient(180deg, #a78bfa 0%, #7c3aed 40%, #5b21b6 100%);
   box-shadow:
-    0 4px 0 0 #92400e,
-    0 6px 16px rgba(234, 179, 8, 0.35),
+    0 4px 0 0 #3b0d6b,
+    0 6px 16px rgba(124, 58, 237, 0.35),
     inset 0 1px 0 rgba(255, 255, 255, 0.45);
   transition: transform 80ms ease, box-shadow 80ms ease;
   text-decoration: none;
@@ -151,15 +151,15 @@ body {
 .btn-3d-sm:hover {
   transform: translateY(2px);
   box-shadow:
-    0 2px 0 0 #92400e,
-    0 4px 10px rgba(234, 179, 8, 0.3),
+    0 2px 0 0 #3b0d6b,
+    0 4px 10px rgba(124, 58, 237, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.35);
 }
 .btn-3d-sm:active {
   transform: translateY(3px);
   box-shadow:
-    0 1px 0 0 #92400e,
-    0 1px 4px rgba(234, 179, 8, 0.15);
+    0 1px 0 0 #3b0d6b,
+    0 1px 4px rgba(124, 58, 237, 0.15);
 }
 
 /* ─── GLOW CARD ───────────────────────────────────────── */
@@ -175,10 +175,10 @@ body {
 }
 .glow-card:hover {
   transform: translateY(-3px);
-  border-color: rgba(250, 204, 21, 0.18);
+  border-color: rgba(124, 58, 237, 0.18);
   box-shadow:
     0 24px 50px rgba(0, 0, 0, 0.5),
-    0 0 40px rgba(250, 204, 21, 0.07),
+    0 0 40px rgba(124, 58, 237, 0.07),
     inset 0 1px 0 rgba(255, 255, 255, 0.09);
 }
 
@@ -207,7 +207,7 @@ body {
   background-clip: text;
 }
 .text-gradient-gold {
-  background: linear-gradient(135deg, #fde68a 0%, #facc15 50%, #fbbf24 100%);
+  background: linear-gradient(135deg, #c4b5fd 0%, #7c3aed 50%, #6d28d9 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -215,17 +215,17 @@ body {
 
 /* ─── GLOWING BADGE ──────────────────────────────────── */
 .badge-glow {
-  background: rgba(250, 204, 21, 0.08);
-  border: 1px solid rgba(250, 204, 21, 0.3);
-  box-shadow: 0 0 20px rgba(250, 204, 21, 0.1), inset 0 1px 0 rgba(250,204,21,0.1);
+  background: rgba(124, 58, 237, 0.08);
+  border: 1px solid rgba(124, 58, 237, 0.3);
+  box-shadow: 0 0 20px rgba(124, 58, 237, 0.1), inset 0 1px 0 rgba(124,58,237,0.1);
 }
 
 /* ─── STEP CIRCLE 3D ─────────────────────────────────── */
 .step-circle {
-  background: linear-gradient(145deg, #fef08a, #eab308);
+  background: linear-gradient(145deg, #a78bfa, #5b21b6);
   box-shadow:
-    0 4px 0 #92400e,
-    0 6px 16px rgba(234, 179, 8, 0.4),
+    0 4px 0 #3b0d6b,
+    0 6px 16px rgba(124, 58, 237, 0.4),
     inset 0 1px 0 rgba(255,255,255,0.5);
   width: 3rem;
   height: 3rem;
@@ -235,7 +235,7 @@ body {
   justify-content: center;
   font-weight: 800;
   font-size: 1.125rem;
-  color: #0f172a;
+  color: #ffffff;
   flex-shrink: 0;
 }
 
@@ -259,8 +259,8 @@ body {
 }
 .input-dark::placeholder { color: #475569; }
 .input-dark:focus {
-  border-color: rgba(250, 204, 21, 0.5);
-  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.1), inset 0 1px 0 rgba(255,255,255,0.04);
+  border-color: rgba(124, 58, 237, 0.5);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1), inset 0 1px 0 rgba(255,255,255,0.04);
 }
 
 /* ─── NATIVE APP (Capacitor) ─────────────────────────── */

@@ -14,9 +14,9 @@ type DashboardData = TibberPriceData & {
 }
 
 const levelConfig = {
-  low:    { label: 'Cheap',  barColor: 'bg-emerald-400', textColor: 'text-emerald-400' },
-  normal: { label: 'Normal', barColor: 'bg-amber-400',   textColor: 'text-amber-400'   },
-  high:   { label: 'Peak',   barColor: 'bg-red-400',     textColor: 'text-red-400'     },
+  low:    { label: 'Goedkoop',  barColor: 'bg-emerald-400', textColor: 'text-emerald-400' },
+  normal: { label: 'Normaal', barColor: 'bg-amber-400',   textColor: 'text-amber-400'   },
+  high:   { label: 'Piek',   barColor: 'bg-red-400',     textColor: 'text-red-400'     },
 }
 
 export default function TibberData() {
@@ -43,7 +43,7 @@ export default function TibberData() {
       {/* Current price card */}
       <div className="overflow-hidden rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-6">
         <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-500">
-          Spot price now
+          Spotprijs nu
         </p>
         {loading ? (
           <Skeleton className="mt-3 h-10 w-28 bg-white/[0.04]" />

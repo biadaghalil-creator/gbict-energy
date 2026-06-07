@@ -82,7 +82,7 @@ export default function SessyCard() {
           <div className="mt-5 grid grid-cols-2 gap-3">
             {status.renewable_energy > 0 && (
               <div className="rounded-xl border border-white/[0.06] bg-white/[0.025] px-4 py-3">
-                <p className="text-[11px] text-slate-500">Solar</p>
+                <p className="text-[11px] text-slate-500">Zon</p>
                 <p className="mt-1 font-mono text-[17px] text-amber-400">
                   {status.renewable_energy}W
                 </p>
@@ -104,7 +104,7 @@ export default function SessyCard() {
           <OptimizeButton />
         </>
       ) : (
-        <p className="mt-4 text-[13px] text-slate-600">Battery not reachable</p>
+        <p className="mt-4 text-[13px] text-slate-600">Batterij niet bereikbaar</p>
       )}
     </div>
   )
@@ -153,9 +153,9 @@ function OptimizeButton() {
     >
       <Zap className="h-3.5 w-3.5" />
       {state === 'loading' ? 'Applying…'
-        : state === 'done' ? 'Schedule applied'
+        : state === 'done' ? 'Schema toegepast'
         : state === 'error' ? 'Failed — try again'
-        : 'Apply optimization'}
+        : 'Optimalisatie toepassen'}
     </button>
   )
 }

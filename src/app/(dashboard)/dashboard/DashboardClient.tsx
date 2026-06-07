@@ -49,7 +49,7 @@ function HeroCard({ savings, tibber, hasSessy }: {
           Today's overview
         </p>
         <h2 className="mt-2 text-[28px] font-extrabold leading-tight tracking-[-0.035em] text-slate-50">
-          {hasSessy ? 'Automatic optimization active' : 'Connect your first device'}
+          {hasSessy ? 'Automatische optimalisatie actief' : 'Koppel je eerste apparaat'}
         </h2>
         <p className="mt-2 max-w-md text-[14px] leading-[1.6] text-slate-500">
           {hasSessy
@@ -60,14 +60,14 @@ function HeroCard({ savings, tibber, hasSessy }: {
         {/* Stats row */}
         <div className="mt-7 flex flex-wrap gap-6">
           <div>
-            <p className="text-[11px] text-slate-600">Saved today</p>
+            <p className="text-[11px] text-slate-600">Vandaag bespaard</p>
             <p className={`mt-1 font-mono text-[22px] font-semibold tracking-tight ${todaySaved > 0 ? 'text-emerald-400' : 'text-slate-600'}`}>
               {fmt(todaySaved)}
             </p>
           </div>
           <div className="w-px bg-white/[0.06]" />
           <div>
-            <p className="text-[11px] text-slate-600">This month</p>
+            <p className="text-[11px] text-slate-600">Deze maand</p>
             <p className={`mt-1 font-mono text-[22px] font-semibold tracking-tight ${monthSaved > 0 ? 'text-emerald-400' : 'text-slate-600'}`}>
               {fmt(monthSaved)}
             </p>
@@ -76,7 +76,7 @@ function HeroCard({ savings, tibber, hasSessy }: {
             <>
               <div className="w-px bg-white/[0.06]" />
               <div>
-                <p className="text-[11px] text-slate-600">Spot price now</p>
+                <p className="text-[11px] text-slate-600">Spotprijs nu</p>
                 <p className="mt-1 font-mono text-[22px] font-semibold tracking-tight text-slate-200">
                   {fmtSmall(currentPrice)}<span className="ml-1 text-[12px] text-slate-600">/kWh</span>
                 </p>
@@ -117,8 +117,8 @@ function BatteryCard({ sessy }: { sessy: SessyStatus | null }) {
           <BatteryCharging className="h-4 w-4 text-slate-600" />
         </div>
         <div>
-          <p className="text-[13px] font-semibold text-slate-500">Battery</p>
-          <p className="mt-0.5 text-[12px] text-slate-700">No device connected</p>
+          <p className="text-[13px] font-semibold text-slate-500">Batterij</p>
+          <p className="mt-0.5 text-[12px] text-slate-700">Geen apparaat gekoppeld</p>
           <Link href="/dashboard/koppelingen" className="mt-3 flex items-center gap-1 text-[12px] font-medium text-violet-400 hover:text-violet-300">
             Connect <ArrowUpRight className="h-3 w-3" />
           </Link>
@@ -135,7 +135,7 @@ function BatteryCard({ sessy }: { sessy: SessyStatus | null }) {
         </div>
         <span className="flex items-center gap-1.5 text-[11px] text-slate-600">
           <span className="h-[12px] w-[3px] rounded-sm bg-emerald-400" />
-          {sessy.power !== 0 ? (sessy.power > 0 ? 'Charging' : 'Discharging') : 'Standby'}
+          {sessy.power !== 0 ? (sessy.power > 0 ? 'Aan het laden' : 'Aan het ontladen') : 'Standby'}
         </span>
       </div>
       <div>
@@ -169,14 +169,14 @@ function VppCard({ enrolled }: { enrolled: boolean }) {
         <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-500/10 ring-1 ring-violet-500/20">
           <Zap className="h-4 w-4 text-violet-400" />
         </div>
-        <p className="mt-4 text-[13px] font-semibold text-slate-200">Virtual Power Grid</p>
+        <p className="mt-4 text-[13px] font-semibold text-slate-200">Virtueel energienet</p>
         <p className="mt-1 text-[12px] text-slate-600">Earn extra by feeding power back at peak moments.</p>
       </div>
       <Link
         href="/dashboard/vpp"
         className="relative mt-5 inline-flex h-8 items-center gap-1.5 rounded-lg bg-violet-500/10 px-3 text-[12px] font-semibold text-violet-400 ring-1 ring-violet-500/20 transition-colors hover:bg-violet-500/15"
       >
-        {enrolled ? 'View status' : 'Join beta'} <ExternalLink className="h-3 w-3" />
+        {enrolled ? 'Bekijk status' : 'Join beta'} <ExternalLink className="h-3 w-3" />
       </Link>
     </div>
   )

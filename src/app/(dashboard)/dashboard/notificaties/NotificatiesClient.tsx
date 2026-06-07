@@ -11,10 +11,10 @@ interface OptimizationLog {
 type FilterTab = 'all' | 'charge' | 'discharge' | 'savings'
 
 const tabs: { id: FilterTab; label: string }[] = [
-  { id: 'all',       label: 'All' },
-  { id: 'charge',    label: 'Charge' },
-  { id: 'discharge', label: 'Discharge' },
-  { id: 'savings',   label: 'With savings' },
+  { id: 'all',       label: 'Alles' },
+  { id: 'charge',    label: 'Laden' },
+  { id: 'discharge', label: 'Ontladen' },
+  { id: 'savings',   label: 'Met besparing' },
 ]
 
 function timeAgo(dateStr: string): string {
@@ -34,8 +34,8 @@ function formatDateGroup(dateStr: string): string {
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
   const yesterday = new Date(today.getTime() - 86400000)
   const d = new Date(date.getFullYear(), date.getMonth(), date.getDate())
-  if (d.getTime() === today.getTime()) return 'Today'
-  if (d.getTime() === yesterday.getTime()) return 'Yesterday'
+  if (d.getTime() === today.getTime()) return 'Vandaag'
+  if (d.getTime() === yesterday.getTime()) return 'Gisteren'
   return date.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })
 }
 
@@ -73,31 +73,31 @@ export default function NotificatiesClient({ logs }: { logs: OptimizationLog[] }
       {/* Page header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[26px] font-extrabold tracking-[-0.035em] text-slate-50">Activity</h1>
-          <p className="mt-1 text-[13px] text-slate-600">All optimization actions from your battery</p>
+          <h1 className="text-[26px] font-extrabold tracking-[-0.035em] text-slate-50">Activiteit</h1>
+          <p className="mt-1 text-[13px] text-slate-600">Alle optimalisatie-acties van je batterij</p>
         </div>
       </div>
 
       {/* Mini stats row */}
       <div className="grid grid-cols-3 gap-4">
         <div className="rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-5">
-          <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-600">Total actions</p>
+          <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-600">Totaal acties</p>
           <p className="mt-3 font-mono text-[26px] font-bold tracking-[-0.03em] text-slate-200">{logs.length}</p>
-          <p className="mt-1 text-[11px] text-slate-700">automated</p>
+          <p className="mt-1 text-[11px] text-slate-700">automatisch</p>
         </div>
         <div className="rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-5">
-          <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-600">Charge / Sell</p>
+          <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-600">Laden / verkopen</p>
           <p className="mt-3 font-mono text-[26px] font-bold tracking-[-0.03em] text-slate-200">
             {chargeCount}<span className="text-slate-700">/</span>{dischargeCount}
           </p>
-          <p className="mt-1 text-[11px] text-slate-700">split</p>
+          <p className="mt-1 text-[11px] text-slate-700">verdeling</p>
         </div>
         <div className="rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-5">
-          <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-600">Total saved</p>
+          <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-600">Totaal bespaard</p>
           <p className={`mt-3 font-mono text-[26px] font-bold tracking-[-0.03em] ${totalSaved > 0 ? 'text-emerald-400' : 'text-slate-700'}`}>
             €{totalSaved.toFixed(2)}
           </p>
-          <p className="mt-1 text-[11px] text-slate-700">all time</p>
+          <p className="mt-1 text-[11px] text-slate-700">totaal</p>
         </div>
       </div>
 
@@ -118,8 +118,8 @@ export default function NotificatiesClient({ logs }: { logs: OptimizationLog[] }
       {filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-2xl border border-white/[0.06] bg-[#0D0E16] py-16">
           <Activity className="h-10 w-10 text-slate-800" />
-          <p className="mt-4 text-[13px] text-slate-700">No activity yet.</p>
-          <p className="mt-1 text-[12px] text-slate-800">The optimizer logs every action here.</p>
+          <p className="mt-4 text-[13px] text-slate-700">Nog geen activiteit.</p>
+          <p className="mt-1 text-[12px] text-slate-800">De optimizer logt hier elke actie.</p>
         </div>
       ) : (
         <div className="space-y-5">
@@ -152,12 +152,12 @@ export default function NotificatiesClient({ logs }: { logs: OptimizationLog[] }
                       {/* Info */}
                       <div className="min-w-0 flex-1">
                         <p className="text-[13.5px] font-medium text-slate-200">
-                          {charging ? 'Battery charged' : 'Battery discharged'}
+                          {charging ? 'Batterij geladen' : 'Batterij ontladen'}
                         </p>
                         <p className="mt-0.5 truncate text-[12px] text-slate-600">
                           €{log.price_eur.toFixed(4)}/kWh
                           {log.savings_eur > 0 && (
-                            <span className="ml-2 text-emerald-400">· €{log.savings_eur.toFixed(3)} saved</span>
+                            <span className="ml-2 text-emerald-400">· €{log.savings_eur.toFixed(3)} bespaard</span>
                           )}
                         </p>
                       </div>
