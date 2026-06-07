@@ -8,7 +8,7 @@ import {
   testFroniusConnection, testSmaCredentials,
   type DeviceType,
 } from './actions'
-import { Zap, Gauge, BatteryCharging, Sun, CloudSun, Plug } from 'lucide-react'
+import { Zap, Gauge, BatteryCharging, Sun, CloudSun, Plug, Flame, Thermometer, Car } from 'lucide-react'
 
 type Device = {
   id: string
@@ -580,6 +580,17 @@ const SOLAR_CATEGORIES = [
   { id: 'solar-sma-setup'       as Step, icon: Sun, title: 'SMA',        sub: 'Sunny Portal', soon: true },
 ] as const
 
+// Roadmap: alles onder één dak. Nog niet koppelbaar, wel zichtbaar.
+const HEATING_CATEGORIES = [
+  { id: 'idle' as Step, icon: Flame,       title: 'Warmtepomp',        sub: 'Slim verwarmen op goedkope uren', soon: true },
+  { id: 'idle' as Step, icon: Thermometer, title: 'Slimme thermostaat', sub: 'Tado, Nest, Honeywell',           soon: true },
+] as const
+
+const CHARGING_CATEGORIES = [
+  { id: 'idle' as Step, icon: Car,             title: 'Laadpaal — slim laden',     sub: 'Laad je auto op de goedkoopste uren', soon: true },
+  { id: 'idle' as Step, icon: BatteryCharging, title: 'V2G — auto als thuisbatterij', sub: 'Voed je huis met je auto-accu',        soon: true },
+] as const
+
 function CategoryList({
   items,
   onSelect,
@@ -643,6 +654,18 @@ function CategoryStep({ onSelect }: { onSelect: (s: Step) => void }) {
         <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">Zonnepanelen</p>
         <div className="grid gap-2">
           <CategoryList items={[...SOLAR_CATEGORIES]} onSelect={onSelect} />
+        </div>
+      </div>
+      <div>
+        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">Auto &amp; laden</p>
+        <div className="grid gap-2">
+          <CategoryList items={[...CHARGING_CATEGORIES]} onSelect={onSelect} />
+        </div>
+      </div>
+      <div>
+        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">Verwarming</p>
+        <div className="grid gap-2">
+          <CategoryList items={[...HEATING_CATEGORIES]} onSelect={onSelect} />
         </div>
       </div>
     </div>
