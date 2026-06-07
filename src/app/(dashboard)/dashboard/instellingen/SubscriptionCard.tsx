@@ -65,8 +65,17 @@ export default function SubscriptionCard({ status, plan, currentPeriodEnd, trial
   }
 
   return (
-    <section className="rounded-2xl border border-white/[0.06] bg-[#0D0E16]/70 p-6 backdrop-blur">
-      <h2 className="text-[15px] font-bold tracking-tight text-slate-100">Abonnement</h2>
+    <section
+      className={
+        active
+          ? 'relative overflow-hidden rounded-2xl border border-violet-500/40 bg-gradient-to-br from-violet-600/20 via-[#0D0E16] to-[#0D0E16] p-6 shadow-[0_0_40px_rgba(124,58,237,0.12),inset_0_1px_0_rgba(139,92,246,0.25)] backdrop-blur'
+          : 'rounded-2xl border border-white/[0.06] bg-[#0D0E16]/70 p-6 backdrop-blur'
+      }
+    >
+      {active && (
+        <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-[radial-gradient(circle,rgba(124,58,237,0.25),transparent_70%)]" />
+      )}
+      <h2 className="relative text-[15px] font-bold tracking-tight text-slate-100">Abonnement</h2>
 
       {active ? (
         <div className="mt-4">

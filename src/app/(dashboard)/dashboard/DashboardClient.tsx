@@ -39,7 +39,7 @@ function HeroCard({ savings, tibber, hasSessy }: {
   const currentPrice = tibber?.current?.total
 
   return (
-    <div className="relative col-span-2 overflow-hidden rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-7">
+    <div className="relative lg:col-span-2 overflow-hidden rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-7">
       {/* Gradient glow */}
       <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(124,58,237,0.3),transparent_70%)]" />
       <div className="pointer-events-none absolute -bottom-10 left-20 h-40 w-40 rounded-full bg-[radial-gradient(circle,rgba(109,40,217,0.15),transparent_70%)]" />
