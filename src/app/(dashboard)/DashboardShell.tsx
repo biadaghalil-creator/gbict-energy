@@ -229,7 +229,10 @@ export default function DashboardShell({
       {/* ── Main ── */}
       <div className="relative z-10 flex min-w-0 flex-1 flex-col">
         {/* Top bar */}
-        <header className="sticky top-0 z-20 flex h-[68px] items-center gap-4 border-b border-white/[0.06] bg-[#07080D]/80 px-5 backdrop-blur-md">
+        <header className={cn(
+          'sticky top-0 z-20 flex items-center gap-4 border-b border-white/[0.06] bg-[#07080D]/80 px-5 backdrop-blur-md',
+          native ? 'min-h-[56px] pt-[env(safe-area-inset-top)]' : 'h-[68px]'
+        )}>
           {!native && (
             <button
               className="text-slate-500 transition-colors hover:text-slate-100 md:hidden"
@@ -239,14 +242,20 @@ export default function DashboardShell({
             </button>
           )}
 
-          {/* Breadcrumb */}
-          <div className="flex items-center gap-2 text-[13.5px]">
-            <span className="text-slate-600">GBICT</span>
-            <span className="text-slate-700">/</span>
-            <span className="font-semibold text-slate-200">
+          {/* Title: clean app-style title in the app, breadcrumb on the web */}
+          {native ? (
+            <span className="text-[17px] font-bold tracking-[-0.02em] text-slate-100">
               {currentPage?.label ?? 'Dashboard'}
             </span>
-          </div>
+          ) : (
+            <div className="flex items-center gap-2 text-[13.5px]">
+              <span className="text-slate-600">GBICT</span>
+              <span className="text-slate-700">/</span>
+              <span className="font-semibold text-slate-200">
+                {currentPage?.label ?? 'Dashboard'}
+              </span>
+            </div>
+          )}
 
           <div className="ml-auto flex items-center gap-2">
             <Link
