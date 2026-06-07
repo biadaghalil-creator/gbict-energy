@@ -91,7 +91,7 @@ function HeroCard({ savings, tibber, hasSessy }: {
             className="inline-flex h-9 items-center gap-2 rounded-full bg-[#5B21B6] px-5 text-[13px] font-semibold text-white transition-colors hover:bg-[#6D28D9]"
           >
             <TrendingUp className="h-3.5 w-3.5" />
-            View savings
+            Bekijk besparing
           </Link>
           {!hasSessy && (
             <Link
@@ -99,7 +99,7 @@ function HeroCard({ savings, tibber, hasSessy }: {
               className="inline-flex h-9 items-center gap-2 rounded-full border border-white/[0.1] px-5 text-[13px] font-medium text-slate-300 transition-colors hover:bg-white/[0.04]"
             >
               <Plug className="h-3.5 w-3.5" />
-              Connect device
+              Apparaat koppelen
             </Link>
           )}
         </div>
@@ -139,7 +139,7 @@ function BatteryCard({ sessy }: { sessy: SessyStatus | null }) {
         </span>
       </div>
       <div>
-        <p className="text-[11px] text-slate-600">Battery · Sessy</p>
+        <p className="text-[11px] text-slate-600">Batterij · Sessy</p>
         <div className="mt-1 flex items-baseline gap-1.5">
           <span className="font-mono text-[32px] font-bold tracking-[-0.03em] text-slate-50">
             {sessy.state_of_charge}
@@ -170,7 +170,7 @@ function VppCard({ enrolled }: { enrolled: boolean }) {
           <Zap className="h-4 w-4 text-violet-400" />
         </div>
         <p className="mt-4 text-[13px] font-semibold text-slate-200">Virtueel energienet</p>
-        <p className="mt-1 text-[12px] text-slate-600">Earn extra by feeding power back at peak moments.</p>
+        <p className="mt-1 text-[12px] text-slate-600">Verdien extra door stroom terug te leveren op piekmomenten.</p>
       </div>
       <Link
         href="/dashboard/vpp"
@@ -271,7 +271,7 @@ function ScheduleList({ schedule, estimatedSavings }: {
                 <span className={`shrink-0 rounded-md px-2 py-0.5 text-[11px] font-semibold ${
                   isCharge ? 'bg-violet-500/10 text-violet-400' : 'bg-amber-500/10 text-amber-400'
                 }`}>
-                  {isCharge ? '↑ Charge' : '↓ Sell'}
+                  {isCharge ? '↑ Laden' : '↓ Verkopen'}
                 </span>
                 <div className="relative flex-1 overflow-hidden rounded-full bg-white/[0.04]" style={{ height: '6px' }}>
                   <div
@@ -308,7 +308,7 @@ function ActivityTable() {
       <div className="flex items-center justify-between border-b border-white/[0.06] px-6 py-4">
         <p className="text-[14px] font-semibold text-slate-200">Recente activiteit</p>
         <Link href="/dashboard/besparingen" className="flex items-center gap-1 text-[12px] font-medium text-violet-400 hover:text-violet-300">
-          View all <ArrowUpRight className="h-3 w-3" />
+          Alles bekijken <ArrowUpRight className="h-3 w-3" />
         </Link>
       </div>
 

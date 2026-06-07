@@ -21,7 +21,10 @@ const config: CapacitorConfig = {
   },
 
   ios: {
-    contentInset: 'always',
+    // Edge-to-edge: we handle the notch / home-indicator insets ourselves in
+    // CSS (safe-area-inset). 'always' added its own insets and caused black
+    // strips and a shifting bottom bar on scroll.
+    contentInset: 'never',
     scrollEnabled: true,
     backgroundColor: '#07080D',
     preferredContentMode: 'mobile',
