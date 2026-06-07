@@ -61,7 +61,6 @@ export function PricingClient({ translations: t }: Props) {
         'VPP-deelname (verdien extra)',
         'Maandelijkse verdiensten tot €400',
         'Zakelijke rapportage (PDF export)',
-        'API-toegang',
         'Meerdere locaties / woningen',
         'Prioriteit support',
       ],

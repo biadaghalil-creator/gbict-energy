@@ -61,7 +61,7 @@ const PLANS: Plan[] = [
     features: ["1 device", "Daily optimization", "Email support", "Basic dashboard"],
     cta: "Start free trial", note: "Billed monthly · cancel anytime" },
   { name: "Pro", tagline: "For serious home energy owners", price: "€25", period: "/month", popular: true,
-    features: ["Unlimited devices", "Hourly optimization", "VPP access", "Priority support", "Advanced analytics", "API access"],
+    features: ["Unlimited devices", "Hourly optimization", "VPP access", "Priority support", "Advanced analytics"],
     cta: "Start 14-day free trial", note: "Billed monthly · cancel anytime" },
   { name: "Business", tagline: "For installers & property managers", price: "Custom",
     features: ["Multiple locations", "White-label option", "Dedicated SLA", "Custom integrations", "Account manager", "Volume pricing"],
@@ -398,7 +398,7 @@ function BigCTA() {
 
 function Footer() {
   const cols: [string, [string, string][]][] = [
-    ["Product",          [["Dashboard", "/dashboard"], ["Pricing", "#pricing"], ["API Docs", "/docs"]]],
+    ["Product",          [["Dashboard", "/dashboard"], ["Pricing", "#pricing"]]]],
     ["Company",          [["Contact", "/contact"], ["Privacy Policy", "/privacy"], ["Terms of Service", "/terms"]]],
     ["Compatible with",  [["Sessy", "#features"], ["Tibber", "#features"], ["Victron", "#features"], ["SolarEdge", "#features"], ["Enphase", "#features"], ["Fronius", "#features"]]],
   ];

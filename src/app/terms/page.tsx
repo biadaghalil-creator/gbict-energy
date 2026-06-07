@@ -108,7 +108,7 @@ export default function TermsPage() {
                 GBICT Energy provides a cloud-based SaaS platform for home battery optimization and virtual power plant (VPP) participation. The Service connects to your home energy devices and dynamic energy contracts to automatically optimize when your battery charges and discharges, with the goal of reducing your energy costs.
               </p>
               <p>
-                The Service includes a web dashboard, API access (on eligible plans), device integrations, and related features as described in our documentation.
+                The Service includes a web dashboard, device integrations, and related features as described in our documentation.
               </p>
             </Section>
 
@@ -132,7 +132,7 @@ export default function TermsPage() {
                     <tr className="border-b border-white/[0.06]">
                       <td className="px-5 py-3.5 text-slate-300 font-medium">Pro</td>
                       <td className="px-5 py-3.5 text-slate-300">€25 / month</td>
-                      <td className="px-5 py-3.5 text-slate-400">Unlimited devices, hourly optimization, VPP, API access, priority support</td>
+                      <td className="px-5 py-3.5 text-slate-400">Unlimited devices, hourly optimization, VPP, priority support</td>
                     </tr>
                     <tr>
                       <td className="px-5 py-3.5 text-slate-300 font-medium">Business</td>
