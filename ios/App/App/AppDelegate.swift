@@ -1,49 +1,76 @@
 import UIKit
 import Capacitor
+import WebKit
+import WidgetKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
+    private let widgetHandler = WidgetMessageHandler()
+    private var widgetHandlerAttached = false
+
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
         return true
     }
 
-    func applicationWillResignActive(_ application: UIApplication) {
-        // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-        // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
-    }
-
-    func applicationDidEnterBackground(_ application: UIApplication) {
-        // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-        // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-    }
-
-    func applicationWillEnterForeground(_ application: UIApplication) {
-        // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
-    }
+    func applicationWillResignActive(_ application: UIApplication) {}
+    func applicationDidEnterBackground(_ application: UIApplication) {}
+    func applicationWillEnterForeground(_ application: UIApplication) {}
 
     func applicationDidBecomeActive(_ application: UIApplication) {
-        // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        // Wire the JS → native bridge that feeds the home-screen widget, and
+        // refresh the widget with whatever the app last stored.
+        attachWidgetHandlerIfNeeded()
+        WidgetCenter.shared.reloadAllTimelines()
     }
 
-    func applicationWillTerminate(_ application: UIApplication) {
-        // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-    }
+    func applicationWillTerminate(_ application: UIApplication) {}
 
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
-        // Called when the app was launched with a url. Feel free to add additional processing here,
-        // but if you want the App API to support tracking app url opens, make sure to keep this call
         return ApplicationDelegateProxy.shared.application(app, open: url, options: options)
     }
 
     func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
-        // Called when the app was launched with an activity, including Universal Links.
-        // Feel free to add additional processing here, but if you want the App API to support
-        // tracking app url opens, make sure to keep this call
         return ApplicationDelegateProxy.shared.application(application, continue: userActivity, restorationHandler: restorationHandler)
     }
 
+    // MARK: - Widget bridge
+
+    private func attachWidgetHandlerIfNeeded() {
+        guard !widgetHandlerAttached else { return }
+        guard let vc = findBridgeViewController(window?.rootViewController),
+              let ucc = vc.webView?.configuration.userContentController else { return }
+        ucc.add(widgetHandler, name: "gbictWidget")
+        widgetHandlerAttached = true
+    }
+
+    private func findBridgeViewController(_ vc: UIViewController?) -> CAPBridgeViewController? {
+        guard let vc = vc else { return nil }
+        if let bridge = vc as? CAPBridgeViewController { return bridge }
+        for child in vc.children {
+            if let found = findBridgeViewController(child) { return found }
+        }
+        return findBridgeViewController(vc.presentedViewController)
+    }
+}
+
+/// Receives `{ token, baseUrl }` from the web app (posted via
+/// `window.webkit.messageHandlers.gbictWidget`) and stores it in the shared
+/// App Group so the widget extension can fetch the user's summary.
+final class WidgetMessageHandler: NSObject, WKScriptMessageHandler {
+    func userContentController(_ userContentController: WKUserContentController,
+                               didReceive message: WKScriptMessage) {
+        guard message.name == "gbictWidget",
+              let body = message.body as? [String: Any] else { return }
+        let defaults = UserDefaults(suiteName: "group.nl.gbict.energy")
+        if let token = body["token"] as? String, !token.isEmpty {
+            defaults?.set(token, forKey: "widget_token")
+        }
+        if let baseUrl = body["baseUrl"] as? String, !baseUrl.isEmpty {
+            defaults?.set(baseUrl, forKey: "widget_baseUrl")
+        }
+        WidgetCenter.shared.reloadAllTimelines()
+    }
 }
