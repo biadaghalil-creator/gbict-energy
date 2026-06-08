@@ -1259,7 +1259,7 @@ function BatteryOtherStep({ onBack }: { onBack: () => void }) {
 function EmptyState({ onAdd }: { onAdd: () => void }) {
   return (
     <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center dark:border-slate-700 dark:bg-[var(--surface)]">
-      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-2xl dark:bg-[var(--surface)]">🔌</div>
+      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/10 ring-1 ring-emerald-500/20"><Plug className="h-6 w-6 text-emerald-400" /></div>
       <h2 className="mt-4 text-base font-semibold text-slate-900 dark:text-[var(--text)]">Nog geen apparaten gekoppeld</h2>
       <p className="mt-2 text-sm text-[var(--text-faint)]">Voeg je slimme meter, batterij of energiecontract toe om te beginnen.</p>
       <button onClick={onAdd} className="mt-5 inline-flex h-10 items-center justify-center rounded-full bg-[#047857] px-6 text-sm font-medium text-white transition-colors hover:bg-[#059669]">

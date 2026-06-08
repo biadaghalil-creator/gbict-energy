@@ -84,11 +84,12 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(dashboardUrl)
   }
 
-  // Set locale cookie if not already present
+  // Set locale cookie if not already present.
+  // English is the default for everyone; users switch language via the
+  // in-app switcher (NL/DE/FR). We intentionally do NOT auto-detect from
+  // Accept-Language so the product always opens in English first.
   if (!request.cookies.has('GBICT_LOCALE')) {
-    const acceptLanguage = request.headers.get('accept-language')
-    const locale = detectLocale(acceptLanguage)
-    supabaseResponse.cookies.set('GBICT_LOCALE', locale, {
+    supabaseResponse.cookies.set('GBICT_LOCALE', 'en', {
       path: '/',
       maxAge: 60 * 60 * 24 * 365, // 1 year
       sameSite: 'lax',
