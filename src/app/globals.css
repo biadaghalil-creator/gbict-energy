@@ -992,6 +992,19 @@ body {
 }
 @media (max-width:560px){
   .gbict-landing .sec-grid{grid-template-columns:1fr}
-  .gbict-landing .stage{transform:scale(.84);height:430px}
-  .gbict-landing .calc-controls,.gbict-landing .calc-result{padding:30px}
+  /* topbar: only logo + hamburger; the trial CTA lives in the mobile menu */
+  .gbict-landing .nav-right .btn-primary{display:none}
+  /* hero copy scales down so the headline never feels oversized on a phone */
+  .gbict-landing .hero-x{padding:64px 0 44px}
+  .gbict-landing .hero-x h1{font-size:clamp(32px,8.6vw,44px);letter-spacing:-.03em;line-height:1.06}
+  .gbict-landing .hero-x .sub{font-size:16px;margin-top:18px}
+  .gbict-landing .hero-x .micro{gap:12px;margin-top:18px}
+  /* stage: drop the tilted/scaled card + floating chrome, show one clean dashboard */
+  .gbict-landing .stage{transform:none;height:auto;min-height:0;margin-top:22px;perspective:none}
+  .gbict-landing .stage-glow,.gbict-landing .stage-ring,.gbict-landing .chip{display:none}
+  .gbict-landing .stage-dash{position:relative;left:auto;top:auto;width:100%;max-width:330px;
+    margin:0 auto;transform:none}
+  .gbict-landing .calc-controls,.gbict-landing .calc-result{padding:24px}
+  .gbict-landing .section{padding:56px 0}
+  .gbict-landing .cta-wrap{padding:64px 20px}
 }
