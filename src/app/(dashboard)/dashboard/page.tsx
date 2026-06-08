@@ -21,26 +21,6 @@ export default async function DashboardPage() {
   ) ?? false
 
   return (
-    <div className="space-y-7">
-      {/* Page header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-[26px] font-extrabold tracking-[-0.035em] text-[var(--text)]">
-            Dashboardoverzicht
-          </h1>
-          <p className="mt-1 text-[13px] text-[var(--text-faint)]">
-            Je thuisenergie in één oogopslag
-          </p>
-        </div>
-        <a
-          href="/dashboard/besparingen"
-          className="flex items-center gap-1 text-[13px] font-medium text-emerald-400 transition-colors hover:text-emerald-300"
-        >
-          Meer bekijken →
-        </a>
-      </div>
-
-      <DashboardClient hasTibber={hasTibber} hasSessy={hasSessy} hasSolar={hasSolar} />
-    </div>
+    <DashboardClient hasTibber={hasTibber} hasSessy={hasSessy} hasSolar={hasSolar} />
   )
 }

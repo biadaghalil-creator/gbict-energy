@@ -5,13 +5,15 @@ import { usePathname } from 'next/navigation'
 import { LayoutDashboard, Plug, TrendingDown, Bell, Settings } from 'lucide-react'
 import { useIsNative } from '@/lib/native'
 import { cn } from '@/lib/utils'
+import { useT } from '@/hooks/use-t'
+import type { TranslationDict } from '@/lib/i18n'
 
-const tabs = [
-  { href: '/dashboard',              label: 'Home',        icon: LayoutDashboard, exact: true },
-  { href: '/dashboard/koppelingen',  label: 'Koppelen',    icon: Plug },
-  { href: '/dashboard/besparingen',  label: 'Besparing',   icon: TrendingDown },
-  { href: '/dashboard/notificaties', label: 'Activiteit',  icon: Bell },
-  { href: '/dashboard/instellingen', label: 'Profiel',     icon: Settings },
+const tabs: { href: string; key: keyof TranslationDict['dashboard']['nav']; icon: typeof LayoutDashboard; exact?: boolean }[] = [
+  { href: '/dashboard',              key: 'home',        icon: LayoutDashboard, exact: true },
+  { href: '/dashboard/koppelingen',  key: 'connections', icon: Plug },
+  { href: '/dashboard/besparingen',  key: 'savings',     icon: TrendingDown },
+  { href: '/dashboard/notificaties', key: 'activity',    icon: Bell },
+  { href: '/dashboard/instellingen', key: 'profile',     icon: Settings },
 ]
 
 /**
@@ -21,6 +23,7 @@ const tabs = [
 export default function NativeTabBar() {
   const native = useIsNative()
   const pathname = usePathname()
+  const { t } = useT()
 
   if (!native) return null
 
@@ -40,7 +43,7 @@ export default function NativeTabBar() {
               )}
             >
               <Icon className={cn('h-[22px] w-[22px] transition-colors', active ? 'text-emerald-400' : 'text-[var(--text-faint)]')} />
-              <span className="leading-none">{tab.label}</span>
+              <span className="leading-none">{t.dashboard.nav[tab.key]}</span>
             </Link>
           )
         })}

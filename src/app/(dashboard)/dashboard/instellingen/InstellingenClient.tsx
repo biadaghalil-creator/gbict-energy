@@ -5,6 +5,8 @@ import { User, Zap, FileText, Home, Check, AlertCircle, TrendingUp, Sliders, Lea
 import { saveSettings, type ProfileSettings } from './actions'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { cn } from '@/lib/utils'
+import { useT } from '@/hooks/use-t'
+import type { TranslationDict } from '@/lib/i18n'
 
 type Props = {
   profile: {
@@ -16,12 +18,22 @@ type Props = {
   email: string
 }
 
-const OPTIMIZE_OPTIONS = [
+const OPTIMIZE_OPTIONS: {
+  id: string
+  labelKey: 'modeMaxLabel' | 'modeComfortLabel' | 'modeEcoLabel'
+  descKey: 'modeMaxDesc' | 'modeComfortDesc' | 'modeEcoDesc'
+  Icon: typeof TrendingUp
+  activeClass: string
+  idleClass: string
+  labelColor: string
+  iconColor: string
+  dotClass: string
+}[] = [
   {
     id: 'max_savings',
-    label: 'Maximale besparing',
+    labelKey: 'modeMaxLabel',
     Icon: TrendingUp,
-    desc: 'Laadt en ontlaadt zo vaak mogelijk op de beste prijsmomenten.',
+    descKey: 'modeMaxDesc',
     activeClass: 'border-emerald-500/40 bg-emerald-500/[0.06] ring-1 ring-emerald-500/20',
     idleClass: 'border-[var(--border)] bg-[var(--surface-2)] hover:border-emerald-500/20 hover:bg-[var(--surface-2)]',
     labelColor: 'text-emerald-400',
@@ -30,9 +42,9 @@ const OPTIMIZE_OPTIONS = [
   },
   {
     id: 'comfort',
-    label: 'Comfort',
+    labelKey: 'modeComfortLabel',
     Icon: Sliders,
-    desc: 'Balans tussen besparing en altijd een geladen batterij.',
+    descKey: 'modeComfortDesc',
     activeClass: 'border-emerald-500/40 bg-emerald-500/[0.06] ring-1 ring-emerald-500/20',
     idleClass: 'border-[var(--border)] bg-[var(--surface-2)] hover:border-emerald-500/20 hover:bg-[var(--surface-2)]',
     labelColor: 'text-emerald-400',
@@ -41,9 +53,9 @@ const OPTIMIZE_OPTIONS = [
   },
   {
     id: 'eco',
-    label: 'Eco',
+    labelKey: 'modeEcoLabel',
     Icon: Leaf,
-    desc: 'Laadt alleen op zonne-energie en de goedkoopste uren.',
+    descKey: 'modeEcoDesc',
     activeClass: 'border-emerald-500/40 bg-emerald-500/[0.06] ring-1 ring-emerald-500/20',
     idleClass: 'border-[var(--border)] bg-[var(--surface-2)] hover:border-emerald-500/20 hover:bg-[var(--surface-2)]',
     labelColor: 'text-emerald-400',
@@ -52,9 +64,10 @@ const OPTIMIZE_OPTIONS = [
   },
 ]
 
-const CONTRACT_OPTIONS = [
-  'Tibber', 'Frank Energie', 'EnergyZero', 'ANWB Energie',
-  'Vandebron', 'Vast contract', 'Weet ik niet',
+/** Contract options. Brand names stay; the two generic options are translated. */
+const CONTRACT_OPTIONS: { value: string; labelKey?: 'contractFixed' | 'contractUnknown' }[] = [
+  { value: 'Tibber' }, { value: 'Frank Energie' }, { value: 'EnergyZero' }, { value: 'ANWB Energie' },
+  { value: 'Vandebron' }, { value: 'fixed', labelKey: 'contractFixed' }, { value: 'unknown', labelKey: 'contractUnknown' },
 ]
 
 const HOUSEHOLD_SIZES = [1, 2, 3, 4, 5, 6, 7]
@@ -80,6 +93,7 @@ function Section({ icon: Icon, title, sub, children }: {
 }
 
 export default function InstellingenClient({ profile, email }: Props) {
+  const { t } = useT()
   const [optimizeMode, setOptimizeMode] = useState(profile.optimize_mode ?? 'max_savings')
   const [contractType, setContractType] = useState(profile.contract_type ?? '')
   const [postcode, setPostcode] = useState(profile.postcode ?? '')
@@ -110,12 +124,12 @@ export default function InstellingenClient({ profile, email }: Props) {
   return (
     <div className="max-w-2xl space-y-6">
       <div>
-        <h1 className="text-[28px] font-extrabold tracking-[-0.035em] text-[var(--text)]">Instellingen</h1>
-        <p className="mt-1.5 text-[14px] text-[var(--text-faint)]">Beheer je profiel en optimalisatie-voorkeuren.</p>
+        <h1 className="text-[28px] font-extrabold tracking-[-0.035em] text-[var(--text)]">{t.dashboard.settings.title}</h1>
+        <p className="mt-1.5 text-[14px] text-[var(--text-faint)]">{t.dashboard.settings.subtitle}</p>
       </div>
 
       {/* Account */}
-      <Section icon={User} title="Account">
+      <Section icon={User} title={t.dashboard.settings.accountTitle}>
         <div className="flex items-center gap-4">
           <Avatar className="h-11 w-11">
             <AvatarFallback className="bg-emerald-500/10 text-[15px] font-bold text-emerald-400 ring-1 ring-emerald-500/20">
@@ -124,16 +138,16 @@ export default function InstellingenClient({ profile, email }: Props) {
           </Avatar>
           <div>
             <p className="text-[14px] font-medium text-[var(--text)]">{email}</p>
-            <p className="mt-0.5 text-[12px] text-[var(--text-faint)]">GBICT Energy account</p>
+            <p className="mt-0.5 text-[12px] text-[var(--text-faint)]">{t.dashboard.settings.accountLabel}</p>
           </div>
           <span className="ml-auto rounded-lg border border-[var(--border)] bg-[var(--surface-2)] px-2.5 py-1 text-[11px] font-medium text-[var(--text-faint)]">
-            Free plan
+            {t.dashboard.settings.freePlan}
           </span>
         </div>
       </Section>
 
       {/* Optimization mode */}
-      <Section icon={Zap} title="Optimalisatiemodus" sub="Hoe moet GBICT Energy je batterij aansturen?">
+      <Section icon={Zap} title={t.dashboard.settings.optimizeTitle} sub={t.dashboard.settings.optimizeSubtitle}>
         <div className="space-y-2">
           {OPTIMIZE_OPTIONS.map((opt) => {
             const isActive = optimizeMode === opt.id
@@ -149,13 +163,13 @@ export default function InstellingenClient({ profile, email }: Props) {
                 <opt.Icon className={cn('mt-0.5 h-4 w-4 shrink-0', isActive ? opt.iconColor : 'text-[var(--text-faint)]')} />
                 <div className="flex-1">
                   <p className={cn('text-[13.5px] font-semibold', isActive ? opt.labelColor : 'text-[var(--text-muted)]')}>
-                    {opt.label}
+                    {t.dashboard.settings[opt.labelKey]}
                   </p>
-                  <p className="mt-0.5 text-[12.5px] text-[var(--text-faint)]">{opt.desc}</p>
+                  <p className="mt-0.5 text-[12.5px] text-[var(--text-faint)]">{t.dashboard.settings[opt.descKey]}</p>
                 </div>
                 <div className={cn(
                   'mt-0.5 h-4 w-4 shrink-0 rounded-full border-2 transition-all',
-                  isActive ? opt.dotClass : 'border-slate-700'
+                  isActive ? opt.dotClass : 'border-[var(--border)]'
                 )} />
               </button>
             )
@@ -164,30 +178,30 @@ export default function InstellingenClient({ profile, email }: Props) {
       </Section>
 
       {/* Energy contract */}
-      <Section icon={FileText} title="Energiecontract">
+      <Section icon={FileText} title={t.dashboard.settings.contractTitle}>
         <div className="flex flex-wrap gap-2">
           {CONTRACT_OPTIONS.map((c) => (
             <button
-              key={c}
-              onClick={() => setContractType(c)}
+              key={c.value}
+              onClick={() => setContractType(c.value)}
               className={cn(
                 'rounded-full border px-3 py-1.5 text-[13px] font-medium transition-all',
-                contractType === c
+                contractType === c.value
                   ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-400'
                   : 'border-[var(--border)] text-[var(--text-faint)] hover:border-emerald-500/20 hover:text-[var(--text-muted)]'
               )}
             >
-              {c}
+              {c.labelKey ? t.dashboard.settings[c.labelKey] : c.value}
             </button>
           ))}
         </div>
       </Section>
 
       {/* Household */}
-      <Section icon={Home} title="Huishouden">
+      <Section icon={Home} title={t.dashboard.settings.householdTitle}>
         <div className="space-y-5">
           <div>
-            <label className="mb-2 block text-[12.5px] font-medium text-[var(--text-faint)]">Postcode</label>
+            <label className="mb-2 block text-[12.5px] font-medium text-[var(--text-faint)]">{t.dashboard.settings.postcodeLabel}</label>
             <input
               type="text"
               value={postcode}
@@ -198,7 +212,7 @@ export default function InstellingenClient({ profile, email }: Props) {
             />
           </div>
           <div>
-            <label className="mb-2 block text-[12.5px] font-medium text-[var(--text-faint)]">Aantal personen</label>
+            <label className="mb-2 block text-[12.5px] font-medium text-[var(--text-faint)]">{t.dashboard.settings.peopleLabel}</label>
             <div className="flex gap-2">
               {HOUSEHOLD_SIZES.map((n) => (
                 <button
@@ -234,12 +248,12 @@ export default function InstellingenClient({ profile, email }: Props) {
           disabled={isPending}
           className="inline-flex h-11 items-center gap-2 rounded-full bg-[#047857] px-7 text-[14px] font-semibold text-white shadow-[0_1px_3px_rgba(0,0,0,0.3)] transition-colors hover:bg-[#059669] disabled:opacity-50"
         >
-          {isPending ? 'Opslaan…' : 'Wijzigingen opslaan'}
+          {isPending ? t.dashboard.settings.saving : t.dashboard.settings.saveChanges}
         </button>
         {saved && (
           <span className="flex items-center gap-1.5 text-[13px] text-emerald-400">
             <Check className="h-4 w-4" />
-            Opgeslagen
+            {t.dashboard.settings.saved}
           </span>
         )}
       </div>

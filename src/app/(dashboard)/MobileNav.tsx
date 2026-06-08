@@ -4,28 +4,33 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { LayoutDashboard, Plug, TrendingDown, Bell, Users, Zap, Settings } from 'lucide-react'
+import { useT } from '@/hooks/use-t'
+import type { TranslationDict } from '@/lib/i18n'
 
-const navLinks = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/dashboard/koppelingen', label: 'Koppelingen', icon: Plug },
-  { href: '/dashboard/besparingen', label: 'Besparingen', icon: TrendingDown },
-  { href: '/dashboard/notificaties', label: 'Activiteit', icon: Bell },
-  { href: '/dashboard/referral', label: 'Vrienden', icon: Users },
-  { href: '/dashboard/vpp', label: 'Virtueel Energienet', icon: Zap, badge: 'Bèta' },
-  { href: '/dashboard/instellingen', label: 'Instellingen', icon: Settings },
+type NavKey = keyof TranslationDict['dashboard']['nav']
+
+const navLinks: { href: string; key: NavKey; icon: typeof LayoutDashboard; badgeKey?: 'vppBadge' }[] = [
+  { href: '/dashboard', key: 'dashboard', icon: LayoutDashboard },
+  { href: '/dashboard/koppelingen', key: 'connections', icon: Plug },
+  { href: '/dashboard/besparingen', key: 'savings', icon: TrendingDown },
+  { href: '/dashboard/notificaties', key: 'activity', icon: Bell },
+  { href: '/dashboard/referral', key: 'friends', icon: Users },
+  { href: '/dashboard/vpp', key: 'vppFull', icon: Zap, badgeKey: 'vppBadge' },
+  { href: '/dashboard/instellingen', key: 'settings', icon: Settings },
 ]
 
 export default function MobileNav() {
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
+  const { t } = useT()
 
   return (
     <div className="md:hidden">
-      {/* Hamburger knop */}
+      {/* Hamburger button */}
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex h-9 w-9 items-center justify-center rounded-lg text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
-        aria-label="Menu"
+        className="flex h-9 w-9 items-center justify-center rounded-lg text-[var(--text-faint)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]"
+        aria-label={t.dashboard.nav.menu}
       >
         {open ? (
           <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -48,7 +53,7 @@ export default function MobileNav() {
 
       {/* Menu panel */}
       {open && (
-        <div className="absolute left-0 right-0 top-[61px] z-50 border-b border-zinc-200 bg-white shadow-lg dark:border-zinc-800 dark:bg-zinc-900">
+        <div className="absolute left-0 right-0 top-[61px] z-50 border-b border-[var(--border)] bg-[var(--surface)] shadow-lg">
           <nav className="mx-auto max-w-6xl px-6 py-3">
             {navLinks.map((link) => {
               const isActive = pathname === link.href || pathname.startsWith(link.href + '/')
@@ -59,15 +64,15 @@ export default function MobileNav() {
                   onClick={() => setOpen(false)}
                   className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm transition-colors ${
                     isActive
-                      ? 'bg-zinc-100 font-medium text-zinc-900 dark:bg-zinc-800 dark:text-zinc-50'
-                      : 'text-zinc-600 hover:bg-zinc-50 dark:text-zinc-400 dark:hover:bg-zinc-800'
+                      ? 'bg-emerald-500/[0.12] font-medium text-emerald-300'
+                      : 'text-[var(--text-faint)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]'
                   }`}
                 >
                   <link.icon className="h-4 w-4 shrink-0" />
-                  <span className="flex-1">{link.label}</span>
-                  {'badge' in link && link.badge && (
-                    <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-medium text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400">
-                      {link.badge}
+                  <span className="flex-1">{t.dashboard.nav[link.key]}</span>
+                  {link.badgeKey && (
+                    <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-medium text-emerald-400">
+                      {t.dashboard.nav[link.badgeKey]}
                     </span>
                   )}
                 </Link>

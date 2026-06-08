@@ -7,6 +7,8 @@ import {
   ArrowUpRight, Plug, ExternalLink,
 } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useT } from '@/hooks/use-t'
+import type { TranslationDict } from '@/lib/i18n'
 
 /* ── Types ─────────────────────────────────────────────── */
 type SavingsData = {
@@ -29,10 +31,11 @@ const fmt = (n: number) => `€${n.toFixed(2).replace('.', ',')}`
 const fmtSmall = (n: number) => `€${n.toFixed(4)}`
 
 /* ── Hero card ──────────────────────────────────────────── */
-function HeroCard({ savings, tibber, hasSessy }: {
+function HeroCard({ savings, tibber, hasSessy, t }: {
   savings: SavingsData | null
   tibber: TibberData | null
   hasSessy: boolean
+  t: TranslationDict
 }) {
   const todaySaved = savings?.today_eur ?? 0
   const monthSaved = savings?.month_eur ?? 0
@@ -46,28 +49,28 @@ function HeroCard({ savings, tibber, hasSessy }: {
 
       <div className="relative">
         <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-emerald-400">
-          Today's overview
+          {t.dashboard.overview.todayLabel}
         </p>
         <h2 className="mt-2 text-[28px] font-extrabold leading-tight tracking-[-0.035em] text-[var(--text)]">
-          {hasSessy ? 'Automatische optimalisatie actief' : 'Koppel je eerste apparaat'}
+          {hasSessy ? t.dashboard.overview.autoActiveTitle : t.dashboard.overview.connectFirstTitle}
         </h2>
         <p className="mt-2 max-w-md text-[14px] leading-[1.6] text-[var(--text-faint)]">
           {hasSessy
-            ? 'GBICT volgt continu de EPEX-spotprijzen en stuurt je batterij automatisch aan.'
-            : 'Link your smart meter or battery in 2 minutes and start saving automatically.'}
+            ? t.dashboard.overview.autoActiveDesc
+            : t.dashboard.overview.connectFirstDesc}
         </p>
 
         {/* Stats row */}
         <div className="mt-7 flex flex-wrap gap-6">
           <div>
-            <p className="text-[11px] text-[var(--text-faint)]">Vandaag bespaard</p>
+            <p className="text-[11px] text-[var(--text-faint)]">{t.dashboard.overview.savedToday}</p>
             <p className={`mt-1 font-mono text-[22px] font-semibold tracking-tight ${todaySaved > 0 ? 'text-emerald-400' : 'text-[var(--text-faint)]'}`}>
               {fmt(todaySaved)}
             </p>
           </div>
           <div className="w-px bg-[var(--surface-2)]" />
           <div>
-            <p className="text-[11px] text-[var(--text-faint)]">Deze maand</p>
+            <p className="text-[11px] text-[var(--text-faint)]">{t.dashboard.overview.thisMonth}</p>
             <p className={`mt-1 font-mono text-[22px] font-semibold tracking-tight ${monthSaved > 0 ? 'text-emerald-400' : 'text-[var(--text-faint)]'}`}>
               {fmt(monthSaved)}
             </p>
@@ -76,9 +79,9 @@ function HeroCard({ savings, tibber, hasSessy }: {
             <>
               <div className="w-px bg-[var(--surface-2)]" />
               <div>
-                <p className="text-[11px] text-[var(--text-faint)]">Spotprijs nu</p>
+                <p className="text-[11px] text-[var(--text-faint)]">{t.dashboard.overview.spotPriceNow}</p>
                 <p className="mt-1 font-mono text-[22px] font-semibold tracking-tight text-[var(--text)]">
-                  {fmtSmall(currentPrice)}<span className="ml-1 text-[12px] text-[var(--text-faint)]">/kWh</span>
+                  {fmtSmall(currentPrice)}<span className="ml-1 text-[12px] text-[var(--text-faint)]">{t.dashboard.overview.perKwh}</span>
                 </p>
               </div>
             </>
@@ -91,7 +94,7 @@ function HeroCard({ savings, tibber, hasSessy }: {
             className="inline-flex h-9 items-center gap-2 rounded-full bg-[#047857] px-5 text-[13px] font-semibold text-white transition-colors hover:bg-[#059669]"
           >
             <TrendingUp className="h-3.5 w-3.5" />
-            Bekijk besparing
+            {t.dashboard.overview.viewSavings}
           </Link>
           {!hasSessy && (
             <Link
@@ -99,7 +102,7 @@ function HeroCard({ savings, tibber, hasSessy }: {
               className="inline-flex h-9 items-center gap-2 rounded-full border border-[var(--border)] px-5 text-[13px] font-medium text-[var(--text-muted)] transition-colors hover:bg-[var(--surface-2)]"
             >
               <Plug className="h-3.5 w-3.5" />
-              Apparaat koppelen
+              {t.dashboard.overview.connectDevice}
             </Link>
           )}
         </div>
@@ -109,7 +112,7 @@ function HeroCard({ savings, tibber, hasSessy }: {
 }
 
 /* ── Battery status card ────────────────────────────────── */
-function BatteryCard({ sessy }: { sessy: SessyStatus | null }) {
+function BatteryCard({ sessy, t }: { sessy: SessyStatus | null; t: TranslationDict }) {
   if (!sessy) {
     return (
       <div className="flex flex-col justify-between rounded-2xl border border-dashed border-[var(--border)] bg-[var(--surface)] p-6">
@@ -117,10 +120,10 @@ function BatteryCard({ sessy }: { sessy: SessyStatus | null }) {
           <BatteryCharging className="h-4 w-4 text-[var(--text-faint)]" />
         </div>
         <div>
-          <p className="text-[13px] font-semibold text-[var(--text-faint)]">Batterij</p>
-          <p className="mt-0.5 text-[12px] text-[var(--text-faint)]">Geen apparaat gekoppeld</p>
+          <p className="text-[13px] font-semibold text-[var(--text-faint)]">{t.dashboard.battery.title}</p>
+          <p className="mt-0.5 text-[12px] text-[var(--text-faint)]">{t.dashboard.battery.noDevice}</p>
           <Link href="/dashboard/koppelingen" className="mt-3 flex items-center gap-1 text-[12px] font-medium text-emerald-400 hover:text-emerald-300">
-            Connect <ArrowUpRight className="h-3 w-3" />
+            {t.dashboard.common.connect} <ArrowUpRight className="h-3 w-3" />
           </Link>
         </div>
       </div>
@@ -135,11 +138,11 @@ function BatteryCard({ sessy }: { sessy: SessyStatus | null }) {
         </div>
         <span className="flex items-center gap-1.5 text-[11px] text-[var(--text-faint)]">
           <span className="h-[12px] w-[3px] rounded-sm bg-emerald-400" />
-          {sessy.power !== 0 ? (sessy.power > 0 ? 'Aan het laden' : 'Aan het ontladen') : 'Standby'}
+          {sessy.power !== 0 ? (sessy.power > 0 ? t.dashboard.battery.charging : t.dashboard.battery.discharging) : t.dashboard.battery.standby}
         </span>
       </div>
       <div>
-        <p className="text-[11px] text-[var(--text-faint)]">Batterij · Sessy</p>
+        <p className="text-[11px] text-[var(--text-faint)]">{t.dashboard.battery.label}</p>
         <div className="mt-1 flex items-baseline gap-1.5">
           <span className="font-mono text-[32px] font-bold tracking-[-0.03em] text-[var(--text)]">
             {sessy.state_of_charge}
@@ -153,7 +156,7 @@ function BatteryCard({ sessy }: { sessy: SessyStatus | null }) {
           />
         </div>
         {sessy.power !== 0 && (
-          <p className="mt-2 text-[11.5px] text-[var(--text-faint)]">{Math.abs(sessy.power)}W {sessy.power > 0 ? 'charging' : 'discharging'}</p>
+          <p className="mt-2 text-[11.5px] text-[var(--text-faint)]">{Math.abs(sessy.power)}W {sessy.power > 0 ? t.dashboard.battery.chargingW : t.dashboard.battery.dischargingW}</p>
         )}
       </div>
     </div>
@@ -161,7 +164,7 @@ function BatteryCard({ sessy }: { sessy: SessyStatus | null }) {
 }
 
 /* ── VPP / upgrade card ─────────────────────────────────── */
-function VppCard({ enrolled }: { enrolled: boolean }) {
+function VppCard({ enrolled, t }: { enrolled: boolean; t: TranslationDict }) {
   return (
     <div className="relative flex flex-col justify-between overflow-hidden rounded-2xl border border-emerald-500/20 bg-[var(--surface)] p-6">
       <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-[radial-gradient(circle,rgba(16,185,129,0.2),transparent_70%)]" />
@@ -169,21 +172,21 @@ function VppCard({ enrolled }: { enrolled: boolean }) {
         <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/10 ring-1 ring-emerald-500/20">
           <Zap className="h-4 w-4 text-emerald-400" />
         </div>
-        <p className="mt-4 text-[13px] font-semibold text-[var(--text)]">Virtueel energienet</p>
-        <p className="mt-1 text-[12px] text-[var(--text-faint)]">Verdien extra door stroom terug te leveren op piekmomenten.</p>
+        <p className="mt-4 text-[13px] font-semibold text-[var(--text)]">{t.dashboard.vppCard.title}</p>
+        <p className="mt-1 text-[12px] text-[var(--text-faint)]">{t.dashboard.vppCard.desc}</p>
       </div>
       <Link
         href="/dashboard/vpp"
         className="relative mt-5 inline-flex h-8 items-center gap-1.5 rounded-lg bg-emerald-500/10 px-3 text-[12px] font-semibold text-emerald-400 ring-1 ring-emerald-500/20 transition-colors hover:bg-emerald-500/15"
       >
-        {enrolled ? 'Bekijk status' : 'Aanmelden bèta'} <ExternalLink className="h-3 w-3" />
+        {enrolled ? t.dashboard.vppCard.viewStatus : t.dashboard.vppCard.joinBeta} <ExternalLink className="h-3 w-3" />
       </Link>
     </div>
   )
 }
 
 /* ── Price bar chart ────────────────────────────────────── */
-function PriceChart({ prices, schedule }: { prices: PricePoint[]; schedule?: ScheduleSlot[] }) {
+function PriceChart({ prices, schedule, t }: { prices: PricePoint[]; schedule?: ScheduleSlot[]; t: TranslationDict }) {
   if (!prices.length) return null
   const totals = prices.map(p => p.total)
   const min = Math.min(...totals), max = Math.max(...totals)
@@ -194,12 +197,12 @@ function PriceChart({ prices, schedule }: { prices: PricePoint[]; schedule?: Sch
     <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6">
       <div className="mb-5 flex items-center justify-between">
         <div>
-          <p className="text-[14px] font-semibold text-[var(--text)]">Energieprijzen</p>
-          <p className="mt-0.5 text-[11px] text-[var(--text-faint)]">EPEX-spotprijzen vandaag (€/kWh)</p>
+          <p className="text-[14px] font-semibold text-[var(--text)]">{t.dashboard.priceChart.title}</p>
+          <p className="mt-0.5 text-[11px] text-[var(--text-faint)]">{t.dashboard.priceChart.subtitle}</p>
         </div>
         <div className="flex gap-1 rounded-lg bg-[var(--surface-2)] p-1">
-          <span className="rounded-md bg-emerald-500/15 px-3 py-1 text-[11px] font-semibold text-emerald-400">Vandaag</span>
-          <span className="px-3 py-1 text-[11px] font-medium text-[var(--text-faint)]">Morgen</span>
+          <span className="rounded-md bg-emerald-500/15 px-3 py-1 text-[11px] font-semibold text-emerald-400">{t.dashboard.priceChart.today}</span>
+          <span className="px-3 py-1 text-[11px] font-medium text-[var(--text-faint)]">{t.dashboard.priceChart.tomorrow}</span>
         </div>
       </div>
 
@@ -209,7 +212,7 @@ function PriceChart({ prices, schedule }: { prices: PricePoint[]; schedule?: Sch
           const h = ((price.total - min) / range) * 70 + 30
           const ratio = (price.total - min) / range
           const slot = schedule?.find(s => new Date(s.startsAt).getHours() === hour)
-          let color = ratio < 0.33 ? 'bg-emerald-500/50' : ratio > 0.66 ? 'bg-red-500/50' : 'bg-slate-500/30'
+          let color = ratio < 0.33 ? 'bg-emerald-500/50' : ratio > 0.66 ? 'bg-red-500/50' : 'bg-[var(--text-faint)]/30'
           if (slot?.action === 'charge') color = 'bg-emerald-500'
           else if (slot?.action === 'discharge') color = 'bg-amber-500'
 
@@ -227,19 +230,20 @@ function PriceChart({ prices, schedule }: { prices: PricePoint[]; schedule?: Sch
       </div>
 
       <div className="mt-4 flex gap-5 text-[11px] text-[var(--text-faint)]">
-        <span className="flex items-center gap-1.5"><i className="inline-block h-2 w-2 rounded-sm bg-emerald-500" />Laden</span>
-        <span className="flex items-center gap-1.5"><i className="inline-block h-2 w-2 rounded-sm bg-amber-500" />Verkopen</span>
-        <span className="flex items-center gap-1.5"><i className="inline-block h-2 w-2 rounded-sm bg-emerald-500/50" />Goedkoop</span>
-        <span className="flex items-center gap-1.5"><i className="inline-block h-2 w-2 rounded-sm bg-red-500/50" />Piek</span>
+        <span className="flex items-center gap-1.5"><i className="inline-block h-2 w-2 rounded-sm bg-emerald-500" />{t.dashboard.priceChart.charge}</span>
+        <span className="flex items-center gap-1.5"><i className="inline-block h-2 w-2 rounded-sm bg-amber-500" />{t.dashboard.priceChart.sell}</span>
+        <span className="flex items-center gap-1.5"><i className="inline-block h-2 w-2 rounded-sm bg-emerald-500/50" />{t.dashboard.priceChart.cheap}</span>
+        <span className="flex items-center gap-1.5"><i className="inline-block h-2 w-2 rounded-sm bg-red-500/50" />{t.dashboard.priceChart.peak}</span>
       </div>
     </div>
   )
 }
 
 /* ── Optimization schedule list ─────────────────────────── */
-function ScheduleList({ schedule, estimatedSavings }: {
+function ScheduleList({ schedule, estimatedSavings, t }: {
   schedule: ScheduleSlot[]
   estimatedSavings: number
+  t: TranslationDict
 }) {
   const active = schedule.filter(s => s.action !== 'idle')
   const maxPrice = Math.max(...schedule.map(s => s.price), 0.01)
@@ -248,8 +252,8 @@ function ScheduleList({ schedule, estimatedSavings }: {
     <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6">
       <div className="mb-5 flex items-center justify-between">
         <div>
-          <p className="text-[14px] font-semibold text-[var(--text)]">Optimalisatieschema</p>
-          <p className="mt-0.5 text-[11px] text-[var(--text-faint)]">Geplande acties vandaag</p>
+          <p className="text-[14px] font-semibold text-[var(--text)]">{t.dashboard.schedule.title}</p>
+          <p className="mt-0.5 text-[11px] text-[var(--text-faint)]">{t.dashboard.schedule.subtitle}</p>
         </div>
         <span className="rounded-lg bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-400 ring-1 ring-emerald-500/20">
           ~{fmt(estimatedSavings)}
@@ -257,7 +261,7 @@ function ScheduleList({ schedule, estimatedSavings }: {
       </div>
 
       {active.length === 0 ? (
-        <p className="py-6 text-center text-[13px] text-[var(--text-faint)]">Geen acties gepland voor vandaag</p>
+        <p className="py-6 text-center text-[13px] text-[var(--text-faint)]">{t.dashboard.schedule.none}</p>
       ) : (
         <div className="space-y-3">
           {active.slice(0, 6).map((slot) => {
@@ -271,7 +275,7 @@ function ScheduleList({ schedule, estimatedSavings }: {
                 <span className={`shrink-0 rounded-md px-2 py-0.5 text-[11px] font-semibold ${
                   isCharge ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'
                 }`}>
-                  {isCharge ? '↑ Laden' : '↓ Verkopen'}
+                  {isCharge ? t.dashboard.schedule.charge : t.dashboard.schedule.sell}
                 </span>
                 <div className="relative flex-1 overflow-hidden rounded-full bg-[var(--surface-2)]" style={{ height: '6px' }}>
                   <div
@@ -292,7 +296,7 @@ function ScheduleList({ schedule, estimatedSavings }: {
 }
 
 /* ── Recent activity table ──────────────────────────────── */
-function ActivityTable() {
+function ActivityTable({ t, tag }: { t: TranslationDict; tag: string }) {
   const [logs, setLogs] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -306,9 +310,9 @@ function ActivityTable() {
   return (
     <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)]">
       <div className="flex items-center justify-between border-b border-[var(--border)] px-6 py-4">
-        <p className="text-[14px] font-semibold text-[var(--text)]">Recente activiteit</p>
+        <p className="text-[14px] font-semibold text-[var(--text)]">{t.dashboard.activityTable.title}</p>
         <Link href="/dashboard/besparingen" className="flex items-center gap-1 text-[12px] font-medium text-emerald-400 hover:text-emerald-300">
-          Alles bekijken <ArrowUpRight className="h-3 w-3" />
+          {t.dashboard.common.viewAll} <ArrowUpRight className="h-3 w-3" />
         </Link>
       </div>
 
@@ -327,15 +331,15 @@ function ActivityTable() {
         </div>
       ) : logs.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-12">
-          <p className="text-[13px] text-[var(--text-faint)]">Nog geen activiteit</p>
-          <p className="mt-1 text-[12px] text-[var(--text-faint)]">De optimizer draait elk uur automatisch</p>
+          <p className="text-[13px] text-[var(--text-faint)]">{t.dashboard.activityTable.noneTitle}</p>
+          <p className="mt-1 text-[12px] text-[var(--text-faint)]">{t.dashboard.activityTable.noneDesc}</p>
         </div>
       ) : (
         <div className="divide-y divide-white/[0.04]">
           {logs.map((log: any, i: number) => {
             const isCharge = log.action === 'charge'
             const dt = new Date(log.created_at)
-            const timeStr = dt.toLocaleString('en-GB', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' })
+            const timeStr = dt.toLocaleString(tag, { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' })
             return (
               <div key={i} className="flex items-center gap-4 px-6 py-3.5">
                 <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${
@@ -348,7 +352,7 @@ function ActivityTable() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-[13px] font-medium text-[var(--text-muted)]">
-                    {isCharge ? 'Batterij geladen' : 'Batterij ontladen'}
+                    {isCharge ? t.dashboard.activityTable.charged : t.dashboard.activityTable.discharged}
                     {log.kwh > 0 && <span className="ml-2 font-normal text-[var(--text-faint)]">{log.kwh.toFixed(1)} kWh</span>}
                   </p>
                   <p className="mt-0.5 text-[11.5px] text-[var(--text-faint)]">
@@ -376,6 +380,7 @@ export default function DashboardClient({
   hasSessy: boolean
   hasSolar: boolean
 }) {
+  const { t, tag } = useT()
   const [savings, setSavings] = useState<SavingsData | null>(null)
   const [sessy, setSessy] = useState<SessyStatus | null>(null)
   const [tibber, setTibber] = useState<TibberData | null>(null)
@@ -395,29 +400,49 @@ export default function DashboardClient({
   const estimatedSavings = tibber?.optimization?.estimatedSavings ?? 0
 
   return (
-    <div className="space-y-5">
-      {/* Row 1: Hero + Battery + VPP */}
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-4">
-        <HeroCard savings={savings} tibber={tibber} hasSessy={hasSessy} />
-        <BatteryCard sessy={sessy} />
-        <VppCard enrolled={false} />
+    <div className="space-y-7">
+      {/* Page header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-[26px] font-extrabold tracking-[-0.035em] text-[var(--text)]">
+            {t.dashboard.overview.title}
+          </h1>
+          <p className="mt-1 text-[13px] text-[var(--text-faint)]">
+            {t.dashboard.overview.subtitle}
+          </p>
+        </div>
+        <Link
+          href="/dashboard/besparingen"
+          className="flex items-center gap-1 text-[13px] font-medium text-emerald-400 transition-colors hover:text-emerald-300"
+        >
+          {t.dashboard.common.seeMore} <ArrowUpRight className="h-3.5 w-3.5" />
+        </Link>
       </div>
 
-      {/* Row 2: Price chart + Schedule — live EPEX prices for everyone */}
-      {todayPrices.length > 0 ? (
-        <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1.4fr_1fr]">
-          <PriceChart prices={todayPrices} schedule={schedule} />
-          <ScheduleList schedule={schedule} estimatedSavings={estimatedSavings} />
+      <div className="space-y-5">
+        {/* Row 1: Hero + Battery + VPP */}
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-4">
+          <HeroCard savings={savings} tibber={tibber} hasSessy={hasSessy} t={t} />
+          <BatteryCard sessy={sessy} t={t} />
+          <VppCard enrolled={false} t={t} />
         </div>
-      ) : (
-        <div className="rounded-2xl border border-dashed border-[var(--border)] bg-[var(--surface)] p-10 text-center">
-          <Plug className="mx-auto h-8 w-8 text-[var(--text-faint)]" />
-          <p className="mt-4 text-[14px] font-medium text-[var(--text-faint)]">Live energieprijzen worden geladen…</p>
-        </div>
-      )}
 
-      {/* Row 3: Activity table */}
-      {hasSessy && <ActivityTable />}
+        {/* Row 2: Price chart + Schedule — live EPEX prices for everyone */}
+        {todayPrices.length > 0 ? (
+          <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1.4fr_1fr]">
+            <PriceChart prices={todayPrices} schedule={schedule} t={t} />
+            <ScheduleList schedule={schedule} estimatedSavings={estimatedSavings} t={t} />
+          </div>
+        ) : (
+          <div className="rounded-2xl border border-dashed border-[var(--border)] bg-[var(--surface)] p-10 text-center">
+            <Plug className="mx-auto h-8 w-8 text-[var(--text-faint)]" />
+            <p className="mt-4 text-[14px] font-medium text-[var(--text-faint)]">{t.dashboard.priceChart.loading}</p>
+          </div>
+        )}
+
+        {/* Row 3: Activity table */}
+        {hasSessy && <ActivityTable t={t} tag={tag} />}
+      </div>
     </div>
   )
 }

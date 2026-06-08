@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
+import { useT, fill } from '@/hooks/use-t'
 
 interface ReferralClientProps {
   referralCode: string
@@ -13,10 +14,15 @@ interface ReferralClientProps {
   creditsEur: number
 }
 
-const STEPS = [
-  { icon: Share2, title: 'Deel je code', desc: 'Stuur je persoonlijke referral code naar vrienden', color: 'text-emerald-400 bg-emerald-500/10' },
-  { icon: Users, title: 'Vriend meldt aan', desc: 'Ze registreren zich met jouw code', color: 'text-blue-400 bg-blue-400/10' },
-  { icon: Euro, title: 'Jij krijgt €5', desc: 'Per vriend die zich aanmeldt, ontvang jij €5 credit', color: 'text-emerald-400 bg-emerald-400/10' },
+const STEPS: {
+  icon: typeof Share2
+  titleKey: 'step1Title' | 'step2Title' | 'step3Title'
+  descKey: 'step1Desc' | 'step2Desc' | 'step3Desc'
+  color: string
+}[] = [
+  { icon: Share2, titleKey: 'step1Title', descKey: 'step1Desc', color: 'text-emerald-400 bg-emerald-500/10' },
+  { icon: Users, titleKey: 'step2Title', descKey: 'step2Desc', color: 'text-emerald-300 bg-emerald-300/10' },
+  { icon: Euro, titleKey: 'step3Title', descKey: 'step3Desc', color: 'text-emerald-400 bg-emerald-400/10' },
 ]
 
 export default function ReferralClient({
@@ -24,6 +30,7 @@ export default function ReferralClient({
   referrals,
   creditsEur,
 }: ReferralClientProps) {
+  const { t } = useT()
   const [copied, setCopied] = useState(false)
 
   async function handleCopy() {
@@ -33,18 +40,18 @@ export default function ReferralClient({
   }
 
   const shareUrl = `https://gbict-energy.vercel.app/signup?ref=${referralCode}`
-  const shareText = `Gebruik mijn code ${referralCode} voor 1 maand gratis Pro op GBICT Energy! ${shareUrl}`
+  const shareText = fill(t.dashboard.referral.shareText, { code: referralCode, url: shareUrl })
   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`
-  const mailtoUrl = `mailto:?subject=${encodeURIComponent('1 maand gratis Pro op GBICT Energy')}&body=${encodeURIComponent(shareText)}`
+  const mailtoUrl = `mailto:?subject=${encodeURIComponent(t.dashboard.referral.shareSubject)}&body=${encodeURIComponent(shareText)}`
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-[var(--text)]" style={{ letterSpacing: '-0.02em' }}>
-          Vrienden uitnodigen
+          {t.dashboard.referral.title}
         </h1>
         <p className="mt-1 text-sm text-[var(--text-muted)]">
-          Nodig vrienden uit en verdien credits voor elk succesvolle aanmelding.
+          {t.dashboard.referral.subtitle}
         </p>
       </div>
 
@@ -52,12 +59,12 @@ export default function ReferralClient({
       <Card className="border-[var(--border)] bg-[var(--surface)]">
         <CardHeader>
           <CardTitle className="text-xs font-medium uppercase tracking-wide text-[var(--text-faint)]">
-            Jouw referral code
+            {t.dashboard.referral.yourCode}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-3">
-            <div className="flex-1 rounded-xl bg-[var(--surface-2)]/60 px-5 py-4 text-center font-mono text-3xl font-bold tracking-widest text-emerald-400 ring-1 ring-slate-700">
+            <div className="flex-1 rounded-xl bg-[var(--surface-2)]/60 px-5 py-4 text-center font-mono text-3xl font-bold tracking-widest text-emerald-400 ring-1 ring-[var(--border)]">
               {referralCode}
             </div>
             <button
@@ -66,12 +73,12 @@ export default function ReferralClient({
               className={`flex items-center gap-2 rounded-xl px-4 py-4 text-sm font-medium transition-all ${
                 copied
                   ? 'bg-emerald-950/40 text-emerald-400 ring-1 ring-emerald-500/30'
-                  : 'bg-[var(--surface-2)] text-[var(--text-muted)] hover:bg-slate-700 hover:text-[var(--text)]'
+                  : 'bg-[var(--surface-2)] text-[var(--text-muted)] hover:bg-[var(--border)] hover:text-[var(--text)]'
               }`}
             >
               {copied
-                ? <><Check className="h-4 w-4" /> Gekopieerd!</>
-                : <><Copy className="h-4 w-4" /> Kopieer</>
+                ? <><Check className="h-4 w-4" /> {t.dashboard.referral.copied}</>
+                : <><Copy className="h-4 w-4" /> {t.dashboard.referral.copy}</>
               }
             </button>
           </div>
@@ -82,7 +89,7 @@ export default function ReferralClient({
       <div className="grid gap-4 sm:grid-cols-2">
         <Card className="border-[var(--border)] bg-[var(--surface)]">
           <CardContent className="py-6">
-            <p className="text-xs font-medium uppercase tracking-wide text-[var(--text-faint)]">Verdiende credits</p>
+            <p className="text-xs font-medium uppercase tracking-wide text-[var(--text-faint)]">{t.dashboard.referral.earnedCredits}</p>
             <p className={`mt-2 text-3xl font-bold tracking-tight ${creditsEur > 0 ? 'text-emerald-400' : 'text-[var(--text-faint)]'}`}>
               €{creditsEur.toFixed(2)}
             </p>
@@ -90,7 +97,7 @@ export default function ReferralClient({
         </Card>
         <Card className="border-[var(--border)] bg-[var(--surface)]">
           <CardContent className="py-6">
-            <p className="text-xs font-medium uppercase tracking-wide text-[var(--text-faint)]">Vrienden aangemeld</p>
+            <p className="text-xs font-medium uppercase tracking-wide text-[var(--text-faint)]">{t.dashboard.referral.friendsSignedUp}</p>
             <p className={`mt-2 text-3xl font-bold tracking-tight ${referrals > 0 ? 'text-[var(--text)]' : 'text-[var(--text-faint)]'}`}>
               {referrals}
             </p>
@@ -102,21 +109,21 @@ export default function ReferralClient({
       <Card className="border-[var(--border)] bg-[var(--surface)]">
         <CardHeader>
           <CardTitle className="text-xs font-medium uppercase tracking-wide text-[var(--text-faint)]">
-            Hoe het werkt
+            {t.dashboard.referral.howTitle}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid gap-5 sm:grid-cols-3">
-            {STEPS.map((step, i) => {
+            {STEPS.map((step) => {
               const Icon = step.icon
               return (
-                <div key={i} className="flex flex-col gap-3">
+                <div key={step.titleKey} className="flex flex-col gap-3">
                   <div className={`flex h-9 w-9 items-center justify-center rounded-xl ring-1 ring-white/5 ${step.color}`}>
                     <Icon className="h-4 w-4" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-[var(--text)]">{step.title}</p>
-                    <p className="mt-0.5 text-xs text-[var(--text-faint)]">{step.desc}</p>
+                    <p className="text-sm font-semibold text-[var(--text)]">{t.dashboard.referral[step.titleKey]}</p>
+                    <p className="mt-0.5 text-xs text-[var(--text-faint)]">{t.dashboard.referral[step.descKey]}</p>
                   </div>
                 </div>
               )
@@ -129,7 +136,7 @@ export default function ReferralClient({
       <Card className="border-[var(--border)] bg-[var(--surface)]">
         <CardHeader>
           <CardTitle className="text-xs font-medium uppercase tracking-wide text-[var(--text-faint)]">
-            Deel via
+            {t.dashboard.referral.shareVia}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -147,10 +154,10 @@ export default function ReferralClient({
             </a>
             <a
               href={mailtoUrl}
-              className="flex items-center gap-2 rounded-xl bg-[var(--surface-2)] px-4 py-2.5 text-sm font-medium text-[var(--text-muted)] transition-colors hover:bg-slate-700 hover:text-[var(--text)]"
+              className="flex items-center gap-2 rounded-xl bg-[var(--surface-2)] px-4 py-2.5 text-sm font-medium text-[var(--text-muted)] transition-colors hover:bg-[var(--border)] hover:text-[var(--text)]"
             >
               <Mail className="h-4 w-4" />
-              E-mail
+              {t.dashboard.referral.email}
             </a>
           </div>
         </CardContent>
@@ -162,7 +169,7 @@ export default function ReferralClient({
           <CardContent className="flex flex-col items-center gap-2 py-10 text-center">
             <Gift className="h-10 w-10 text-[var(--text-faint)]" />
             <p className="mt-2 text-sm text-[var(--text-faint)]">
-              Nog niemand uitgenodigd. Deel je code om te beginnen!
+              {t.dashboard.referral.emptyState}
             </p>
           </CardContent>
         </Card>

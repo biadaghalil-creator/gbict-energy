@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { saveOnboarding } from './actions'
 import { Sun, BatteryCharging, Zap, Car, Gauge, CheckCircle2 } from 'lucide-react'
+import { useT } from '@/hooks/use-t'
 
 interface OnboardingWizardProps {
   userId: string
@@ -24,7 +25,7 @@ function ProgressDots({ step, total }: { step: number; total: number }) {
           className={`h-2 rounded-full transition-all duration-300 ${
             i < step
               ? 'w-6 bg-emerald-500'
-              : 'w-2 bg-slate-200 dark:bg-slate-700'
+              : 'w-2 bg-[var(--surface-2)]'
           }`}
         />
       ))}
@@ -33,6 +34,7 @@ function ProgressDots({ step, total }: { step: number; total: number }) {
 }
 
 export default function OnboardingWizard({ userId: _userId }: OnboardingWizardProps) {
+  const { t } = useT()
   const [step, setStep] = useState(1)
   const [state, setState] = useState<WizardState>({ situation: new Set() })
   const [loading, setLoading] = useState(false)
@@ -68,27 +70,27 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
   }
 
   const situationItems: { key: SituationKey; icon: React.ElementType; label: string }[] = [
-    { key: 'zonnepanelen', icon: Sun, label: 'Zonnepanelen' },
-    { key: 'thuisbatterij', icon: BatteryCharging, label: 'Thuisbatterij' },
-    { key: 'dynamisch', icon: Zap, label: 'Dynamisch energiecontract' },
-    { key: 'elektrischeAuto', icon: Car, label: 'Elektrische auto' },
+    { key: 'zonnepanelen', icon: Sun, label: t.dashboard.onboarding.optSolar },
+    { key: 'thuisbatterij', icon: BatteryCharging, label: t.dashboard.onboarding.optBattery },
+    { key: 'dynamisch', icon: Zap, label: t.dashboard.onboarding.optDynamic },
+    { key: 'elektrischeAuto', icon: Car, label: t.dashboard.onboarding.optEv },
   ]
 
   const deviceCards: { icon: React.ElementType; name: string; desc: string }[] = [
     {
       icon: BatteryCharging,
-      name: 'Thuisbatterij',
-      desc: 'Sessy, Enphase, Tesla Powerwall en meer',
+      name: t.dashboard.onboarding.deviceBatteryName,
+      desc: t.dashboard.onboarding.deviceBatteryDesc,
     },
     {
       icon: Sun,
-      name: 'Zonnepanelen',
-      desc: 'SolarEdge, SMA, Fronius omvormer',
+      name: t.dashboard.onboarding.deviceSolarName,
+      desc: t.dashboard.onboarding.deviceSolarDesc,
     },
     {
       icon: Gauge,
-      name: 'Slimme meter (P1)',
-      desc: 'HomeWizard, DSMR-reader',
+      name: t.dashboard.onboarding.deviceMeterName,
+      desc: t.dashboard.onboarding.deviceMeterDesc,
     },
   ]
 
@@ -99,18 +101,18 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
         <div className="mb-8 flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-lg shadow-emerald-500/30">
           <Zap className="h-9 w-9 text-white" />
         </div>
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-[var(--text)]">
-          Welkom bij GBICT Energy
+        <h1 className="text-3xl font-bold tracking-tight text-[var(--text)]">
+          {t.dashboard.onboarding.welcomeTitle}
         </h1>
         <p className="mx-auto mt-4 max-w-md text-base text-[var(--text-faint)]">
-          We optimaliseren automatisch jouw thuisenergie. Laten we beginnen met een paar vragen.
+          {t.dashboard.onboarding.welcomeDesc}
         </p>
         <button
           type="button"
           onClick={() => setStep(2)}
           className="mt-10 rounded-full bg-[#047857] px-10 py-4 text-base font-semibold text-white shadow-lg shadow-emerald-500/25 transition-all hover:bg-[#059669] hover:shadow-emerald-500/40"
         >
-          Aan de slag →
+          {t.dashboard.onboarding.getStarted}
         </button>
         <div className="mt-12">
           <ProgressDots step={1} total={totalSteps} />
@@ -124,11 +126,11 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
     return (
       <div className="mx-auto max-w-lg px-4">
         <div className="mb-8 text-center">
-          <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-[var(--text)]">
-            Wat heb je thuis?
+          <h2 className="text-2xl font-bold tracking-tight text-[var(--text)]">
+            {t.dashboard.onboarding.situationTitle}
           </h2>
           <p className="mt-2 text-sm text-[var(--text-faint)]">
-            Selecteer alles wat van toepassing is.
+            {t.dashboard.onboarding.situationDesc}
           </p>
         </div>
 
@@ -142,12 +144,12 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
                 onClick={() => toggleSituation(key)}
                 className={`flex flex-col items-center gap-3 rounded-2xl border-2 p-5 text-center transition-all ${
                   selected
-                    ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40'
-                    : 'border-slate-200 bg-white hover:border-slate-300 dark:border-slate-800 dark:bg-[var(--surface)] dark:hover:border-slate-700'
+                    ? 'border-emerald-500 bg-emerald-500/[0.08]'
+                    : 'border-[var(--border)] bg-[var(--surface)] hover:border-emerald-500/30'
                 }`}
               >
-                <Icon className={`h-7 w-7 ${selected ? 'text-emerald-600 dark:text-emerald-400' : 'text-[var(--text-faint)] dark:text-[var(--text-muted)]'}`} />
-                <span className={`text-sm font-medium ${selected ? 'text-emerald-700 dark:text-emerald-300' : 'text-[var(--text-faint)] dark:text-[var(--text-muted)]'}`}>
+                <Icon className={`h-7 w-7 ${selected ? 'text-emerald-400' : 'text-[var(--text-faint)]'}`} />
+                <span className={`text-sm font-medium ${selected ? 'text-emerald-300' : 'text-[var(--text-muted)]'}`}>
                   {label}
                 </span>
                 {selected && (
@@ -168,7 +170,7 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
             onClick={() => setStep(3)}
             className="w-full rounded-full bg-[#047857] py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#059669]"
           >
-            Volgende →
+            {t.dashboard.onboarding.next}
           </button>
         </div>
 
@@ -184,11 +186,11 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
     return (
       <div className="mx-auto max-w-lg px-4">
         <div className="mb-8 text-center">
-          <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-[var(--text)]">
-            Koppel je apparaat
+          <h2 className="text-2xl font-bold tracking-tight text-[var(--text)]">
+            {t.dashboard.onboarding.connectTitle}
           </h2>
           <p className="mt-2 text-sm text-[var(--text-faint)]">
-            Verbind je eerste apparaat om te beginnen met optimaliseren.
+            {t.dashboard.onboarding.connectDesc}
           </p>
         </div>
 
@@ -199,13 +201,13 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
             <a
               key={card.name}
               href="/dashboard/koppelingen"
-              className="flex items-center gap-4 rounded-2xl border-2 border-slate-200 bg-white px-5 py-4 transition-all hover:border-emerald-500 hover:bg-emerald-50 dark:border-slate-800 dark:bg-[var(--surface)] dark:hover:border-emerald-500 dark:hover:bg-emerald-950/40"
+              className="flex items-center gap-4 rounded-2xl border-2 border-[var(--border)] bg-[var(--surface)] px-5 py-4 transition-all hover:border-emerald-500 hover:bg-emerald-500/[0.06]"
             >
-              <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-slate-100 dark:bg-[var(--surface)]">
-                <Icon className="h-6 w-6 text-[var(--text-faint)] dark:text-[var(--text-muted)]" />
+              <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-[var(--surface-2)]">
+                <Icon className="h-6 w-6 text-[var(--text-muted)]" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-slate-900 dark:text-[var(--text)]">{card.name}</p>
+                <p className="text-sm font-semibold text-[var(--text)]">{card.name}</p>
                 <p className="mt-0.5 text-xs text-[var(--text-faint)]">{card.desc}</p>
               </div>
               <svg className="ml-auto h-4 w-4 flex-shrink-0 text-[var(--text-muted)]" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -220,9 +222,9 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
           <button
             type="button"
             onClick={() => setStep(4)}
-            className="text-sm text-[var(--text-muted)] transition-colors hover:text-[var(--text-faint)] dark:hover:text-[var(--text-muted)]"
+            className="text-sm text-[var(--text-muted)] transition-colors hover:text-[var(--text-faint)]"
           >
-            Later doen →
+            {t.dashboard.onboarding.doLater}
           </button>
         </div>
 
@@ -238,26 +240,26 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
     return (
       <div className="flex min-h-[70vh] flex-col items-center justify-center px-4 text-center">
         <CheckCircle2 className="mb-8 h-16 w-16 text-emerald-500" />
-        <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-[var(--text)]">
-          Je bent klaar om te besparen!
+        <h2 className="text-3xl font-bold tracking-tight text-[var(--text)]">
+          {t.dashboard.onboarding.doneTitle}
         </h2>
         <p className="mt-3 text-base text-[var(--text-faint)]">
-          GBICT Energy staat voor je klaar.
+          {t.dashboard.onboarding.doneDesc}
         </p>
 
         <ul className="mx-auto mt-8 w-full max-w-xs space-y-3 text-left">
           {[
-            'Dagelijkse e-mail update',
-            'Automatische batterijsturing',
-            'Live energieprijzen',
+            t.dashboard.onboarding.benefit1,
+            t.dashboard.onboarding.benefit2,
+            t.dashboard.onboarding.benefit3,
           ].map((item) => (
             <li key={item} className="flex items-center gap-3">
-              <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-950">
-                <svg className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth={2}>
+              <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-emerald-500/15">
+                <svg className="h-3.5 w-3.5 text-emerald-400" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M2 7l3.5 3.5L12 3" />
                 </svg>
               </div>
-              <span className="text-sm text-[var(--text-faint)] dark:text-[var(--text-muted)]">{item}</span>
+              <span className="text-sm text-[var(--text-muted)]">{item}</span>
             </li>
           ))}
         </ul>
@@ -268,7 +270,7 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
           disabled={loading}
           className="mt-10 rounded-full bg-[#047857] px-10 py-4 text-base font-semibold text-white shadow-lg shadow-emerald-500/25 transition-all hover:bg-[#059669] disabled:opacity-60"
         >
-          {loading ? 'Opslaan…' : 'Naar mijn dashboard →'}
+          {loading ? t.dashboard.onboarding.saving : t.dashboard.onboarding.toDashboard}
         </button>
 
         <div className="mt-12">

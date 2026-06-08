@@ -16,21 +16,34 @@ import { useIsNative } from '@/lib/native'
 import NativeTabBar from './NativeTabBar'
 import ThemeToggle from '@/components/ThemeToggle'
 import EcoGlow from '@/components/EcoGlow'
+import { LanguageSwitcher } from '@/components/LanguageSwitcher'
+import { useT } from '@/hooks/use-t'
+import type { TranslationDict } from '@/lib/i18n'
 
-const navItems = [
-  { href: '/dashboard',               label: 'Dashboard',   icon: LayoutDashboard, exact: true },
-  { href: '/dashboard/koppelingen',   label: 'Koppelingen', icon: Plug },
-  { href: '/dashboard/besparingen',   label: 'Besparingen', icon: TrendingDown },
-  { href: '/dashboard/notificaties',  label: 'Activiteit',  icon: Bell },
-  { href: '/dashboard/referral',      label: 'Vrienden',    icon: Users },
-  { href: '/dashboard/vpp',           label: 'VPP',         icon: Zap, badge: 'Bèta' },
-  { href: '/dashboard/instellingen',  label: 'Instellingen',icon: Settings },
+type NavKey = 'dashboard' | 'connections' | 'savings' | 'activity' | 'friends' | 'vpp' | 'settings'
+
+const navItems: {
+  href: string
+  key: NavKey
+  icon: typeof LayoutDashboard
+  exact?: boolean
+  badgeKey?: 'vppBadge'
+}[] = [
+  { href: '/dashboard',               key: 'dashboard',   icon: LayoutDashboard, exact: true },
+  { href: '/dashboard/koppelingen',   key: 'connections', icon: Plug },
+  { href: '/dashboard/besparingen',   key: 'savings',     icon: TrendingDown },
+  { href: '/dashboard/notificaties',  key: 'activity',    icon: Bell },
+  { href: '/dashboard/referral',      key: 'friends',     icon: Users },
+  { href: '/dashboard/vpp',           key: 'vpp',         icon: Zap, badgeKey: 'vppBadge' },
+  { href: '/dashboard/instellingen',  key: 'settings',    icon: Settings },
 ]
 
 function NavLink({
-  item, isActive, collapsed, onClick,
+  item, label, badge, isActive, collapsed, onClick,
 }: {
   item: typeof navItems[number]
+  label: string
+  badge?: string
   isActive: boolean
   collapsed?: boolean
   onClick?: () => void
@@ -40,7 +53,7 @@ function NavLink({
     <Link
       href={item.href}
       onClick={onClick}
-      title={item.label}
+      title={label}
       className={cn(
         'group flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium transition-all duration-150',
         collapsed && 'justify-center px-0',
@@ -59,10 +72,10 @@ function NavLink({
       )} />
       {!collapsed && (
         <>
-          <span className="flex-1 truncate">{item.label}</span>
-          {item.badge && (
+          <span className="flex-1 truncate">{label}</span>
+          {badge && (
             <span className="rounded-md bg-emerald-500/15 px-1.5 py-0.5 text-[10px] font-bold text-emerald-400">
-              {item.badge}
+              {badge}
             </span>
           )}
         </>
@@ -72,12 +85,13 @@ function NavLink({
 }
 
 function SidebarInner({
-  pathname, userEmail, collapsed, onNavClick,
+  pathname, userEmail, collapsed, onNavClick, t,
 }: {
   pathname: string
   userEmail: string
   collapsed?: boolean
   onNavClick?: () => void
+  t: TranslationDict
 }) {
   const router = useRouter()
 
@@ -108,7 +122,7 @@ function SidebarInner({
           {!collapsed && (
             <div className="leading-none">
               <p className="text-[14px] font-extrabold tracking-tight text-[var(--text)]">GBICT</p>
-              <p className="text-[11px] font-medium text-emerald-400">Energy</p>
+              <p className="text-[11px] font-medium text-emerald-400">{t.dashboard.nav.brandTagline}</p>
             </div>
           )}
         </Link>
@@ -123,6 +137,8 @@ function SidebarInner({
           <NavLink
             key={item.href}
             item={item}
+            label={t.dashboard.nav[item.key]}
+            badge={item.badgeKey ? t.dashboard.nav[item.badgeKey] : undefined}
             isActive={active(item)}
             collapsed={collapsed}
             onClick={onNavClick}
@@ -144,7 +160,7 @@ function SidebarInner({
             </Avatar>
             <button
               onClick={handleLogout}
-              title="Uitloggen"
+              title={t.dashboard.nav.logout}
               className="flex h-8 w-8 items-center justify-center rounded-xl text-[var(--text-faint)] transition-colors hover:bg-[var(--surface-2)] hover:text-red-400"
             >
               <LogOut className="h-4 w-4" />
@@ -160,7 +176,7 @@ function SidebarInner({
               </Avatar>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-[12.5px] font-medium text-[var(--text)]">{userEmail}</p>
-                <p className="text-[10.5px] text-[var(--text-faint)]">Gratis plan</p>
+                <p className="text-[10.5px] text-[var(--text-faint)]">{t.dashboard.nav.freePlan}</p>
               </div>
             </div>
             <button
@@ -168,7 +184,7 @@ function SidebarInner({
               className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-[13px] text-[var(--text-faint)] transition-colors hover:bg-[var(--surface-2)] hover:text-red-400"
             >
               <LogOut className="h-4 w-4 shrink-0" />
-              <span>Uitloggen</span>
+              <span>{t.dashboard.nav.logout}</span>
             </button>
           </div>
         )}
@@ -185,12 +201,14 @@ export default function DashboardShell({
 }) {
   const pathname = usePathname()
   const native = useIsNative()
+  const { t, locale } = useT()
   const [collapsed, setCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
 
   const currentPage = navItems.find((item) =>
     item.exact ? pathname === item.href : pathname.startsWith(item.href)
   )
+  const currentTitle = currentPage ? t.dashboard.nav[currentPage.key] : t.dashboard.nav.dashboard
 
   return (
     <div className={cn(
@@ -206,7 +224,7 @@ export default function DashboardShell({
         'relative z-10 hidden md:flex flex-col shrink-0 border-r border-[var(--border)] bg-[var(--surface)] backdrop-blur-md transition-all duration-300',
         collapsed ? 'w-[4.5rem]' : 'w-[220px]'
       )}>
-        <SidebarInner pathname={pathname} userEmail={userEmail} collapsed={collapsed} />
+        <SidebarInner pathname={pathname} userEmail={userEmail} collapsed={collapsed} t={t} />
         {/* Collapse toggle */}
         <button
           onClick={() => setCollapsed(v => !v)}
@@ -222,11 +240,12 @@ export default function DashboardShell({
       {/* ── Mobile drawer ── */}
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
         <SheetContent side="left" className="w-[220px] border-r border-[var(--border)] bg-[var(--surface)] p-0">
-          <SheetTitle className="sr-only">Navigatie</SheetTitle>
+          <SheetTitle className="sr-only">{t.dashboard.nav.navigation}</SheetTitle>
           <SidebarInner
             pathname={pathname}
             userEmail={userEmail}
             onNavClick={() => setMobileOpen(false)}
+            t={t}
           />
         </SheetContent>
       </Sheet>
@@ -250,19 +269,20 @@ export default function DashboardShell({
           {/* Title: clean app-style title in the app, breadcrumb on the web */}
           {native ? (
             <span className="text-[17px] font-bold tracking-[-0.02em] text-[var(--text)]">
-              {currentPage?.label ?? 'Dashboard'}
+              {currentTitle}
             </span>
           ) : (
             <div className="flex items-center gap-2 text-[13.5px]">
               <span className="text-[var(--text-faint)]">GBICT</span>
               <span className="text-[var(--text-faint)]">/</span>
               <span className="font-semibold text-[var(--text)]">
-                {currentPage?.label ?? 'Dashboard'}
+                {currentTitle}
               </span>
             </div>
           )}
 
           <div className="ml-auto flex items-center gap-2">
+            <LanguageSwitcher currentLocale={locale} />
             <ThemeToggle />
             <Link
               href="/dashboard/notificaties"
