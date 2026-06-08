@@ -302,8 +302,32 @@ body {
   animation: glow-drift 16s ease-in-out infinite alternate;
   will-change: transform, opacity;
 }
+
+/* Organic, drifting green "blobs" that float on different paths (depth/3D feel) */
+@keyframes glow-orbit-a {
+  0%   { transform: translate(0, 0) scale(1); }
+  25%  { transform: translate(13vw, 9vh) scale(1.25); }
+  50%  { transform: translate(4vw, 20vh) scale(1.05); }
+  75%  { transform: translate(-11vw, 7vh) scale(1.18); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+@keyframes glow-orbit-b {
+  0%   { transform: translate(0, 0) scale(1.1); }
+  33%  { transform: translate(-15vw, 11vh) scale(0.92); }
+  66%  { transform: translate(9vw, -7vh) scale(1.22); }
+  100% { transform: translate(0, 0) scale(1.1); }
+}
+@keyframes glow-orbit-c {
+  0%   { transform: translate(0, 0) scale(0.9); }
+  50%  { transform: translate(-9vw, -13vh) scale(1.22); }
+  100% { transform: translate(0, 0) scale(0.9); }
+}
+.glow-a { animation: glow-orbit-a 22s ease-in-out infinite; will-change: transform; }
+.glow-b { animation: glow-orbit-b 28s ease-in-out infinite; will-change: transform; }
+.glow-c { animation: glow-orbit-c 19s ease-in-out infinite; will-change: transform; }
+
 @media (prefers-reduced-motion: reduce) {
-  .glow-drift { animation: none; }
+  .glow-drift, .glow-a, .glow-b, .glow-c { animation: none; }
 }
 
 /* ─── APP THEME TOKENS (light = day, .dark = night) ──── */

@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils'
 import { useIsNative } from '@/lib/native'
 import NativeTabBar from './NativeTabBar'
 import ThemeToggle from '@/components/ThemeToggle'
+import EcoGlow from '@/components/EcoGlow'
 
 const navItems = [
   { href: '/dashboard',               label: 'Dashboard',   icon: LayoutDashboard, exact: true },
@@ -198,7 +199,7 @@ export default function DashboardShell({
     )}>
       {/* ── Background atmosphere (same as landing page) ── */}
       <div className="pointer-events-none fixed inset-0 z-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_100%_80%_at_50%_0%,#000_40%,transparent_90%)]" />
-      <div className="pointer-events-none fixed left-1/2 top-[-320px] z-0 h-[820px] w-[1200px] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_60%_60%_at_50%_50%,rgba(16,185,129,0.18),rgba(5,150,105,0.07)_45%,transparent_70%)] blur-xl" />
+      <EcoGlow />
 
       {/* ── Desktop Sidebar ── */}
       <aside className={cn(
