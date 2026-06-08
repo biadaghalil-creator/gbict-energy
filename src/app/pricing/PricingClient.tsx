@@ -116,7 +116,7 @@ export function PricingClient({ translations: t }: Props) {
   const currentLocale = getCurrentLocale()
 
   return (
-    <div className="min-h-screen text-[var(--text)]" style={{ background: 'var(--bg)' }}>
+    <div className="dark min-h-screen text-[var(--text)]" style={{ background: 'var(--bg)' }}>
 
       {/* Header */}
       <header className="sticky top-0 z-50 border-b border-[var(--border)] backdrop-blur-xl"

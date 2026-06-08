@@ -24,7 +24,7 @@ const whyUs = [
 
 export default function AboutPage() {
   return (
-    <div className="flex flex-col min-h-screen text-[var(--text)]" style={{ background: 'var(--bg)' }}>
+    <div className="dark flex flex-col min-h-screen text-[var(--text)]" style={{ background: 'var(--bg)' }}>
 
       {/* ── HEADER ───────────────────────────────────────── */}
       <header className="sticky top-0 z-50 border-b border-[var(--border)] backdrop-blur-xl"
