@@ -42,8 +42,13 @@ certs.each { |c| puts "  - #{c['attributes']['certificateType']}  #{c['attribute
 # Default is READ-ONLY (list above). Only when REVOKE=1 do we revoke, and even
 # then only DEVELOPMENT certificates — distribution certs (used for the App
 # Store archive) are always kept. Cloud signing recreates a dev cert fresh.
-to_revoke = certs.select { |c| c['attributes']['certificateType'].to_s.include?('DEVELOPMENT') }
-puts "\nDevelopment certificates eligible for revoke: #{to_revoke.length}"
+# Only the CI-generated development certs ("Created via API"). Named developer
+# certificates (real people's local signing) are always kept.
+to_revoke = certs.select do |c|
+  c['attributes']['certificateType'].to_s.include?('DEVELOPMENT') &&
+    c['attributes']['displayName'].to_s.strip == 'Created via API'
+end
+puts "\nCI development certificates eligible for revoke: #{to_revoke.length} (named developer certs kept)"
 
 if ENV['REVOKE'] == '1'
   puts "REVOKE=1 → revoking #{to_revoke.length} development certificate(s)…"
