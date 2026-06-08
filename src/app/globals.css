@@ -835,17 +835,12 @@ body {
 .gbict-landing .stage-glow{position:absolute;width:560px;height:560px;left:50%;top:48%;transform:translate(-50%,-50%);
   border-radius:50%;background:radial-gradient(circle,rgba(var(--glow-c),.30),rgba(124,58,237,.07) 47%,transparent 70%);
   filter:blur(8px);pointer-events:none;opacity:var(--glow-scale,1);animation:gbictGlowPulse 9s ease-in-out infinite}
-.gbict-landing .stage-ring{position:absolute;width:480px;height:480px;left:50%;top:50%;margin:-240px 0 0 -240px;border-radius:50%;
-  border:1px solid rgba(139,92,246,.16);pointer-events:none}
-.gbict-landing .stage-ring::before{content:"";position:absolute;inset:46px;border-radius:50%;border:1px dashed rgba(139,92,246,.12);
-  animation:gbictDriftRing 38s linear infinite}
-.gbict-landing .stage-ring .orb{position:absolute;width:10px;height:10px;border-radius:50%;background:var(--accent-bright);
-  box-shadow:0 0 14px 2px rgba(167,139,250,.7);top:-5px;left:50%;margin-left:-5px}
-.gbict-landing .stage-dash{position:absolute;width:368px;left:46%;top:50%;transform:translate(-50%,-50%) rotateY(-13deg) rotateX(6deg);
+/* ring + phone removed from the hero — only the dashboard card remains */
+.gbict-landing .stage-ring{display:none}
+.gbict-landing .stage-dash{position:absolute;width:368px;left:50%;top:50%;transform:translate(-50%,-50%) rotateY(-13deg) rotateX(6deg);
   transform-style:preserve-3d;animation:gbictFloatY 8s ease-in-out infinite}
 .gbict-landing .stage-dash .dash{box-shadow:0 40px 90px -30px rgba(0,0,0,.85),0 0 0 1px var(--glass-border)}
-.gbict-landing .stage-phone{position:absolute;right:-2%;bottom:-4%;z-index:4;
-  filter:drop-shadow(0 40px 70px rgba(0,0,0,.7));animation:gbictFloatYsm 9s ease-in-out infinite;animation-delay:-2.5s}
+.gbict-landing .stage-phone{display:none}
 
 /* floating chips */
 .gbict-landing .chip{position:absolute;display:flex;align-items:center;gap:10px;padding:11px 15px;border-radius:14px;
