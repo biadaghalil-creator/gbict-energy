@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import type { ReactNode, CSSProperties } from "react";
 import {
-  Zap, BatteryCharging, Radio, Sun, Lock, LineChart, Check, Menu, Globe,
+  Zap, BatteryCharging, Radio, Sun, Lock, LineChart, Check, Menu, Globe, ChevronDown, X,
   Leaf, Play, ArrowRight, TrendingUp, TrendingDown, Sparkles, Activity,
   PiggyBank, CalendarClock, BellRing, ShieldCheck, Server, UserCheck,
   BadgeCheck, Shield, Home, Bell, BatteryFull, CloudSun, Share2, Link as LinkIcon, GitFork,
@@ -29,7 +29,7 @@ const NAV: [string, string][] = [
 
 /* ---------- Shared primitives ---------- */
 
-function Brand({ size = 56 }: { size?: number }) {
+function Brand({ size = 40 }: { size?: number }) {
   return (
     <img
       className="brand-mark"
@@ -37,24 +37,50 @@ function Brand({ size = 56 }: { size?: number }) {
       alt="GBICT Energy"
       width={size}
       height={size}
-      style={{ width: size, height: size, borderRadius: 13, display: "block" }}
+      style={{ width: size, height: size, borderRadius: Math.round(size * 0.28), display: "block" }}
     />
   );
 }
 
 function LangSwitcher() {
   const { locale, setLocale, locales, labels } = useLocale();
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const h = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", h);
+    return () => document.removeEventListener("mousedown", h);
+  }, []);
   return (
-    <div className="lang-switch">
-      {locales.map((l) => (
-        <button
-          key={l}
-          className={"lang-opt" + (l === locale ? " on" : "")}
-          onClick={() => setLocale(l)}
-        >
-          {labels[l]}
-        </button>
-      ))}
+    <div className="lang" ref={ref}>
+      <button
+        className="lang-btn"
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+        aria-label="Language"
+      >
+        <Globe className="lucide" />
+        <span>{labels[locale]}</span>
+        <ChevronDown className="lucide lang-caret" />
+      </button>
+      {open && (
+        <div className="lang-menu">
+          {locales.map((l) => (
+            <button
+              key={l}
+              className={"lang-item" + (l === locale ? " on" : "")}
+              onClick={() => {
+                setLocale(l);
+                setOpen(false);
+              }}
+            >
+              {labels[l]}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -63,46 +89,50 @@ function Nav() {
   const [open, setOpen] = useState(false);
   return (
     <nav className="nav">
-      <div className="container nav-inner">
-        <a href="#top">
-          <Brand />
-        </a>
-        <div className="nav-links">
+      <div className="container">
+        <div className="nav-inner">
+          <a className="brand-lockup" href="#top" aria-label="GBICT Energy">
+            <Brand size={32} />
+            <span className="brand-word">
+              <b>GBICT</b>
+              <span>Energy</span>
+            </span>
+          </a>
+          <div className="nav-links">
+            {NAV.map(([txt, h]) => (
+              <a key={h} href={h}>
+                {txt}
+              </a>
+            ))}
+          </div>
+          <div className="nav-right">
+            <LangSwitcher />
+            <a className="btn btn-ghost" href="/login">
+              Sign in
+            </a>
+            <a className="btn btn-primary" href="/signup">
+              Start free trial
+            </a>
+            <button className="nav-toggle" aria-label="Menu" onClick={() => setOpen((o) => !o)}>
+              {open ? <X className="lucide" /> : <Menu className="lucide" />}
+            </button>
+          </div>
+        </div>
+        <div className={"mobile-menu" + (open ? " open" : "")}>
           {NAV.map(([txt, h]) => (
-            <a key={h} href={h}>
+            <a key={h} href={h} onClick={() => setOpen(false)}>
               {txt}
             </a>
           ))}
-        </div>
-        <div className="nav-right">
-          <LangSwitcher />
-          <a className="btn btn-ghost" href="/login">
+          <a href="/login" onClick={() => setOpen(false)}>
             Sign in
           </a>
-          <a className="btn btn-primary" href="/signup">
-            Start free trial
-          </a>
-          <button className="nav-toggle" aria-label="Menu" onClick={() => setOpen((o) => !o)}>
-            <Menu className="lucide" />
-          </button>
-        </div>
-      </div>
-      <div className={"mobile-menu" + (open ? " open" : "")}>
-        {NAV.map(([txt, h]) => (
-          <a key={h} href={h} onClick={() => setOpen(false)}>
-            {txt}
-          </a>
-        ))}
-        <a href="/login" onClick={() => setOpen(false)}>
-          Sign in
-        </a>
-        <div style={{ paddingTop: 8 }}>
-          <LangSwitcher />
-        </div>
-        <div style={{ paddingTop: 14 }}>
-          <a className="btn btn-primary" href="/signup">
-            Start free trial
-          </a>
+          <div className="mobile-actions">
+            <LangSwitcher />
+            <a className="btn btn-primary" href="/signup">
+              Start free trial
+            </a>
+          </div>
         </div>
       </div>
     </nav>
