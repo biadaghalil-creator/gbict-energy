@@ -73,7 +73,7 @@ export default function SessyCard() {
               className="h-full rounded-full transition-all duration-700"
               style={{
                 width: `${status.state_of_charge}%`,
-                background: 'linear-gradient(90deg, #047857, #A78BFA)',
+                background: 'linear-gradient(90deg, #047857, #34D399)',
               }}
             />
           </div>

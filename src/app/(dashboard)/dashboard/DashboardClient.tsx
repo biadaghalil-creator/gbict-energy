@@ -149,7 +149,7 @@ function BatteryCard({ sessy }: { sessy: SessyStatus | null }) {
         <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-[var(--surface-2)]">
           <div
             className="h-full rounded-full transition-all duration-700"
-            style={{ width: `${sessy.state_of_charge}%`, background: 'linear-gradient(90deg, #047857, #A78BFA)' }}
+            style={{ width: `${sessy.state_of_charge}%`, background: 'linear-gradient(90deg, #047857, #34D399)' }}
           />
         </div>
         {sessy.power !== 0 && (
@@ -385,9 +385,9 @@ export default function DashboardClient({
       fetch('/api/savings').then(r => r.json()).then(setSavings).catch(() => {})
       fetch('/api/sessy/status').then(r => r.json()).then(setSessy).catch(() => {})
     }
-    if (hasTibber) {
-      fetch('/api/tibber/prices').then(r => r.json()).then(setTibber).catch(() => {})
-    }
+    // Live EPEX-spotprijzen werken voor iedereen (EnergyZero-fallback),
+    // ook zonder Tibber-koppeling.
+    fetch('/api/tibber/prices').then(r => r.json()).then(setTibber).catch(() => {})
   }, [hasTibber, hasSessy])
 
   const schedule = tibber?.optimization?.schedule ?? []
@@ -403,22 +403,18 @@ export default function DashboardClient({
         <VppCard enrolled={false} />
       </div>
 
-      {/* Row 2: Price chart + Schedule */}
-      {(hasTibber && todayPrices.length > 0) ? (
+      {/* Row 2: Price chart + Schedule — live EPEX prices for everyone */}
+      {todayPrices.length > 0 ? (
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1.4fr_1fr]">
           <PriceChart prices={todayPrices} schedule={schedule} />
           <ScheduleList schedule={schedule} estimatedSavings={estimatedSavings} />
         </div>
-      ) : !hasTibber ? (
+      ) : (
         <div className="rounded-2xl border border-dashed border-[var(--border)] bg-[var(--surface)] p-10 text-center">
           <Plug className="mx-auto h-8 w-8 text-[var(--text-faint)]" />
-          <p className="mt-4 text-[14px] font-medium text-[var(--text-faint)]">Koppel Tibber om live energieprijzen en grafieken te zien</p>
-          <Link href="/dashboard/koppelingen"
-            className="mt-5 inline-flex h-9 items-center gap-2 rounded-full bg-[#047857] px-5 text-[13px] font-semibold text-white hover:bg-[#059669]">
-            Connect Tibber
-          </Link>
+          <p className="mt-4 text-[14px] font-medium text-[var(--text-faint)]">Live energieprijzen worden geladen…</p>
         </div>
-      ) : null}
+      )}
 
       {/* Row 3: Activity table */}
       {hasSessy && <ActivityTable />}
