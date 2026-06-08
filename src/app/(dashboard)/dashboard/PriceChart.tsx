@@ -27,7 +27,7 @@ export default function PriceChart({
         <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-500">{label}</p>
         <div className="flex items-center gap-4 text-[11px] text-slate-500">
           <span className="flex items-center gap-1.5">
-            <span className="inline-block h-2 w-2 rounded-sm bg-violet-500" /> Charge
+            <span className="inline-block h-2 w-2 rounded-sm bg-emerald-500" /> Charge
           </span>
           <span className="flex items-center gap-1.5">
             <span className="inline-block h-2 w-2 rounded-sm bg-amber-500" /> Sell
@@ -53,7 +53,7 @@ export default function PriceChart({
               ? 'bg-red-500/60'
               : 'bg-slate-500/40'
 
-          if (slot?.action === 'charge') barColor = 'bg-violet-500'
+          if (slot?.action === 'charge') barColor = 'bg-emerald-500'
           else if (slot?.action === 'discharge') barColor = 'bg-amber-500'
 
           return (
@@ -61,7 +61,7 @@ export default function PriceChart({
               {/* Tooltip */}
               <div className="pointer-events-none absolute bottom-[calc(100%+6px)] left-1/2 z-20 hidden -translate-x-1/2 whitespace-nowrap rounded-lg border border-white/[0.08] bg-[#07080D] px-2.5 py-1.5 text-[11px] text-slate-300 shadow-xl group-hover:block">
                 {String(hour).padStart(2, '0')}:00 — €{price.total.toFixed(4)}
-                {slot?.action === 'charge' && <span className="ml-1 text-violet-400">↑ Charge</span>}
+                {slot?.action === 'charge' && <span className="ml-1 text-emerald-400">↑ Charge</span>}
                 {slot?.action === 'discharge' && <span className="ml-1 text-amber-400">↓ Sell</span>}
               </div>
 

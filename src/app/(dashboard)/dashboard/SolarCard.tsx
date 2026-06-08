@@ -58,7 +58,7 @@ export default function SolarCard() {
           <>
             <p className="text-2xl font-semibold tracking-tight text-slate-600">— kW</p>
             <p className="mt-1 text-xs">
-              <Link href="/dashboard/koppelingen" className="text-violet-400 hover:text-violet-400 hover:underline">
+              <Link href="/dashboard/koppelingen" className="text-emerald-400 hover:text-emerald-400 hover:underline">
                 Koppel zonnepanelen →
               </Link>
             </p>

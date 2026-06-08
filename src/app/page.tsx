@@ -79,11 +79,11 @@ const SCHEDULE: { h: number; t: "ok" | "sell" | "idle" }[] = [
   { h: 58, t: "ok" }, { h: 40, t: "idle" }, { h: 82, t: "sell" }, { h: 96, t: "sell" },
   { h: 44, t: "idle" }, { h: 52, t: "ok" }, { h: 60, t: "ok" }, { h: 34, t: "idle" },
 ];
-const SLOT = { ok: "bg-violet-500", sell: "bg-amber-500", idle: "bg-slate-400/20" } as const;
+const SLOT = { ok: "bg-emerald-500", sell: "bg-amber-500", idle: "bg-slate-400/20" } as const;
 
 /* Clean solid-violet pill — one subtle shadow, no gradient, no lip, no icon. */
 const btnPrimary =
-  "inline-flex items-center justify-center h-12 px-7 rounded-full bg-[#5B21B6] hover:bg-[#6D28D9] " +
+  "inline-flex items-center justify-center h-12 px-7 rounded-full bg-[#047857] hover:bg-[#059669] " +
   "text-white text-[15px] font-semibold tracking-[-0.01em] shadow-[0_1px_3px_rgba(0,0,0,0.3)] transition-colors";
 const btnGhost =
   "inline-flex items-center justify-center h-12 px-7 rounded-full border border-white/20 bg-transparent " +
@@ -91,8 +91,8 @@ const btnGhost =
 
 function Eyebrow({ children }: { children: ReactNode }) {
   return (
-    <p className="inline-flex items-center gap-2.5 text-[11px] font-bold uppercase tracking-[0.12em] text-violet-400">
-      <span className="h-[3px] w-5 rounded-sm bg-violet-500" />
+    <p className="inline-flex items-center gap-2.5 text-[11px] font-bold uppercase tracking-[0.12em] text-emerald-400">
+      <span className="h-[3px] w-5 rounded-sm bg-emerald-500" />
       {children}
     </p>
   );
@@ -115,7 +115,7 @@ function LanguageSwitcher() {
     <div className="relative">
       <button
         onClick={() => setShowPicker(v => !v)}
-        className="flex items-center gap-1.5 rounded-lg border border-white/[0.08] bg-white/[0.02] px-2.5 py-1.5 text-[12px] font-semibold text-slate-400 transition-colors hover:border-violet-500/30 hover:text-slate-200"
+        className="flex items-center gap-1.5 rounded-lg border border-white/[0.08] bg-white/[0.02] px-2.5 py-1.5 text-[12px] font-semibold text-slate-400 transition-colors hover:border-emerald-500/30 hover:text-slate-200"
       >
         <Globe className="h-3.5 w-3.5" />
         {labels[locale]}
@@ -128,7 +128,7 @@ function LanguageSwitcher() {
               <button
                 key={l}
                 onClick={() => { setLocale(l); setShowPicker(false) }}
-                className={`flex w-full items-center gap-2.5 px-3 py-2.5 text-[13px] transition-colors hover:bg-white/[0.04] ${locale === l ? 'text-violet-400 font-semibold' : 'text-slate-400'}`}
+                className={`flex w-full items-center gap-2.5 px-3 py-2.5 text-[13px] transition-colors hover:bg-white/[0.04] ${locale === l ? 'text-emerald-400 font-semibold' : 'text-slate-400'}`}
               >
                 <span className="w-6 text-[11px] font-bold text-slate-600">{labels[l]}</span>
                 {names[l]}
@@ -176,7 +176,7 @@ function Nav() {
 function Dashboard() {
   return (
     <div className="relative overflow-hidden rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-8 shadow-[0_24px_60px_-32px_rgba(0,0,0,0.9)]">
-      <div className="pointer-events-none absolute -right-24 -top-24 h-60 w-60 rounded-full bg-[radial-gradient(circle,rgba(124,58,237,0.16),transparent_70%)]" />
+      <div className="pointer-events-none absolute -right-24 -top-24 h-60 w-60 rounded-full bg-[radial-gradient(circle,rgba(16,185,129,0.16),transparent_70%)]" />
       <div className="mb-6 flex items-center justify-between">
         <span className="flex items-center gap-2.5 text-[13.5px] font-medium text-slate-300">
           <BatteryCharging className="h-[17px] w-[17px] text-slate-400" /> Home battery · Sessy
@@ -191,7 +191,7 @@ function Dashboard() {
       </div>
       <div className="mt-1 text-[11.5px] text-[#475569]">optimal charge window · now until 06:00</div>
       <div className="my-5 h-2 overflow-hidden rounded-full bg-white/[0.05]">
-        <div className="h-full w-[78%] rounded-full bg-[linear-gradient(90deg,#5B21B6,#A78BFA)]" />
+        <div className="h-full w-[78%] rounded-full bg-[linear-gradient(90deg,#047857,#A78BFA)]" />
       </div>
       <div className="mb-7 flex gap-3">
         <div className="flex-1 rounded-xl border border-white/[0.06] bg-white/[0.025] px-4 py-3.5">
@@ -208,7 +208,7 @@ function Dashboard() {
         {SCHEDULE.map((s, i) => <div key={i} className={"flex-1 rounded-[3px] " + SLOT[s.t]} style={{ height: `${s.h}%` }} />)}
       </div>
       <div className="mt-3 flex gap-4 text-[11px] text-slate-500">
-        <span className="inline-flex items-center gap-1.5"><i className="inline-block h-[9px] w-[9px] rounded-sm bg-violet-500" /> Charge</span>
+        <span className="inline-flex items-center gap-1.5"><i className="inline-block h-[9px] w-[9px] rounded-sm bg-emerald-500" /> Charge</span>
         <span className="inline-flex items-center gap-1.5"><i className="inline-block h-[9px] w-[9px] rounded-sm bg-amber-500" /> Sell</span>
         <span className="inline-flex items-center gap-1.5"><i className="inline-block h-[9px] w-[9px] rounded-sm bg-slate-400/30" /> Idle</span>
       </div>
@@ -222,7 +222,7 @@ function Hero() {
       <div className="mx-auto grid w-full max-w-[1140px] grid-cols-1 items-center gap-[72px] px-6 lg:grid-cols-[1.05fr_0.95fr]">
         <div>
           <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-[#0D0E16]/70 px-3.5 py-[7px] text-[12.5px] font-medium text-slate-300 backdrop-blur">
-            <Check className="h-3.5 w-3.5 text-violet-400" /> Hardware-agnostic platform
+            <Check className="h-3.5 w-3.5 text-emerald-400" /> Hardware-agnostic platform
           </span>
           <h1 className="mt-7 text-[clamp(48px,6vw,80px)] font-black leading-[1.02] tracking-[-0.05em] text-slate-50">
             The smartest way to make your battery work for you
@@ -248,7 +248,7 @@ function Metrics() {
       <div className="flex flex-wrap overflow-hidden rounded-2xl border border-white/[0.06] bg-[#0D0E16]/70 backdrop-blur">
         {METRICS.map((m) => (
           <div key={m.l} className="flex-1 border-r border-white/[0.06] px-5 py-9 text-center last:border-r-0">
-            <div className={"text-[32px] font-extrabold tracking-[-0.03em] " + (m.tone === "save" ? "text-emerald-400" : m.tone === "key" ? "text-violet-400" : "text-slate-100")}>{m.n}</div>
+            <div className={"text-[32px] font-extrabold tracking-[-0.03em] " + (m.tone === "save" ? "text-emerald-400" : m.tone === "key" ? "text-emerald-400" : "text-slate-100")}>{m.n}</div>
             <div className="mt-2.5 text-[13px] font-medium leading-[1.4] text-slate-400">{m.l}</div>
           </div>
         ))}
@@ -269,8 +269,8 @@ function Features() {
         <div className="mt-16 flex flex-col gap-6">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {lg.map((f) => (
-              <div key={f.title} className="flex gap-5 rounded-2xl border border-white/[0.06] p-8 transition-all hover:border-violet-500/20 hover:shadow-[inset_2px_0_0_#7C3AED]">
-                <f.icon className="mt-0.5 h-6 w-6 shrink-0 text-violet-500" />
+              <div key={f.title} className="flex gap-5 rounded-2xl border border-white/[0.06] p-8 transition-all hover:border-emerald-500/20 hover:shadow-[inset_2px_0_0_#10b981]">
+                <f.icon className="mt-0.5 h-6 w-6 shrink-0 text-emerald-500" />
                 <div>
                   <h3 className="text-[18px] font-bold tracking-[-0.02em]">{f.title}</h3>
                   <p className="mt-2.5 text-[15px] leading-[1.6] text-slate-400">{f.desc}</p>
@@ -280,14 +280,14 @@ function Features() {
           </div>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             {sm.map((f) => (
-              <div key={f.title} className="rounded-2xl border border-white/[0.06] p-8 transition-all hover:border-violet-500/20 hover:shadow-[inset_2px_0_0_#7C3AED]">
-                <h3 className="flex items-center gap-2.5 text-[18px] font-bold tracking-[-0.02em]"><f.icon className="h-[18px] w-[18px] shrink-0 text-violet-500" />{f.title}</h3>
+              <div key={f.title} className="rounded-2xl border border-white/[0.06] p-8 transition-all hover:border-emerald-500/20 hover:shadow-[inset_2px_0_0_#10b981]">
+                <h3 className="flex items-center gap-2.5 text-[18px] font-bold tracking-[-0.02em]"><f.icon className="h-[18px] w-[18px] shrink-0 text-emerald-500" />{f.title}</h3>
                 <p className="mt-2.5 text-[15px] leading-[1.6] text-slate-400">{f.desc}</p>
               </div>
             ))}
           </div>
-          <div className="flex flex-col items-start gap-4 rounded-2xl border border-violet-500/20 bg-violet-500/[0.04] p-8 md:flex-row md:items-center md:gap-8">
-            <h3 className="flex shrink-0 items-center gap-2.5 text-[18px] font-bold tracking-[-0.02em] md:min-w-[230px]"><wide.icon className="h-[18px] w-[18px] shrink-0 text-violet-500" />{wide.title}</h3>
+          <div className="flex flex-col items-start gap-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/[0.04] p-8 md:flex-row md:items-center md:gap-8">
+            <h3 className="flex shrink-0 items-center gap-2.5 text-[18px] font-bold tracking-[-0.02em] md:min-w-[230px]"><wide.icon className="h-[18px] w-[18px] shrink-0 text-emerald-500" />{wide.title}</h3>
             <p className="max-w-[560px] text-[15px] leading-[1.6] text-slate-400">{wide.desc}</p>
           </div>
         </div>
@@ -306,7 +306,7 @@ function HowItWorks() {
           <div className="absolute left-[16%] right-[16%] top-[23px] hidden h-px bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent)] md:block" />
           {STEPS.map((s, i) => (
             <div key={s.title} className="relative text-center">
-              <div className="mx-auto mb-6 grid h-[46px] w-[46px] place-items-center rounded-full border border-violet-500/35 bg-violet-500/[0.08] font-mono text-[17px] font-bold text-violet-400">{i + 1}</div>
+              <div className="mx-auto mb-6 grid h-[46px] w-[46px] place-items-center rounded-full border border-emerald-500/35 bg-emerald-500/[0.08] font-mono text-[17px] font-bold text-emerald-400">{i + 1}</div>
               <h3 className="text-[18px] font-bold tracking-[-0.02em]">{s.title}</h3>
               <p className="mx-auto mt-2.5 max-w-[280px] text-[15px] leading-[1.6] text-slate-400">{s.desc}</p>
             </div>
@@ -324,8 +324,8 @@ function Pricing() {
         <SectionHead eyebrow="Pricing" title="Start free, scale when you want" sub="No hidden fees. Cancel anytime." />
         <div className="mt-16 grid grid-cols-1 items-stretch gap-6 md:grid-cols-3">
           {PLANS.map((p) => (
-            <div key={p.name} className={"relative flex flex-col rounded-2xl border bg-[#0D0E16]/70 p-10 backdrop-blur " + (p.popular ? "border-violet-500/35 bg-[#0D0E16]/85 shadow-[inset_0_1px_0_rgba(139,92,246,0.5)]" : "border-white/[0.06]")}>
-              {p.popular && <span className="absolute right-6 top-6 rounded-md border border-violet-500/40 bg-violet-500/15 px-2.5 py-[5px] text-[11px] font-bold uppercase tracking-[0.08em] text-violet-400">Most popular</span>}
+            <div key={p.name} className={"relative flex flex-col rounded-2xl border bg-[#0D0E16]/70 p-10 backdrop-blur " + (p.popular ? "border-emerald-500/35 bg-[#0D0E16]/85 shadow-[inset_0_1px_0_rgba(16,185,129,0.5)]" : "border-white/[0.06]")}>
+              {p.popular && <span className="absolute right-6 top-6 rounded-md border border-emerald-500/40 bg-emerald-500/15 px-2.5 py-[5px] text-[11px] font-bold uppercase tracking-[0.08em] text-emerald-400">Most popular</span>}
               <div className="text-[13px] font-semibold tracking-[0.02em] text-slate-300">{p.name}</div>
               <div className="mt-1.5 text-[13px] text-slate-500">{p.tagline}</div>
               <div className="mb-0.5 mt-5 text-[44px] font-extrabold leading-none tracking-[-0.03em]">
@@ -350,11 +350,11 @@ function Benefits() {
   const stats = [
     { n: "€847", l: "Average yearly savings per household", tone: "text-emerald-400" },
     { n: "< 2 min", l: "Time to connect your first device", tone: "text-slate-100" },
-    { n: "24/7", l: "Automatic optimization, no manual work", tone: "text-violet-400" },
+    { n: "24/7", l: "Automatic optimization, no manual work", tone: "text-emerald-400" },
   ];
   return (
     <section id="results" className="relative overflow-hidden bg-[#05060B] py-[120px]">
-      <div className="pointer-events-none absolute left-1/2 top-[-220px] h-[520px] w-[900px] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse,rgba(124,58,237,0.16),transparent_65%)]" />
+      <div className="pointer-events-none absolute left-1/2 top-[-220px] h-[520px] w-[900px] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse,rgba(16,185,129,0.16),transparent_65%)]" />
       <div className="relative mx-auto max-w-[1140px] px-6">
         <SectionHead title="What GBICT does for you" />
         <div className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -368,7 +368,7 @@ function Benefits() {
         <div className="mt-[52px]">
           {BENEFITS.map((b, i) => (
             <div key={b.title} className={"flex items-start gap-5 border-t border-white/[0.06] py-7 " + (i === BENEFITS.length - 1 ? "border-b" : "")}>
-              <b.icon className="mt-0.5 h-[22px] w-[22px] shrink-0 text-violet-500" />
+              <b.icon className="mt-0.5 h-[22px] w-[22px] shrink-0 text-emerald-500" />
               <div>
                 <h3 className="mb-2 text-[18px] font-bold tracking-[-0.02em]">{b.title}</h3>
                 <p className="max-w-[680px] text-[15px] leading-[1.6] text-slate-400">{b.desc}</p>
@@ -386,7 +386,7 @@ function BigCTA() {
     <section className="py-[120px]">
       <div className="mx-auto max-w-[1140px] px-6">
         <div className="relative overflow-hidden rounded-3xl border border-white/[0.06] bg-[#0D0E16]/70 px-6 py-[100px] text-center">
-          <div className="pointer-events-none absolute left-1/2 top-[-200px] h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse,rgba(124,58,237,0.2),transparent_65%)]" />
+          <div className="pointer-events-none absolute left-1/2 top-[-200px] h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse,rgba(16,185,129,0.2),transparent_65%)]" />
           <h2 className="relative text-[clamp(32px,4.4vw,52px)] font-extrabold tracking-[-0.04em]">Ready to save automatically?</h2>
           <p className="relative mt-5 text-[18px] text-slate-400">Connect your battery in 2 minutes. No technical knowledge needed.</p>
           <a href="/signup" className={btnPrimary + " relative mt-9"}>14 days free — no credit card</a>
@@ -457,7 +457,7 @@ export default function Page() {
     <main className="relative min-h-screen overflow-x-hidden bg-[#07080D] font-sans text-slate-100 antialiased">
       {/* atmosphere */}
       <div className="pointer-events-none fixed inset-0 z-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_100%_80%_at_50%_0%,#000_40%,transparent_90%)]" />
-      <div className="pointer-events-none fixed left-1/2 top-[-320px] z-0 h-[820px] w-[1200px] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_60%_60%_at_50%_50%,rgba(124,58,237,0.25),rgba(109,40,217,0.1)_45%,transparent_70%)] blur-xl" />
+      <div className="pointer-events-none fixed left-1/2 top-[-320px] z-0 h-[820px] w-[1200px] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_60%_60%_at_50%_50%,rgba(16,185,129,0.25),rgba(5,150,105,0.1)_45%,transparent_70%)] blur-xl" />
       <div className="relative z-[2]">
         <Nav />
         <Hero />

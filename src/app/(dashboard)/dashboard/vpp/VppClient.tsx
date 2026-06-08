@@ -14,25 +14,25 @@ const HOW_IT_WORKS = [
     icon: Zap,
     title: 'Netbeheerder vraagt balans',
     body: 'TenneT heeft te veel of te weinig stroom op het net. Ze sturen een signaal naar onze pool.',
-    iconClass: 'text-violet-400 bg-violet-500/10',
+    iconClass: 'text-emerald-400 bg-emerald-500/10',
   },
   {
     icon: Settings,
     title: 'GBICT AI beslist',
     body: 'Onze algoritme checkt jouw SoC, comfort-instellingen en schema — en beslist of jij meedoet.',
-    iconClass: 'text-violet-400 bg-violet-400/10',
+    iconClass: 'text-emerald-400 bg-emerald-400/10',
   },
   {
     icon: Zap,
     title: 'Batterij reageert in seconden',
     body: 'Jouw Sessy laadt of ontlaadt automatisch. Je merkt er niets van — behalve de uitbetaling.',
-    iconClass: 'text-violet-200 bg-violet-200/10',
+    iconClass: 'text-emerald-200 bg-emerald-200/10',
   },
   {
     icon: BarChart3,
     title: 'Maandelijkse uitbetaling',
     body: 'Inkomsten worden maandelijks bijgeschreven. Transparant per dag inzichtelijk in je dashboard.',
-    iconClass: 'text-violet-300 bg-violet-300/10',
+    iconClass: 'text-emerald-300 bg-emerald-300/10',
   },
 ]
 
@@ -74,8 +74,8 @@ export default function VppClient({
     <div className="max-w-2xl space-y-6">
       {/* Header */}
       <div>
-        <Badge className="mb-3 border-violet-500/30 bg-violet-500/10 text-violet-400">
-          <span className="mr-1.5 h-1.5 w-1.5 animate-pulse rounded-full bg-violet-400 inline-block" />
+        <Badge className="mb-3 border-emerald-500/30 bg-emerald-500/10 text-emerald-400">
+          <span className="mr-1.5 h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400 inline-block" />
           Bèta — beperkt aantal plekken
         </Badge>
         <h1 className="text-2xl font-bold tracking-tight text-slate-50" style={{ letterSpacing: '-0.02em' }}>
@@ -88,21 +88,21 @@ export default function VppClient({
       </div>
 
       {/* Earning estimate card */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-violet-950/40 via-slate-900 to-slate-900 p-6 ring-1 ring-violet-500/20">
-        <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-violet-500/5" />
-        <div className="absolute -bottom-4 -right-4 h-20 w-20 rounded-full bg-violet-500/5" />
-        <p className="text-sm font-medium text-violet-200/70">Jouw geschatte extra verdienste</p>
-        <p className="mt-1 text-4xl font-bold tracking-tight text-violet-400">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-950/40 via-slate-900 to-slate-900 p-6 ring-1 ring-emerald-500/20">
+        <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-emerald-500/5" />
+        <div className="absolute -bottom-4 -right-4 h-20 w-20 rounded-full bg-emerald-500/5" />
+        <p className="text-sm font-medium text-emerald-200/70">Jouw geschatte extra verdienste</p>
+        <p className="mt-1 text-4xl font-bold tracking-tight text-emerald-400">
           €{estMin} – €{estMax}
         </p>
-        <p className="mt-1 text-sm text-violet-400/60">per jaar, bovenop je normale besparing</p>
+        <p className="mt-1 text-sm text-emerald-400/60">per jaar, bovenop je normale besparing</p>
         <div className="mt-4 flex flex-wrap gap-3 text-xs text-slate-500">
           <span className="flex items-center gap-1.5">
-            <span className="h-1.5 w-1.5 rounded-full bg-violet-400/60" />
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400/60" />
             Gebaseerd op EPEX FCR/aFRR marktprijzen
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="h-1.5 w-1.5 rounded-full bg-violet-400/60" />
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400/60" />
             5 kWh batterij aanname
           </span>
         </div>
@@ -155,7 +155,7 @@ export default function VppClient({
         <CardContent className="py-4">
           <div className="flex items-center gap-3">
             <div className="flex -space-x-2">
-              {['bg-violet-400', 'bg-violet-500', 'bg-violet-300', 'bg-violet-600'].map((c, i) => (
+              {['bg-emerald-400', 'bg-emerald-500', 'bg-emerald-300', 'bg-emerald-600'].map((c, i) => (
                 <div key={i} className={`h-6 w-6 rounded-full ${c} ring-2 ring-slate-900`} />
               ))}
             </div>
@@ -170,16 +170,16 @@ export default function VppClient({
       {/* CTA */}
       {isEnrolled ? (
         <div className="space-y-3">
-          <Card className="border-violet-800/40 bg-violet-950/20">
+          <Card className="border-emerald-800/40 bg-emerald-950/20">
             <CardContent className="flex items-center gap-4 py-5">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-violet-500">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-500">
                 <CheckCircle className="h-5 w-5 text-white" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-violet-300">
+                <p className="text-sm font-semibold text-emerald-300">
                   Je staat op de wachtlijst!
                 </p>
-                <p className="text-xs text-violet-400">
+                <p className="text-xs text-emerald-400">
                   We activeren jouw VPP deelname zodra we live gaan in jouw regio.
                 </p>
               </div>
@@ -198,7 +198,7 @@ export default function VppClient({
           <button
             onClick={toggle}
             disabled={isPending}
-            className="inline-flex w-full h-11 items-center justify-center gap-2 rounded-full bg-[#5B21B6] px-7 text-[14px] font-semibold text-white shadow-[0_1px_3px_rgba(0,0,0,0.3)] transition-colors hover:bg-[#6D28D9] disabled:opacity-50"
+            className="inline-flex w-full h-11 items-center justify-center gap-2 rounded-full bg-[#047857] px-7 text-[14px] font-semibold text-white shadow-[0_1px_3px_rgba(0,0,0,0.3)] transition-colors hover:bg-[#059669] disabled:opacity-50"
           >
             <Zap className="h-4 w-4" />
             {isPending ? 'Aanmelden…' : 'Meld je aan voor het VPP bèta-programma'}

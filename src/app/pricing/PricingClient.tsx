@@ -146,7 +146,7 @@ export function PricingClient({ translations: t }: Props) {
 
         {/* Hero */}
         <div className="text-center">
-          <div className="mb-5 text-xs font-bold uppercase tracking-widest text-violet-400">Abonnementen</div>
+          <div className="mb-5 text-xs font-bold uppercase tracking-widest text-emerald-400">Abonnementen</div>
           <h1 className="text-5xl font-extrabold tracking-tight text-slate-50 md:text-6xl"
             style={{ letterSpacing: '-0.03em' }}>
             <span className="text-gradient-blue">{t.pricing.title}</span>
@@ -157,8 +157,8 @@ export function PricingClient({ translations: t }: Props) {
 
         {/* Trial banner */}
         <div className="mt-10 flex items-center justify-center gap-3 rounded-2xl badge-glow px-6 py-4">
-          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-violet-500 text-sm text-white font-bold">✓</span>
-          <p className="text-sm text-violet-300" dangerouslySetInnerHTML={{ __html: t.pricing.trialBadge }} />
+          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-sm text-white font-bold">✓</span>
+          <p className="text-sm text-emerald-300" dangerouslySetInnerHTML={{ __html: t.pricing.trialBadge }} />
         </div>
 
         {/* Pricing cards */}
@@ -166,15 +166,15 @@ export function PricingClient({ translations: t }: Props) {
           {TIERS.map((tier) => (
             <div key={tier.name} className={`relative flex flex-col rounded-2xl p-7 ${
               tier.highlight
-                ? 'border-2 border-violet-500/60 glow-card'
+                ? 'border-2 border-emerald-500/60 glow-card'
                 : 'glow-card'
             }`}
-              style={tier.highlight ? { boxShadow: '0 0 40px rgba(124,58,237,0.18), 0 20px 40px rgba(0,0,0,0.4)' } : undefined}
+              style={tier.highlight ? { boxShadow: '0 0 40px rgba(16,185,129,0.18), 0 20px 40px rgba(0,0,0,0.4)' } : undefined}
             >
               {tier.badge && (
                 <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                  <span className="rounded-full bg-gradient-to-r from-violet-400 to-violet-600 px-4 py-1 text-xs font-bold text-white shadow-lg"
-                    style={{ boxShadow: '0 3px 0 #3b0d6b, 0 6px 16px rgba(124,58,237,0.4)' }}>
+                  <span className="rounded-full bg-gradient-to-r from-emerald-400 to-emerald-600 px-4 py-1 text-xs font-bold text-white shadow-lg"
+                    style={{ boxShadow: '0 3px 0 #064e3b, 0 6px 16px rgba(16,185,129,0.4)' }}>
                     {tier.badge}
                   </span>
                 </div>
@@ -195,11 +195,11 @@ export function PricingClient({ translations: t }: Props) {
               <ul className="mt-7 flex-1 space-y-3">
                 {tier.features.map((f, i) => (
                   <li key={f} className="flex items-start gap-2.5">
-                    <svg className={`mt-0.5 h-4 w-4 shrink-0 ${i === 0 && tier.trial ? 'text-violet-400' : 'text-emerald-400'}`}
+                    <svg className={`mt-0.5 h-4 w-4 shrink-0 ${i === 0 && tier.trial ? 'text-emerald-400' : 'text-emerald-400'}`}
                       viewBox="0 0 20 20" fill="currentColor">
                       <path fillRule="evenodd" d="M16.704 5.29a1 1 0 010 1.42l-8 8a1 1 0 01-1.42 0l-4-4a1 1 0 011.42-1.42L8 12.58l7.29-7.29a1 1 0 011.414 0z" clipRule="evenodd" />
                     </svg>
-                    <span className={`text-sm ${i === 0 && tier.trial ? 'font-semibold text-violet-300' : 'text-slate-300'}`}>{f}</span>
+                    <span className={`text-sm ${i === 0 && tier.trial ? 'font-semibold text-emerald-300' : 'text-slate-300'}`}>{f}</span>
                   </li>
                 ))}
               </ul>
@@ -223,7 +223,7 @@ export function PricingClient({ translations: t }: Props) {
 
         {/* FAQ */}
         <div className="mt-24">
-          <div className="mb-4 text-xs font-bold uppercase tracking-widest text-violet-400">FAQ</div>
+          <div className="mb-4 text-xs font-bold uppercase tracking-widest text-emerald-400">FAQ</div>
           <h2 className="text-3xl font-extrabold tracking-tight text-slate-50 mb-10"
             style={{ letterSpacing: '-0.03em' }}>
             {t.pricing.faqTitle}
@@ -244,8 +244,8 @@ export function PricingClient({ translations: t }: Props) {
             <div className="border-b border-white/[0.06] px-8 py-7">
               <div className="flex items-center gap-4">
                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl"
-                  style={{ background: 'rgba(124,58,237,0.1)', border: '1px solid rgba(124,58,237,0.2)' }}>
-                  <Building2 className="h-6 w-6 text-violet-400" />
+                  style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)' }}>
+                  <Building2 className="h-6 w-6 text-emerald-400" />
                 </div>
                 <div>
                   <h2 className="text-xl font-bold text-slate-50">{t.pricing.enterpriseTitle}</h2>
@@ -354,7 +354,7 @@ function Field({ label, required, children }: { label: string; required?: boolea
   return (
     <div>
       <label className="mb-1.5 block text-sm font-medium text-slate-300">
-        {label} {required && <span className="text-violet-400">*</span>}
+        {label} {required && <span className="text-emerald-400">*</span>}
       </label>
       {children}
     </div>

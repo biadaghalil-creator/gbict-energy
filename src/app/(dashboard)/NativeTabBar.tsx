@@ -36,10 +36,10 @@ export default function NativeTabBar() {
               href={tab.href}
               className={cn(
                 'flex flex-1 flex-col items-center gap-1 rounded-xl py-1.5 text-[10px] font-medium transition-colors',
-                active ? 'text-violet-300' : 'text-slate-500'
+                active ? 'text-emerald-300' : 'text-slate-500'
               )}
             >
-              <Icon className={cn('h-[22px] w-[22px] transition-colors', active ? 'text-violet-400' : 'text-slate-500')} />
+              <Icon className={cn('h-[22px] w-[22px] transition-colors', active ? 'text-emerald-400' : 'text-slate-500')} />
               <span className="leading-none">{tab.label}</span>
             </Link>
           )

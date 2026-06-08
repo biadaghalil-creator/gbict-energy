@@ -11,7 +11,7 @@ const NAV_LINKS = [
 ] as const;
 
 const btnPrimary =
-  "inline-flex items-center justify-center h-12 px-7 rounded-full bg-[#5B21B6] hover:bg-[#6D28D9] " +
+  "inline-flex items-center justify-center h-12 px-7 rounded-full bg-[#047857] hover:bg-[#059669] " +
   "text-white text-[15px] font-semibold tracking-[-0.01em] shadow-[0_1px_3px_rgba(0,0,0,0.3)] transition-colors";
 
 function Nav() {
@@ -52,7 +52,7 @@ function Footer() {
         <div className="flex flex-col items-center justify-between gap-3.5 text-[13px] text-slate-500 md:flex-row">
           <span>© 2026 GBICT Energy · Almere, Netherlands</span>
           <div className="flex gap-5">
-            <a href="/privacy" className="text-violet-400 hover:text-violet-300">Privacy Policy</a>
+            <a href="/privacy" className="text-emerald-400 hover:text-emerald-300">Privacy Policy</a>
             <a href="/terms" className="hover:text-slate-100">Terms of Service</a>
             <a href="/contact" className="hover:text-slate-100">Contact</a>
           </div>
@@ -82,8 +82,8 @@ export default function PrivacyPage() {
           {/* Header */}
           <div className="mb-14 text-center">
             <div className="mb-5 flex justify-center">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-violet-500/30 bg-violet-500/10">
-                <ShieldCheck className="h-7 w-7 text-violet-400" />
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-emerald-500/30 bg-emerald-500/10">
+                <ShieldCheck className="h-7 w-7 text-emerald-400" />
               </div>
             </div>
             <h1 className="text-[clamp(36px,5vw,54px)] font-extrabold tracking-[-0.04em] text-slate-50">Privacy Policy</h1>
@@ -187,19 +187,19 @@ export default function PrivacyPage() {
                   </thead>
                   <tbody>
                     <tr className="border-b border-white/[0.06]">
-                      <td className="px-5 py-3.5 font-mono text-[13px] text-violet-300">sb-session</td>
+                      <td className="px-5 py-3.5 font-mono text-[13px] text-emerald-300">sb-session</td>
                       <td className="px-5 py-3.5 text-slate-400">Authentication session (Supabase)</td>
                       <td className="px-5 py-3.5 text-slate-400">Session</td>
                       <td className="px-5 py-3.5 text-emerald-400">Yes</td>
                     </tr>
                     <tr className="border-b border-white/[0.06]">
-                      <td className="px-5 py-3.5 font-mono text-[13px] text-violet-300">GBICT_LOCALE</td>
+                      <td className="px-5 py-3.5 font-mono text-[13px] text-emerald-300">GBICT_LOCALE</td>
                       <td className="px-5 py-3.5 text-slate-400">Stores your language preference</td>
                       <td className="px-5 py-3.5 text-slate-400">1 year</td>
                       <td className="px-5 py-3.5 text-slate-400">No</td>
                     </tr>
                     <tr>
-                      <td className="px-5 py-3.5 font-mono text-[13px] text-violet-300">_gbict_anon</td>
+                      <td className="px-5 py-3.5 font-mono text-[13px] text-emerald-300">_gbict_anon</td>
                       <td className="px-5 py-3.5 text-slate-400">Anonymized usage analytics</td>
                       <td className="px-5 py-3.5 text-slate-400">1 year</td>
                       <td className="px-5 py-3.5 text-slate-400">No</td>
@@ -231,7 +231,7 @@ export default function PrivacyPage() {
                 <li><strong className="text-slate-300">Right to object (Art. 21):</strong> you may object to processing based on legitimate interests, including for direct marketing.</li>
                 <li><strong className="text-slate-300">Right to restrict processing (Art. 18):</strong> you may request that we limit how we use your data in certain circumstances.</li>
               </ul>
-              <p className="mt-3">To exercise any of these rights, email <a href="mailto:info@gbict.nl" className="text-violet-400 hover:text-violet-300">info@gbict.nl</a>. We will respond within 30 days as required by GDPR.</p>
+              <p className="mt-3">To exercise any of these rights, email <a href="mailto:info@gbict.nl" className="text-emerald-400 hover:text-emerald-300">info@gbict.nl</a>. We will respond within 30 days as required by GDPR.</p>
             </Section>
 
             <Section title="8. Data protection authority">
@@ -239,7 +239,7 @@ export default function PrivacyPage() {
                 We are subject to the jurisdiction of the <strong className="text-slate-300">Autoriteit Persoonsgegevens (AP)</strong>, the Dutch Data Protection Authority, which is a member of the European Data Protection Board (EDPB).
               </p>
               <p>
-                If you believe we have not handled your data appropriately, you have the right to lodge a complaint with the AP at <a href="https://autoriteitpersoonsgegevens.nl" target="_blank" rel="noopener noreferrer" className="text-violet-400 hover:text-violet-300">autoriteitpersoonsgegevens.nl</a>.
+                If you believe we have not handled your data appropriately, you have the right to lodge a complaint with the AP at <a href="https://autoriteitpersoonsgegevens.nl" target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:text-emerald-300">autoriteitpersoonsgegevens.nl</a>.
               </p>
             </Section>
 
@@ -255,10 +255,10 @@ export default function PrivacyPage() {
               </p>
             </Section>
 
-            <div className="mt-8 rounded-xl border border-violet-500/20 bg-violet-500/[0.06] px-6 py-5">
+            <div className="mt-8 rounded-xl border border-emerald-500/20 bg-emerald-500/[0.06] px-6 py-5">
               <p className="text-[14px] text-slate-300">
                 <strong className="text-slate-100">Questions about this policy?</strong> Email us at{" "}
-                <a href="mailto:info@gbict.nl" className="text-violet-400 hover:text-violet-300">info@gbict.nl</a>.
+                <a href="mailto:info@gbict.nl" className="text-emerald-400 hover:text-emerald-300">info@gbict.nl</a>.
                 We are always happy to explain how and why we process your data.
               </p>
             </div>

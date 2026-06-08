@@ -6,6 +6,7 @@ import {
   testTibberToken, testSessyCredentials,
   testVictronCredentials, testEnphaseCredentials, testSolarEdgeCredentials,
   testFroniusConnection, testSmaCredentials,
+  testTadoCredentials,
   type DeviceType,
 } from './actions'
 import { Zap, Gauge, BatteryCharging, Sun, CloudSun, Plug, Flame, Thermometer, Car } from 'lucide-react'
@@ -26,6 +27,7 @@ type Step =
   | 'victron-setup' | 'enphase-setup' | 'solaredge-setup'
   | 'battery-other'
   | 'solar-solaredge-setup' | 'solar-fronius-setup' | 'solar-sma-setup'
+  | 'heatpump-setup'
   | 'done'
 
 const DEVICE_ICONS: Record<string, React.ElementType> = {
@@ -39,11 +41,13 @@ const DEVICE_ICONS: Record<string, React.ElementType> = {
   solar_enphase:        Sun,
   solar_sma:            Sun,
   solar_fronius:        Sun,
+  heatpump_tado:        Flame,
+  heatpump_generic:     Flame,
 }
 
 const STATUS_LABEL: Record<string, { label: string; color: string }> = {
   pending: { label: 'Verbinden…', color: 'text-amber-500' },
-  active:  { label: 'Verbonden',  color: 'text-violet-500' },
+  active:  { label: 'Verbonden',  color: 'text-emerald-500' },
   error:   { label: 'Fout',       color: 'text-red-500' },
 }
 
@@ -59,6 +63,7 @@ const MODAL_TITLES: Partial<Record<Step, string>> = {
   'solar-solaredge-setup': 'SolarEdge zonnepanelen',
   'solar-fronius-setup': 'Fronius omvormer koppelen',
   'solar-sma-setup':     'SMA koppelen',
+  'heatpump-setup':      'Warmtepomp koppelen',
   done:                  'Gekoppeld!',
 }
 
@@ -132,6 +137,16 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
   const [smaError,   setSmaError]   = useState('')
   const [smaTesting, setSmaTesting] = useState(false)
 
+  // Warmtepomp (Tado / handmatig)
+  const [heatpumpBrand,   setHeatpumpBrand]   = useState<'tado' | 'generic'>('tado')
+  const [heatpumpEmail,   setHeatpumpEmail]   = useState('')
+  const [heatpumpPass,    setHeatpumpPass]    = useState('')
+  const [heatpumpLabel,   setHeatpumpLabel]   = useState('')
+  const [heatpumpHome,    setHeatpumpHome]    = useState('')
+  const [heatpumpOk,      setHeatpumpOk]      = useState(false)
+  const [heatpumpError,   setHeatpumpError]   = useState('')
+  const [heatpumpTesting, setHeatpumpTesting] = useState(false)
+
   function openModal() {
     setStep('category')
     setTibberToken(''); setTibberName(''); setTibberError('')
@@ -145,6 +160,9 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
     setSolarSeKey(''); setSolarSeSiteId(''); setSolarSeName(''); setSolarSeOk(false); setSolarSeError('')
     setFroniusIp(''); setFroniusOk(false); setFroniusError('')
     setSmaEmail(''); setSmaPass(''); setSmaError('')
+    setHeatpumpBrand('tado'); setHeatpumpEmail(''); setHeatpumpPass('')
+    setHeatpumpLabel(''); setHeatpumpHome(''); setHeatpumpOk(false)
+    setHeatpumpError('')
   }
   function closeModal() { setStep('idle') }
 
@@ -359,6 +377,44 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
     setSmaError(r.error ?? 'Onbekende fout.')
   }
 
+  // ── Warmtepomp ─────────────────────────────────────────────────────────────
+  async function handleTestHeatpump() {
+    setHeatpumpError(''); setHeatpumpOk(false); setHeatpumpHome('')
+    if (!heatpumpEmail.trim() || !heatpumpPass.trim()) { setHeatpumpError('Vul je e-mail en wachtwoord in.'); return }
+    setHeatpumpTesting(true)
+    const r = await testTadoCredentials(heatpumpEmail.trim(), heatpumpPass.trim())
+    setHeatpumpTesting(false)
+    if (!r.ok) { setHeatpumpError(r.error ?? 'Inloggen mislukt.'); return }
+    setHeatpumpHome(r.homeName ?? '')
+    if (r.error) setHeatpumpError(r.error)
+    setHeatpumpOk(true)
+  }
+
+  function handleSaveHeatpump() {
+    if (heatpumpBrand === 'tado') {
+      if (!heatpumpOk) return
+      startTransition(async () => {
+        const r = await saveDevice({
+          type: 'heatpump_tado', brand: 'Tado', label: 'Warmtepomp',
+          config: { username: heatpumpEmail.trim(), password: heatpumpPass.trim() },
+          status: 'active',
+        })
+        if (r.error) { setHeatpumpError(r.error); return }
+        addDevice({ type: 'heatpump_tado', brand: 'Tado', name: 'Warmtepomp', status: 'active' })
+      })
+    } else {
+      const label = heatpumpLabel.trim() || 'Warmtepomp'
+      startTransition(async () => {
+        const r = await saveDevice({
+          type: 'heatpump_generic', brand: 'Warmtepomp', label,
+          config: {}, status: 'pending',
+        })
+        if (r.error) { setHeatpumpError(r.error); return }
+        addDevice({ type: 'heatpump_generic', brand: 'Warmtepomp', name: label, status: 'pending' })
+      })
+    }
+  }
+
   // ── Verwijderen ──────────────────────────────────────────────────────────
   function handleDelete(id: string) {
     setDeletingId(id)
@@ -379,7 +435,7 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
         </div>
         <button
           onClick={openModal}
-          className="inline-flex h-10 items-center gap-2 rounded-full bg-[#5B21B6] px-5 text-sm font-medium text-white transition-colors hover:bg-[#6D28D9]"
+          className="inline-flex h-10 items-center gap-2 rounded-full bg-[#047857] px-5 text-sm font-medium text-white transition-colors hover:bg-[#059669]"
         >
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -419,7 +475,7 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
                   </button>
                 </div>
                 <div className="mt-4 flex items-center gap-1.5">
-                  <span className={`h-1.5 w-1.5 rounded-full ${device.status === 'active' ? 'bg-violet-500' : device.status === 'error' ? 'bg-red-500' : 'bg-amber-500'}`} />
+                  <span className={`h-1.5 w-1.5 rounded-full ${device.status === 'active' ? 'bg-emerald-500' : device.status === 'error' ? 'bg-red-500' : 'bg-amber-500'}`} />
                   <span className={`text-xs ${statusInfo.color}`}>{statusInfo.label}</span>
                 </div>
               </div>
@@ -543,12 +599,26 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
                 />
               )}
 
+              {step === 'heatpump-setup' && (
+                <HeatpumpStep
+                  brand={heatpumpBrand} onBrandChange={setHeatpumpBrand}
+                  email={heatpumpEmail} password={heatpumpPass}
+                  onEmailChange={setHeatpumpEmail} onPasswordChange={setHeatpumpPass}
+                  label={heatpumpLabel} onLabelChange={setHeatpumpLabel}
+                  homeName={heatpumpHome}
+                  onTest={handleTestHeatpump} onSave={handleSaveHeatpump}
+                  onBack={() => setStep('category')}
+                  testPending={heatpumpTesting} savePending={isPending}
+                  verified={heatpumpOk} error={heatpumpError}
+                />
+              )}
+
               {step === 'battery-other' && <BatteryOtherStep onBack={() => setStep('category')} />}
 
               {step === 'done' && (
                 <div className="py-4 text-center">
-                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-violet-100 text-2xl dark:bg-violet-950">✓</div>
-                  <p className="mt-3 text-sm font-medium text-violet-600">Apparaat opgeslagen!</p>
+                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-2xl dark:bg-emerald-950">✓</div>
+                  <p className="mt-3 text-sm font-medium text-emerald-600">Apparaat opgeslagen!</p>
                 </div>
               )}
             </div>
@@ -582,8 +652,8 @@ const SOLAR_CATEGORIES = [
 
 // Roadmap: alles onder één dak. Nog niet koppelbaar, wel zichtbaar.
 const HEATING_CATEGORIES = [
-  { id: 'idle' as Step, icon: Flame,       title: 'Warmtepomp',        sub: 'Slim verwarmen op goedkope uren', soon: true },
-  { id: 'idle' as Step, icon: Thermometer, title: 'Slimme thermostaat', sub: 'Tado, Nest, Honeywell',           soon: true },
+  { id: 'heatpump-setup' as Step, icon: Flame,       title: 'Warmtepomp',         sub: 'Tado of handmatig' },
+  { id: 'idle' as Step,           icon: Thermometer, title: 'Slimme thermostaat', sub: 'Tado, Nest, Honeywell', soon: true },
 ] as const
 
 const CHARGING_CATEGORIES = [
@@ -611,7 +681,7 @@ function CategoryList({
             className={`flex items-center gap-4 rounded-xl border px-4 py-3 text-left transition-colors ${
               isSoon
                 ? 'cursor-default border-slate-100 bg-slate-50 opacity-60 dark:border-slate-800 dark:bg-slate-800/50'
-                : 'border-slate-200 bg-white hover:border-violet-400 hover:bg-violet-50 dark:border-slate-700 dark:bg-slate-800 dark:hover:border-violet-600 dark:hover:bg-violet-950/30'
+                : 'border-slate-200 bg-white hover:border-emerald-400 hover:bg-emerald-50 dark:border-slate-700 dark:bg-slate-800 dark:hover:border-emerald-600 dark:hover:bg-emerald-950/30'
             }`}
           >
             <Icon className="h-6 w-6 shrink-0 text-slate-500 dark:text-slate-300" />
@@ -687,7 +757,7 @@ function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <input
       {...props}
-      className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+      className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
     />
   )
 }
@@ -697,7 +767,7 @@ function ErrorBox({ msg }: { msg: string }) {
 }
 
 function SuccessBox({ msg }: { msg: string }) {
-  return <p className="rounded-lg bg-violet-50 px-3 py-2 text-xs text-violet-600 dark:bg-violet-950/30 dark:text-violet-400">{msg}</p>
+  return <p className="rounded-lg bg-emerald-50 px-3 py-2 text-xs text-emerald-600 dark:bg-emerald-950/30 dark:text-emerald-400">{msg}</p>
 }
 
 function BackBtn({ onClick }: { onClick: () => void }) {
@@ -710,7 +780,7 @@ function BackBtn({ onClick }: { onClick: () => void }) {
 
 function SaveBtn({ onClick, pending, label }: { onClick: () => void; pending: boolean; label?: string }) {
   return (
-    <button onClick={onClick} disabled={pending} className="flex-1 rounded-xl bg-[#5B21B6] py-2.5 text-sm font-medium text-white hover:bg-[#6D28D9] disabled:opacity-50">
+    <button onClick={onClick} disabled={pending} className="flex-1 rounded-xl bg-[#047857] py-2.5 text-sm font-medium text-white hover:bg-[#059669] disabled:opacity-50">
       {pending ? 'Opslaan…' : (label ?? 'Koppeling opslaan')}
     </button>
   )
@@ -718,7 +788,7 @@ function SaveBtn({ onClick, pending, label }: { onClick: () => void; pending: bo
 
 function TestBtn({ onClick, pending, label }: { onClick: () => void; pending: boolean; label?: string }) {
   return (
-    <button onClick={onClick} disabled={pending} className="flex-1 rounded-xl bg-[#5B21B6] py-2.5 text-sm font-medium text-white hover:bg-[#6D28D9] disabled:opacity-50">
+    <button onClick={onClick} disabled={pending} className="flex-1 rounded-xl bg-[#047857] py-2.5 text-sm font-medium text-white hover:bg-[#059669] disabled:opacity-50">
       {pending ? 'Verifiëren…' : (label ?? 'Verbinding testen')}
     </button>
   )
@@ -734,7 +804,7 @@ function TibberStep({ token, onTokenChange, onTest, onSave, onBack, testPending,
     <div className="space-y-4">
       <p className="text-sm text-slate-500">
         Ga naar{' '}
-        <a href="https://developer.tibber.com/settings/access-token" target="_blank" rel="noopener noreferrer" className="text-violet-400 hover:underline">
+        <a href="https://developer.tibber.com/settings/access-token" target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:underline">
           developer.tibber.com
         </a>{' '}
         en kopieer je persoonlijke toegangstoken.
@@ -808,7 +878,7 @@ function VictronStep({
         <p className="text-xs font-medium text-slate-700 dark:text-slate-300">VRM Portal account</p>
         <p className="mt-0.5 text-xs text-slate-400">
           Gebruik je inloggegevens van{' '}
-          <a href="https://vrm.victronenergy.com" target="_blank" rel="noopener noreferrer" className="text-violet-400 hover:underline">vrm.victronenergy.com</a>.
+          <a href="https://vrm.victronenergy.com" target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:underline">vrm.victronenergy.com</a>.
         </p>
       </div>
       <Field label="E-mailadres">
@@ -830,8 +900,8 @@ function VictronStep({
                 onClick={() => onSelectSite(s.idSite, s.name)}
                 className={`w-full rounded-xl border px-3 py-2.5 text-left text-sm transition-colors ${
                   selectedSiteId === s.idSite
-                    ? 'border-violet-400 bg-violet-50 font-medium text-violet-700 dark:border-violet-600 dark:bg-violet-950/30 dark:text-violet-400'
-                    : 'border-slate-200 hover:border-violet-300 dark:border-slate-700'
+                    ? 'border-emerald-400 bg-emerald-50 font-medium text-emerald-700 dark:border-emerald-600 dark:bg-emerald-950/30 dark:text-emerald-400'
+                    : 'border-slate-200 hover:border-emerald-300 dark:border-slate-700'
                 }`}
               >
                 {s.name}
@@ -870,9 +940,9 @@ function EnphaseStep({
         <p className="text-xs font-medium text-slate-700 dark:text-slate-300">Enlighten API toegang</p>
         <p className="mt-0.5 text-xs text-slate-400">
           Haal je API key op via{' '}
-          <a href="https://developer.enphase.com" target="_blank" rel="noopener noreferrer" className="text-violet-400 hover:underline">developer.enphase.com</a>.
+          <a href="https://developer.enphase.com" target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:underline">developer.enphase.com</a>.
           Je systeem ID staat in de URL van je{' '}
-          <a href="https://enlighten.enphaseenergy.com" target="_blank" rel="noopener noreferrer" className="text-violet-400 hover:underline">Enlighten portal</a>.
+          <a href="https://enlighten.enphaseenergy.com" target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:underline">Enlighten portal</a>.
         </p>
       </div>
       <Field label="API key">
@@ -913,7 +983,7 @@ function SolarEdgeStep({
         <p className="text-xs font-medium text-slate-700 dark:text-slate-300">Monitoring portal toegang</p>
         <p className="mt-0.5 text-xs text-slate-400">
           Activeer API toegang via{' '}
-          <a href="https://monitoring.solaredge.com" target="_blank" rel="noopener noreferrer" className="text-violet-400 hover:underline">monitoring.solaredge.com</a>{' '}
+          <a href="https://monitoring.solaredge.com" target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:underline">monitoring.solaredge.com</a>{' '}
           → Admin → Site Access → API Access.
         </p>
       </div>
@@ -975,7 +1045,7 @@ function SolarSolarEdgeStep({
         <p className="text-xs font-medium text-slate-700 dark:text-slate-300">Monitoring portal toegang</p>
         <p className="mt-0.5 text-xs text-slate-400">
           Activeer API toegang via{' '}
-          <a href="https://monitoring.solaredge.com" target="_blank" rel="noopener noreferrer" className="text-violet-400 hover:underline">monitoring.solaredge.com</a>{' '}
+          <a href="https://monitoring.solaredge.com" target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:underline">monitoring.solaredge.com</a>{' '}
           → Admin → Site Access → API Access.
         </p>
       </div>
@@ -1066,6 +1136,103 @@ function SmaStep({
   )
 }
 
+// ── Warmtepomp step ────────────────────────────────────────────────────────
+
+function HeatpumpStep({
+  brand, onBrandChange,
+  email, password, onEmailChange, onPasswordChange,
+  label, onLabelChange,
+  homeName, onTest, onSave, onBack,
+  testPending, savePending, verified, error,
+}: {
+  brand: 'tado' | 'generic'
+  onBrandChange: (b: 'tado' | 'generic') => void
+  email: string; password: string
+  onEmailChange: (v: string) => void; onPasswordChange: (v: string) => void
+  label: string; onLabelChange: (v: string) => void
+  homeName: string
+  onTest: () => void; onSave: () => void; onBack: () => void
+  testPending: boolean; savePending: boolean; verified: boolean; error: string
+}) {
+  return (
+    <div className="space-y-4">
+      <p className="text-sm text-slate-500">
+        Koppel je warmtepomp om slim te verwarmen op de goedkoopste uren. Kies je merk.
+      </p>
+
+      <div className="grid grid-cols-2 gap-2">
+        <button
+          onClick={() => onBrandChange('tado')}
+          className={`rounded-xl border px-3 py-2.5 text-left text-sm transition-colors ${
+            brand === 'tado'
+              ? 'border-emerald-400 bg-emerald-50 font-medium text-emerald-700 dark:border-emerald-600 dark:bg-emerald-950/30 dark:text-emerald-400'
+              : 'border-slate-200 hover:border-emerald-300 dark:border-slate-700'
+          }`}
+        >
+          <span className="block font-medium">Tado</span>
+          <span className="block text-xs text-slate-400">Via je Tado account</span>
+        </button>
+        <button
+          onClick={() => onBrandChange('generic')}
+          className={`rounded-xl border px-3 py-2.5 text-left text-sm transition-colors ${
+            brand === 'generic'
+              ? 'border-emerald-400 bg-emerald-50 font-medium text-emerald-700 dark:border-emerald-600 dark:bg-emerald-950/30 dark:text-emerald-400'
+              : 'border-slate-200 hover:border-emerald-300 dark:border-slate-700'
+          }`}
+        >
+          <span className="block font-medium">Andere (handmatig)</span>
+          <span className="block text-xs text-slate-400">Adviezen zonder koppeling</span>
+        </button>
+      </div>
+
+      {brand === 'tado' ? (
+        <>
+          <div className="rounded-xl bg-slate-50 px-4 py-3 dark:bg-slate-800">
+            <p className="text-xs font-medium text-slate-700 dark:text-slate-300">Je Tado account</p>
+            <p className="mt-0.5 text-xs text-slate-400">
+              Gebruik je inloggegevens van{' '}
+              <a href="https://app.tado.com" target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:underline">app.tado.com</a>.
+              Je warmtepomp blijft volledig onder jouw controle.
+            </p>
+          </div>
+          <Field label="E-mailadres">
+            <Input type="email" value={email} onChange={e => onEmailChange(e.target.value)} placeholder="naam@email.nl" />
+          </Field>
+          <Field label="Wachtwoord">
+            <Input type="password" value={password} onChange={e => onPasswordChange(e.target.value)} placeholder="••••••••" />
+          </Field>
+          {error && <ErrorBox msg={error} />}
+          {verified && <SuccessBox msg={homeName ? `✓ Tado account geverifieerd: ${homeName}` : '✓ Tado account geverifieerd — klaar om te koppelen'} />}
+          <div className="flex gap-2 pt-1">
+            <BackBtn onClick={onBack} />
+            {!verified
+              ? <TestBtn onClick={onTest} pending={testPending || !email.trim() || !password.trim()} label="Account verifiëren" />
+              : <SaveBtn onClick={onSave} pending={savePending} label="Warmtepomp koppelen" />
+            }
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="rounded-xl bg-slate-50 px-4 py-3 dark:bg-slate-800">
+            <p className="text-xs font-medium text-slate-700 dark:text-slate-300">Handmatige warmtepomp</p>
+            <p className="mt-0.5 text-xs text-slate-400">
+              Geen directe koppeling. Je ontvangt adviezen over de goedkoopste uren om te verwarmen, die je zelf kunt instellen.
+            </p>
+          </div>
+          <Field label="Naam" hint="Bijv. Warmtepomp woonkamer">
+            <Input type="text" value={label} onChange={e => onLabelChange(e.target.value)} placeholder="Warmtepomp" />
+          </Field>
+          {error && <ErrorBox msg={error} />}
+          <div className="flex gap-2 pt-1">
+            <BackBtn onClick={onBack} />
+            <SaveBtn onClick={onSave} pending={savePending} label="Warmtepomp toevoegen" />
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
+
 // ── Battery other step ─────────────────────────────────────────────────────
 
 const OTHER_BRANDS = ['Tesla Powerwall', 'GoodWe', 'Growatt', 'Huawei FusionSolar', 'Alpha ESS', 'Pylontech']
@@ -1095,7 +1262,7 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
       <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-2xl dark:bg-slate-800">🔌</div>
       <h2 className="mt-4 text-base font-semibold text-slate-900 dark:text-slate-50">Nog geen apparaten gekoppeld</h2>
       <p className="mt-2 text-sm text-slate-500">Voeg je slimme meter, batterij of energiecontract toe om te beginnen.</p>
-      <button onClick={onAdd} className="mt-5 inline-flex h-10 items-center justify-center rounded-full bg-[#5B21B6] px-6 text-sm font-medium text-white transition-colors hover:bg-[#6D28D9]">
+      <button onClick={onAdd} className="mt-5 inline-flex h-10 items-center justify-center rounded-full bg-[#047857] px-6 text-sm font-medium text-white transition-colors hover:bg-[#059669]">
         Apparaat toevoegen
       </button>
     </div>

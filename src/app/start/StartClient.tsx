@@ -50,7 +50,7 @@ export default function StartClient() {
             <ul className="mt-4 flex-1 space-y-2">
               {p.features.map((f) => (
                 <li key={f} className="flex items-start gap-2 text-[13px] text-slate-400">
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-violet-400" />
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
                   {f}
                 </li>
               ))}
@@ -58,7 +58,7 @@ export default function StartClient() {
             <button
               onClick={() => startCheckout(p.id)}
               disabled={loading !== null}
-              className="mt-6 inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#5B21B6] px-6 text-[15px] font-semibold text-white transition-colors hover:bg-[#6D28D9] disabled:opacity-50"
+              className="mt-6 inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#047857] px-6 text-[15px] font-semibold text-white transition-colors hover:bg-[#059669] disabled:opacity-50"
             >
               {loading === p.id && <Loader2 className="h-4 w-4 animate-spin" />}
               Start 14 dagen gratis

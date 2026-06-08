@@ -23,7 +23,7 @@ function ProgressDots({ step, total }: { step: number; total: number }) {
           key={i}
           className={`h-2 rounded-full transition-all duration-300 ${
             i < step
-              ? 'w-6 bg-violet-500'
+              ? 'w-6 bg-emerald-500'
               : 'w-2 bg-slate-200 dark:bg-slate-700'
           }`}
         />
@@ -96,7 +96,7 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
   if (step === 1) {
     return (
       <div className="flex min-h-[70vh] flex-col items-center justify-center px-4 text-center">
-        <div className="mb-8 flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-violet-400 to-violet-600 shadow-lg shadow-violet-500/30">
+        <div className="mb-8 flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-lg shadow-emerald-500/30">
           <Zap className="h-9 w-9 text-white" />
         </div>
         <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
@@ -108,7 +108,7 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
         <button
           type="button"
           onClick={() => setStep(2)}
-          className="mt-10 rounded-full bg-[#5B21B6] px-10 py-4 text-base font-semibold text-white shadow-lg shadow-violet-500/25 transition-all hover:bg-[#6D28D9] hover:shadow-violet-500/40"
+          className="mt-10 rounded-full bg-[#047857] px-10 py-4 text-base font-semibold text-white shadow-lg shadow-emerald-500/25 transition-all hover:bg-[#059669] hover:shadow-emerald-500/40"
         >
           Aan de slag →
         </button>
@@ -142,16 +142,16 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
                 onClick={() => toggleSituation(key)}
                 className={`flex flex-col items-center gap-3 rounded-2xl border-2 p-5 text-center transition-all ${
                   selected
-                    ? 'border-violet-500 bg-violet-50 dark:bg-violet-950/40'
+                    ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40'
                     : 'border-slate-200 bg-white hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700'
                 }`}
               >
-                <Icon className={`h-7 w-7 ${selected ? 'text-violet-600 dark:text-violet-400' : 'text-slate-500 dark:text-slate-400'}`} />
-                <span className={`text-sm font-medium ${selected ? 'text-violet-700 dark:text-violet-300' : 'text-slate-700 dark:text-slate-300'}`}>
+                <Icon className={`h-7 w-7 ${selected ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400'}`} />
+                <span className={`text-sm font-medium ${selected ? 'text-emerald-700 dark:text-emerald-300' : 'text-slate-700 dark:text-slate-300'}`}>
                   {label}
                 </span>
                 {selected && (
-                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-violet-500">
+                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500">
                     <svg className="h-3 w-3 text-white" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M2 6l3 3 5-5" />
                     </svg>
@@ -166,7 +166,7 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
           <button
             type="button"
             onClick={() => setStep(3)}
-            className="w-full rounded-full bg-[#5B21B6] py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#6D28D9]"
+            className="w-full rounded-full bg-[#047857] py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#059669]"
           >
             Volgende →
           </button>
@@ -199,7 +199,7 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
             <a
               key={card.name}
               href="/dashboard/koppelingen"
-              className="flex items-center gap-4 rounded-2xl border-2 border-slate-200 bg-white px-5 py-4 transition-all hover:border-violet-500 hover:bg-violet-50 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-violet-500 dark:hover:bg-violet-950/40"
+              className="flex items-center gap-4 rounded-2xl border-2 border-slate-200 bg-white px-5 py-4 transition-all hover:border-emerald-500 hover:bg-emerald-50 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-emerald-500 dark:hover:bg-emerald-950/40"
             >
               <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800">
                 <Icon className="h-6 w-6 text-slate-600 dark:text-slate-300" />
@@ -237,7 +237,7 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
   if (step === 4) {
     return (
       <div className="flex min-h-[70vh] flex-col items-center justify-center px-4 text-center">
-        <CheckCircle2 className="mb-8 h-16 w-16 text-violet-500" />
+        <CheckCircle2 className="mb-8 h-16 w-16 text-emerald-500" />
         <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
           Je bent klaar om te besparen!
         </h2>
@@ -252,8 +252,8 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
             'Live energieprijzen',
           ].map((item) => (
             <li key={item} className="flex items-center gap-3">
-              <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-violet-100 dark:bg-violet-950">
-                <svg className="h-3.5 w-3.5 text-violet-600 dark:text-violet-400" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth={2}>
+              <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-950">
+                <svg className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M2 7l3.5 3.5L12 3" />
                 </svg>
               </div>
@@ -266,7 +266,7 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
           type="button"
           onClick={handleFinish}
           disabled={loading}
-          className="mt-10 rounded-full bg-[#5B21B6] px-10 py-4 text-base font-semibold text-white shadow-lg shadow-violet-500/25 transition-all hover:bg-[#6D28D9] disabled:opacity-60"
+          className="mt-10 rounded-full bg-[#047857] px-10 py-4 text-base font-semibold text-white shadow-lg shadow-emerald-500/25 transition-all hover:bg-[#059669] disabled:opacity-60"
         >
           {loading ? 'Opslaan…' : 'Naar mijn dashboard →'}
         </button>

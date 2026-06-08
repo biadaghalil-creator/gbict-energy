@@ -14,7 +14,7 @@ interface ReferralClientProps {
 }
 
 const STEPS = [
-  { icon: Share2, title: 'Deel je code', desc: 'Stuur je persoonlijke referral code naar vrienden', color: 'text-violet-400 bg-violet-500/10' },
+  { icon: Share2, title: 'Deel je code', desc: 'Stuur je persoonlijke referral code naar vrienden', color: 'text-emerald-400 bg-emerald-500/10' },
   { icon: Users, title: 'Vriend meldt aan', desc: 'Ze registreren zich met jouw code', color: 'text-blue-400 bg-blue-400/10' },
   { icon: Euro, title: 'Jij krijgt €5', desc: 'Per vriend die zich aanmeldt, ontvang jij €5 credit', color: 'text-emerald-400 bg-emerald-400/10' },
 ]
@@ -57,7 +57,7 @@ export default function ReferralClient({
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-3">
-            <div className="flex-1 rounded-xl bg-white/[0.04]/60 px-5 py-4 text-center font-mono text-3xl font-bold tracking-widest text-violet-400 ring-1 ring-slate-700">
+            <div className="flex-1 rounded-xl bg-white/[0.04]/60 px-5 py-4 text-center font-mono text-3xl font-bold tracking-widest text-emerald-400 ring-1 ring-slate-700">
               {referralCode}
             </div>
             <button

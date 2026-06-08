@@ -107,7 +107,7 @@ export default function NotificatiesClient({ logs }: { logs: OptimizationLog[] }
           <button key={tab.id} type="button" onClick={() => setActiveTab(tab.id)}
             className={cn(
               'flex-1 rounded-lg px-3 py-2 text-[12px] font-semibold transition-all',
-              activeTab === tab.id ? 'bg-violet-500/15 text-violet-400' : 'text-slate-600 hover:text-slate-300'
+              activeTab === tab.id ? 'bg-emerald-500/15 text-emerald-400' : 'text-slate-600 hover:text-slate-300'
             )}>
             {tab.label}
           </button>
@@ -141,10 +141,10 @@ export default function NotificatiesClient({ logs }: { logs: OptimizationLog[] }
                       {/* Icon */}
                       <div className={cn(
                         'flex h-9 w-9 shrink-0 items-center justify-center rounded-xl',
-                        charging ? 'bg-violet-500/10 ring-1 ring-violet-500/20' : 'bg-amber-500/10 ring-1 ring-amber-500/20'
+                        charging ? 'bg-emerald-500/10 ring-1 ring-emerald-500/20' : 'bg-amber-500/10 ring-1 ring-amber-500/20'
                       )}>
                         {charging
-                          ? <BatteryCharging className="h-4 w-4 text-violet-400" />
+                          ? <BatteryCharging className="h-4 w-4 text-emerald-400" />
                           : <Zap className="h-4 w-4 text-amber-400" />
                         }
                       </div>

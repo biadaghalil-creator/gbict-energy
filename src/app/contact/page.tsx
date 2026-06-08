@@ -11,7 +11,7 @@ const NAV_LINKS = [
 ] as const;
 
 const btnPrimary =
-  "inline-flex items-center justify-center h-12 px-7 rounded-full bg-[#5B21B6] hover:bg-[#6D28D9] " +
+  "inline-flex items-center justify-center h-12 px-7 rounded-full bg-[#047857] hover:bg-[#059669] " +
   "text-white text-[15px] font-semibold tracking-[-0.01em] shadow-[0_1px_3px_rgba(0,0,0,0.3)] transition-colors";
 
 const FAQS = [
@@ -77,7 +77,7 @@ function Footer() {
           <div className="flex gap-5">
             <a href="/privacy" className="hover:text-slate-100">Privacy Policy</a>
             <a href="/terms" className="hover:text-slate-100">Terms of Service</a>
-            <a href="/contact" className="text-violet-400 hover:text-violet-300">Contact</a>
+            <a href="/contact" className="text-emerald-400 hover:text-emerald-300">Contact</a>
           </div>
         </div>
       </div>
@@ -95,7 +95,7 @@ function FaqItem({ q, a }: { q: string; a: string }) {
       >
         <span className="text-[16px] font-semibold tracking-[-0.01em] text-slate-100">{q}</span>
         {open
-          ? <ChevronUp className="h-5 w-5 shrink-0 text-violet-400" />
+          ? <ChevronUp className="h-5 w-5 shrink-0 text-emerald-400" />
           : <ChevronDown className="h-5 w-5 shrink-0 text-slate-500" />}
       </button>
       {open && (
@@ -109,15 +109,15 @@ export default function ContactPage() {
   return (
     <main className="relative min-h-screen overflow-x-hidden bg-[#07080D] font-sans text-slate-100 antialiased">
       <div className="pointer-events-none fixed inset-0 z-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_100%_80%_at_50%_0%,#000_40%,transparent_90%)]" />
-      <div className="pointer-events-none fixed left-1/2 top-[-320px] z-0 h-[820px] w-[1200px] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_60%_60%_at_50%_50%,rgba(124,58,237,0.18),rgba(109,40,217,0.08)_45%,transparent_70%)] blur-xl" />
+      <div className="pointer-events-none fixed left-1/2 top-[-320px] z-0 h-[820px] w-[1200px] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_60%_60%_at_50%_50%,rgba(16,185,129,0.18),rgba(5,150,105,0.08)_45%,transparent_70%)] blur-xl" />
       <div className="relative z-[2]">
         <Nav />
 
         <div className="mx-auto max-w-[1140px] px-6 py-20">
           {/* Page header */}
           <div className="mb-16 text-center">
-            <p className="mb-5 inline-flex items-center gap-2.5 text-[11px] font-bold uppercase tracking-[0.12em] text-violet-400">
-              <span className="h-[3px] w-5 rounded-sm bg-violet-500" />
+            <p className="mb-5 inline-flex items-center gap-2.5 text-[11px] font-bold uppercase tracking-[0.12em] text-emerald-400">
+              <span className="h-[3px] w-5 rounded-sm bg-emerald-500" />
               Get in touch
             </p>
             <h1 className="text-[clamp(40px,5.5vw,62px)] font-extrabold tracking-[-0.04em] text-slate-50">
@@ -133,27 +133,27 @@ export default function ContactPage() {
             <div className="space-y-5">
               <div className="rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-7">
                 <div className="mb-6 flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-violet-500/30 bg-violet-500/10">
-                    <Mail className="h-5 w-5 text-violet-400" />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/10">
+                    <Mail className="h-5 w-5 text-emerald-400" />
                   </div>
                   <h3 className="text-[17px] font-bold tracking-[-0.02em]">Email us</h3>
                 </div>
                 <div className="space-y-4">
                   <div>
                     <div className="text-[12px] font-semibold uppercase tracking-[0.08em] text-slate-500">General inquiries</div>
-                    <a href="mailto:info@gbict.nl" className="mt-1 block text-[16px] text-violet-400 hover:text-violet-300 transition-colors">info@gbict.nl</a>
+                    <a href="mailto:info@gbict.nl" className="mt-1 block text-[16px] text-emerald-400 hover:text-emerald-300 transition-colors">info@gbict.nl</a>
                   </div>
                   <div>
                     <div className="text-[12px] font-semibold uppercase tracking-[0.08em] text-slate-500">Technical support</div>
-                    <a href="mailto:info@gbict.nl" className="mt-1 block text-[16px] text-violet-400 hover:text-violet-300 transition-colors">info@gbict.nl</a>
+                    <a href="mailto:info@gbict.nl" className="mt-1 block text-[16px] text-emerald-400 hover:text-emerald-300 transition-colors">info@gbict.nl</a>
                   </div>
                 </div>
               </div>
 
               <div className="rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-7">
                 <div className="mb-4 flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-violet-500/30 bg-violet-500/10">
-                    <Clock className="h-5 w-5 text-violet-400" />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/10">
+                    <Clock className="h-5 w-5 text-emerald-400" />
                   </div>
                   <h3 className="text-[17px] font-bold tracking-[-0.02em]">Response time</h3>
                 </div>
@@ -164,8 +164,8 @@ export default function ContactPage() {
 
               <div className="rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-7">
                 <div className="mb-4 flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-violet-500/30 bg-violet-500/10">
-                    <MapPin className="h-5 w-5 text-violet-400" />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/10">
+                    <MapPin className="h-5 w-5 text-emerald-400" />
                   </div>
                   <h3 className="text-[17px] font-bold tracking-[-0.02em]">Office</h3>
                 </div>
@@ -181,8 +181,8 @@ export default function ContactPage() {
             {/* Right: contact form */}
             <div className="rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-8 md:p-10">
               <div className="mb-7 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-violet-500/30 bg-violet-500/10">
-                  <MessageCircle className="h-5 w-5 text-violet-400" />
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/10">
+                  <MessageCircle className="h-5 w-5 text-emerald-400" />
                 </div>
                 <h2 className="text-[20px] font-bold tracking-[-0.02em]">Send us a message</h2>
               </div>
@@ -195,7 +195,7 @@ export default function ContactPage() {
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                   <div>
                     <label htmlFor="name" className="mb-2 block text-[13px] font-semibold text-slate-300">
-                      Name <span className="text-violet-400">*</span>
+                      Name <span className="text-emerald-400">*</span>
                     </label>
                     <input
                       id="name"
@@ -203,12 +203,12 @@ export default function ContactPage() {
                       type="text"
                       required
                       placeholder="Jan de Vries"
-                      className="w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-[15px] text-slate-100 placeholder-slate-600 outline-none transition-colors focus:border-violet-500/50 focus:bg-white/[0.05]"
+                      className="w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-[15px] text-slate-100 placeholder-slate-600 outline-none transition-colors focus:border-emerald-500/50 focus:bg-white/[0.05]"
                     />
                   </div>
                   <div>
                     <label htmlFor="email" className="mb-2 block text-[13px] font-semibold text-slate-300">
-                      Email <span className="text-violet-400">*</span>
+                      Email <span className="text-emerald-400">*</span>
                     </label>
                     <input
                       id="email"
@@ -216,19 +216,19 @@ export default function ContactPage() {
                       type="email"
                       required
                       placeholder="jan@example.nl"
-                      className="w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-[15px] text-slate-100 placeholder-slate-600 outline-none transition-colors focus:border-violet-500/50 focus:bg-white/[0.05]"
+                      className="w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-[15px] text-slate-100 placeholder-slate-600 outline-none transition-colors focus:border-emerald-500/50 focus:bg-white/[0.05]"
                     />
                   </div>
                 </div>
                 <div>
                   <label htmlFor="subject" className="mb-2 block text-[13px] font-semibold text-slate-300">
-                    Subject <span className="text-violet-400">*</span>
+                    Subject <span className="text-emerald-400">*</span>
                   </label>
                   <select
                     id="subject"
                     name="subject"
                     required
-                    className="w-full rounded-xl border border-white/[0.08] bg-[#0D0E16] px-4 py-3 text-[15px] text-slate-100 outline-none transition-colors focus:border-violet-500/50 appearance-none cursor-pointer"
+                    className="w-full rounded-xl border border-white/[0.08] bg-[#0D0E16] px-4 py-3 text-[15px] text-slate-100 outline-none transition-colors focus:border-emerald-500/50 appearance-none cursor-pointer"
                   >
                     <option value="" disabled selected className="text-slate-500">Select a topic…</option>
                     <option value="general">General question</option>
@@ -241,7 +241,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <label htmlFor="message" className="mb-2 block text-[13px] font-semibold text-slate-300">
-                    Message <span className="text-violet-400">*</span>
+                    Message <span className="text-emerald-400">*</span>
                   </label>
                   <textarea
                     id="message"
@@ -249,7 +249,7 @@ export default function ContactPage() {
                     required
                     rows={6}
                     placeholder="Tell us how we can help…"
-                    className="w-full resize-none rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-[15px] text-slate-100 placeholder-slate-600 outline-none transition-colors focus:border-violet-500/50 focus:bg-white/[0.05]"
+                    className="w-full resize-none rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-[15px] text-slate-100 placeholder-slate-600 outline-none transition-colors focus:border-emerald-500/50 focus:bg-white/[0.05]"
                   />
                 </div>
                 <button
@@ -266,8 +266,8 @@ export default function ContactPage() {
           {/* FAQ section */}
           <div className="mt-20">
             <div className="mb-12 text-center">
-              <p className="mb-5 inline-flex items-center gap-2.5 text-[11px] font-bold uppercase tracking-[0.12em] text-violet-400">
-                <span className="h-[3px] w-5 rounded-sm bg-violet-500" />
+              <p className="mb-5 inline-flex items-center gap-2.5 text-[11px] font-bold uppercase tracking-[0.12em] text-emerald-400">
+                <span className="h-[3px] w-5 rounded-sm bg-emerald-500" />
                 FAQ
               </p>
               <h2 className="text-[clamp(30px,4vw,44px)] font-extrabold tracking-[-0.035em]">Frequently asked questions</h2>
@@ -282,7 +282,7 @@ export default function ContactPage() {
             </div>
             <p className="mt-8 text-center text-[14px] text-slate-500">
               Still have questions?{" "}
-              <a href="mailto:info@gbict.nl" className="text-violet-400 hover:text-violet-300">Email us at info@gbict.nl</a>
+              <a href="mailto:info@gbict.nl" className="text-emerald-400 hover:text-emerald-300">Email us at info@gbict.nl</a>
             </p>
           </div>
         </div>

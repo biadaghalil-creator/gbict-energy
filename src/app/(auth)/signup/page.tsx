@@ -15,10 +15,10 @@ export default async function SignupPage({
   const t = getTranslations(locale)
 
   const inputCls =
-    'w-full rounded-xl border border-white/10 bg-[#07080D]/80 px-4 py-2.5 text-sm text-slate-100 placeholder:text-slate-600 outline-none transition focus:border-violet-500/60 focus:ring-2 focus:ring-violet-500/20'
+    'w-full rounded-xl border border-white/10 bg-[#07080D]/80 px-4 py-2.5 text-sm text-slate-100 placeholder:text-slate-600 outline-none transition focus:border-emerald-500/60 focus:ring-2 focus:ring-emerald-500/20'
 
   return (
-    <div className="rounded-2xl border border-violet-500/20 bg-[#0D0E16]/80 px-8 py-8 backdrop-blur shadow-[inset_0_1px_0_rgba(139,92,246,0.18)]">
+    <div className="rounded-2xl border border-emerald-500/20 bg-[#0D0E16]/80 px-8 py-8 backdrop-blur shadow-[inset_0_1px_0_rgba(16,185,129,0.18)]">
       <h1 className="text-2xl font-extrabold tracking-tight text-slate-50" style={{ letterSpacing: '-0.03em' }}>
         {t.auth.signupTitle}
       </h1>
@@ -62,7 +62,7 @@ export default async function SignupPage({
 
           <button
             type="submit"
-            className="inline-flex h-12 w-full items-center justify-center rounded-full bg-[#5B21B6] px-7 text-[15px] font-semibold tracking-[-0.01em] text-white shadow-[0_1px_3px_rgba(0,0,0,0.3)] transition-colors hover:bg-[#6D28D9]"
+            className="inline-flex h-12 w-full items-center justify-center rounded-full bg-[#047857] px-7 text-[15px] font-semibold tracking-[-0.01em] text-white shadow-[0_1px_3px_rgba(0,0,0,0.3)] transition-colors hover:bg-[#059669]"
           >
             {t.auth.signupBtn}
           </button>
@@ -76,7 +76,7 @@ export default async function SignupPage({
       <p className="mt-6 text-center text-sm text-slate-500">
         {t.auth.hasAccount}{' '}
         <Link href="/login"
-          className="font-semibold text-violet-400 hover:text-violet-300 transition-colors">
+          className="font-semibold text-emerald-400 hover:text-emerald-300 transition-colors">
           {t.auth.loginBtn}
         </Link>
       </p>

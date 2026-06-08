@@ -61,8 +61,8 @@ export default function AboutPage() {
               style={{ background: 'radial-gradient(ellipse, rgba(29,78,216,0.8) 0%, transparent 70%)' }} />
           </div>
           <div className="relative mx-auto max-w-6xl px-6 py-28 md:py-40">
-            <div className="mb-8 inline-flex items-center gap-2.5 rounded-full badge-glow px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-violet-300">
-              <span className="h-1.5 w-1.5 rounded-full bg-violet-500" />
+            <div className="mb-8 inline-flex items-center gap-2.5 rounded-full badge-glow px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-emerald-300">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
               Nederlands softwarebedrijf
             </div>
 
@@ -114,7 +114,7 @@ export default function AboutPage() {
 
         {/* ── SERVICES ─────────────────────────────────────── */}
         <section className="mx-auto max-w-6xl px-6 py-28">
-          <div className="mb-4 text-xs font-bold uppercase tracking-widest text-violet-400">Diensten</div>
+          <div className="mb-4 text-xs font-bold uppercase tracking-widest text-emerald-400">Diensten</div>
           <h2 className="text-4xl font-extrabold tracking-tight text-slate-50 md:text-5xl max-w-2xl"
             style={{ letterSpacing: '-0.03em' }}>
             Wat we doen
@@ -153,7 +153,7 @@ export default function AboutPage() {
                 boxShadow: '0 0 60px rgba(250,204,21,0.05), 0 20px 60px rgba(0,0,0,0.4)',
               }}>
               <div className="mb-5">
-                <span className="inline-flex items-center rounded-full badge-glow px-3 py-1 text-xs font-bold text-violet-300 uppercase tracking-widest">
+                <span className="inline-flex items-center rounded-full badge-glow px-3 py-1 text-xs font-bold text-emerald-300 uppercase tracking-widest">
                   Ons nieuwste product
                 </span>
               </div>
@@ -192,7 +192,7 @@ export default function AboutPage() {
 
         {/* ── WHY GBICT ────────────────────────────────────── */}
         <section className="mx-auto max-w-6xl px-6 py-28">
-          <div className="mb-4 text-xs font-bold uppercase tracking-widest text-violet-400">Waarom wij</div>
+          <div className="mb-4 text-xs font-bold uppercase tracking-widest text-emerald-400">Waarom wij</div>
           <h2 className="text-4xl font-extrabold tracking-tight text-slate-50 mb-14"
             style={{ letterSpacing: '-0.03em' }}>
             Waarom{' '}

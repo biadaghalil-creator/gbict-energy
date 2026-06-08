@@ -15,6 +15,8 @@ export type DeviceType =
   | 'solar_enphase'
   | 'solar_sma'
   | 'solar_fronius'
+  | 'heatpump_tado'
+  | 'heatpump_generic'
 
 export type NewDevice = {
   type: DeviceType
@@ -182,4 +184,66 @@ export async function testSmaCredentials(
 ): Promise<{ ok: boolean; plantName?: string; error?: string }> {
   const { testSmaCredentials: _test } = await import('@/lib/sma')
   return _test(email, password)
+}
+
+// ── Tado (warmtepomp / thermostaat) ──────────────────────────────────────────
+
+export async function testTadoCredentials(
+  username: string,
+  password: string
+): Promise<{ ok: boolean; homeName?: string; error?: string }> {
+  // Best-effort verbindingscheck tegen Tado's OAuth endpoint.
+  // Tado heeft geen officiële publieke API; we gebruiken de bekende
+  // 'tado-web-app' client flow. Defensief: nooit throwen.
+  if (!username.trim() || !password.trim()) {
+    return { ok: false, error: 'Vul je e-mail en wachtwoord in.' }
+  }
+
+  try {
+    const body = new URLSearchParams({
+      client_id: 'tado-web-app',
+      grant_type: 'password',
+      scope: 'home.user',
+      username: username.trim(),
+      password: password.trim(),
+    })
+
+    const res = await fetch('https://auth.tado.com/oauth/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: body.toString(),
+    })
+
+    if (res.status === 401 || res.status === 400) {
+      return { ok: false, error: 'Inloggegevens onjuist. Controleer je Tado e-mail en wachtwoord.' }
+    }
+
+    if (!res.ok) {
+      // Endpoint onbereikbaar of gewijzigd — we kunnen niet betrouwbaar verifiëren.
+      // Niet-401: laat de gebruiker toch koppelen, maar wees eerlijk over de status.
+      return { ok: true, error: 'Kon Tado niet volledig verifiëren, maar de inloggegevens zijn opgeslagen.' }
+    }
+
+    // Probeer de home-naam op te halen (best-effort, mag falen).
+    let homeName: string | undefined
+    try {
+      const json = await res.json()
+      const token = json?.access_token as string | undefined
+      if (token) {
+        const me = await fetch('https://my.tado.com/api/v2/me', {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        if (me.ok) {
+          const meJson = await me.json()
+          homeName = meJson?.homes?.[0]?.name
+        }
+      }
+    } catch {
+      // Home-naam ophalen is optioneel.
+    }
+
+    return { ok: true, homeName }
+  } catch {
+    return { ok: false, error: 'Kon Tado niet bereiken. Probeer het later opnieuw.' }
+  }
 }

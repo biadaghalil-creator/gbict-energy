@@ -34,7 +34,7 @@ export default async function DashboardPage() {
         </div>
         <a
           href="/dashboard/besparingen"
-          className="flex items-center gap-1 text-[13px] font-medium text-violet-400 transition-colors hover:text-violet-300"
+          className="flex items-center gap-1 text-[13px] font-medium text-emerald-400 transition-colors hover:text-emerald-300"
         >
           Meer bekijken →
         </a>

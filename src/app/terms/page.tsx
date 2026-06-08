@@ -11,7 +11,7 @@ const NAV_LINKS = [
 ] as const;
 
 const btnPrimary =
-  "inline-flex items-center justify-center h-12 px-7 rounded-full bg-[#5B21B6] hover:bg-[#6D28D9] " +
+  "inline-flex items-center justify-center h-12 px-7 rounded-full bg-[#047857] hover:bg-[#059669] " +
   "text-white text-[15px] font-semibold tracking-[-0.01em] shadow-[0_1px_3px_rgba(0,0,0,0.3)] transition-colors";
 
 function Nav() {
@@ -53,7 +53,7 @@ function Footer() {
           <span>© 2026 GBICT Energy · Almere, Netherlands</span>
           <div className="flex gap-5">
             <a href="/privacy" className="hover:text-slate-100">Privacy Policy</a>
-            <a href="/terms" className="text-violet-400 hover:text-violet-300">Terms of Service</a>
+            <a href="/terms" className="text-emerald-400 hover:text-emerald-300">Terms of Service</a>
             <a href="/contact" className="hover:text-slate-100">Contact</a>
           </div>
         </div>
@@ -82,8 +82,8 @@ export default function TermsPage() {
           {/* Header */}
           <div className="mb-14 text-center">
             <div className="mb-5 flex justify-center">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-violet-500/30 bg-violet-500/10">
-                <FileText className="h-7 w-7 text-violet-400" />
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-emerald-500/30 bg-emerald-500/10">
+                <FileText className="h-7 w-7 text-emerald-400" />
               </div>
             </div>
             <h1 className="text-[clamp(36px,5vw,54px)] font-extrabold tracking-[-0.04em] text-slate-50">Terms of Service</h1>
@@ -199,7 +199,7 @@ export default function TermsPage() {
 
             <Section title="9. Data and privacy">
               <p>
-                Your use of the Service is subject to our <a href="/privacy" className="text-violet-400 hover:text-violet-300">Privacy Policy</a>, which is incorporated into these Terms by reference. You own your data. We will not sell your data to third parties.
+                Your use of the Service is subject to our <a href="/privacy" className="text-emerald-400 hover:text-emerald-300">Privacy Policy</a>, which is incorporated into these Terms by reference. You own your data. We will not sell your data to third parties.
               </p>
               <p>
                 By connecting third-party devices and services (e.g. Tibber, Sessy), you authorize GBICT Energy to retrieve and process data from those services on your behalf, in accordance with the permissions you grant.
@@ -238,14 +238,14 @@ export default function TermsPage() {
 
             <Section title="14. Contact">
               <p>
-                For questions about these Terms, contact us at <a href="mailto:info@gbict.nl" className="text-violet-400 hover:text-violet-300">info@gbict.nl</a> or write to GBICT Energy B.V., W. Dreesweg 14, 1314CL Almere, Netherlands.
+                For questions about these Terms, contact us at <a href="mailto:info@gbict.nl" className="text-emerald-400 hover:text-emerald-300">info@gbict.nl</a> or write to GBICT Energy B.V., W. Dreesweg 14, 1314CL Almere, Netherlands.
               </p>
             </Section>
 
-            <div className="mt-8 rounded-xl border border-violet-500/20 bg-violet-500/[0.06] px-6 py-5">
+            <div className="mt-8 rounded-xl border border-emerald-500/20 bg-emerald-500/[0.06] px-6 py-5">
               <p className="text-[14px] text-slate-300">
                 <strong className="text-slate-100">Questions?</strong> Email us at{" "}
-                <a href="mailto:info@gbict.nl" className="text-violet-400 hover:text-violet-300">info@gbict.nl</a>.
+                <a href="mailto:info@gbict.nl" className="text-emerald-400 hover:text-emerald-300">info@gbict.nl</a>.
                 We respond within 24 hours on business days.
               </p>
             </div>

@@ -68,12 +68,12 @@ export default function SubscriptionCard({ status, plan, currentPeriodEnd, trial
     <section
       className={
         active
-          ? 'relative overflow-hidden rounded-2xl border border-violet-500/40 bg-gradient-to-br from-violet-600/20 via-[#0D0E16] to-[#0D0E16] p-6 shadow-[0_0_40px_rgba(124,58,237,0.12),inset_0_1px_0_rgba(139,92,246,0.25)] backdrop-blur'
+          ? 'relative overflow-hidden rounded-2xl border border-emerald-500/40 bg-gradient-to-br from-emerald-600/20 via-[#0D0E16] to-[#0D0E16] p-6 shadow-[0_0_40px_rgba(16,185,129,0.12),inset_0_1px_0_rgba(16,185,129,0.25)] backdrop-blur'
           : 'rounded-2xl border border-white/[0.06] bg-[#0D0E16]/70 p-6 backdrop-blur'
       }
     >
       {active && (
-        <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-[radial-gradient(circle,rgba(124,58,237,0.25),transparent_70%)]" />
+        <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-[radial-gradient(circle,rgba(16,185,129,0.25),transparent_70%)]" />
       )}
       <h2 className="relative text-[15px] font-bold tracking-tight text-slate-100">Abonnement</h2>
 
@@ -117,7 +117,7 @@ export default function SubscriptionCard({ status, plan, currentPeriodEnd, trial
                 <ul className="mt-3 flex-1 space-y-1.5">
                   {p.features.map((f) => (
                     <li key={f} className="flex items-start gap-2 text-[12.5px] text-slate-400">
-                      <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-violet-400" />
+                      <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-400" />
                       {f}
                     </li>
                   ))}
@@ -125,7 +125,7 @@ export default function SubscriptionCard({ status, plan, currentPeriodEnd, trial
                 <button
                   onClick={() => startCheckout(p.id)}
                   disabled={loading !== null}
-                  className="mt-5 inline-flex h-11 items-center justify-center gap-2 rounded-full bg-[#5B21B6] px-6 text-[14px] font-semibold text-white transition-colors hover:bg-[#6D28D9] disabled:opacity-50"
+                  className="mt-5 inline-flex h-11 items-center justify-center gap-2 rounded-full bg-[#047857] px-6 text-[14px] font-semibold text-white transition-colors hover:bg-[#059669] disabled:opacity-50"
                 >
                   {loading === p.id && <Loader2 className="h-4 w-4 animate-spin" />}
                   Start 14 dagen gratis

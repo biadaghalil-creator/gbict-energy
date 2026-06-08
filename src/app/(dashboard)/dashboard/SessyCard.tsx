@@ -73,7 +73,7 @@ export default function SessyCard() {
               className="h-full rounded-full transition-all duration-700"
               style={{
                 width: `${status.state_of_charge}%`,
-                background: 'linear-gradient(90deg, #5B21B6, #A78BFA)',
+                background: 'linear-gradient(90deg, #047857, #A78BFA)',
               }}
             />
           </div>
@@ -148,7 +148,7 @@ function OptimizeButton() {
           ? 'bg-emerald-950/40 text-emerald-400 ring-1 ring-emerald-500/20'
           : state === 'error'
             ? 'bg-red-950/30 text-red-400'
-            : 'bg-white/[0.04] text-slate-400 hover:bg-violet-500/10 hover:text-violet-400 ring-1 ring-white/[0.06]'
+            : 'bg-white/[0.04] text-slate-400 hover:bg-emerald-500/10 hover:text-emerald-400 ring-1 ring-white/[0.06]'
       }`}
     >
       <Zap className="h-3.5 w-3.5" />

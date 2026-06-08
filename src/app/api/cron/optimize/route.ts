@@ -150,6 +150,57 @@ export async function GET(req: Request) {
     }
   }
 
+  // ── Warmtepomp adviezen ────────────────────────────────────────────────────
+  // Warmtepompen worden (nog) niet direct aangestuurd. We schrijven een
+  // advies-log per warmtepomp: 'charge' (slim verwarmen) op goedkope uren,
+  // anders 'idle'. Defensief — mag de batterij-flow nooit breken.
+  try {
+    const { data: heatpumpDevices } = await supabase
+      .from('devices')
+      .select('id, user_id, type')
+      .in('type', ['heatpump_tado', 'heatpump_generic'])
+      .eq('status', 'active')
+
+    if (heatpumpDevices?.length) {
+      const hpHour = new Date().getHours()
+
+      for (const device of heatpumpDevices) {
+        try {
+          // Abonnement-gating, gelijk aan de batterij-flow.
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('optimize_mode, subscription_status')
+            .eq('id', device.user_id)
+            .single()
+
+          const subStatus = profile?.subscription_status as string | undefined
+          if (subStatus !== 'active' && subStatus !== 'trialing') continue
+
+          const mode = (profile?.optimize_mode as 'max_savings' | 'comfort' | 'eco') ?? 'max_savings'
+          const { schedule } = optimizeSchedule(todayPrices, mode)
+
+          // Goedkoop uur = uur waarop de batterij zou laden.
+          const slot = schedule.find(s => s.hour === hpHour)
+          const action = slot?.action === 'charge' ? 'charge' : 'idle'
+
+          await supabase.from('optimization_logs').insert({
+            user_id: device.user_id,
+            action,
+            price_eur: currentPrice.total,
+            kwh: 0,
+            savings_eur: 0,
+            source: 'heatpump',
+          })
+        } catch (err) {
+          console.error(`Fout bij warmtepomp ${device.id}:`, err)
+        }
+      }
+    }
+  } catch (err) {
+    // Niet-kritisch — warmtepomp-adviezen mogen de cron nooit laten falen.
+    console.error('Warmtepomp-adviesblok overgeslagen:', err)
+  }
+
   // ── E-mail notificaties ──────────────────────────────────────────────────
   const hour = new Date().getHours()
 

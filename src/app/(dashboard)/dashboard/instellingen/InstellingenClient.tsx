@@ -22,33 +22,33 @@ const OPTIMIZE_OPTIONS = [
     label: 'Maximale besparing',
     Icon: TrendingUp,
     desc: 'Laadt en ontlaadt zo vaak mogelijk op de beste prijsmomenten.',
-    activeClass: 'border-violet-500/40 bg-violet-500/[0.06] ring-1 ring-violet-500/20',
-    idleClass: 'border-white/[0.06] bg-white/[0.02] hover:border-violet-500/20 hover:bg-white/[0.04]',
-    labelColor: 'text-violet-400',
-    iconColor: 'text-violet-400',
-    dotClass: 'border-violet-500 bg-violet-500',
+    activeClass: 'border-emerald-500/40 bg-emerald-500/[0.06] ring-1 ring-emerald-500/20',
+    idleClass: 'border-white/[0.06] bg-white/[0.02] hover:border-emerald-500/20 hover:bg-white/[0.04]',
+    labelColor: 'text-emerald-400',
+    iconColor: 'text-emerald-400',
+    dotClass: 'border-emerald-500 bg-emerald-500',
   },
   {
     id: 'comfort',
     label: 'Comfort',
     Icon: Sliders,
     desc: 'Balans tussen besparing en altijd een geladen batterij.',
-    activeClass: 'border-violet-500/40 bg-violet-500/[0.06] ring-1 ring-violet-500/20',
-    idleClass: 'border-white/[0.06] bg-white/[0.02] hover:border-violet-500/20 hover:bg-white/[0.04]',
-    labelColor: 'text-violet-400',
-    iconColor: 'text-violet-400',
-    dotClass: 'border-violet-400 bg-violet-400',
+    activeClass: 'border-emerald-500/40 bg-emerald-500/[0.06] ring-1 ring-emerald-500/20',
+    idleClass: 'border-white/[0.06] bg-white/[0.02] hover:border-emerald-500/20 hover:bg-white/[0.04]',
+    labelColor: 'text-emerald-400',
+    iconColor: 'text-emerald-400',
+    dotClass: 'border-emerald-400 bg-emerald-400',
   },
   {
     id: 'eco',
     label: 'Eco',
     Icon: Leaf,
     desc: 'Laadt alleen op zonne-energie en de goedkoopste uren.',
-    activeClass: 'border-violet-500/40 bg-violet-500/[0.06] ring-1 ring-violet-500/20',
-    idleClass: 'border-white/[0.06] bg-white/[0.02] hover:border-violet-500/20 hover:bg-white/[0.04]',
-    labelColor: 'text-violet-400',
-    iconColor: 'text-violet-400',
-    dotClass: 'border-violet-400 bg-violet-400',
+    activeClass: 'border-emerald-500/40 bg-emerald-500/[0.06] ring-1 ring-emerald-500/20',
+    idleClass: 'border-white/[0.06] bg-white/[0.02] hover:border-emerald-500/20 hover:bg-white/[0.04]',
+    labelColor: 'text-emerald-400',
+    iconColor: 'text-emerald-400',
+    dotClass: 'border-emerald-400 bg-emerald-400',
   },
 ]
 
@@ -118,7 +118,7 @@ export default function InstellingenClient({ profile, email }: Props) {
       <Section icon={User} title="Account">
         <div className="flex items-center gap-4">
           <Avatar className="h-11 w-11">
-            <AvatarFallback className="bg-violet-500/10 text-[15px] font-bold text-violet-400 ring-1 ring-violet-500/20">
+            <AvatarFallback className="bg-emerald-500/10 text-[15px] font-bold text-emerald-400 ring-1 ring-emerald-500/20">
               {email[0].toUpperCase()}
             </AvatarFallback>
           </Avatar>
@@ -173,8 +173,8 @@ export default function InstellingenClient({ profile, email }: Props) {
               className={cn(
                 'rounded-full border px-3 py-1.5 text-[13px] font-medium transition-all',
                 contractType === c
-                  ? 'border-violet-500/40 bg-violet-500/10 text-violet-400'
-                  : 'border-white/[0.06] text-slate-500 hover:border-violet-500/20 hover:text-slate-300'
+                  ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-400'
+                  : 'border-white/[0.06] text-slate-500 hover:border-emerald-500/20 hover:text-slate-300'
               )}
             >
               {c}
@@ -194,7 +194,7 @@ export default function InstellingenClient({ profile, email }: Props) {
               onChange={(e) => setPostcode(e.target.value)}
               placeholder="1234 AB"
               maxLength={7}
-              className="w-40 rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-[13.5px] text-slate-200 placeholder-slate-700 outline-none transition-all focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/10"
+              className="w-40 rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-[13.5px] text-slate-200 placeholder-slate-700 outline-none transition-all focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/10"
             />
           </div>
           <div>
@@ -207,8 +207,8 @@ export default function InstellingenClient({ profile, email }: Props) {
                   className={cn(
                     'h-9 w-9 rounded-xl border text-[13px] font-semibold transition-all',
                     householdSize === n
-                      ? 'border-violet-500/40 bg-violet-500/10 text-violet-400'
-                      : 'border-white/[0.06] text-slate-600 hover:border-violet-500/20 hover:text-slate-300'
+                      ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-400'
+                      : 'border-white/[0.06] text-slate-600 hover:border-emerald-500/20 hover:text-slate-300'
                   )}
                 >
                   {n === 7 ? '7+' : n}
@@ -232,12 +232,12 @@ export default function InstellingenClient({ profile, email }: Props) {
         <button
           onClick={handleSave}
           disabled={isPending}
-          className="inline-flex h-11 items-center gap-2 rounded-full bg-[#5B21B6] px-7 text-[14px] font-semibold text-white shadow-[0_1px_3px_rgba(0,0,0,0.3)] transition-colors hover:bg-[#6D28D9] disabled:opacity-50"
+          className="inline-flex h-11 items-center gap-2 rounded-full bg-[#047857] px-7 text-[14px] font-semibold text-white shadow-[0_1px_3px_rgba(0,0,0,0.3)] transition-colors hover:bg-[#059669] disabled:opacity-50"
         >
           {isPending ? 'Opslaan…' : 'Wijzigingen opslaan'}
         </button>
         {saved && (
-          <span className="flex items-center gap-1.5 text-[13px] text-violet-400">
+          <span className="flex items-center gap-1.5 text-[13px] text-emerald-400">
             <Check className="h-4 w-4" />
             Opgeslagen
           </span>

@@ -105,7 +105,7 @@ export default function TibberData() {
                   </span>
                   <span className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[12px] font-medium ${
                     slot.action === 'charge'
-                      ? 'bg-violet-500/10 text-violet-400 ring-1 ring-violet-500/20'
+                      ? 'bg-emerald-500/10 text-emerald-400 ring-1 ring-emerald-500/20'
                       : 'bg-amber-500/10 text-amber-400 ring-1 ring-amber-500/20'
                   }`}>
                     {slot.action === 'charge' ? '↑ Charge' : '↓ Sell'}
@@ -153,7 +153,7 @@ export default function TibberData() {
                       </span>
                       <span className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[12px] font-medium ${
                         slot.action === 'charge'
-                          ? 'bg-violet-500/10 text-violet-400 ring-1 ring-violet-500/20'
+                          ? 'bg-emerald-500/10 text-emerald-400 ring-1 ring-emerald-500/20'
                           : 'bg-amber-500/10 text-amber-400 ring-1 ring-amber-500/20'
                       }`}>
                         {slot.action === 'charge' ? '↑ Charge' : '↓ Sell'}

@@ -43,23 +43,23 @@ function NavLink({
         'group flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium transition-all duration-150',
         collapsed && 'justify-center px-0',
         isActive
-          ? 'bg-violet-500/[0.12] text-violet-300'
+          ? 'bg-emerald-500/[0.12] text-emerald-300'
           : 'text-slate-500 hover:bg-white/[0.04] hover:text-slate-200'
       )}
     >
       {/* Active indicator */}
       {isActive && !collapsed && (
-        <span className="absolute left-0 h-5 w-[3px] rounded-r-full bg-violet-500" />
+        <span className="absolute left-0 h-5 w-[3px] rounded-r-full bg-emerald-500" />
       )}
       <Icon className={cn(
         'h-4 w-4 shrink-0 transition-colors',
-        isActive ? 'text-violet-400' : 'text-slate-600 group-hover:text-slate-400'
+        isActive ? 'text-emerald-400' : 'text-slate-600 group-hover:text-slate-400'
       )} />
       {!collapsed && (
         <>
           <span className="flex-1 truncate">{item.label}</span>
           {item.badge && (
-            <span className="rounded-md bg-violet-500/15 px-1.5 py-0.5 text-[10px] font-bold text-violet-400">
+            <span className="rounded-md bg-emerald-500/15 px-1.5 py-0.5 text-[10px] font-bold text-emerald-400">
               {item.badge}
             </span>
           )}
@@ -106,7 +106,7 @@ function SidebarInner({
           {!collapsed && (
             <div className="leading-none">
               <p className="text-[14px] font-extrabold tracking-tight text-slate-50">GBICT</p>
-              <p className="text-[11px] font-medium text-violet-400">Energy</p>
+              <p className="text-[11px] font-medium text-emerald-400">Energy</p>
             </div>
           )}
         </Link>
@@ -136,7 +136,7 @@ function SidebarInner({
         {collapsed ? (
           <div className="flex flex-col items-center gap-3">
             <Avatar className="h-8 w-8">
-              <AvatarFallback className="bg-violet-500/10 text-xs font-bold text-violet-400 ring-1 ring-violet-500/20">
+              <AvatarFallback className="bg-emerald-500/10 text-xs font-bold text-emerald-400 ring-1 ring-emerald-500/20">
                 {initials}
               </AvatarFallback>
             </Avatar>
@@ -152,7 +152,7 @@ function SidebarInner({
           <div className="space-y-1">
             <div className="flex items-center gap-3 rounded-xl bg-white/[0.04] px-3 py-2.5 ring-1 ring-white/[0.06]">
               <Avatar className="h-7 w-7 shrink-0">
-                <AvatarFallback className="bg-violet-500/10 text-[11px] font-bold text-violet-400">
+                <AvatarFallback className="bg-emerald-500/10 text-[11px] font-bold text-emerald-400">
                   {initials}
                 </AvatarFallback>
               </Avatar>
@@ -197,7 +197,7 @@ export default function DashboardShell({
     )}>
       {/* ── Background atmosphere (same as landing page) ── */}
       <div className="pointer-events-none fixed inset-0 z-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_100%_80%_at_50%_0%,#000_40%,transparent_90%)]" />
-      <div className="pointer-events-none fixed left-1/2 top-[-320px] z-0 h-[820px] w-[1200px] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_60%_60%_at_50%_50%,rgba(124,58,237,0.18),rgba(109,40,217,0.07)_45%,transparent_70%)] blur-xl" />
+      <div className="pointer-events-none fixed left-1/2 top-[-320px] z-0 h-[820px] w-[1200px] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_60%_60%_at_50%_50%,rgba(16,185,129,0.18),rgba(5,150,105,0.07)_45%,transparent_70%)] blur-xl" />
 
       {/* ── Desktop Sidebar ── */}
       <aside className={cn(
@@ -208,7 +208,7 @@ export default function DashboardShell({
         {/* Collapse toggle */}
         <button
           onClick={() => setCollapsed(v => !v)}
-          className="absolute -right-3 top-1/2 z-20 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full border border-white/[0.08] bg-[#0D0E16] text-slate-500 shadow-lg transition-colors hover:border-violet-500/30 hover:text-violet-400"
+          className="absolute -right-3 top-1/2 z-20 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full border border-white/[0.08] bg-[#0D0E16] text-slate-500 shadow-lg transition-colors hover:border-emerald-500/30 hover:text-emerald-400"
         >
           {collapsed
             ? <ChevronRight className="h-3 w-3" />
@@ -269,7 +269,7 @@ export default function DashboardShell({
             </Link>
             <div className="hidden h-7 w-7 items-center justify-center md:flex">
               <Avatar className="h-7 w-7">
-                <AvatarFallback className="bg-violet-500/10 text-[11px] font-bold text-violet-400 ring-1 ring-violet-500/20">
+                <AvatarFallback className="bg-emerald-500/10 text-[11px] font-bold text-emerald-400 ring-1 ring-emerald-500/20">
                   {userEmail?.[0]?.toUpperCase()}
                 </AvatarFallback>
               </Avatar>

@@ -48,7 +48,7 @@ function SavingsChart({ days, loading, activeDays }: { days: DayData[]; loading:
               </div>
               <div
                 className={`w-full rounded-t-[3px] transition-all ${
-                  day.savings > 0 ? isToday ? 'bg-violet-500' : 'bg-emerald-500/60 group-hover:bg-emerald-500/80' : 'bg-white/[0.03]'
+                  day.savings > 0 ? isToday ? 'bg-emerald-500' : 'bg-emerald-500/60 group-hover:bg-emerald-500/80' : 'bg-white/[0.03]'
                 }`}
                 style={{ height: `${Math.max(pct, day.savings > 0 ? 4 : 2)}%` }}
               />
@@ -92,7 +92,7 @@ function TopSavingsList({ recent, loading }: { recent: RecentLog[]; loading: boo
               <div key={i}>
                 <div className="mb-1.5 flex items-center justify-between">
                   <span className="flex items-center gap-2 text-[12.5px] text-slate-300">
-                    <span className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${isCharge ? 'bg-violet-500/10 text-violet-400' : 'bg-amber-500/10 text-amber-400'}`}>
+                    <span className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${isCharge ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'}`}>
                       {isCharge ? '↑ Laden' : '↓ Verkopen'}
                     </span>
                     {fmtDt(log.created_at)}
@@ -100,7 +100,7 @@ function TopSavingsList({ recent, loading }: { recent: RecentLog[]; loading: boo
                   <span className="font-mono text-[12.5px] font-semibold text-emerald-400">+{fmt(log.savings_eur)}</span>
                 </div>
                 <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.04]">
-                  <div className={`h-full rounded-full ${isCharge ? 'bg-violet-500' : 'bg-amber-500'}`}
+                  <div className={`h-full rounded-full ${isCharge ? 'bg-emerald-500' : 'bg-amber-500'}`}
                     style={{ width: `${(log.savings_eur / maxSaving) * 100}%` }} />
                 </div>
               </div>
@@ -126,7 +126,7 @@ export default function BesparingenClient() {
   const stats = [
     { label: 'Vandaag',      value: data?.totals.today   ?? 0, money: true,  color: 'text-emerald-400' },
     { label: 'Deze maand', value: data?.totals.month   ?? 0, money: true,  color: 'text-emerald-400' },
-    { label: 'Totaal',   value: data?.totals.total   ?? 0, money: true,  color: 'text-violet-400'  },
+    { label: 'Totaal',   value: data?.totals.total   ?? 0, money: true,  color: 'text-emerald-400'  },
     { label: 'Acties',    value: data?.totals.actions ?? 0, money: false, color: 'text-slate-300'   },
   ]
 
@@ -171,7 +171,7 @@ export default function BesparingenClient() {
               {RANGES.map(r => (
                 <button key={r.days} onClick={() => setActiveDays(r.days)}
                   className={cn('rounded-md px-3 py-1 text-[11px] font-semibold transition-colors',
-                    activeDays === r.days ? 'bg-violet-500/15 text-violet-400' : 'text-slate-600 hover:text-slate-300')}>
+                    activeDays === r.days ? 'bg-emerald-500/15 text-emerald-400' : 'text-slate-600 hover:text-slate-300')}>
                   {r.label}
                 </button>
               ))}
@@ -180,7 +180,7 @@ export default function BesparingenClient() {
           <SavingsChart days={data?.days ?? []} loading={loading} activeDays={activeDays} />
           <div className="mt-4 flex gap-5 text-[11px] text-slate-600">
             <span className="flex items-center gap-1.5"><i className="inline-block h-2 w-2 rounded-sm bg-emerald-500/60" />Besparing</span>
-            <span className="flex items-center gap-1.5"><i className="inline-block h-2 w-2 rounded-sm bg-violet-500" />Vandaag</span>
+            <span className="flex items-center gap-1.5"><i className="inline-block h-2 w-2 rounded-sm bg-emerald-500" />Vandaag</span>
           </div>
         </div>
         <TopSavingsList recent={data?.recent ?? []} loading={loading} />
@@ -220,9 +220,9 @@ export default function BesparingenClient() {
               return (
                 <div key={i} className="grid grid-cols-[auto_1fr_auto_auto] items-center gap-4 px-6 py-3.5">
                   <div className={`flex h-8 w-8 items-center justify-center rounded-xl ${
-                    isCharge ? 'bg-violet-500/10 ring-1 ring-violet-500/20' : 'bg-amber-500/10 ring-1 ring-amber-500/20'
+                    isCharge ? 'bg-emerald-500/10 ring-1 ring-emerald-500/20' : 'bg-amber-500/10 ring-1 ring-amber-500/20'
                   }`}>
-                    {isCharge ? <TrendingDown className="h-3.5 w-3.5 text-violet-400" /> : <TrendingUp className="h-3.5 w-3.5 text-amber-400" />}
+                    {isCharge ? <TrendingDown className="h-3.5 w-3.5 text-emerald-400" /> : <TrendingUp className="h-3.5 w-3.5 text-amber-400" />}
                   </div>
                   <div>
                     <p className="text-[13px] font-medium text-slate-300">{isCharge ? 'Batterij geladen' : 'Batterij ontladen'}</p>

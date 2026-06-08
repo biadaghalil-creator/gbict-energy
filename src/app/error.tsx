@@ -16,7 +16,7 @@ export default function Error({
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-[#07080D] px-6 text-center">
-      <div className="pointer-events-none absolute left-1/2 top-[-320px] h-[820px] w-[1200px] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_60%_60%_at_50%_50%,rgba(124,58,237,0.18),transparent_70%)] blur-xl" />
+      <div className="pointer-events-none absolute left-1/2 top-[-320px] h-[820px] w-[1200px] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_60%_60%_at_50%_50%,rgba(16,185,129,0.18),transparent_70%)] blur-xl" />
       <div className="relative z-10 max-w-sm">
         <h1 className="text-[22px] font-bold tracking-tight text-slate-50">Er ging iets mis</h1>
         <p className="mt-2 text-[14px] text-slate-400">
@@ -25,7 +25,7 @@ export default function Error({
         <div className="mt-6 flex items-center justify-center gap-3">
           <button
             onClick={reset}
-            className="inline-flex h-11 items-center justify-center rounded-full bg-[#5B21B6] px-6 text-[14px] font-semibold text-white transition-colors hover:bg-[#6D28D9]"
+            className="inline-flex h-11 items-center justify-center rounded-full bg-[#047857] px-6 text-[14px] font-semibold text-white transition-colors hover:bg-[#059669]"
           >
             Opnieuw proberen
           </button>
