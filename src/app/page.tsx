@@ -178,7 +178,7 @@ const DASH_SLOTS: [("ok" | "sell" | "idle"), number][] = [
   ["idle", 44], ["ok", 52], ["ok", 60], ["idle", 34],
 ];
 const SLOT_COLOR: Record<string, string> = {
-  ok: "var(--accent)",
+  ok: "#10b981",
   sell: "var(--bad)",
   idle: "rgba(148,163,184,.18)",
 };
@@ -225,7 +225,7 @@ function BatteryDash() {
       </div>
       <div className="dash-legend">
         <span>
-          <i style={{ background: "var(--accent)" }} /> Charge
+          <i style={{ background: "#10b981" }} /> Charge
         </span>
         <span>
           <i style={{ background: "var(--bad)" }} /> Sell

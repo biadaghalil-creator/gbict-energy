@@ -623,10 +623,15 @@ body {
 .gbict-landing .lang-item.on{background:rgba(139,92,246,.16);color:var(--accent-bright)}
 
 /* ---- HERO dashboard visual ---- */
-.gbict-landing .dash{padding:28px;border-radius:var(--r-lg);background:var(--bg-raise);
-  border:1px solid var(--glass-border);backdrop-filter:blur(var(--glass-blur));box-shadow:var(--shadow-pop);position:relative;overflow:hidden}
-.gbict-landing .dash::after{content:"";position:absolute;width:240px;height:240px;right:-90px;top:-90px;border-radius:50%;
-  background:radial-gradient(circle,rgba(124,58,237,.16),transparent 70%);pointer-events:none}
+.gbict-landing .dash{padding:30px;border-radius:22px;
+  background:linear-gradient(168deg,rgba(17,26,23,.94),rgba(9,12,15,.97));
+  border:1px solid rgba(16,185,129,.16);backdrop-filter:blur(var(--glass-blur));
+  box-shadow:0 1px 0 rgba(255,255,255,.06) inset,0 0 0 1px rgba(255,255,255,.02),0 56px 110px -42px rgba(0,0,0,.92),0 30px 60px -50px rgba(16,185,129,.45);
+  position:relative;overflow:hidden}
+.gbict-landing .dash::after{content:"";position:absolute;width:280px;height:280px;right:-110px;top:-110px;border-radius:50%;
+  background:radial-gradient(circle,rgba(16,185,129,.20),transparent 70%);pointer-events:none}
+.gbict-landing .dash::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:radial-gradient(120% 70% at 50% -10%,rgba(52,211,153,.10),transparent 55%)}
 .gbict-landing .dash-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;position:relative}
 .gbict-landing .dash-dev{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--slate-300);font-weight:500}
 .gbict-landing .dash-dev .lucide{width:17px;height:17px;color:var(--slate-400)}
@@ -634,7 +639,7 @@ body {
 .gbict-landing .dash-soc .v{font-family:var(--font-mono);font-size:44px;font-weight:600;letter-spacing:-.03em}
 .gbict-landing .dash-soc .u{font-size:13px;color:var(--slate-500)}
 .gbict-landing .dash-bar{height:8px;border-radius:var(--r-pill);background:rgba(255,255,255,.05);margin:14px 0 22px;overflow:hidden}
-.gbict-landing .dash-bar i{display:block;height:100%;border-radius:var(--r-pill);background:linear-gradient(90deg,#5B21B6,#A78BFA)}
+.gbict-landing .dash-bar i{display:block;height:100%;border-radius:var(--r-pill);background:linear-gradient(90deg,#047857,#34D399);box-shadow:0 0 12px rgba(16,185,129,.5)}
 .gbict-landing .dash-status{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:500;letter-spacing:.02em;color:#94A3B8}
 .gbict-landing .dash-status .b{width:3px;height:14px;border-radius:1px;background:#34D399}
 .gbict-landing .dash-kv{display:flex;gap:12px;margin-bottom:24px}
@@ -854,7 +859,7 @@ body {
 .gbict-landing .chip-a{top:2%;left:-4%;animation:gbictFloatYlg 9s ease-in-out infinite}
 .gbict-landing .chip-a .ico{background:var(--trust-dim);color:var(--trust)}
 .gbict-landing .chip-b{bottom:6%;left:2%;animation:gbictFloatY 7.5s ease-in-out infinite;animation-delay:-2s}
-.gbict-landing .chip-b .ico{background:rgba(139,92,246,.16);color:var(--accent-bright)}
+.gbict-landing .chip-b .ico{background:rgba(16,185,129,.16);color:var(--trust)}
 
 /* PHONE FRAME + APP SCREENS */
 .gbict-landing .phone{width:268px;height:560px;border-radius:42px;padding:11px;position:relative;
