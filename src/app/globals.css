@@ -300,6 +300,7 @@ body {
   --text: #0f172a;          /* slate-900 */
   --text-muted: #475569;    /* slate-600 */
   --text-faint: #94a3b8;    /* slate-400 */
+  --band: #d8f3e6;          /* soft green band (day) */
 }
 .dark {
   --bg: #07080D;
@@ -310,6 +311,7 @@ body {
   --text: #f1f5f9;          /* slate-100 */
   --text-muted: #94a3b8;    /* slate-400 */
   --text-faint: #64748b;    /* slate-500 */
+  --band: #05060B;          /* deep band (night) */
 }
 
 :root {

@@ -86,8 +86,8 @@ const btnPrimary =
   "inline-flex items-center justify-center h-12 px-7 rounded-full bg-[#047857] hover:bg-[#059669] " +
   "text-white text-[15px] font-semibold tracking-[-0.01em] shadow-[0_1px_3px_rgba(0,0,0,0.3)] transition-colors";
 const btnGhost =
-  "inline-flex items-center justify-center h-12 px-7 rounded-full border border-white/20 bg-transparent " +
-  "text-white text-[15px] font-medium hover:bg-[var(--surface-2)] transition-colors";
+  "inline-flex items-center justify-center h-12 px-7 rounded-full border border-[var(--border)] bg-transparent " +
+  "text-[var(--text)] text-[15px] font-medium hover:bg-[var(--surface-2)] transition-colors";
 
 function Eyebrow({ children }: { children: ReactNode }) {
   return (
@@ -231,10 +231,10 @@ function Hero() {
             Connect any home battery to any dynamic energy contract. GBICT optimizes automatically — charge cheap, sell expensive.
           </p>
           <div className="mt-11 flex flex-wrap gap-3.5">
-            <a href="/signup" className={btnPrimary}>14 days free — no credit card</a>
+            <a href="/signup" className={btnPrimary}>Start 14-day free trial</a>
             <a href="#how" className={btnGhost}>How it works</a>
           </div>
-          <p className="mt-6 text-[13.5px] text-[var(--text-faint)]">14 days free · no credit card · cancel anytime</p>
+          <p className="mt-6 text-[13.5px] text-[var(--text-faint)]">14 days free · cancel anytime</p>
         </div>
         <Dashboard />
       </div>
@@ -353,7 +353,7 @@ function Benefits() {
     { n: "24/7", l: "Automatic optimization, no manual work", tone: "text-emerald-400" },
   ];
   return (
-    <section id="results" className="relative overflow-hidden bg-[#05060B] py-[120px]">
+    <section id="results" className="relative overflow-hidden bg-[var(--band)] py-[120px]">
       <div className="pointer-events-none absolute left-1/2 top-[-220px] h-[520px] w-[900px] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse,rgba(16,185,129,0.16),transparent_65%)]" />
       <div className="relative mx-auto max-w-[1140px] px-6">
         <SectionHead title="What GBICT does for you" />
@@ -389,7 +389,7 @@ function BigCTA() {
           <div className="pointer-events-none absolute left-1/2 top-[-200px] h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse,rgba(16,185,129,0.2),transparent_65%)]" />
           <h2 className="relative text-[clamp(32px,4.4vw,52px)] font-extrabold tracking-[-0.04em]">Ready to save automatically?</h2>
           <p className="relative mt-5 text-[18px] text-[var(--text-muted)]">Connect your battery in 2 minutes. No technical knowledge needed.</p>
-          <a href="/signup" className={btnPrimary + " relative mt-9"}>14 days free — no credit card</a>
+          <a href="/signup" className={btnPrimary + " relative mt-9"}>Start 14-day free trial</a>
         </div>
       </div>
     </section>
@@ -454,7 +454,7 @@ export default function Page() {
   }
 
   return (
-    <main className="dark relative min-h-screen overflow-x-hidden bg-[var(--bg)] font-sans text-[var(--text)] antialiased">
+    <main className="relative min-h-screen overflow-x-hidden bg-[var(--bg)] font-sans text-[var(--text)] antialiased">
       {/* atmosphere */}
       <div className="pointer-events-none fixed inset-0 z-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_100%_80%_at_50%_0%,#000_40%,transparent_90%)]" />
       <div className="pointer-events-none fixed left-1/2 top-[-320px] z-0 h-[820px] w-[1200px] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_60%_60%_at_50%_50%,rgba(16,185,129,0.25),rgba(5,150,105,0.1)_45%,transparent_70%)] blur-xl" />
