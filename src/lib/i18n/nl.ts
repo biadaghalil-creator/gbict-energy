@@ -41,9 +41,9 @@ export const nl: TranslationDict = {
   pricing: {
     title: 'Eerlijke prijzen, geen gedoe',
     subtitle:
-      'Elk abonnement start met <strong>14 dagen gratis</strong>. Geen creditcard nodig. Opzeggen wanneer je wil.',
+      'Elk abonnement start met <strong>14 dagen gratis</strong>. Opzeggen wanneer je wil.',
     trialBadge:
-      '<strong>14 dagen gratis</strong> — koppel je batterij vandaag en zie meteen wat je bespaart. Geen creditcard, geen verplichtingen.',
+      '<strong>14 dagen gratis</strong> — koppel je batterij vandaag en zie meteen wat je bespaart. Geen verplichtingen.',
     perMonth: 'per maand',
     proName: 'Pro',
     proDesc: 'Voor huishoudens die het eenmalig instellen en er verder niet meer aan denken.',
@@ -67,7 +67,7 @@ export const nl: TranslationDict = {
     loginTitle: 'Welkom terug',
     loginSubtitle: 'Log in op je GBICT Energy account',
     signupTitle: 'Account aanmaken',
-    signupSubtitle: '14 dagen gratis proberen. Geen creditcard nodig.',
+    signupSubtitle: '14 dagen gratis proberen.',
     emailLabel: 'E-mailadres',
     passwordLabel: 'Wachtwoord',
     loginBtn: 'Inloggen',

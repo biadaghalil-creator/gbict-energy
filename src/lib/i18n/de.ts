@@ -41,9 +41,9 @@ export const de: TranslationDict = {
   pricing: {
     title: 'Faire Preise, kein Kleingedrucktes',
     subtitle:
-      'Jeder Tarif startet mit <strong>14 Tagen kostenlos</strong>. Keine Kreditkarte nötig. Jederzeit kündbar.',
+      'Jeder Tarif startet mit <strong>14 Tagen kostenlos</strong>. Jederzeit kündbar.',
     trialBadge:
-      '<strong>14 Tage gratis</strong> — schließ deinen Akku heute an und sieh sofort, was du sparst. Keine Karte, keine Verpflichtung.',
+      '<strong>14 Tage gratis</strong> — schließ deinen Akku heute an und sieh sofort, was du sparst. Keine Verpflichtung.',
     perMonth: 'pro Monat',
     proName: 'Pro',
     proDesc: 'Für Haushalte, die es einmalig einrichten und dann vergessen wollen.',
@@ -67,7 +67,7 @@ export const de: TranslationDict = {
     loginTitle: 'Schön, dass du wieder da bist',
     loginSubtitle: 'Log dich in dein GBICT Energy Konto ein',
     signupTitle: 'Konto erstellen',
-    signupSubtitle: '14 Tage kostenlos testen. Keine Kreditkarte.',
+    signupSubtitle: '14 Tage kostenlos testen.',
     emailLabel: 'E-Mail',
     passwordLabel: 'Passwort',
     loginBtn: 'Einloggen',

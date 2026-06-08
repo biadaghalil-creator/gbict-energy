@@ -41,9 +41,9 @@ export const en: TranslationDict = {
   pricing: {
     title: 'Straightforward pricing',
     subtitle:
-      'Every plan starts with <strong>14 days free</strong>. No card needed. Cancel any time.',
+      'Every plan starts with <strong>14 days free</strong>. Cancel any time.',
     trialBadge:
-      '<strong>14 days free</strong> — connect your battery today and see what you\'re saving. No card, no catch.',
+      '<strong>14 days free</strong> — connect your battery today and see what you\'re saving. No catch.',
     perMonth: 'per month',
     proName: 'Pro',
     proDesc: 'For households that want to set it up once and forget about it.',
@@ -67,7 +67,7 @@ export const en: TranslationDict = {
     loginTitle: 'Good to see you',
     loginSubtitle: 'Log in to your GBICT Energy account',
     signupTitle: 'Join GBICT Energy',
-    signupSubtitle: 'Free for 14 days. No card needed.',
+    signupSubtitle: 'Free for 14 days.',
     emailLabel: 'Email',
     passwordLabel: 'Password',
     loginBtn: 'Log in',

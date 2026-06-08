@@ -328,7 +328,7 @@ export function PricingClient({ translations: t }: Props) {
             <h2 className="text-3xl font-extrabold tracking-tight text-white" style={{ letterSpacing: '-0.03em' }}>
               Begin vandaag met besparen
             </h2>
-            <p className="mt-3 text-[var(--text-muted)]">{t.common.free14days}. {t.common.noCard}. {t.common.cancel}.</p>
+            <p className="mt-3 text-[var(--text-muted)]">{t.common.free14days}. {t.common.cancel}.</p>
             <Link href="/signup" className="btn-3d-primary mt-8 inline-flex">
               {t.landing.ctaPrimary}
             </Link>

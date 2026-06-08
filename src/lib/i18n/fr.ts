@@ -41,9 +41,9 @@ export const fr: TranslationDict = {
   pricing: {
     title: 'Des tarifs clairs, sans surprise',
     subtitle:
-      'Chaque abonnement commence avec <strong>14 jours gratuits</strong>. Pas de carte bancaire. Annulable quand vous voulez.',
+      'Chaque abonnement commence avec <strong>14 jours gratuits</strong>. Annulable quand vous voulez.',
     trialBadge:
-      '<strong>14 jours offerts</strong> — connectez votre batterie aujourd\'hui et voyez directement ce que vous économisez. Aucune carte, aucun engagement.',
+      '<strong>14 jours offerts</strong> — connectez votre batterie aujourd\'hui et voyez directement ce que vous économisez. Aucun engagement.',
     perMonth: 'par mois',
     proName: 'Pro',
     proDesc: 'Pour les foyers qui veulent tout configurer une fois et ne plus y penser.',
@@ -67,7 +67,7 @@ export const fr: TranslationDict = {
     loginTitle: 'Content de vous revoir',
     loginSubtitle: 'Connectez-vous à votre compte GBICT Energy',
     signupTitle: 'Créer un compte',
-    signupSubtitle: '14 jours gratuits. Pas de carte bancaire.',
+    signupSubtitle: '14 jours gratuits.',
     emailLabel: 'Adresse e-mail',
     passwordLabel: 'Mot de passe',
     loginBtn: 'Se connecter',
