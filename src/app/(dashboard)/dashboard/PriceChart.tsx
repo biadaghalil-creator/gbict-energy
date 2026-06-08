@@ -21,11 +21,11 @@ export default function PriceChart({
   const currentHour = new Date().getHours()
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-6">
+    <div className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6">
       {/* Header */}
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-        <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-500">{label}</p>
-        <div className="flex items-center gap-4 text-[11px] text-slate-500">
+        <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--text-faint)]">{label}</p>
+        <div className="flex items-center gap-4 text-[11px] text-[var(--text-faint)]">
           <span className="flex items-center gap-1.5">
             <span className="inline-block h-2 w-2 rounded-sm bg-emerald-500" /> Charge
           </span>
@@ -59,7 +59,7 @@ export default function PriceChart({
           return (
             <div key={i} className="group relative flex flex-1 flex-col items-center">
               {/* Tooltip */}
-              <div className="pointer-events-none absolute bottom-[calc(100%+6px)] left-1/2 z-20 hidden -translate-x-1/2 whitespace-nowrap rounded-lg border border-white/[0.08] bg-[#07080D] px-2.5 py-1.5 text-[11px] text-slate-300 shadow-xl group-hover:block">
+              <div className="pointer-events-none absolute bottom-[calc(100%+6px)] left-1/2 z-20 hidden -translate-x-1/2 whitespace-nowrap rounded-lg border border-[var(--border)] bg-[var(--bg)] px-2.5 py-1.5 text-[11px] text-[var(--text-muted)] shadow-xl group-hover:block">
                 {String(hour).padStart(2, '0')}:00 — €{price.total.toFixed(4)}
                 {slot?.action === 'charge' && <span className="ml-1 text-emerald-400">↑ Charge</span>}
                 {slot?.action === 'discharge' && <span className="ml-1 text-amber-400">↓ Sell</span>}
@@ -73,7 +73,7 @@ export default function PriceChart({
               />
 
               {hour % 6 === 0 && (
-                <span className="mt-1.5 text-[9px] tabular-nums text-slate-600">{hour}</span>
+                <span className="mt-1.5 text-[9px] tabular-nums text-[var(--text-faint)]">{hour}</span>
               )}
             </div>
           )

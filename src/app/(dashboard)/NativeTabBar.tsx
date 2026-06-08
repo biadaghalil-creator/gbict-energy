@@ -25,7 +25,7 @@ export default function NativeTabBar() {
   if (!native) return null
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-white/[0.07] bg-[#0D0E16]/95 backdrop-blur-xl pb-[env(safe-area-inset-bottom)] md:hidden">
+    <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-[var(--border)] bg-[var(--surface)] backdrop-blur-xl pb-[env(safe-area-inset-bottom)] md:hidden">
       <div className="flex items-stretch justify-around px-1.5 pt-1.5">
         {tabs.map((tab) => {
           const Icon = tab.icon
@@ -36,10 +36,10 @@ export default function NativeTabBar() {
               href={tab.href}
               className={cn(
                 'flex flex-1 flex-col items-center gap-1 rounded-xl py-1.5 text-[10px] font-medium transition-colors',
-                active ? 'text-emerald-300' : 'text-slate-500'
+                active ? 'text-emerald-300' : 'text-[var(--text-faint)]'
               )}
             >
-              <Icon className={cn('h-[22px] w-[22px] transition-colors', active ? 'text-emerald-400' : 'text-slate-500')} />
+              <Icon className={cn('h-[22px] w-[22px] transition-colors', active ? 'text-emerald-400' : 'text-[var(--text-faint)]')} />
               <span className="leading-none">{tab.label}</span>
             </Link>
           )

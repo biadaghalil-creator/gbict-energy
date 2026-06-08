@@ -41,36 +41,36 @@ export default function TibberData() {
   return (
     <>
       {/* Current price card */}
-      <div className="overflow-hidden rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-6">
-        <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-500">
+      <div className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6">
+        <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--text-faint)]">
           Spotprijs nu
         </p>
         {loading ? (
-          <Skeleton className="mt-3 h-10 w-28 bg-white/[0.04]" />
+          <Skeleton className="mt-3 h-10 w-28 bg-[var(--surface-2)]" />
         ) : current ? (
           <>
             <div className="mt-3 flex items-baseline gap-1.5">
-              <span className="font-mono text-[32px] font-semibold leading-none tracking-[-0.03em] text-slate-50">
+              <span className="font-mono text-[32px] font-semibold leading-none tracking-[-0.03em] text-[var(--text)]">
                 €{current.total.toFixed(4)}
               </span>
-              <span className="text-[12px] text-slate-500">/kWh</span>
+              <span className="text-[12px] text-[var(--text-faint)]">/kWh</span>
             </div>
             {cfg && (
-              <span className="mt-3 flex items-center gap-1.5 text-[12px] font-medium text-slate-500">
+              <span className="mt-3 flex items-center gap-1.5 text-[12px] font-medium text-[var(--text-faint)]">
                 <span className={`h-[14px] w-[3px] rounded-sm ${cfg.barColor}`} />
                 <span className={cfg.textColor}>{cfg.label}</span>
               </span>
             )}
           </>
         ) : (
-          <p className="mt-3 font-mono text-[32px] font-semibold text-slate-700">€ —</p>
+          <p className="mt-3 font-mono text-[32px] font-semibold text-[var(--text-faint)]">€ —</p>
         )}
       </div>
 
       {/* Estimated savings card */}
       {!loading && optimization && (
-        <div className="overflow-hidden rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-6">
-          <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-500">
+        <div className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6">
+          <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--text-faint)]">
             Estimated savings today
           </p>
           <div className="mt-3 flex items-baseline gap-1.5">
@@ -78,7 +78,7 @@ export default function TibberData() {
               €{optimization.estimatedSavings.toFixed(2)}
             </span>
           </div>
-          <p className="mt-2 text-[11.5px] text-slate-600">Based on 5 kWh battery</p>
+          <p className="mt-2 text-[11.5px] text-[var(--text-faint)]">Based on 5 kWh battery</p>
         </div>
       )}
 
@@ -91,8 +91,8 @@ export default function TibberData() {
 
       {/* Optimization schedule today */}
       {!loading && optimization && optimization.schedule.filter(s => s.action !== 'idle').length > 0 && (
-        <div className="col-span-full overflow-hidden rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-6">
-          <p className="mb-5 text-[11px] font-bold uppercase tracking-[0.1em] text-slate-500">
+        <div className="col-span-full overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6">
+          <p className="mb-5 text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--text-faint)]">
             Optimization schedule · today
           </p>
           <div className="space-y-2.5">
@@ -100,7 +100,7 @@ export default function TibberData() {
               .filter((s) => s.action !== 'idle')
               .map((slot) => (
                 <div key={slot.hour} className="flex items-center gap-4">
-                  <span className="w-12 font-mono text-[13px] font-medium tabular-nums text-slate-400">
+                  <span className="w-12 font-mono text-[13px] font-medium tabular-nums text-[var(--text-muted)]">
                     {String(slot.hour).padStart(2, '0')}:00
                   </span>
                   <span className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[12px] font-medium ${
@@ -110,13 +110,13 @@ export default function TibberData() {
                   }`}>
                     {slot.action === 'charge' ? '↑ Charge' : '↓ Sell'}
                   </span>
-                  <span className="font-mono text-[12px] text-slate-600">
+                  <span className="font-mono text-[12px] text-[var(--text-faint)]">
                     €{slot.price.toFixed(4)}/kWh
                   </span>
                 </div>
               ))}
           </div>
-          <p className="mt-5 text-[11.5px] text-slate-700">
+          <p className="mt-5 text-[11.5px] text-[var(--text-faint)]">
             Het schema wordt dagelijks bijgewerkt op basis van EPEX-spotprijzen.
           </p>
         </div>
@@ -134,12 +134,12 @@ export default function TibberData() {
           </div>
 
           {tomorrowOptimization && tomorrowOptimization.schedule.filter(s => s.action !== 'idle').length > 0 && (
-            <div className="col-span-full overflow-hidden rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-6">
+            <div className="col-span-full overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6">
               <div className="mb-5 flex items-center justify-between">
-                <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-500">
+                <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--text-faint)]">
                   Planned schedule · tomorrow
                 </p>
-                <span className="rounded-lg border border-white/[0.06] bg-white/[0.03] px-2.5 py-1 text-[11px] text-slate-500">
+                <span className="rounded-lg border border-[var(--border)] bg-[var(--surface-2)] px-2.5 py-1 text-[11px] text-[var(--text-faint)]">
                   ~€{tomorrowOptimization.estimatedSavings.toFixed(2)} expected
                 </span>
               </div>
@@ -148,7 +148,7 @@ export default function TibberData() {
                   .filter((s) => s.action !== 'idle')
                   .map((slot) => (
                     <div key={slot.hour} className="flex items-center gap-4">
-                      <span className="w-12 font-mono text-[13px] font-medium tabular-nums text-slate-400">
+                      <span className="w-12 font-mono text-[13px] font-medium tabular-nums text-[var(--text-muted)]">
                         {String(slot.hour).padStart(2, '0')}:00
                       </span>
                       <span className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[12px] font-medium ${
@@ -158,7 +158,7 @@ export default function TibberData() {
                       }`}>
                         {slot.action === 'charge' ? '↑ Charge' : '↓ Sell'}
                       </span>
-                      <span className="font-mono text-[12px] text-slate-600">
+                      <span className="font-mono text-[12px] text-[var(--text-faint)]">
                         €{slot.price.toFixed(4)}/kWh
                       </span>
                     </div>
@@ -171,8 +171,8 @@ export default function TibberData() {
 
       {/* Tomorrow not available yet */}
       {!loading && tomorrowPrices.length === 0 && todayPrices.length > 0 && (
-        <div className="col-span-full rounded-2xl border border-dashed border-white/[0.06] bg-[#0D0E16]/50 p-5 text-center">
-          <p className="text-[12.5px] text-slate-700">
+        <div className="col-span-full rounded-2xl border border-dashed border-[var(--border)] bg-[var(--surface)]/50 p-5 text-center">
+          <p className="text-[12.5px] text-[var(--text-faint)]">
             De prijzen van morgen verschijnen tussen 13:00 en 15:00.
           </p>
         </div>

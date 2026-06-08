@@ -99,10 +99,10 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
         <div className="mb-8 flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-lg shadow-emerald-500/30">
           <Zap className="h-9 w-9 text-white" />
         </div>
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
+        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-[var(--text)]">
           Welkom bij GBICT Energy
         </h1>
-        <p className="mx-auto mt-4 max-w-md text-base text-slate-500">
+        <p className="mx-auto mt-4 max-w-md text-base text-[var(--text-faint)]">
           We optimaliseren automatisch jouw thuisenergie. Laten we beginnen met een paar vragen.
         </p>
         <button
@@ -124,10 +124,10 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
     return (
       <div className="mx-auto max-w-lg px-4">
         <div className="mb-8 text-center">
-          <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
+          <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-[var(--text)]">
             Wat heb je thuis?
           </h2>
-          <p className="mt-2 text-sm text-slate-500">
+          <p className="mt-2 text-sm text-[var(--text-faint)]">
             Selecteer alles wat van toepassing is.
           </p>
         </div>
@@ -143,11 +143,11 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
                 className={`flex flex-col items-center gap-3 rounded-2xl border-2 p-5 text-center transition-all ${
                   selected
                     ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40'
-                    : 'border-slate-200 bg-white hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700'
+                    : 'border-slate-200 bg-white hover:border-slate-300 dark:border-slate-800 dark:bg-[var(--surface)] dark:hover:border-slate-700'
                 }`}
               >
-                <Icon className={`h-7 w-7 ${selected ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400'}`} />
-                <span className={`text-sm font-medium ${selected ? 'text-emerald-700 dark:text-emerald-300' : 'text-slate-700 dark:text-slate-300'}`}>
+                <Icon className={`h-7 w-7 ${selected ? 'text-emerald-600 dark:text-emerald-400' : 'text-[var(--text-faint)] dark:text-[var(--text-muted)]'}`} />
+                <span className={`text-sm font-medium ${selected ? 'text-emerald-700 dark:text-emerald-300' : 'text-[var(--text-faint)] dark:text-[var(--text-muted)]'}`}>
                   {label}
                 </span>
                 {selected && (
@@ -184,10 +184,10 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
     return (
       <div className="mx-auto max-w-lg px-4">
         <div className="mb-8 text-center">
-          <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
+          <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-[var(--text)]">
             Koppel je apparaat
           </h2>
-          <p className="mt-2 text-sm text-slate-500">
+          <p className="mt-2 text-sm text-[var(--text-faint)]">
             Verbind je eerste apparaat om te beginnen met optimaliseren.
           </p>
         </div>
@@ -199,16 +199,16 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
             <a
               key={card.name}
               href="/dashboard/koppelingen"
-              className="flex items-center gap-4 rounded-2xl border-2 border-slate-200 bg-white px-5 py-4 transition-all hover:border-emerald-500 hover:bg-emerald-50 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-emerald-500 dark:hover:bg-emerald-950/40"
+              className="flex items-center gap-4 rounded-2xl border-2 border-slate-200 bg-white px-5 py-4 transition-all hover:border-emerald-500 hover:bg-emerald-50 dark:border-slate-800 dark:bg-[var(--surface)] dark:hover:border-emerald-500 dark:hover:bg-emerald-950/40"
             >
-              <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800">
-                <Icon className="h-6 w-6 text-slate-600 dark:text-slate-300" />
+              <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-slate-100 dark:bg-[var(--surface)]">
+                <Icon className="h-6 w-6 text-[var(--text-faint)] dark:text-[var(--text-muted)]" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-slate-900 dark:text-slate-50">{card.name}</p>
-                <p className="mt-0.5 text-xs text-slate-500">{card.desc}</p>
+                <p className="text-sm font-semibold text-slate-900 dark:text-[var(--text)]">{card.name}</p>
+                <p className="mt-0.5 text-xs text-[var(--text-faint)]">{card.desc}</p>
               </div>
-              <svg className="ml-auto h-4 w-4 flex-shrink-0 text-slate-400" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={2}>
+              <svg className="ml-auto h-4 w-4 flex-shrink-0 text-[var(--text-muted)]" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 12l4-4-4-4" />
               </svg>
             </a>
@@ -220,7 +220,7 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
           <button
             type="button"
             onClick={() => setStep(4)}
-            className="text-sm text-slate-400 transition-colors hover:text-slate-600 dark:hover:text-slate-300"
+            className="text-sm text-[var(--text-muted)] transition-colors hover:text-[var(--text-faint)] dark:hover:text-[var(--text-muted)]"
           >
             Later doen →
           </button>
@@ -238,10 +238,10 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
     return (
       <div className="flex min-h-[70vh] flex-col items-center justify-center px-4 text-center">
         <CheckCircle2 className="mb-8 h-16 w-16 text-emerald-500" />
-        <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
+        <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-[var(--text)]">
           Je bent klaar om te besparen!
         </h2>
-        <p className="mt-3 text-base text-slate-500">
+        <p className="mt-3 text-base text-[var(--text-faint)]">
           GBICT Energy staat voor je klaar.
         </p>
 
@@ -257,7 +257,7 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
                   <path strokeLinecap="round" strokeLinejoin="round" d="M2 7l3.5 3.5L12 3" />
                 </svg>
               </div>
-              <span className="text-sm text-slate-700 dark:text-slate-300">{item}</span>
+              <span className="text-sm text-[var(--text-faint)] dark:text-[var(--text-muted)]">{item}</span>
             </li>
           ))}
         </ul>

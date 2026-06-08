@@ -22,13 +22,13 @@ function SavingsChart({ days, loading, activeDays }: { days: DayData[]; loading:
   if (loading) return (
     <div className="flex h-[120px] items-end gap-[3px]">
       {Array.from({ length: activeDays }).map((_, i) => (
-        <div key={i} className="flex-1 animate-pulse rounded-t-[3px] bg-white/[0.04]" style={{ height: `${20 + (i % 7) * 10}%` }} />
+        <div key={i} className="flex-1 animate-pulse rounded-t-[3px] bg-[var(--surface-2)]" style={{ height: `${20 + (i % 7) * 10}%` }} />
       ))}
     </div>
   )
   if (!days.length) return (
-    <div className="flex h-[120px] items-center justify-center rounded-xl bg-white/[0.02]">
-      <p className="text-[13px] text-slate-700">Nog geen besparingsdata</p>
+    <div className="flex h-[120px] items-center justify-center rounded-xl bg-[var(--surface-2)]">
+      <p className="text-[13px] text-[var(--text-faint)]">Nog geen besparingsdata</p>
     </div>
   )
 
@@ -43,12 +43,12 @@ function SavingsChart({ days, loading, activeDays }: { days: DayData[]; loading:
           const isToday = day.date === new Date().toISOString().split('T')[0]
           return (
             <div key={day.date} className="group relative flex flex-1 flex-col items-center">
-              <div className="pointer-events-none absolute bottom-[calc(100%+4px)] left-1/2 z-20 hidden -translate-x-1/2 whitespace-nowrap rounded-lg border border-white/[0.08] bg-[#07080D] px-2 py-1.5 text-[10.5px] text-slate-300 shadow-xl group-hover:block">
+              <div className="pointer-events-none absolute bottom-[calc(100%+4px)] left-1/2 z-20 hidden -translate-x-1/2 whitespace-nowrap rounded-lg border border-[var(--border)] bg-[var(--bg)] px-2 py-1.5 text-[10.5px] text-[var(--text-muted)] shadow-xl group-hover:block">
                 {fmtD(day.date)}: {fmt(day.savings)}
               </div>
               <div
                 className={`w-full rounded-t-[3px] transition-all ${
-                  day.savings > 0 ? isToday ? 'bg-emerald-500' : 'bg-emerald-500/60 group-hover:bg-emerald-500/80' : 'bg-white/[0.03]'
+                  day.savings > 0 ? isToday ? 'bg-emerald-500' : 'bg-emerald-500/60 group-hover:bg-emerald-500/80' : 'bg-[var(--surface-2)]'
                 }`}
                 style={{ height: `${Math.max(pct, day.savings > 0 ? 4 : 2)}%` }}
               />
@@ -59,7 +59,7 @@ function SavingsChart({ days, loading, activeDays }: { days: DayData[]; loading:
       <div className="mt-1.5 flex gap-[3px]">
         {days.map((day, i) => (
           <div key={day.date} className="flex flex-1 justify-center">
-            {i % labelEvery === 0 && <span className="text-[9px] tabular-nums text-slate-700">{fmtD(day.date).split(' ')[0]}</span>}
+            {i % labelEvery === 0 && <span className="text-[9px] tabular-nums text-[var(--text-faint)]">{fmtD(day.date).split(' ')[0]}</span>}
           </div>
         ))}
       </div>
@@ -72,18 +72,18 @@ function TopSavingsList({ recent, loading }: { recent: RecentLog[]; loading: boo
   const maxSaving = Math.max(...top.map(r => r.savings_eur), 0.01)
 
   return (
-    <div className="rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-6">
+    <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6">
       <div className="mb-5 flex items-center justify-between">
         <div>
-          <p className="text-[14px] font-semibold text-slate-200">Grootste besparingen</p>
-          <p className="mt-0.5 text-[11px] text-slate-600">Best presterende acties</p>
+          <p className="text-[14px] font-semibold text-[var(--text)]">Grootste besparingen</p>
+          <p className="mt-0.5 text-[11px] text-[var(--text-faint)]">Best presterende acties</p>
         </div>
-        <ArrowUpRight className="h-4 w-4 text-slate-700" />
+        <ArrowUpRight className="h-4 w-4 text-[var(--text-faint)]" />
       </div>
       {loading ? (
-        <div className="space-y-4">{[1,2,3,4].map(i => <Skeleton key={i} className="h-8 w-full bg-white/[0.04]" />)}</div>
+        <div className="space-y-4">{[1,2,3,4].map(i => <Skeleton key={i} className="h-8 w-full bg-[var(--surface-2)]" />)}</div>
       ) : top.length === 0 ? (
-        <p className="py-6 text-center text-[13px] text-slate-700">Nog geen besparingen vastgelegd</p>
+        <p className="py-6 text-center text-[13px] text-[var(--text-faint)]">Nog geen besparingen vastgelegd</p>
       ) : (
         <div className="space-y-4">
           {top.map((log, i) => {
@@ -91,7 +91,7 @@ function TopSavingsList({ recent, loading }: { recent: RecentLog[]; loading: boo
             return (
               <div key={i}>
                 <div className="mb-1.5 flex items-center justify-between">
-                  <span className="flex items-center gap-2 text-[12.5px] text-slate-300">
+                  <span className="flex items-center gap-2 text-[12.5px] text-[var(--text-muted)]">
                     <span className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${isCharge ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'}`}>
                       {isCharge ? '↑ Laden' : '↓ Verkopen'}
                     </span>
@@ -99,7 +99,7 @@ function TopSavingsList({ recent, loading }: { recent: RecentLog[]; loading: boo
                   </span>
                   <span className="font-mono text-[12.5px] font-semibold text-emerald-400">+{fmt(log.savings_eur)}</span>
                 </div>
-                <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.04]">
+                <div className="h-1.5 overflow-hidden rounded-full bg-[var(--surface-2)]">
                   <div className={`h-full rounded-full ${isCharge ? 'bg-emerald-500' : 'bg-amber-500'}`}
                     style={{ width: `${(log.savings_eur / maxSaving) * 100}%` }} />
                 </div>
@@ -127,7 +127,7 @@ export default function BesparingenClient() {
     { label: 'Vandaag',      value: data?.totals.today   ?? 0, money: true,  color: 'text-emerald-400' },
     { label: 'Deze maand', value: data?.totals.month   ?? 0, money: true,  color: 'text-emerald-400' },
     { label: 'Totaal',   value: data?.totals.total   ?? 0, money: true,  color: 'text-emerald-400'  },
-    { label: 'Acties',    value: data?.totals.actions ?? 0, money: false, color: 'text-slate-300'   },
+    { label: 'Acties',    value: data?.totals.actions ?? 0, money: false, color: 'text-[var(--text-muted)]'   },
   ]
 
   return (
@@ -136,23 +136,23 @@ export default function BesparingenClient() {
       {/* Page header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[26px] font-extrabold tracking-[-0.035em] text-slate-50">Besparingsoverzicht</h1>
-          <p className="mt-1 text-[13px] text-slate-600">Je automatische energiebesparing</p>
+          <h1 className="text-[26px] font-extrabold tracking-[-0.035em] text-[var(--text)]">Besparingsoverzicht</h1>
+          <p className="mt-1 text-[13px] text-[var(--text-faint)]">Je automatische energiebesparing</p>
         </div>
       </div>
 
       {/* Stat cards */}
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         {stats.map(s => (
-          <div key={s.label} className="rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-5">
-            <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-600">{s.label}</p>
+          <div key={s.label} className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5">
+            <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--text-faint)]">{s.label}</p>
             {loading
-              ? <Skeleton className="mt-3 h-8 w-20 bg-white/[0.04]" />
+              ? <Skeleton className="mt-3 h-8 w-20 bg-[var(--surface-2)]" />
               : <>
-                  <p className={`mt-3 font-mono text-[26px] font-bold tracking-[-0.03em] ${s.value > 0 ? s.color : 'text-slate-700'}`}>
+                  <p className={`mt-3 font-mono text-[26px] font-bold tracking-[-0.03em] ${s.value > 0 ? s.color : 'text-[var(--text-faint)]'}`}>
                     {s.money ? fmt(s.value) : s.value}
                   </p>
-                  <p className="mt-1 text-[11px] text-slate-700">{s.money ? 'saved' : 'automated'}</p>
+                  <p className="mt-1 text-[11px] text-[var(--text-faint)]">{s.money ? 'saved' : 'automated'}</p>
                 </>
             }
           </div>
@@ -161,24 +161,24 @@ export default function BesparingenClient() {
 
       {/* Chart + top list */}
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1.5fr_1fr]">
-        <div className="rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-6">
+        <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6">
           <div className="mb-5 flex items-center justify-between">
             <div>
-              <p className="text-[14px] font-semibold text-slate-200">Besparing uitgesplitst</p>
-              <p className="mt-0.5 text-[11px] text-slate-600">Daily savings (€)</p>
+              <p className="text-[14px] font-semibold text-[var(--text)]">Besparing uitgesplitst</p>
+              <p className="mt-0.5 text-[11px] text-[var(--text-faint)]">Daily savings (€)</p>
             </div>
-            <div className="flex gap-1 rounded-lg bg-white/[0.04] p-1">
+            <div className="flex gap-1 rounded-lg bg-[var(--surface-2)] p-1">
               {RANGES.map(r => (
                 <button key={r.days} onClick={() => setActiveDays(r.days)}
                   className={cn('rounded-md px-3 py-1 text-[11px] font-semibold transition-colors',
-                    activeDays === r.days ? 'bg-emerald-500/15 text-emerald-400' : 'text-slate-600 hover:text-slate-300')}>
+                    activeDays === r.days ? 'bg-emerald-500/15 text-emerald-400' : 'text-[var(--text-faint)] hover:text-[var(--text-muted)]')}>
                   {r.label}
                 </button>
               ))}
             </div>
           </div>
           <SavingsChart days={data?.days ?? []} loading={loading} activeDays={activeDays} />
-          <div className="mt-4 flex gap-5 text-[11px] text-slate-600">
+          <div className="mt-4 flex gap-5 text-[11px] text-[var(--text-faint)]">
             <span className="flex items-center gap-1.5"><i className="inline-block h-2 w-2 rounded-sm bg-emerald-500/60" />Besparing</span>
             <span className="flex items-center gap-1.5"><i className="inline-block h-2 w-2 rounded-sm bg-emerald-500" />Vandaag</span>
           </div>
@@ -187,31 +187,31 @@ export default function BesparingenClient() {
       </div>
 
       {/* Transaction table */}
-      <div className="rounded-2xl border border-white/[0.06] bg-[#0D0E16]">
-        <div className="flex items-center justify-between border-b border-white/[0.06] px-6 py-4">
-          <p className="text-[14px] font-semibold text-slate-200">Transactiehistorie</p>
-          <span className="text-[11px] text-slate-600">Last {activeDays} days</span>
+      <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)]">
+        <div className="flex items-center justify-between border-b border-[var(--border)] px-6 py-4">
+          <p className="text-[14px] font-semibold text-[var(--text)]">Transactiehistorie</p>
+          <span className="text-[11px] text-[var(--text-faint)]">Last {activeDays} days</span>
         </div>
-        <div className="grid grid-cols-[auto_1fr_auto_auto] gap-4 border-b border-white/[0.04] px-6 py-2.5">
+        <div className="grid grid-cols-[auto_1fr_auto_auto] gap-4 border-b border-[var(--border)] px-6 py-2.5">
           {['Action','Time','kWh','Saved'].map(h => (
-            <span key={h} className={cn('text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-700', h === 'kWh' || h === 'Saved' ? 'text-right' : '')}>{h}</span>
+            <span key={h} className={cn('text-[11px] font-semibold uppercase tracking-[0.08em] text-[var(--text-faint)]', h === 'kWh' || h === 'Saved' ? 'text-right' : '')}>{h}</span>
           ))}
         </div>
         {loading ? (
           <div className="divide-y divide-white/[0.04]">
             {[1,2,3,4,5].map(i => (
               <div key={i} className="grid grid-cols-[auto_1fr_auto_auto] items-center gap-4 px-6 py-3.5">
-                <Skeleton className="h-8 w-8 rounded-xl bg-white/[0.04]" />
-                <Skeleton className="h-3.5 w-32 bg-white/[0.04]" />
-                <Skeleton className="h-3.5 w-10 bg-white/[0.04]" />
-                <Skeleton className="h-3.5 w-14 bg-white/[0.04]" />
+                <Skeleton className="h-8 w-8 rounded-xl bg-[var(--surface-2)]" />
+                <Skeleton className="h-3.5 w-32 bg-[var(--surface-2)]" />
+                <Skeleton className="h-3.5 w-10 bg-[var(--surface-2)]" />
+                <Skeleton className="h-3.5 w-14 bg-[var(--surface-2)]" />
               </div>
             ))}
           </div>
         ) : !data?.recent.length ? (
           <div className="flex flex-col items-center justify-center py-14">
-            <TrendingDown className="h-8 w-8 text-slate-800" />
-            <p className="mt-3 text-[13px] text-slate-700">Nog geen transacties</p>
+            <TrendingDown className="h-8 w-8 text-[var(--text-faint)]" />
+            <p className="mt-3 text-[13px] text-[var(--text-faint)]">Nog geen transacties</p>
           </div>
         ) : (
           <div className="divide-y divide-white/[0.04]">
@@ -225,11 +225,11 @@ export default function BesparingenClient() {
                     {isCharge ? <TrendingDown className="h-3.5 w-3.5 text-emerald-400" /> : <TrendingUp className="h-3.5 w-3.5 text-amber-400" />}
                   </div>
                   <div>
-                    <p className="text-[13px] font-medium text-slate-300">{isCharge ? 'Batterij geladen' : 'Batterij ontladen'}</p>
-                    <p className="mt-0.5 text-[11.5px] text-slate-600">{fmtDt(log.created_at)}{log.price_eur > 0 && <span className="ml-2">@ €{log.price_eur.toFixed(4)}/kWh</span>}</p>
+                    <p className="text-[13px] font-medium text-[var(--text-muted)]">{isCharge ? 'Batterij geladen' : 'Batterij ontladen'}</p>
+                    <p className="mt-0.5 text-[11.5px] text-[var(--text-faint)]">{fmtDt(log.created_at)}{log.price_eur > 0 && <span className="ml-2">@ €{log.price_eur.toFixed(4)}/kWh</span>}</p>
                   </div>
-                  <span className="font-mono text-[12.5px] text-slate-500 text-right">{log.kwh > 0 ? log.kwh.toFixed(1) : '—'}</span>
-                  <span className={`font-mono text-[13px] font-semibold text-right ${(log.savings_eur ?? 0) > 0 ? 'text-emerald-400' : 'text-slate-700'}`}>
+                  <span className="font-mono text-[12.5px] text-[var(--text-faint)] text-right">{log.kwh > 0 ? log.kwh.toFixed(1) : '—'}</span>
+                  <span className={`font-mono text-[13px] font-semibold text-right ${(log.savings_eur ?? 0) > 0 ? 'text-emerald-400' : 'text-[var(--text-faint)]'}`}>
                     {(log.savings_eur ?? 0) > 0 ? `+${fmt(log.savings_eur)}` : '—'}
                   </span>
                 </div>

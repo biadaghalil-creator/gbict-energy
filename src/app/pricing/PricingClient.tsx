@@ -116,11 +116,11 @@ export function PricingClient({ translations: t }: Props) {
   const currentLocale = getCurrentLocale()
 
   return (
-    <div className="min-h-screen text-slate-50" style={{ background: '#020617' }}>
+    <div className="min-h-screen text-[var(--text)]" style={{ background: 'var(--bg)' }}>
 
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-white/[0.06] backdrop-blur-xl"
-        style={{ background: 'rgba(2,6,23,0.85)' }}>
+      <header className="sticky top-0 z-50 border-b border-[var(--border)] backdrop-blur-xl"
+        style={{ background: 'var(--header)' }}>
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <Link href="/" className="flex items-center gap-3 group">
             <div className="relative w-9 h-9 shrink-0">
@@ -128,13 +128,13 @@ export function PricingClient({ translations: t }: Props) {
                 className="rounded-lg logo-glow group-hover:scale-105 transition-transform" />
             </div>
             <div className="flex flex-col leading-none">
-              <span className="text-sm font-bold tracking-tight text-slate-50">GBICT</span>
+              <span className="text-sm font-bold tracking-tight text-[var(--text)]">GBICT</span>
               <span className="text-xs font-medium text-gradient-blue">Energy</span>
             </div>
           </Link>
           <div className="flex items-center gap-3">
             <LanguageSwitcher currentLocale={currentLocale} />
-            <Link href="/login" className="text-sm font-medium text-slate-400 hover:text-slate-50 transition-colors hidden sm:block">
+            <Link href="/login" className="text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text)] transition-colors hidden sm:block">
               {t.nav.login}
             </Link>
             <Link href="/signup" className="btn-3d-sm">{t.nav.signup}</Link>
@@ -147,11 +147,11 @@ export function PricingClient({ translations: t }: Props) {
         {/* Hero */}
         <div className="text-center">
           <div className="mb-5 text-xs font-bold uppercase tracking-widest text-emerald-400">Abonnementen</div>
-          <h1 className="text-5xl font-extrabold tracking-tight text-slate-50 md:text-6xl"
+          <h1 className="text-5xl font-extrabold tracking-tight text-[var(--text)] md:text-6xl"
             style={{ letterSpacing: '-0.03em' }}>
             <span className="text-gradient-blue">{t.pricing.title}</span>
           </h1>
-          <p className="mx-auto mt-5 max-w-xl text-lg text-slate-400 leading-relaxed"
+          <p className="mx-auto mt-5 max-w-xl text-lg text-[var(--text-muted)] leading-relaxed"
             dangerouslySetInnerHTML={{ __html: t.pricing.subtitle }} />
         </div>
 
@@ -181,15 +181,15 @@ export function PricingClient({ translations: t }: Props) {
               )}
 
               <div>
-                <p className="text-xs font-bold uppercase tracking-widest text-slate-400">{tier.name}</p>
+                <p className="text-xs font-bold uppercase tracking-widest text-[var(--text-muted)]">{tier.name}</p>
                 <div className="mt-3 flex items-end gap-1">
-                  <span className={`text-5xl font-extrabold tracking-tight ${tier.highlight ? 'text-gradient-gold' : 'text-slate-50'}`}
+                  <span className={`text-5xl font-extrabold tracking-tight ${tier.highlight ? 'text-gradient-gold' : 'text-[var(--text)]'}`}
                     style={{ letterSpacing: '-0.04em' }}>
                     {tier.price}
                   </span>
-                  {tier.per && <span className="mb-2 text-sm text-slate-500">{tier.per}</span>}
+                  {tier.per && <span className="mb-2 text-sm text-[var(--text-faint)]">{tier.per}</span>}
                 </div>
-                <p className="mt-2 text-sm leading-relaxed text-slate-400">{tier.description}</p>
+                <p className="mt-2 text-sm leading-relaxed text-[var(--text-muted)]">{tier.description}</p>
               </div>
 
               <ul className="mt-7 flex-1 space-y-3">
@@ -199,7 +199,7 @@ export function PricingClient({ translations: t }: Props) {
                       viewBox="0 0 20 20" fill="currentColor">
                       <path fillRule="evenodd" d="M16.704 5.29a1 1 0 010 1.42l-8 8a1 1 0 01-1.42 0l-4-4a1 1 0 011.42-1.42L8 12.58l7.29-7.29a1 1 0 011.414 0z" clipRule="evenodd" />
                     </svg>
-                    <span className={`text-sm ${i === 0 && tier.trial ? 'font-semibold text-emerald-300' : 'text-slate-300'}`}>{f}</span>
+                    <span className={`text-sm ${i === 0 && tier.trial ? 'font-semibold text-emerald-300' : 'text-[var(--text-muted)]'}`}>{f}</span>
                   </li>
                 ))}
               </ul>
@@ -219,20 +219,20 @@ export function PricingClient({ translations: t }: Props) {
           ))}
         </div>
 
-        <p className="mt-6 text-center text-xs text-slate-600">{t.pricing.vatNote}</p>
+        <p className="mt-6 text-center text-xs text-[var(--text-faint)]">{t.pricing.vatNote}</p>
 
         {/* FAQ */}
         <div className="mt-24">
           <div className="mb-4 text-xs font-bold uppercase tracking-widest text-emerald-400">FAQ</div>
-          <h2 className="text-3xl font-extrabold tracking-tight text-slate-50 mb-10"
+          <h2 className="text-3xl font-extrabold tracking-tight text-[var(--text)] mb-10"
             style={{ letterSpacing: '-0.03em' }}>
             {t.pricing.faqTitle}
           </h2>
           <div className="grid gap-4 md:grid-cols-2">
             {FAQ.map((item) => (
               <div key={item.q} className="glow-card p-6">
-                <p className="font-semibold text-slate-50">{item.q}</p>
-                <p className="mt-2 text-sm leading-relaxed text-slate-400">{item.a}</p>
+                <p className="font-semibold text-[var(--text)]">{item.q}</p>
+                <p className="mt-2 text-sm leading-relaxed text-[var(--text-muted)]">{item.a}</p>
               </div>
             ))}
           </div>
@@ -241,15 +241,15 @@ export function PricingClient({ translations: t }: Props) {
         {/* Enterprise contact */}
         <div id="enterprise-contact" className="mt-24 scroll-mt-20">
           <div className="glow-card overflow-hidden">
-            <div className="border-b border-white/[0.06] px-8 py-7">
+            <div className="border-b border-[var(--border)] px-8 py-7">
               <div className="flex items-center gap-4">
                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl"
                   style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)' }}>
                   <Building2 className="h-6 w-6 text-emerald-400" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-slate-50">{t.pricing.enterpriseTitle}</h2>
-                  <p className="text-sm text-slate-400">{t.pricing.enterpriseSubtitle}</p>
+                  <h2 className="text-xl font-bold text-[var(--text)]">{t.pricing.enterpriseTitle}</h2>
+                  <p className="text-sm text-[var(--text-muted)]">{t.pricing.enterpriseSubtitle}</p>
                 </div>
               </div>
             </div>
@@ -260,8 +260,8 @@ export function PricingClient({ translations: t }: Props) {
                   <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full step-circle">
                     <Check className="h-7 w-7 text-slate-900" />
                   </div>
-                  <p className="text-lg font-bold text-slate-50">Aanvraag ontvangen!</p>
-                  <p className="mt-2 text-sm text-slate-400">We nemen binnen 1 werkdag contact met je op.</p>
+                  <p className="text-lg font-bold text-[var(--text)]">Aanvraag ontvangen!</p>
+                  <p className="mt-2 text-sm text-[var(--text-muted)]">We nemen binnen 1 werkdag contact met je op.</p>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-5">
@@ -311,7 +311,7 @@ export function PricingClient({ translations: t }: Props) {
                     style={{ borderRadius: '0.875rem' }}>
                     {loading ? t.common.loading : `${t.common.submit} →`}
                   </button>
-                  <p className="text-center text-xs text-slate-600">
+                  <p className="text-center text-xs text-[var(--text-faint)]">
                     We nemen binnen 1 werkdag contact op. Geen spam, geen verplichtingen.
                   </p>
                 </form>
@@ -328,7 +328,7 @@ export function PricingClient({ translations: t }: Props) {
             <h2 className="text-3xl font-extrabold tracking-tight text-white" style={{ letterSpacing: '-0.03em' }}>
               Begin vandaag met besparen
             </h2>
-            <p className="mt-3 text-slate-300">{t.common.free14days}. {t.common.noCard}. {t.common.cancel}.</p>
+            <p className="mt-3 text-[var(--text-muted)]">{t.common.free14days}. {t.common.noCard}. {t.common.cancel}.</p>
             <Link href="/signup" className="btn-3d-primary mt-8 inline-flex">
               {t.landing.ctaPrimary}
             </Link>
@@ -336,13 +336,13 @@ export function PricingClient({ translations: t }: Props) {
         </div>
       </main>
 
-      <footer className="mt-16 border-t border-white/[0.06]" style={{ background: 'rgba(2,6,23,0.95)' }}>
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6 text-sm text-slate-500">
+      <footer className="mt-16 border-t border-[var(--border)]" style={{ background: 'rgba(2,6,23,0.95)' }}>
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6 text-sm text-[var(--text-faint)]">
           <span>© {new Date().getFullYear()} GBICT Energy</span>
           <div className="flex gap-6">
-            <Link href="/" className="hover:text-slate-200 transition-colors">Home</Link>
-            <Link href="/about" className="hover:text-slate-200 transition-colors">Over GBICT</Link>
-            <Link href="/login" className="hover:text-slate-200 transition-colors">{t.nav.login}</Link>
+            <Link href="/" className="hover:text-[var(--text)] transition-colors">Home</Link>
+            <Link href="/about" className="hover:text-[var(--text)] transition-colors">Over GBICT</Link>
+            <Link href="/login" className="hover:text-[var(--text)] transition-colors">{t.nav.login}</Link>
           </div>
         </div>
       </footer>
@@ -353,7 +353,7 @@ export function PricingClient({ translations: t }: Props) {
 function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
   return (
     <div>
-      <label className="mb-1.5 block text-sm font-medium text-slate-300">
+      <label className="mb-1.5 block text-sm font-medium text-[var(--text-muted)]">
         {label} {required && <span className="text-emerald-400">*</span>}
       </label>
       {children}

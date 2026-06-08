@@ -32,22 +32,22 @@ export default function SavingsCards() {
   return (
     <>
       {/* Vandaag bespaard */}
-      <Card className="border-white/[0.06] bg-[#0D0E16]">
+      <Card className="border-[var(--border)] bg-[var(--surface)]">
         <CardHeader className="pb-2">
-          <CardTitle className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-slate-500">
+          <CardTitle className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-[var(--text-faint)]">
             <TrendingDown className="h-3.5 w-3.5" />
             Vandaag bespaard
           </CardTitle>
         </CardHeader>
         <CardContent>
           {loading ? (
-            <Skeleton className="mt-1 h-8 w-24 bg-white/[0.04]" />
+            <Skeleton className="mt-1 h-8 w-24 bg-[var(--surface-2)]" />
           ) : (
             <>
-              <p className={`text-2xl font-semibold tracking-tight ${(data?.today_eur ?? 0) > 0 ? 'text-emerald-400' : 'text-slate-600'}`}>
+              <p className={`text-2xl font-semibold tracking-tight ${(data?.today_eur ?? 0) > 0 ? 'text-emerald-400' : 'text-[var(--text-faint)]'}`}>
                 {data ? fmt(data.today_eur) : '€ —'}
               </p>
-              <p className="mt-1 text-xs text-slate-500">
+              <p className="mt-1 text-xs text-[var(--text-faint)]">
                 {data && data.logs_today > 0
                   ? `${data.discharge_count}× ontladen · ${data.charge_count}× geladen`
                   : 'Nog geen acties vandaag'}
@@ -59,22 +59,22 @@ export default function SavingsCards() {
 
       {/* Deze maand */}
       <Link href="/dashboard/besparingen" className="block">
-        <Card className="h-full border-white/[0.06] bg-[#0D0E16] transition-colors hover:border-emerald-800/50 hover:bg-slate-900">
+        <Card className="h-full border-[var(--border)] bg-[var(--surface)] transition-colors hover:border-emerald-800/50 hover:bg-[var(--surface)]">
           <CardHeader className="pb-2">
-            <CardTitle className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-slate-500">
+            <CardTitle className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-[var(--text-faint)]">
               <TrendingUp className="h-3.5 w-3.5" />
               Deze maand
             </CardTitle>
           </CardHeader>
           <CardContent>
             {loading ? (
-              <Skeleton className="mt-1 h-8 w-24 bg-white/[0.04]" />
+              <Skeleton className="mt-1 h-8 w-24 bg-[var(--surface-2)]" />
             ) : (
               <>
-                <p className={`text-2xl font-semibold tracking-tight ${(data?.month_eur ?? 0) > 0 ? 'text-emerald-400' : 'text-slate-600'}`}>
+                <p className={`text-2xl font-semibold tracking-tight ${(data?.month_eur ?? 0) > 0 ? 'text-emerald-400' : 'text-[var(--text-faint)]'}`}>
                   {data ? fmt(data.month_eur) : '€ —'}
                 </p>
-                <p className="mt-1 text-xs text-slate-500">
+                <p className="mt-1 text-xs text-[var(--text-faint)]">
                   {data && data.total_eur > 0
                     ? `Totaal ooit: ${fmt(data.total_eur)}`
                     : 'Koppel Sessy voor automatisch besparen'}

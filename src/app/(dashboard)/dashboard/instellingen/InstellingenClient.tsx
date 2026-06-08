@@ -23,7 +23,7 @@ const OPTIMIZE_OPTIONS = [
     Icon: TrendingUp,
     desc: 'Laadt en ontlaadt zo vaak mogelijk op de beste prijsmomenten.',
     activeClass: 'border-emerald-500/40 bg-emerald-500/[0.06] ring-1 ring-emerald-500/20',
-    idleClass: 'border-white/[0.06] bg-white/[0.02] hover:border-emerald-500/20 hover:bg-white/[0.04]',
+    idleClass: 'border-[var(--border)] bg-[var(--surface-2)] hover:border-emerald-500/20 hover:bg-[var(--surface-2)]',
     labelColor: 'text-emerald-400',
     iconColor: 'text-emerald-400',
     dotClass: 'border-emerald-500 bg-emerald-500',
@@ -34,7 +34,7 @@ const OPTIMIZE_OPTIONS = [
     Icon: Sliders,
     desc: 'Balans tussen besparing en altijd een geladen batterij.',
     activeClass: 'border-emerald-500/40 bg-emerald-500/[0.06] ring-1 ring-emerald-500/20',
-    idleClass: 'border-white/[0.06] bg-white/[0.02] hover:border-emerald-500/20 hover:bg-white/[0.04]',
+    idleClass: 'border-[var(--border)] bg-[var(--surface-2)] hover:border-emerald-500/20 hover:bg-[var(--surface-2)]',
     labelColor: 'text-emerald-400',
     iconColor: 'text-emerald-400',
     dotClass: 'border-emerald-400 bg-emerald-400',
@@ -45,7 +45,7 @@ const OPTIMIZE_OPTIONS = [
     Icon: Leaf,
     desc: 'Laadt alleen op zonne-energie en de goedkoopste uren.',
     activeClass: 'border-emerald-500/40 bg-emerald-500/[0.06] ring-1 ring-emerald-500/20',
-    idleClass: 'border-white/[0.06] bg-white/[0.02] hover:border-emerald-500/20 hover:bg-white/[0.04]',
+    idleClass: 'border-[var(--border)] bg-[var(--surface-2)] hover:border-emerald-500/20 hover:bg-[var(--surface-2)]',
     labelColor: 'text-emerald-400',
     iconColor: 'text-emerald-400',
     dotClass: 'border-emerald-400 bg-emerald-400',
@@ -66,13 +66,13 @@ function Section({ icon: Icon, title, sub, children }: {
   children: React.ReactNode
 }) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-white/[0.06] bg-[#0D0E16]">
-      <div className="border-b border-white/[0.06] px-6 py-4">
-        <h2 className="flex items-center gap-2 text-[13px] font-semibold text-slate-200">
-          <Icon className="h-4 w-4 text-slate-500" />
+    <div className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)]">
+      <div className="border-b border-[var(--border)] px-6 py-4">
+        <h2 className="flex items-center gap-2 text-[13px] font-semibold text-[var(--text)]">
+          <Icon className="h-4 w-4 text-[var(--text-faint)]" />
           {title}
         </h2>
-        {sub && <p className="mt-0.5 text-[12px] text-slate-600">{sub}</p>}
+        {sub && <p className="mt-0.5 text-[12px] text-[var(--text-faint)]">{sub}</p>}
       </div>
       <div className="px-6 py-5">{children}</div>
     </div>
@@ -110,8 +110,8 @@ export default function InstellingenClient({ profile, email }: Props) {
   return (
     <div className="max-w-2xl space-y-6">
       <div>
-        <h1 className="text-[28px] font-extrabold tracking-[-0.035em] text-slate-50">Instellingen</h1>
-        <p className="mt-1.5 text-[14px] text-slate-500">Beheer je profiel en optimalisatie-voorkeuren.</p>
+        <h1 className="text-[28px] font-extrabold tracking-[-0.035em] text-[var(--text)]">Instellingen</h1>
+        <p className="mt-1.5 text-[14px] text-[var(--text-faint)]">Beheer je profiel en optimalisatie-voorkeuren.</p>
       </div>
 
       {/* Account */}
@@ -123,10 +123,10 @@ export default function InstellingenClient({ profile, email }: Props) {
             </AvatarFallback>
           </Avatar>
           <div>
-            <p className="text-[14px] font-medium text-slate-200">{email}</p>
-            <p className="mt-0.5 text-[12px] text-slate-600">GBICT Energy account</p>
+            <p className="text-[14px] font-medium text-[var(--text)]">{email}</p>
+            <p className="mt-0.5 text-[12px] text-[var(--text-faint)]">GBICT Energy account</p>
           </div>
-          <span className="ml-auto rounded-lg border border-white/[0.06] bg-white/[0.03] px-2.5 py-1 text-[11px] font-medium text-slate-500">
+          <span className="ml-auto rounded-lg border border-[var(--border)] bg-[var(--surface-2)] px-2.5 py-1 text-[11px] font-medium text-[var(--text-faint)]">
             Free plan
           </span>
         </div>
@@ -146,12 +146,12 @@ export default function InstellingenClient({ profile, email }: Props) {
                   isActive ? opt.activeClass : opt.idleClass
                 )}
               >
-                <opt.Icon className={cn('mt-0.5 h-4 w-4 shrink-0', isActive ? opt.iconColor : 'text-slate-600')} />
+                <opt.Icon className={cn('mt-0.5 h-4 w-4 shrink-0', isActive ? opt.iconColor : 'text-[var(--text-faint)]')} />
                 <div className="flex-1">
-                  <p className={cn('text-[13.5px] font-semibold', isActive ? opt.labelColor : 'text-slate-400')}>
+                  <p className={cn('text-[13.5px] font-semibold', isActive ? opt.labelColor : 'text-[var(--text-muted)]')}>
                     {opt.label}
                   </p>
-                  <p className="mt-0.5 text-[12.5px] text-slate-600">{opt.desc}</p>
+                  <p className="mt-0.5 text-[12.5px] text-[var(--text-faint)]">{opt.desc}</p>
                 </div>
                 <div className={cn(
                   'mt-0.5 h-4 w-4 shrink-0 rounded-full border-2 transition-all',
@@ -174,7 +174,7 @@ export default function InstellingenClient({ profile, email }: Props) {
                 'rounded-full border px-3 py-1.5 text-[13px] font-medium transition-all',
                 contractType === c
                   ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-400'
-                  : 'border-white/[0.06] text-slate-500 hover:border-emerald-500/20 hover:text-slate-300'
+                  : 'border-[var(--border)] text-[var(--text-faint)] hover:border-emerald-500/20 hover:text-[var(--text-muted)]'
               )}
             >
               {c}
@@ -187,18 +187,18 @@ export default function InstellingenClient({ profile, email }: Props) {
       <Section icon={Home} title="Huishouden">
         <div className="space-y-5">
           <div>
-            <label className="mb-2 block text-[12.5px] font-medium text-slate-500">Postcode</label>
+            <label className="mb-2 block text-[12.5px] font-medium text-[var(--text-faint)]">Postcode</label>
             <input
               type="text"
               value={postcode}
               onChange={(e) => setPostcode(e.target.value)}
               placeholder="1234 AB"
               maxLength={7}
-              className="w-40 rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-[13.5px] text-slate-200 placeholder-slate-700 outline-none transition-all focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/10"
+              className="w-40 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2 text-[13.5px] text-[var(--text)] placeholder-slate-700 outline-none transition-all focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/10"
             />
           </div>
           <div>
-            <label className="mb-2 block text-[12.5px] font-medium text-slate-500">Aantal personen</label>
+            <label className="mb-2 block text-[12.5px] font-medium text-[var(--text-faint)]">Aantal personen</label>
             <div className="flex gap-2">
               {HOUSEHOLD_SIZES.map((n) => (
                 <button
@@ -208,7 +208,7 @@ export default function InstellingenClient({ profile, email }: Props) {
                     'h-9 w-9 rounded-xl border text-[13px] font-semibold transition-all',
                     householdSize === n
                       ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-400'
-                      : 'border-white/[0.06] text-slate-600 hover:border-emerald-500/20 hover:text-slate-300'
+                      : 'border-[var(--border)] text-[var(--text-faint)] hover:border-emerald-500/20 hover:text-[var(--text-muted)]'
                   )}
                 >
                   {n === 7 ? '7+' : n}

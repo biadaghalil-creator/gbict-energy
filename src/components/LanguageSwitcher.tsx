@@ -43,16 +43,16 @@ export function LanguageSwitcher({ currentLocale }: LanguageSwitcherProps) {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-1.5 rounded-full border border-white/[0.12] bg-white/[0.04] px-3 py-1.5 text-xs font-medium text-slate-300 transition-colors hover:border-emerald-500/40 hover:text-slate-100"
+        className="flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--surface-2)] px-3 py-1.5 text-xs font-medium text-[var(--text-muted)] transition-colors hover:border-emerald-500/40 hover:text-[var(--text)]"
         aria-label="Taal kiezen"
       >
         <Globe className="h-3.5 w-3.5" />
         <span>{current.code}</span>
-        <ChevronDown className={`h-3 w-3 text-slate-500 transition-transform ${open ? 'rotate-180' : ''}`} />
+        <ChevronDown className={`h-3 w-3 text-[var(--text-faint)] transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full z-50 mt-1.5 w-40 overflow-hidden rounded-xl border border-white/[0.08] bg-[#0D0E16] py-1 shadow-xl backdrop-blur">
+        <div className="absolute right-0 top-full z-50 mt-1.5 w-40 overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface)] py-1 shadow-xl backdrop-blur">
           {LOCALES.map((locale) => {
             const item = LOCALE_LABELS[locale]
             const isActive = locale === currentLocale
@@ -64,7 +64,7 @@ export function LanguageSwitcher({ currentLocale }: LanguageSwitcherProps) {
                 className={`flex w-full items-center justify-between px-3 py-2 text-[13px] transition-colors ${
                   isActive
                     ? 'bg-emerald-500/[0.12] font-medium text-emerald-300'
-                    : 'text-slate-400 hover:bg-white/[0.04] hover:text-slate-200'
+                    : 'text-[var(--text-muted)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]'
                 }`}
               >
                 <span>{item.name}</span>

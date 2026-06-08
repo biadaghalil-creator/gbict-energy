@@ -33,8 +33,8 @@ export default function StartClient() {
   return (
     <div className="w-full max-w-2xl">
       <div className="text-center">
-        <h1 className="text-[26px] font-extrabold tracking-tight text-slate-50">Start je proefperiode</h1>
-        <p className="mt-2 text-[14px] text-slate-400">
+        <h1 className="text-[26px] font-extrabold tracking-tight text-[var(--text)]">Start je proefperiode</h1>
+        <p className="mt-2 text-[14px] text-[var(--text-muted)]">
           14 dagen gratis. Je betaalt nu niets — we leggen alleen je kaart vast. Daarna {''}
           maandelijks opzegbaar.
         </p>
@@ -42,14 +42,14 @@ export default function StartClient() {
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2">
         {PLAN_OPTIONS.map((p) => (
-          <div key={p.id} className="flex flex-col rounded-2xl border border-white/[0.07] bg-[#0D0E16]/70 p-6 backdrop-blur">
+          <div key={p.id} className="flex flex-col rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 backdrop-blur">
             <div className="flex items-baseline justify-between">
-              <span className="text-[16px] font-bold text-slate-100">{p.name}</span>
-              <span className="text-[16px] font-bold text-slate-100">€{p.price}<span className="text-[12px] font-medium text-slate-500">/mnd</span></span>
+              <span className="text-[16px] font-bold text-[var(--text)]">{p.name}</span>
+              <span className="text-[16px] font-bold text-[var(--text)]">€{p.price}<span className="text-[12px] font-medium text-[var(--text-faint)]">/mnd</span></span>
             </div>
             <ul className="mt-4 flex-1 space-y-2">
               {p.features.map((f) => (
-                <li key={f} className="flex items-start gap-2 text-[13px] text-slate-400">
+                <li key={f} className="flex items-start gap-2 text-[13px] text-[var(--text-muted)]">
                   <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
                   {f}
                 </li>

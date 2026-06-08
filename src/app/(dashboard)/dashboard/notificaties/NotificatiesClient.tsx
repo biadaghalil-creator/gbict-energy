@@ -73,41 +73,41 @@ export default function NotificatiesClient({ logs }: { logs: OptimizationLog[] }
       {/* Page header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[26px] font-extrabold tracking-[-0.035em] text-slate-50">Activiteit</h1>
-          <p className="mt-1 text-[13px] text-slate-600">Alle optimalisatie-acties van je batterij</p>
+          <h1 className="text-[26px] font-extrabold tracking-[-0.035em] text-[var(--text)]">Activiteit</h1>
+          <p className="mt-1 text-[13px] text-[var(--text-faint)]">Alle optimalisatie-acties van je batterij</p>
         </div>
       </div>
 
       {/* Mini stats row */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-5">
-          <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-600">Totaal acties</p>
-          <p className="mt-3 font-mono text-[26px] font-bold tracking-[-0.03em] text-slate-200">{logs.length}</p>
-          <p className="mt-1 text-[11px] text-slate-700">automatisch</p>
+        <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5">
+          <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--text-faint)]">Totaal acties</p>
+          <p className="mt-3 font-mono text-[26px] font-bold tracking-[-0.03em] text-[var(--text)]">{logs.length}</p>
+          <p className="mt-1 text-[11px] text-[var(--text-faint)]">automatisch</p>
         </div>
-        <div className="rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-5">
-          <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-600">Laden / verkopen</p>
-          <p className="mt-3 font-mono text-[26px] font-bold tracking-[-0.03em] text-slate-200">
-            {chargeCount}<span className="text-slate-700">/</span>{dischargeCount}
+        <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5">
+          <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--text-faint)]">Laden / verkopen</p>
+          <p className="mt-3 font-mono text-[26px] font-bold tracking-[-0.03em] text-[var(--text)]">
+            {chargeCount}<span className="text-[var(--text-faint)]">/</span>{dischargeCount}
           </p>
-          <p className="mt-1 text-[11px] text-slate-700">verdeling</p>
+          <p className="mt-1 text-[11px] text-[var(--text-faint)]">verdeling</p>
         </div>
-        <div className="rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-5">
-          <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-600">Totaal bespaard</p>
-          <p className={`mt-3 font-mono text-[26px] font-bold tracking-[-0.03em] ${totalSaved > 0 ? 'text-emerald-400' : 'text-slate-700'}`}>
+        <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5">
+          <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--text-faint)]">Totaal bespaard</p>
+          <p className={`mt-3 font-mono text-[26px] font-bold tracking-[-0.03em] ${totalSaved > 0 ? 'text-emerald-400' : 'text-[var(--text-faint)]'}`}>
             €{totalSaved.toFixed(2)}
           </p>
-          <p className="mt-1 text-[11px] text-slate-700">totaal</p>
+          <p className="mt-1 text-[11px] text-[var(--text-faint)]">totaal</p>
         </div>
       </div>
 
       {/* Filter tabs */}
-      <div className="flex gap-1 rounded-xl bg-[#0D0E16] p-1 ring-1 ring-white/[0.06]">
+      <div className="flex gap-1 rounded-xl bg-[var(--surface)] p-1 ring-1 ring-white/[0.06]">
         {tabs.map(tab => (
           <button key={tab.id} type="button" onClick={() => setActiveTab(tab.id)}
             className={cn(
               'flex-1 rounded-lg px-3 py-2 text-[12px] font-semibold transition-all',
-              activeTab === tab.id ? 'bg-emerald-500/15 text-emerald-400' : 'text-slate-600 hover:text-slate-300'
+              activeTab === tab.id ? 'bg-emerald-500/15 text-emerald-400' : 'text-[var(--text-faint)] hover:text-[var(--text-muted)]'
             )}>
             {tab.label}
           </button>
@@ -116,28 +116,28 @@ export default function NotificatiesClient({ logs }: { logs: OptimizationLog[] }
 
       {/* Activity feed */}
       {filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-white/[0.06] bg-[#0D0E16] py-16">
-          <Activity className="h-10 w-10 text-slate-800" />
-          <p className="mt-4 text-[13px] text-slate-700">Nog geen activiteit.</p>
-          <p className="mt-1 text-[12px] text-slate-800">De optimizer logt hier elke actie.</p>
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-[var(--border)] bg-[var(--surface)] py-16">
+          <Activity className="h-10 w-10 text-[var(--text-faint)]" />
+          <p className="mt-4 text-[13px] text-[var(--text-faint)]">Nog geen activiteit.</p>
+          <p className="mt-1 text-[12px] text-[var(--text-faint)]">De optimizer logt hier elke actie.</p>
         </div>
       ) : (
         <div className="space-y-5">
           {Object.entries(grouped).map(([dateLabel, dayLogs]) => (
             <div key={dateLabel}>
               {/* Date group header */}
-              <p className="mb-3 flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.1em] text-slate-700">
+              <p className="mb-3 flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--text-faint)]">
                 {dateLabel}
-                <span className="flex-1 border-t border-white/[0.04]" />
+                <span className="flex-1 border-t border-[var(--border)]" />
               </p>
 
               {/* Log items */}
-              <div className="overflow-hidden rounded-2xl border border-white/[0.06] bg-[#0D0E16]">
+              <div className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)]">
                 {dayLogs.map((log, index) => {
                   const charging = isChargeAction(log.action)
                   return (
                     <div key={log.id}
-                      className={cn('flex items-center gap-4 px-5 py-4', index < dayLogs.length - 1 && 'border-b border-white/[0.04]')}>
+                      className={cn('flex items-center gap-4 px-5 py-4', index < dayLogs.length - 1 && 'border-b border-[var(--border)]')}>
                       {/* Icon */}
                       <div className={cn(
                         'flex h-9 w-9 shrink-0 items-center justify-center rounded-xl',
@@ -151,10 +151,10 @@ export default function NotificatiesClient({ logs }: { logs: OptimizationLog[] }
 
                       {/* Info */}
                       <div className="min-w-0 flex-1">
-                        <p className="text-[13.5px] font-medium text-slate-200">
+                        <p className="text-[13.5px] font-medium text-[var(--text)]">
                           {charging ? 'Batterij geladen' : 'Batterij ontladen'}
                         </p>
-                        <p className="mt-0.5 truncate text-[12px] text-slate-600">
+                        <p className="mt-0.5 truncate text-[12px] text-[var(--text-faint)]">
                           €{log.price_eur.toFixed(4)}/kWh
                           {log.savings_eur > 0 && (
                             <span className="ml-2 text-emerald-400">· €{log.savings_eur.toFixed(3)} bespaard</span>
@@ -169,7 +169,7 @@ export default function NotificatiesClient({ logs }: { logs: OptimizationLog[] }
                             +€{log.savings_eur.toFixed(3)}
                           </span>
                         )}
-                        <time className="text-[11px] text-slate-700">{timeAgo(log.created_at)}</time>
+                        <time className="text-[11px] text-[var(--text-faint)]">{timeAgo(log.created_at)}</time>
                       </div>
                     </div>
                   )

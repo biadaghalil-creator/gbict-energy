@@ -14,6 +14,7 @@ import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet'
 import { cn } from '@/lib/utils'
 import { useIsNative } from '@/lib/native'
 import NativeTabBar from './NativeTabBar'
+import ThemeToggle from '@/components/ThemeToggle'
 
 const navItems = [
   { href: '/dashboard',               label: 'Dashboard',   icon: LayoutDashboard, exact: true },
@@ -44,7 +45,7 @@ function NavLink({
         collapsed && 'justify-center px-0',
         isActive
           ? 'bg-emerald-500/[0.12] text-emerald-300'
-          : 'text-slate-500 hover:bg-white/[0.04] hover:text-slate-200'
+          : 'text-[var(--text-faint)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]'
       )}
     >
       {/* Active indicator */}
@@ -53,7 +54,7 @@ function NavLink({
       )}
       <Icon className={cn(
         'h-4 w-4 shrink-0 transition-colors',
-        isActive ? 'text-emerald-400' : 'text-slate-600 group-hover:text-slate-400'
+        isActive ? 'text-emerald-400' : 'text-[var(--text-faint)] group-hover:text-[var(--text-muted)]'
       )} />
       {!collapsed && (
         <>
@@ -105,7 +106,7 @@ function SidebarInner({
           />
           {!collapsed && (
             <div className="leading-none">
-              <p className="text-[14px] font-extrabold tracking-tight text-slate-50">GBICT</p>
+              <p className="text-[14px] font-extrabold tracking-tight text-[var(--text)]">GBICT</p>
               <p className="text-[11px] font-medium text-emerald-400">Energy</p>
             </div>
           )}
@@ -113,7 +114,7 @@ function SidebarInner({
       </div>
 
       {/* Divider */}
-      <div className="mx-3 h-px bg-white/[0.06]" />
+      <div className="mx-3 h-px bg-[var(--surface-2)]" />
 
       {/* Nav */}
       <nav className={cn('flex-1 space-y-0.5 overflow-y-auto px-3 py-4', collapsed && 'px-2')}>
@@ -129,7 +130,7 @@ function SidebarInner({
       </nav>
 
       {/* Divider */}
-      <div className="mx-3 h-px bg-white/[0.06]" />
+      <div className="mx-3 h-px bg-[var(--surface-2)]" />
 
       {/* User */}
       <div className={cn('px-3 py-4', collapsed && 'px-2')}>
@@ -143,27 +144,27 @@ function SidebarInner({
             <button
               onClick={handleLogout}
               title="Uitloggen"
-              className="flex h-8 w-8 items-center justify-center rounded-xl text-slate-600 transition-colors hover:bg-white/[0.04] hover:text-red-400"
+              className="flex h-8 w-8 items-center justify-center rounded-xl text-[var(--text-faint)] transition-colors hover:bg-[var(--surface-2)] hover:text-red-400"
             >
               <LogOut className="h-4 w-4" />
             </button>
           </div>
         ) : (
           <div className="space-y-1">
-            <div className="flex items-center gap-3 rounded-xl bg-white/[0.04] px-3 py-2.5 ring-1 ring-white/[0.06]">
+            <div className="flex items-center gap-3 rounded-xl bg-[var(--surface-2)] px-3 py-2.5 ring-1 ring-white/[0.06]">
               <Avatar className="h-7 w-7 shrink-0">
                 <AvatarFallback className="bg-emerald-500/10 text-[11px] font-bold text-emerald-400">
                   {initials}
                 </AvatarFallback>
               </Avatar>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-[12.5px] font-medium text-slate-200">{userEmail}</p>
-                <p className="text-[10.5px] text-slate-600">Gratis plan</p>
+                <p className="truncate text-[12.5px] font-medium text-[var(--text)]">{userEmail}</p>
+                <p className="text-[10.5px] text-[var(--text-faint)]">Gratis plan</p>
               </div>
             </div>
             <button
               onClick={handleLogout}
-              className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-[13px] text-slate-600 transition-colors hover:bg-white/[0.04] hover:text-red-400"
+              className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-[13px] text-[var(--text-faint)] transition-colors hover:bg-[var(--surface-2)] hover:text-red-400"
             >
               <LogOut className="h-4 w-4 shrink-0" />
               <span>Uitloggen</span>
@@ -192,7 +193,7 @@ export default function DashboardShell({
 
   return (
     <div className={cn(
-      'flex bg-[#07080D] text-slate-100 antialiased',
+      'flex bg-[var(--bg)] text-[var(--text)] antialiased',
       native ? 'h-screen overflow-hidden' : 'min-h-screen'
     )}>
       {/* ── Background atmosphere (same as landing page) ── */}
@@ -201,14 +202,14 @@ export default function DashboardShell({
 
       {/* ── Desktop Sidebar ── */}
       <aside className={cn(
-        'relative z-10 hidden md:flex flex-col shrink-0 border-r border-white/[0.06] bg-[#0D0E16]/90 backdrop-blur-md transition-all duration-300',
+        'relative z-10 hidden md:flex flex-col shrink-0 border-r border-[var(--border)] bg-[var(--surface)] backdrop-blur-md transition-all duration-300',
         collapsed ? 'w-[4.5rem]' : 'w-[220px]'
       )}>
         <SidebarInner pathname={pathname} userEmail={userEmail} collapsed={collapsed} />
         {/* Collapse toggle */}
         <button
           onClick={() => setCollapsed(v => !v)}
-          className="absolute -right-3 top-1/2 z-20 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full border border-white/[0.08] bg-[#0D0E16] text-slate-500 shadow-lg transition-colors hover:border-emerald-500/30 hover:text-emerald-400"
+          className="absolute -right-3 top-1/2 z-20 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)] text-[var(--text-faint)] shadow-lg transition-colors hover:border-emerald-500/30 hover:text-emerald-400"
         >
           {collapsed
             ? <ChevronRight className="h-3 w-3" />
@@ -219,7 +220,7 @@ export default function DashboardShell({
 
       {/* ── Mobile drawer ── */}
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-        <SheetContent side="left" className="w-[220px] border-r border-white/[0.06] bg-[#0D0E16] p-0">
+        <SheetContent side="left" className="w-[220px] border-r border-[var(--border)] bg-[var(--surface)] p-0">
           <SheetTitle className="sr-only">Navigatie</SheetTitle>
           <SidebarInner
             pathname={pathname}
@@ -233,12 +234,12 @@ export default function DashboardShell({
       <div className="relative z-10 flex min-w-0 flex-1 flex-col">
         {/* Top bar */}
         <header className={cn(
-          'sticky top-0 z-20 flex items-center gap-4 border-b border-white/[0.06] bg-[#07080D]/80 px-5 backdrop-blur-md',
+          'sticky top-0 z-20 flex items-center gap-4 border-b border-[var(--border)] bg-[var(--header)] px-5 backdrop-blur-md',
           native ? 'min-h-[56px] pt-[env(safe-area-inset-top)]' : 'h-[68px]'
         )}>
           {!native && (
             <button
-              className="text-slate-500 transition-colors hover:text-slate-100 md:hidden"
+              className="text-[var(--text-faint)] transition-colors hover:text-[var(--text)] md:hidden"
               onClick={() => setMobileOpen(true)}
             >
               <Menu className="h-5 w-5" />
@@ -247,23 +248,24 @@ export default function DashboardShell({
 
           {/* Title: clean app-style title in the app, breadcrumb on the web */}
           {native ? (
-            <span className="text-[17px] font-bold tracking-[-0.02em] text-slate-100">
+            <span className="text-[17px] font-bold tracking-[-0.02em] text-[var(--text)]">
               {currentPage?.label ?? 'Dashboard'}
             </span>
           ) : (
             <div className="flex items-center gap-2 text-[13.5px]">
-              <span className="text-slate-600">GBICT</span>
-              <span className="text-slate-700">/</span>
-              <span className="font-semibold text-slate-200">
+              <span className="text-[var(--text-faint)]">GBICT</span>
+              <span className="text-[var(--text-faint)]">/</span>
+              <span className="font-semibold text-[var(--text)]">
                 {currentPage?.label ?? 'Dashboard'}
               </span>
             </div>
           )}
 
           <div className="ml-auto flex items-center gap-2">
+            <ThemeToggle />
             <Link
               href="/dashboard/notificaties"
-              className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-white/[0.04] hover:text-slate-100"
+              className="flex h-8 w-8 items-center justify-center rounded-lg text-[var(--text-faint)] transition-colors hover:bg-[var(--surface-2)] hover:text-[var(--text)]"
             >
               <Bell className="h-4 w-4" />
             </Link>

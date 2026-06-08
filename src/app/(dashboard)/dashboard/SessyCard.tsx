@@ -28,14 +28,14 @@ export default function SessyCard() {
   const stateInfo = status ? sessyStateLabel(status.system_state) : null
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-6">
+    <div className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6">
       {/* Header */}
       <div className="mb-5 flex items-center justify-between">
-        <span className="flex items-center gap-2 text-[13px] font-medium text-slate-400">
+        <span className="flex items-center gap-2 text-[13px] font-medium text-[var(--text-muted)]">
            Home battery · Sessy
         </span>
         {stateInfo && (
-          <span className="flex items-center gap-1.5 text-[12px] font-medium text-slate-500">
+          <span className="flex items-center gap-1.5 text-[12px] font-medium text-[var(--text-faint)]">
             <span className="h-[14px] w-[3px] rounded-sm bg-emerald-400" />
             {stateInfo.label}
           </span>
@@ -44,31 +44,31 @@ export default function SessyCard() {
 
       {loading ? (
         <div className="space-y-4">
-          <Skeleton className="h-10 w-24 bg-white/[0.04]" />
-          <Skeleton className="h-2 w-full rounded-full bg-white/[0.04]" />
+          <Skeleton className="h-10 w-24 bg-[var(--surface-2)]" />
+          <Skeleton className="h-2 w-full rounded-full bg-[var(--surface-2)]" />
           <div className="grid grid-cols-2 gap-3">
-            <Skeleton className="h-16 rounded-xl bg-white/[0.04]" />
-            <Skeleton className="h-16 rounded-xl bg-white/[0.04]" />
+            <Skeleton className="h-16 rounded-xl bg-[var(--surface-2)]" />
+            <Skeleton className="h-16 rounded-xl bg-[var(--surface-2)]" />
           </div>
         </div>
       ) : status ? (
         <>
           {/* SoC number */}
           <div className="flex items-baseline gap-2">
-            <span className="font-mono text-[44px] font-semibold leading-none tracking-[-0.03em] text-slate-50">
+            <span className="font-mono text-[44px] font-semibold leading-none tracking-[-0.03em] text-[var(--text)]">
               {status.state_of_charge}
             </span>
-            <span className="text-[13px] text-slate-500">% state of charge</span>
+            <span className="text-[13px] text-[var(--text-faint)]">% state of charge</span>
           </div>
 
           {status.power !== 0 && (
-            <p className="mt-1 text-[11.5px] text-slate-600">
+            <p className="mt-1 text-[11.5px] text-[var(--text-faint)]">
               {status.power > 0 ? 'charging' : 'discharging'} · {Math.abs(status.power)}W
             </p>
           )}
 
           {/* Gradient progress bar — same as hero */}
-          <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/[0.05]">
+          <div className="mt-4 h-2 overflow-hidden rounded-full bg-[var(--surface-2)]">
             <div
               className="h-full rounded-full transition-all duration-700"
               style={{
@@ -81,19 +81,19 @@ export default function SessyCard() {
           {/* Mini stat cards */}
           <div className="mt-5 grid grid-cols-2 gap-3">
             {status.renewable_energy > 0 && (
-              <div className="rounded-xl border border-white/[0.06] bg-white/[0.025] px-4 py-3">
-                <p className="text-[11px] text-slate-500">Zon</p>
+              <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-3">
+                <p className="text-[11px] text-[var(--text-faint)]">Zon</p>
                 <p className="mt-1 font-mono text-[17px] text-amber-400">
                   {status.renewable_energy}W
                 </p>
               </div>
             )}
             {status.grid_power !== 0 && (
-              <div className="rounded-xl border border-white/[0.06] bg-white/[0.025] px-4 py-3">
-                <p className="text-[11px] text-slate-500">Grid</p>
-                <p className="mt-1 font-mono text-[17px] text-slate-300">
+              <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-3">
+                <p className="text-[11px] text-[var(--text-faint)]">Grid</p>
+                <p className="mt-1 font-mono text-[17px] text-[var(--text-muted)]">
                   {Math.abs(status.grid_power)}W
-                  <span className="ml-1 text-[11px] text-slate-600">
+                  <span className="ml-1 text-[11px] text-[var(--text-faint)]">
                     {status.grid_power > 0 ? 'in' : 'out'}
                   </span>
                 </p>
@@ -104,7 +104,7 @@ export default function SessyCard() {
           <OptimizeButton />
         </>
       ) : (
-        <p className="mt-4 text-[13px] text-slate-600">Batterij niet bereikbaar</p>
+        <p className="mt-4 text-[13px] text-[var(--text-faint)]">Batterij niet bereikbaar</p>
       )}
     </div>
   )
@@ -148,7 +148,7 @@ function OptimizeButton() {
           ? 'bg-emerald-950/40 text-emerald-400 ring-1 ring-emerald-500/20'
           : state === 'error'
             ? 'bg-red-950/30 text-red-400'
-            : 'bg-white/[0.04] text-slate-400 hover:bg-emerald-500/10 hover:text-emerald-400 ring-1 ring-white/[0.06]'
+            : 'bg-[var(--surface-2)] text-[var(--text-muted)] hover:bg-emerald-500/10 hover:text-emerald-400 ring-1 ring-white/[0.06]'
       }`}
     >
       <Zap className="h-3.5 w-3.5" />

@@ -290,6 +290,28 @@ body {
 .native-app *::-webkit-scrollbar { width: 0; height: 0; display: none; }
 .native-app, .native-app * { scrollbar-width: none; -ms-overflow-style: none; }
 
+/* ─── APP THEME TOKENS (light = day, .dark = night) ──── */
+:root {
+  --bg: #eef2ef;            /* soft sustainable off-white */
+  --surface: #ffffff;
+  --surface-2: #f3f6f4;     /* subtle tint / hover */
+  --border: rgba(2, 6, 23, 0.08);
+  --header: rgba(255, 255, 255, 0.85);
+  --text: #0f172a;          /* slate-900 */
+  --text-muted: #475569;    /* slate-600 */
+  --text-faint: #94a3b8;    /* slate-400 */
+}
+.dark {
+  --bg: #07080D;
+  --surface: #0D0E16;
+  --surface-2: rgba(255, 255, 255, 0.035);
+  --border: rgba(255, 255, 255, 0.06);
+  --header: rgba(7, 8, 13, 0.8);
+  --text: #f1f5f9;          /* slate-100 */
+  --text-muted: #94a3b8;    /* slate-400 */
+  --text-faint: #64748b;    /* slate-500 */
+}
+
 :root {
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);

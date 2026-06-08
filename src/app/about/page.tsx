@@ -24,11 +24,11 @@ const whyUs = [
 
 export default function AboutPage() {
   return (
-    <div className="flex flex-col min-h-screen text-slate-50" style={{ background: '#020617' }}>
+    <div className="flex flex-col min-h-screen text-[var(--text)]" style={{ background: 'var(--bg)' }}>
 
       {/* ── HEADER ───────────────────────────────────────── */}
-      <header className="sticky top-0 z-50 border-b border-white/[0.06] backdrop-blur-xl"
-        style={{ background: 'rgba(2,6,23,0.85)' }}>
+      <header className="sticky top-0 z-50 border-b border-[var(--border)] backdrop-blur-xl"
+        style={{ background: 'var(--header)' }}>
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <Link href="/" className="flex items-center gap-3 group">
             <div className="relative w-9 h-9 shrink-0">
@@ -36,14 +36,14 @@ export default function AboutPage() {
                 className="rounded-lg logo-glow group-hover:scale-105 transition-transform" />
             </div>
             <div className="flex flex-col leading-none">
-              <span className="text-sm font-bold tracking-tight text-slate-50">GBICT</span>
-              <span className="text-xs font-medium text-slate-500">Software</span>
+              <span className="text-sm font-bold tracking-tight text-[var(--text)]">GBICT</span>
+              <span className="text-xs font-medium text-[var(--text-faint)]">Software</span>
             </div>
           </Link>
-          <nav className="hidden gap-7 text-sm font-medium text-slate-400 md:flex">
-            <Link href="/" className="hover:text-slate-50 transition-colors">Energy Platform</Link>
+          <nav className="hidden gap-7 text-sm font-medium text-[var(--text-muted)] md:flex">
+            <Link href="/" className="hover:text-[var(--text)] transition-colors">Energy Platform</Link>
             <a href="https://gbict.nl" target="_blank" rel="noopener noreferrer"
-              className="hover:text-slate-50 transition-colors">Contact</a>
+              className="hover:text-[var(--text)] transition-colors">Contact</a>
           </nav>
           <a href="https://gbict.nl" target="_blank" rel="noopener noreferrer"
             className="btn-3d-sm">
@@ -70,11 +70,11 @@ export default function AboutPage() {
               <div className="flex-1 max-w-3xl">
                 <h1 className="text-5xl font-extrabold tracking-tight md:text-7xl"
                   style={{ letterSpacing: '-0.03em' }}>
-                  <span className="text-slate-50">Wij bouwen software</span>
+                  <span className="text-[var(--text)]">Wij bouwen software</span>
                   <br />
                   <span className="text-gradient-blue">die werkt</span>
                 </h1>
-                <p className="mt-7 max-w-xl text-lg leading-relaxed text-slate-400">
+                <p className="mt-7 max-w-xl text-lg leading-relaxed text-[var(--text-muted)]">
                   GBICT is een Nederlands softwarebedrijf. We bouwen apps, platforms en AI-oplossingen
                   voor bedrijven die willen groeien. Geen standaard software — alles op maat,
                   voor jouw situatie.
@@ -98,15 +98,15 @@ export default function AboutPage() {
             <div className="mt-14 flex flex-wrap gap-4">
               <div className="glow-card px-8 py-5">
                 <p className="text-gradient-gold font-extrabold" style={{ fontSize: '2rem', lineHeight: 1, letterSpacing: '-0.04em' }}>8+</p>
-                <p className="mt-1.5 text-sm text-slate-400">jaar ervaring</p>
+                <p className="mt-1.5 text-sm text-[var(--text-muted)]">jaar ervaring</p>
               </div>
               <div className="glow-card px-8 py-5">
                 <p className="text-gradient-gold font-extrabold" style={{ fontSize: '2rem', lineHeight: 1, letterSpacing: '-0.04em' }}>100+</p>
-                <p className="mt-1.5 text-sm text-slate-400">projecten opgeleverd</p>
+                <p className="mt-1.5 text-sm text-[var(--text-muted)]">projecten opgeleverd</p>
               </div>
               <div className="glow-card px-8 py-5">
                 <p className="text-gradient-blue font-extrabold" style={{ fontSize: '2rem', lineHeight: 1, letterSpacing: '-0.04em' }}>NL</p>
-                <p className="mt-1.5 text-sm text-slate-400">gevestigd in Nederland</p>
+                <p className="mt-1.5 text-sm text-[var(--text-muted)]">gevestigd in Nederland</p>
               </div>
             </div>
           </div>
@@ -115,11 +115,11 @@ export default function AboutPage() {
         {/* ── SERVICES ─────────────────────────────────────── */}
         <section className="mx-auto max-w-6xl px-6 py-28">
           <div className="mb-4 text-xs font-bold uppercase tracking-widest text-emerald-400">Diensten</div>
-          <h2 className="text-4xl font-extrabold tracking-tight text-slate-50 md:text-5xl max-w-2xl"
+          <h2 className="text-4xl font-extrabold tracking-tight text-[var(--text)] md:text-5xl max-w-2xl"
             style={{ letterSpacing: '-0.03em' }}>
             Wat we doen
           </h2>
-          <p className="mt-5 max-w-2xl text-slate-400 leading-relaxed">
+          <p className="mt-5 max-w-2xl text-[var(--text-muted)] leading-relaxed">
             Van software-ontwikkeling tot cloud-infrastructuur en AI — we dekken het hele spectrum
             van digitale oplossingen.
           </p>
@@ -130,12 +130,12 @@ export default function AboutPage() {
               <div key={service.title} className="glow-card p-7">
                 <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl"
                   style={{ background: service.color }}>
-                  <Icon className="h-6 w-6 text-slate-100" />
+                  <Icon className="h-6 w-6 text-[var(--text)]" />
                 </div>
-                <h3 className="text-lg font-bold text-slate-50 tracking-tight" style={{ letterSpacing: '-0.02em' }}>
+                <h3 className="text-lg font-bold text-[var(--text)] tracking-tight" style={{ letterSpacing: '-0.02em' }}>
                   {service.title}
                 </h3>
-                <p className="mt-2.5 text-sm leading-relaxed text-slate-400">{service.description}</p>
+                <p className="mt-2.5 text-sm leading-relaxed text-[var(--text-muted)]">{service.description}</p>
               </div>
               )
             })}
@@ -162,11 +162,11 @@ export default function AboutPage() {
                   <div className="flex items-center gap-3 mb-5">
                     <Image src="/gbict-logo.png" alt="GBICT Energy" width={44} height={44}
                       className="rounded-xl logo-glow" />
-                    <h2 className="text-3xl font-extrabold text-slate-50" style={{ letterSpacing: '-0.03em' }}>
+                    <h2 className="text-3xl font-extrabold text-[var(--text)]" style={{ letterSpacing: '-0.03em' }}>
                       GBICT Energy
                     </h2>
                   </div>
-                  <p className="text-slate-300 leading-relaxed max-w-xl">
+                  <p className="text-[var(--text-muted)] leading-relaxed max-w-xl">
                     We bouwen niet alleen voor klanten — we bouwen ook eigen producten. GBICT Energy is
                     ons eerste SaaS-platform voor de energiemarkt. Het optimaliseert thuisbatterijen
                     automatisch op basis van dynamische energieprijzen en helpt huishoudens en bedrijven
@@ -174,7 +174,7 @@ export default function AboutPage() {
                   </p>
                   <div className="mt-6 flex flex-wrap gap-2">
                     {['Thuisbatterij-optimalisatie', 'Dynamische energieprijzen', 'Virtueel Powerplant (VPP)', 'Hardware-agnostisch'].map(tag => (
-                      <span key={tag} className="rounded-full border border-white/[0.1] bg-white/[0.04] px-3 py-1 text-xs text-slate-400">
+                      <span key={tag} className="rounded-full border border-[var(--border)] bg-[var(--surface-2)] px-3 py-1 text-xs text-[var(--text-muted)]">
                         {tag}
                       </span>
                     ))}
@@ -193,7 +193,7 @@ export default function AboutPage() {
         {/* ── WHY GBICT ────────────────────────────────────── */}
         <section className="mx-auto max-w-6xl px-6 py-28">
           <div className="mb-4 text-xs font-bold uppercase tracking-widest text-emerald-400">Waarom wij</div>
-          <h2 className="text-4xl font-extrabold tracking-tight text-slate-50 mb-14"
+          <h2 className="text-4xl font-extrabold tracking-tight text-[var(--text)] mb-14"
             style={{ letterSpacing: '-0.03em' }}>
             Waarom{' '}
             <span className="text-gradient-blue">GBICT?</span>
@@ -202,10 +202,10 @@ export default function AboutPage() {
             {whyUs.map((item, i) => (
               <div key={item.title} className="glow-card p-7">
                 <div className="step-circle mb-6">{i + 1}</div>
-                <h3 className="text-xl font-bold text-slate-50 mb-3" style={{ letterSpacing: '-0.02em' }}>
+                <h3 className="text-xl font-bold text-[var(--text)] mb-3" style={{ letterSpacing: '-0.02em' }}>
                   {item.title}
                 </h3>
-                <p className="text-sm leading-relaxed text-slate-400">{item.description}</p>
+                <p className="text-sm leading-relaxed text-[var(--text-muted)]">{item.description}</p>
               </div>
             ))}
           </div>
@@ -222,7 +222,7 @@ export default function AboutPage() {
               Heb je een{' '}
               <span className="text-gradient-blue">project?</span>
             </h2>
-            <p className="mt-5 text-lg text-slate-400 leading-relaxed">
+            <p className="mt-5 text-lg text-[var(--text-muted)] leading-relaxed">
               Plan een gesprek in en vertel ons wat je wil bouwen.
               We reageren binnen één werkdag.
             </p>
@@ -240,20 +240,20 @@ export default function AboutPage() {
       </main>
 
       {/* ── FOOTER ───────────────────────────────────────── */}
-      <footer className="border-t border-white/[0.06]" style={{ background: 'rgba(2,6,23,0.95)' }}>
+      <footer className="border-t border-[var(--border)]" style={{ background: 'rgba(2,6,23,0.95)' }}>
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-10">
           <Link href="/" className="flex items-center gap-3">
             <Image src="/gbict-logo.png" alt="GBICT" width={32} height={32}
               className="rounded-lg logo-glow" />
             <div className="flex flex-col leading-none">
-              <span className="text-sm font-bold text-slate-300">GBICT</span>
-              <span className="text-xs text-slate-600">© {new Date().getFullYear()}</span>
+              <span className="text-sm font-bold text-[var(--text-muted)]">GBICT</span>
+              <span className="text-xs text-[var(--text-faint)]">© {new Date().getFullYear()}</span>
             </div>
           </Link>
-          <nav className="flex flex-wrap gap-6 text-sm text-slate-500">
-            <Link href="/" className="hover:text-slate-200 transition-colors">Energy Platform</Link>
+          <nav className="flex flex-wrap gap-6 text-sm text-[var(--text-faint)]">
+            <Link href="/" className="hover:text-[var(--text)] transition-colors">Energy Platform</Link>
             <a href="https://gbict.nl" target="_blank" rel="noopener noreferrer"
-              className="hover:text-slate-200 transition-colors">gbict.nl</a>
+              className="hover:text-[var(--text)] transition-colors">gbict.nl</a>
           </nav>
         </div>
       </footer>

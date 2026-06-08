@@ -25,10 +25,10 @@ export default async function DashboardPage() {
       {/* Page header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[26px] font-extrabold tracking-[-0.035em] text-slate-50">
+          <h1 className="text-[26px] font-extrabold tracking-[-0.035em] text-[var(--text)]">
             Dashboardoverzicht
           </h1>
-          <p className="mt-1 text-[13px] text-slate-600">
+          <p className="mt-1 text-[13px] text-[var(--text-faint)]">
             Je thuisenergie in één oogopslag
           </p>
         </div>

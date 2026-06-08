@@ -430,8 +430,8 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
       {/* Header */}
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-50">Koppelingen</h1>
-          <p className="mt-1 text-sm text-slate-500">Verbind je slimme meter, batterij of energiecontract.</p>
+          <h1 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-[var(--text)]">Koppelingen</h1>
+          <p className="mt-1 text-sm text-[var(--text-faint)]">Verbind je slimme meter, batterij of energiecontract.</p>
         </div>
         <button
           onClick={openModal}
@@ -452,21 +452,21 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
           {devices.map((device) => {
             const statusInfo = STATUS_LABEL[device.status] ?? STATUS_LABEL.pending
             return (
-              <div key={device.id} className="relative rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
+              <div key={device.id} className="relative rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-[var(--surface)]">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800">
-                      {(() => { const Icon = DEVICE_ICONS[device.type] ?? Plug; return <Icon className="h-5 w-5 text-slate-600 dark:text-slate-300" /> })()}
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 dark:bg-[var(--surface)]">
+                      {(() => { const Icon = DEVICE_ICONS[device.type] ?? Plug; return <Icon className="h-5 w-5 text-[var(--text-faint)] dark:text-[var(--text-muted)]" /> })()}
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{device.name}</p>
-                      <p className="text-xs text-slate-400">{device.brand}</p>
+                      <p className="text-sm font-medium text-slate-900 dark:text-[var(--text)]">{device.name}</p>
+                      <p className="text-xs text-[var(--text-muted)]">{device.brand}</p>
                     </div>
                   </div>
                   <button
                     onClick={() => handleDelete(device.id)}
                     disabled={deletingId === device.id}
-                    className="text-slate-300 transition-colors hover:text-red-400 dark:text-slate-600"
+                    className="text-[var(--text-muted)] transition-colors hover:text-red-400 dark:text-[var(--text-faint)]"
                     title="Verwijderen"
                   >
                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -487,12 +487,12 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
       {/* Modal */}
       {step !== 'idle' && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md rounded-2xl bg-white shadow-xl dark:bg-slate-900">
+          <div className="w-full max-w-md rounded-2xl bg-white shadow-xl dark:bg-[var(--surface)]">
             <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4 dark:border-slate-800">
-              <h2 className="text-base font-semibold text-slate-900 dark:text-slate-50">
+              <h2 className="text-base font-semibold text-slate-900 dark:text-[var(--text)]">
                 {MODAL_TITLES[step] ?? ''}
               </h2>
-              <button onClick={closeModal} className="text-slate-400 hover:text-slate-600">
+              <button onClick={closeModal} className="text-[var(--text-muted)] hover:text-[var(--text-faint)]">
                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -680,21 +680,21 @@ function CategoryList({
             disabled={isSoon}
             className={`flex items-center gap-4 rounded-xl border px-4 py-3 text-left transition-colors ${
               isSoon
-                ? 'cursor-default border-slate-100 bg-slate-50 opacity-60 dark:border-slate-800 dark:bg-slate-800/50'
-                : 'border-slate-200 bg-white hover:border-emerald-400 hover:bg-emerald-50 dark:border-slate-700 dark:bg-slate-800 dark:hover:border-emerald-600 dark:hover:bg-emerald-950/30'
+                ? 'cursor-default border-slate-100 bg-slate-50 opacity-60 dark:border-slate-800 dark:bg-[var(--surface)]/50'
+                : 'border-slate-200 bg-white hover:border-emerald-400 hover:bg-emerald-50 dark:border-slate-700 dark:bg-[var(--surface)] dark:hover:border-emerald-600 dark:hover:bg-emerald-950/30'
             }`}
           >
-            <Icon className="h-6 w-6 shrink-0 text-slate-500 dark:text-slate-300" />
+            <Icon className="h-6 w-6 shrink-0 text-[var(--text-faint)] dark:text-[var(--text-muted)]" />
             <div className="flex-1">
-              <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{cat.title}</p>
-              <p className="text-xs text-slate-400">{cat.sub}</p>
+              <p className="text-sm font-medium text-slate-900 dark:text-[var(--text)]">{cat.title}</p>
+              <p className="text-xs text-[var(--text-muted)]">{cat.sub}</p>
             </div>
             {isSoon ? (
-              <span className="rounded-full bg-slate-200 px-2 py-0.5 text-xs text-slate-500 dark:bg-slate-700 dark:text-slate-400">
+              <span className="rounded-full bg-slate-200 px-2 py-0.5 text-xs text-[var(--text-faint)] dark:bg-slate-700 dark:text-[var(--text-muted)]">
                 Binnenkort
               </span>
             ) : (
-              <svg className="h-4 w-4 shrink-0 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg className="h-4 w-4 shrink-0 text-[var(--text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
               </svg>
             )}
@@ -709,31 +709,31 @@ function CategoryStep({ onSelect }: { onSelect: (s: Step) => void }) {
   return (
     <div className="space-y-5">
       <div>
-        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">Energie & meter</p>
+        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-[var(--text-muted)]">Energie & meter</p>
         <div className="grid gap-2">
           <CategoryList items={[...METER_CATEGORIES]} onSelect={onSelect} />
         </div>
       </div>
       <div>
-        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">Thuisbatterij</p>
+        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-[var(--text-muted)]">Thuisbatterij</p>
         <div className="grid gap-2">
           <CategoryList items={[...BATTERY_CATEGORIES]} onSelect={onSelect} />
         </div>
       </div>
       <div>
-        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">Zonnepanelen</p>
+        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-[var(--text-muted)]">Zonnepanelen</p>
         <div className="grid gap-2">
           <CategoryList items={[...SOLAR_CATEGORIES]} onSelect={onSelect} />
         </div>
       </div>
       <div>
-        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">Auto &amp; laden</p>
+        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-[var(--text-muted)]">Auto &amp; laden</p>
         <div className="grid gap-2">
           <CategoryList items={[...CHARGING_CATEGORIES]} onSelect={onSelect} />
         </div>
       </div>
       <div>
-        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">Verwarming</p>
+        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-[var(--text-muted)]">Verwarming</p>
         <div className="grid gap-2">
           <CategoryList items={[...HEATING_CATEGORIES]} onSelect={onSelect} />
         </div>
@@ -746,9 +746,9 @@ function CategoryStep({ onSelect }: { onSelect: (s: Step) => void }) {
 function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="mb-1.5 block text-xs font-medium text-slate-600 dark:text-slate-400">{label}</label>
+      <label className="mb-1.5 block text-xs font-medium text-[var(--text-faint)] dark:text-[var(--text-muted)]">{label}</label>
       {children}
-      {hint && <p className="mt-1 text-[11px] text-slate-400">{hint}</p>}
+      {hint && <p className="mt-1 text-[11px] text-[var(--text-muted)]">{hint}</p>}
     </div>
   )
 }
@@ -757,7 +757,7 @@ function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <input
       {...props}
-      className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+      className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 dark:border-slate-700 dark:bg-[var(--surface)] dark:text-[var(--text)]"
     />
   )
 }
@@ -772,7 +772,7 @@ function SuccessBox({ msg }: { msg: string }) {
 
 function BackBtn({ onClick }: { onClick: () => void }) {
   return (
-    <button onClick={onClick} className="flex-1 rounded-xl border border-slate-200 py-2.5 text-sm text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-400">
+    <button onClick={onClick} className="flex-1 rounded-xl border border-slate-200 py-2.5 text-sm text-[var(--text-faint)] hover:bg-slate-50 dark:border-slate-700 dark:text-[var(--text-muted)]">
       Terug
     </button>
   )
@@ -802,7 +802,7 @@ function TibberStep({ token, onTokenChange, onTest, onSave, onBack, testPending,
 }) {
   return (
     <div className="space-y-4">
-      <p className="text-sm text-slate-500">
+      <p className="text-sm text-[var(--text-faint)]">
         Ga naar{' '}
         <a href="https://developer.tibber.com/settings/access-token" target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:underline">
           developer.tibber.com
@@ -834,9 +834,9 @@ function SessyStep({ username, password, onUsernameChange, onPasswordChange, onT
 }) {
   return (
     <div className="space-y-4">
-      <div className="rounded-xl bg-slate-50 px-4 py-3 dark:bg-slate-800">
-        <p className="text-xs font-medium text-slate-700 dark:text-slate-300">Je Sessy account</p>
-        <p className="mt-0.5 text-xs text-slate-400">Gebruik je inloggegevens van <strong>my.sessy.nl</strong>. Je batterij blijft volledig onder jouw controle.</p>
+      <div className="rounded-xl bg-slate-50 px-4 py-3 dark:bg-[var(--surface)]">
+        <p className="text-xs font-medium text-[var(--text-faint)] dark:text-[var(--text-muted)]">Je Sessy account</p>
+        <p className="mt-0.5 text-xs text-[var(--text-muted)]">Gebruik je inloggegevens van <strong>my.sessy.nl</strong>. Je batterij blijft volledig onder jouw controle.</p>
       </div>
       <Field label="E-mailadres">
         <Input type="email" value={username} onChange={e => onUsernameChange(e.target.value)} placeholder="naam@email.nl" />
@@ -874,9 +874,9 @@ function VictronStep({
 }) {
   return (
     <div className="space-y-4">
-      <div className="rounded-xl bg-slate-50 px-4 py-3 dark:bg-slate-800">
-        <p className="text-xs font-medium text-slate-700 dark:text-slate-300">VRM Portal account</p>
-        <p className="mt-0.5 text-xs text-slate-400">
+      <div className="rounded-xl bg-slate-50 px-4 py-3 dark:bg-[var(--surface)]">
+        <p className="text-xs font-medium text-[var(--text-faint)] dark:text-[var(--text-muted)]">VRM Portal account</p>
+        <p className="mt-0.5 text-xs text-[var(--text-muted)]">
           Gebruik je inloggegevens van{' '}
           <a href="https://vrm.victronenergy.com" target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:underline">vrm.victronenergy.com</a>.
         </p>
@@ -890,7 +890,7 @@ function VictronStep({
       {error && <ErrorBox msg={error} />}
       {verified && sites.length > 0 && (
         <div>
-          <p className="mb-2 text-xs font-medium text-slate-600 dark:text-slate-400">
+          <p className="mb-2 text-xs font-medium text-[var(--text-faint)] dark:text-[var(--text-muted)]">
             ✓ {sites.length} installatie{sites.length !== 1 ? 's' : ''} gevonden — selecteer er één:
           </p>
           <div className="space-y-1.5">
@@ -936,9 +936,9 @@ function EnphaseStep({
 }) {
   return (
     <div className="space-y-4">
-      <div className="rounded-xl bg-slate-50 px-4 py-3 dark:bg-slate-800">
-        <p className="text-xs font-medium text-slate-700 dark:text-slate-300">Enlighten API toegang</p>
-        <p className="mt-0.5 text-xs text-slate-400">
+      <div className="rounded-xl bg-slate-50 px-4 py-3 dark:bg-[var(--surface)]">
+        <p className="text-xs font-medium text-[var(--text-faint)] dark:text-[var(--text-muted)]">Enlighten API toegang</p>
+        <p className="mt-0.5 text-xs text-[var(--text-muted)]">
           Haal je API key op via{' '}
           <a href="https://developer.enphase.com" target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:underline">developer.enphase.com</a>.
           Je systeem ID staat in de URL van je{' '}
@@ -979,9 +979,9 @@ function SolarEdgeStep({
 }) {
   return (
     <div className="space-y-4">
-      <div className="rounded-xl bg-slate-50 px-4 py-3 dark:bg-slate-800">
-        <p className="text-xs font-medium text-slate-700 dark:text-slate-300">Monitoring portal toegang</p>
-        <p className="mt-0.5 text-xs text-slate-400">
+      <div className="rounded-xl bg-slate-50 px-4 py-3 dark:bg-[var(--surface)]">
+        <p className="text-xs font-medium text-[var(--text-faint)] dark:text-[var(--text-muted)]">Monitoring portal toegang</p>
+        <p className="mt-0.5 text-xs text-[var(--text-muted)]">
           Activeer API toegang via{' '}
           <a href="https://monitoring.solaredge.com" target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:underline">monitoring.solaredge.com</a>{' '}
           → Admin → Site Access → API Access.
@@ -1013,7 +1013,7 @@ function P1Step({ ip, onIpChange, onSave, onBack, pending, error }: {
 }) {
   return (
     <div className="space-y-4">
-      <p className="text-sm text-slate-500">Zorg dat je HomeWizard P1 meter op hetzelfde netwerk zit. Vind het IP-adres via je router of de HomeWizard app.</p>
+      <p className="text-sm text-[var(--text-faint)]">Zorg dat je HomeWizard P1 meter op hetzelfde netwerk zit. Vind het IP-adres via je router of de HomeWizard app.</p>
       <Field label="IP-adres">
         <Input type="text" value={ip} onChange={e => onIpChange(e.target.value)} placeholder="192.168.1.42" />
       </Field>
@@ -1041,9 +1041,9 @@ function SolarSolarEdgeStep({
 }) {
   return (
     <div className="space-y-4">
-      <div className="rounded-xl bg-slate-50 px-4 py-3 dark:bg-slate-800">
-        <p className="text-xs font-medium text-slate-700 dark:text-slate-300">Monitoring portal toegang</p>
-        <p className="mt-0.5 text-xs text-slate-400">
+      <div className="rounded-xl bg-slate-50 px-4 py-3 dark:bg-[var(--surface)]">
+        <p className="text-xs font-medium text-[var(--text-faint)] dark:text-[var(--text-muted)]">Monitoring portal toegang</p>
+        <p className="mt-0.5 text-xs text-[var(--text-muted)]">
           Activeer API toegang via{' '}
           <a href="https://monitoring.solaredge.com" target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:underline">monitoring.solaredge.com</a>{' '}
           → Admin → Site Access → API Access.
@@ -1080,9 +1080,9 @@ function FroniusStep({
 }) {
   return (
     <div className="space-y-4">
-      <div className="rounded-xl bg-slate-50 px-4 py-3 dark:bg-slate-800">
-        <p className="text-xs font-medium text-slate-700 dark:text-slate-300">Lokale netwerkkoppeling</p>
-        <p className="mt-0.5 text-xs text-slate-400">
+      <div className="rounded-xl bg-slate-50 px-4 py-3 dark:bg-[var(--surface)]">
+        <p className="text-xs font-medium text-[var(--text-faint)] dark:text-[var(--text-muted)]">Lokale netwerkkoppeling</p>
+        <p className="mt-0.5 text-xs text-[var(--text-muted)]">
           Je Fronius omvormer moet op hetzelfde lokale netwerk zitten. Zoek het IP-adres via je router of de Fronius Solar.web app.
         </p>
       </div>
@@ -1156,7 +1156,7 @@ function HeatpumpStep({
 }) {
   return (
     <div className="space-y-4">
-      <p className="text-sm text-slate-500">
+      <p className="text-sm text-[var(--text-faint)]">
         Koppel je warmtepomp om slim te verwarmen op de goedkoopste uren. Kies je merk.
       </p>
 
@@ -1170,7 +1170,7 @@ function HeatpumpStep({
           }`}
         >
           <span className="block font-medium">Tado</span>
-          <span className="block text-xs text-slate-400">Via je Tado account</span>
+          <span className="block text-xs text-[var(--text-muted)]">Via je Tado account</span>
         </button>
         <button
           onClick={() => onBrandChange('generic')}
@@ -1181,15 +1181,15 @@ function HeatpumpStep({
           }`}
         >
           <span className="block font-medium">Andere (handmatig)</span>
-          <span className="block text-xs text-slate-400">Adviezen zonder koppeling</span>
+          <span className="block text-xs text-[var(--text-muted)]">Adviezen zonder koppeling</span>
         </button>
       </div>
 
       {brand === 'tado' ? (
         <>
-          <div className="rounded-xl bg-slate-50 px-4 py-3 dark:bg-slate-800">
-            <p className="text-xs font-medium text-slate-700 dark:text-slate-300">Je Tado account</p>
-            <p className="mt-0.5 text-xs text-slate-400">
+          <div className="rounded-xl bg-slate-50 px-4 py-3 dark:bg-[var(--surface)]">
+            <p className="text-xs font-medium text-[var(--text-faint)] dark:text-[var(--text-muted)]">Je Tado account</p>
+            <p className="mt-0.5 text-xs text-[var(--text-muted)]">
               Gebruik je inloggegevens van{' '}
               <a href="https://app.tado.com" target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:underline">app.tado.com</a>.
               Je warmtepomp blijft volledig onder jouw controle.
@@ -1213,9 +1213,9 @@ function HeatpumpStep({
         </>
       ) : (
         <>
-          <div className="rounded-xl bg-slate-50 px-4 py-3 dark:bg-slate-800">
-            <p className="text-xs font-medium text-slate-700 dark:text-slate-300">Handmatige warmtepomp</p>
-            <p className="mt-0.5 text-xs text-slate-400">
+          <div className="rounded-xl bg-slate-50 px-4 py-3 dark:bg-[var(--surface)]">
+            <p className="text-xs font-medium text-[var(--text-faint)] dark:text-[var(--text-muted)]">Handmatige warmtepomp</p>
+            <p className="mt-0.5 text-xs text-[var(--text-muted)]">
               Geen directe koppeling. Je ontvangt adviezen over de goedkoopste uren om te verwarmen, die je zelf kunt instellen.
             </p>
           </div>
@@ -1240,16 +1240,16 @@ const OTHER_BRANDS = ['Tesla Powerwall', 'GoodWe', 'Growatt', 'Huawei FusionSola
 function BatteryOtherStep({ onBack }: { onBack: () => void }) {
   return (
     <div className="space-y-4">
-      <p className="text-sm text-slate-500">Directe koppelingen voor deze merken komen binnenkort via partner-API&apos;s.</p>
+      <p className="text-sm text-[var(--text-faint)]">Directe koppelingen voor deze merken komen binnenkort via partner-API&apos;s.</p>
       <div className="grid grid-cols-2 gap-2">
         {OTHER_BRANDS.map(b => (
-          <div key={b} className="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50 px-3 py-2.5 dark:border-slate-800 dark:bg-slate-800/50">
-            <span className="text-sm text-slate-500">{b}</span>
-            <span className="rounded-full bg-slate-200 px-1.5 py-0.5 text-[10px] text-slate-400 dark:bg-slate-700">Binnenkort</span>
+          <div key={b} className="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50 px-3 py-2.5 dark:border-slate-800 dark:bg-[var(--surface)]/50">
+            <span className="text-sm text-[var(--text-faint)]">{b}</span>
+            <span className="rounded-full bg-slate-200 px-1.5 py-0.5 text-[10px] text-[var(--text-muted)] dark:bg-slate-700">Binnenkort</span>
           </div>
         ))}
       </div>
-      <button onClick={onBack} className="w-full rounded-xl border border-slate-200 py-2.5 text-sm text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-400">Terug</button>
+      <button onClick={onBack} className="w-full rounded-xl border border-slate-200 py-2.5 text-sm text-[var(--text-faint)] hover:bg-slate-50 dark:border-slate-700 dark:text-[var(--text-muted)]">Terug</button>
     </div>
   )
 }
@@ -1258,10 +1258,10 @@ function BatteryOtherStep({ onBack }: { onBack: () => void }) {
 
 function EmptyState({ onAdd }: { onAdd: () => void }) {
   return (
-    <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center dark:border-slate-700 dark:bg-slate-900">
-      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-2xl dark:bg-slate-800">🔌</div>
-      <h2 className="mt-4 text-base font-semibold text-slate-900 dark:text-slate-50">Nog geen apparaten gekoppeld</h2>
-      <p className="mt-2 text-sm text-slate-500">Voeg je slimme meter, batterij of energiecontract toe om te beginnen.</p>
+    <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center dark:border-slate-700 dark:bg-[var(--surface)]">
+      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-2xl dark:bg-[var(--surface)]">🔌</div>
+      <h2 className="mt-4 text-base font-semibold text-slate-900 dark:text-[var(--text)]">Nog geen apparaten gekoppeld</h2>
+      <p className="mt-2 text-sm text-[var(--text-faint)]">Voeg je slimme meter, batterij of energiecontract toe om te beginnen.</p>
       <button onClick={onAdd} className="mt-5 inline-flex h-10 items-center justify-center rounded-full bg-[#047857] px-6 text-sm font-medium text-white transition-colors hover:bg-[#059669]">
         Apparaat toevoegen
       </button>

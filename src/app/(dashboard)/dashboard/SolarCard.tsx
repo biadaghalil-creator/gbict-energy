@@ -33,30 +33,30 @@ export default function SolarCard() {
   const isLoading = data === undefined
 
   return (
-    <Card className="border-white/[0.06] bg-[#0D0E16]">
+    <Card className="border-[var(--border)] bg-[var(--surface)]">
       <CardHeader className="pb-2">
-        <CardTitle className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-slate-500">
+        <CardTitle className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-[var(--text-faint)]">
           <Sun className="h-3.5 w-3.5 text-amber-400" />
           Zonneopbrengst
         </CardTitle>
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          <Skeleton className="mt-1 h-8 w-24 bg-white/[0.04]" />
+          <Skeleton className="mt-1 h-8 w-24 bg-[var(--surface-2)]" />
         ) : data ? (
           <>
             <p className="text-2xl font-semibold tracking-tight text-amber-400">
               {formatWatts(data.currentWatts)}
             </p>
             {data.todayKwh > 0 && (
-              <p className="mt-1 text-xs text-slate-500">
+              <p className="mt-1 text-xs text-[var(--text-faint)]">
                 vandaag {data.todayKwh.toFixed(2)} kWh
               </p>
             )}
           </>
         ) : (
           <>
-            <p className="text-2xl font-semibold tracking-tight text-slate-600">— kW</p>
+            <p className="text-2xl font-semibold tracking-tight text-[var(--text-faint)]">— kW</p>
             <p className="mt-1 text-xs">
               <Link href="/dashboard/koppelingen" className="text-emerald-400 hover:text-emerald-400 hover:underline">
                 Koppel zonnepanelen →

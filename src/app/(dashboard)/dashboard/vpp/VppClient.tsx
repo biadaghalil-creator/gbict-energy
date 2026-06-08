@@ -78,10 +78,10 @@ export default function VppClient({
           <span className="mr-1.5 h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400 inline-block" />
           Bèta — beperkt aantal plekken
         </Badge>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-50" style={{ letterSpacing: '-0.02em' }}>
+        <h1 className="text-2xl font-bold tracking-tight text-[var(--text)]" style={{ letterSpacing: '-0.02em' }}>
           Virtueel Energienet
         </h1>
-        <p className="mt-2 text-sm leading-relaxed text-slate-400">
+        <p className="mt-2 text-sm leading-relaxed text-[var(--text-muted)]">
           Verdien extra geld door jouw batterij beschikbaar te stellen aan het energienet
           op momenten dat Nederland extra stroom nodig heeft. Volledig automatisch, volledig onder jouw controle.
         </p>
@@ -96,7 +96,7 @@ export default function VppClient({
           €{estMin} – €{estMax}
         </p>
         <p className="mt-1 text-sm text-emerald-400/60">per jaar, bovenop je normale besparing</p>
-        <div className="mt-4 flex flex-wrap gap-3 text-xs text-slate-500">
+        <div className="mt-4 flex flex-wrap gap-3 text-xs text-[var(--text-faint)]">
           <span className="flex items-center gap-1.5">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400/60" />
             Gebaseerd op EPEX FCR/aFRR marktprijzen
@@ -109,9 +109,9 @@ export default function VppClient({
       </div>
 
       {/* How it works */}
-      <Card className="border-white/[0.06] bg-[#0D0E16]">
+      <Card className="border-[var(--border)] bg-[var(--surface)]">
         <CardHeader>
-          <CardTitle className="text-sm font-semibold text-slate-200">
+          <CardTitle className="text-sm font-semibold text-[var(--text)]">
             Hoe het Virtueel Energienet werkt
           </CardTitle>
         </CardHeader>
@@ -124,8 +124,8 @@ export default function VppClient({
                   <Icon className="h-4 w-4" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-slate-200">{step.title}</p>
-                  <p className="mt-0.5 text-xs text-slate-500">{step.body}</p>
+                  <p className="text-sm font-medium text-[var(--text)]">{step.title}</p>
+                  <p className="mt-0.5 text-xs text-[var(--text-faint)]">{step.body}</p>
                 </div>
               </div>
             )
@@ -138,12 +138,12 @@ export default function VppClient({
         {GUARANTEES.map((g) => {
           const Icon = g.icon
           return (
-            <Card key={g.label} className="border-white/[0.06] bg-[#0D0E16] text-center">
+            <Card key={g.label} className="border-[var(--border)] bg-[var(--surface)] text-center">
               <CardContent className="flex flex-col items-center py-4">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/[0.04]">
-                  <Icon className="h-4 w-4 text-slate-400" />
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--surface-2)]">
+                  <Icon className="h-4 w-4 text-[var(--text-muted)]" />
                 </div>
-                <p className="mt-2 text-xs text-slate-400">{g.label}</p>
+                <p className="mt-2 text-xs text-[var(--text-muted)]">{g.label}</p>
               </CardContent>
             </Card>
           )
@@ -151,7 +151,7 @@ export default function VppClient({
       </div>
 
       {/* Social proof */}
-      <Card className="border-white/[0.06] bg-slate-900/40">
+      <Card className="border-[var(--border)] bg-[var(--surface)]/40">
         <CardContent className="py-4">
           <div className="flex items-center gap-3">
             <div className="flex -space-x-2">
@@ -159,8 +159,8 @@ export default function VppClient({
                 <div key={i} className={`h-6 w-6 rounded-full ${c} ring-2 ring-slate-900`} />
               ))}
             </div>
-            <p className="text-xs text-slate-500">
-              <strong className="text-slate-300">{enrolledCount} gebruikers</strong>{' '}
+            <p className="text-xs text-[var(--text-faint)]">
+              <strong className="text-[var(--text-muted)]">{enrolledCount} gebruikers</strong>{' '}
               hebben zich al aangemeld voor het VPP bèta-programma.
             </p>
           </div>
@@ -188,7 +188,7 @@ export default function VppClient({
           <button
             onClick={toggle}
             disabled={isPending}
-            className="text-xs text-slate-600 transition-colors hover:text-slate-400"
+            className="text-xs text-[var(--text-faint)] transition-colors hover:text-[var(--text-muted)]"
           >
             Aanmelding intrekken
           </button>
@@ -203,7 +203,7 @@ export default function VppClient({
             <Zap className="h-4 w-4" />
             {isPending ? 'Aanmelden…' : 'Meld je aan voor het VPP bèta-programma'}
           </button>
-          <p className="text-center text-xs text-slate-600">
+          <p className="text-center text-xs text-[var(--text-faint)]">
             Geen verplichtingen. Je kunt je op elk moment afmelden.
           </p>
         </div>

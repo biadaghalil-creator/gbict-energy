@@ -17,26 +17,26 @@ const btnPrimary =
 function Nav() {
   const [open, setOpen] = useState(false);
   return (
-    <nav className="sticky top-0 z-50 border-b border-white/[0.06] bg-[#07080D]/80 backdrop-blur-md">
+    <nav className="sticky top-0 z-50 border-b border-[var(--border)] bg-[var(--header)] backdrop-blur-md">
       <div className="mx-auto flex h-[68px] max-w-[1140px] items-center gap-7 px-6">
         <a href="/" className="shrink-0">
           <img src="/gbict-logo.png" alt="GBICT Energy" width={56} height={56} className="block rounded-[13px]" />
         </a>
         <div className="ml-3 hidden gap-7 md:flex">
           {NAV_LINKS.map(([t, h]) => (
-            <a key={h} href={h} className="text-[14.5px] font-medium text-slate-400 transition-colors hover:text-slate-100">{t}</a>
+            <a key={h} href={h} className="text-[14.5px] font-medium text-[var(--text-muted)] transition-colors hover:text-[var(--text)]">{t}</a>
           ))}
         </div>
         <div className="ml-auto flex items-center gap-3">
-          <a href="/login" className="hidden text-[15px] font-medium text-slate-400 transition-colors hover:text-slate-200 md:inline-flex">Sign in</a>
+          <a href="/login" className="hidden text-[15px] font-medium text-[var(--text-muted)] transition-colors hover:text-[var(--text)] md:inline-flex">Sign in</a>
           <a href="/signup" className={btnPrimary + " hidden md:inline-flex"}>Start free</a>
-          <button aria-label="Menu" className="text-slate-100 md:hidden" onClick={() => setOpen((o) => !o)}><Menu className="h-6 w-6" /></button>
+          <button aria-label="Menu" className="text-[var(--text)] md:hidden" onClick={() => setOpen((o) => !o)}><Menu className="h-6 w-6" /></button>
         </div>
       </div>
       {open && (
-        <div className="flex flex-col gap-1 border-b border-white/[0.06] bg-[#07080D]/95 px-6 pb-5 pt-3 backdrop-blur-md md:hidden">
+        <div className="flex flex-col gap-1 border-b border-[var(--border)] bg-[var(--bg)] px-6 pb-5 pt-3 backdrop-blur-md md:hidden">
           {NAV_LINKS.map(([t, h]) => (
-            <a key={h} href={h} className="border-b border-white/[0.06] py-3 text-base text-slate-300" onClick={() => setOpen(false)}>{t}</a>
+            <a key={h} href={h} className="border-b border-[var(--border)] py-3 text-base text-[var(--text-muted)]" onClick={() => setOpen(false)}>{t}</a>
           ))}
           <a href="/signup" className={btnPrimary + " mt-3"}>Start free</a>
         </div>
@@ -47,14 +47,14 @@ function Nav() {
 
 function Footer() {
   return (
-    <footer className="border-t border-white/[0.06] pb-10 pt-12">
+    <footer className="border-t border-[var(--border)] pb-10 pt-12">
       <div className="mx-auto max-w-[1140px] px-6">
-        <div className="flex flex-col items-center justify-between gap-3.5 text-[13px] text-slate-500 md:flex-row">
+        <div className="flex flex-col items-center justify-between gap-3.5 text-[13px] text-[var(--text-faint)] md:flex-row">
           <span>© 2026 GBICT Energy · Almere, Netherlands</span>
           <div className="flex gap-5">
-            <a href="/privacy" className="hover:text-slate-100">Privacy Policy</a>
+            <a href="/privacy" className="hover:text-[var(--text)]">Privacy Policy</a>
             <a href="/terms" className="text-emerald-400 hover:text-emerald-300">Terms of Service</a>
-            <a href="/contact" className="hover:text-slate-100">Contact</a>
+            <a href="/contact" className="hover:text-[var(--text)]">Contact</a>
           </div>
         </div>
       </div>
@@ -65,15 +65,15 @@ function Footer() {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mb-10">
-      <h2 className="mb-4 text-[22px] font-bold tracking-[-0.02em] text-slate-100">{title}</h2>
-      <div className="space-y-3 text-[15px] leading-[1.7] text-slate-400">{children}</div>
+      <h2 className="mb-4 text-[22px] font-bold tracking-[-0.02em] text-[var(--text)]">{title}</h2>
+      <div className="space-y-3 text-[15px] leading-[1.7] text-[var(--text-muted)]">{children}</div>
     </section>
   );
 }
 
 export default function TermsPage() {
   return (
-    <main className="relative min-h-screen overflow-x-hidden bg-[#07080D] font-sans text-slate-100 antialiased">
+    <main className="relative min-h-screen overflow-x-hidden bg-[var(--bg)] font-sans text-[var(--text)] antialiased">
       <div className="pointer-events-none fixed inset-0 z-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_100%_80%_at_50%_0%,#000_40%,transparent_90%)]" />
       <div className="relative z-[2]">
         <Nav />
@@ -86,13 +86,13 @@ export default function TermsPage() {
                 <FileText className="h-7 w-7 text-emerald-400" />
               </div>
             </div>
-            <h1 className="text-[clamp(36px,5vw,54px)] font-extrabold tracking-[-0.04em] text-slate-50">Terms of Service</h1>
-            <p className="mt-4 text-[16px] text-slate-400">Last updated: June 2025</p>
-            <p className="mt-2 text-[14px] text-slate-500">GBICT Energy · Almere, Netherlands · info@gbict.nl</p>
+            <h1 className="text-[clamp(36px,5vw,54px)] font-extrabold tracking-[-0.04em] text-[var(--text)]">Terms of Service</h1>
+            <p className="mt-4 text-[16px] text-[var(--text-muted)]">Last updated: June 2025</p>
+            <p className="mt-2 text-[14px] text-[var(--text-faint)]">GBICT Energy · Almere, Netherlands · info@gbict.nl</p>
           </div>
 
           {/* Card wrapper */}
-          <div className="rounded-2xl border border-white/[0.06] bg-[#0D0E16] p-10">
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-10">
 
             <Section title="1. Acceptance of terms">
               <p>
@@ -114,30 +114,30 @@ export default function TermsPage() {
 
             <Section title="3. Pricing and subscription">
               <p>We offer the following subscription plans:</p>
-              <div className="mt-4 overflow-hidden rounded-xl border border-white/[0.06]">
+              <div className="mt-4 overflow-hidden rounded-xl border border-[var(--border)]">
                 <table className="w-full text-[14px]">
                   <thead>
-                    <tr className="border-b border-white/[0.06] bg-white/[0.025]">
-                      <th className="px-5 py-3 text-left text-[12px] font-bold uppercase tracking-[0.08em] text-slate-400">Plan</th>
-                      <th className="px-5 py-3 text-left text-[12px] font-bold uppercase tracking-[0.08em] text-slate-400">Price</th>
-                      <th className="px-5 py-3 text-left text-[12px] font-bold uppercase tracking-[0.08em] text-slate-400">Includes</th>
+                    <tr className="border-b border-[var(--border)] bg-[var(--surface-2)]">
+                      <th className="px-5 py-3 text-left text-[12px] font-bold uppercase tracking-[0.08em] text-[var(--text-muted)]">Plan</th>
+                      <th className="px-5 py-3 text-left text-[12px] font-bold uppercase tracking-[0.08em] text-[var(--text-muted)]">Price</th>
+                      <th className="px-5 py-3 text-left text-[12px] font-bold uppercase tracking-[0.08em] text-[var(--text-muted)]">Includes</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr className="border-b border-white/[0.06]">
-                      <td className="px-5 py-3.5 text-slate-300 font-medium">Starter</td>
-                      <td className="px-5 py-3.5 text-slate-300">€15 / month</td>
-                      <td className="px-5 py-3.5 text-slate-400">1 device, daily optimization, email support</td>
+                    <tr className="border-b border-[var(--border)]">
+                      <td className="px-5 py-3.5 text-[var(--text-muted)] font-medium">Starter</td>
+                      <td className="px-5 py-3.5 text-[var(--text-muted)]">€15 / month</td>
+                      <td className="px-5 py-3.5 text-[var(--text-muted)]">1 device, daily optimization, email support</td>
                     </tr>
-                    <tr className="border-b border-white/[0.06]">
-                      <td className="px-5 py-3.5 text-slate-300 font-medium">Pro</td>
-                      <td className="px-5 py-3.5 text-slate-300">€25 / month</td>
-                      <td className="px-5 py-3.5 text-slate-400">Unlimited devices, hourly optimization, VPP, priority support</td>
+                    <tr className="border-b border-[var(--border)]">
+                      <td className="px-5 py-3.5 text-[var(--text-muted)] font-medium">Pro</td>
+                      <td className="px-5 py-3.5 text-[var(--text-muted)]">€25 / month</td>
+                      <td className="px-5 py-3.5 text-[var(--text-muted)]">Unlimited devices, hourly optimization, VPP, priority support</td>
                     </tr>
                     <tr>
-                      <td className="px-5 py-3.5 text-slate-300 font-medium">Business</td>
-                      <td className="px-5 py-3.5 text-slate-300">Custom</td>
-                      <td className="px-5 py-3.5 text-slate-400">Multiple locations, white-label, dedicated SLA, account manager</td>
+                      <td className="px-5 py-3.5 text-[var(--text-muted)] font-medium">Business</td>
+                      <td className="px-5 py-3.5 text-[var(--text-muted)]">Custom</td>
+                      <td className="px-5 py-3.5 text-[var(--text-muted)]">Multiple locations, white-label, dedicated SLA, account manager</td>
                     </tr>
                   </tbody>
                 </table>
@@ -147,7 +147,7 @@ export default function TermsPage() {
 
             <Section title="4. Free trial">
               <p>
-                New accounts are eligible for a <strong className="text-slate-300">14-day free trial</strong> of the Pro plan. No credit card is required to start the trial. At the end of the trial period, you will be asked to select a plan. If you do not subscribe, your account will be downgraded to a read-only state and optimization will be paused.
+                New accounts are eligible for a <strong className="text-[var(--text-muted)]">14-day free trial</strong> of the Pro plan. No credit card is required to start the trial. At the end of the trial period, you will be asked to select a plan. If you do not subscribe, your account will be downgraded to a read-only state and optimization will be paused.
               </p>
               <p>
                 Each individual or organization is entitled to one free trial. Circumventing this by creating multiple accounts is a violation of these Terms and may result in account suspension.
@@ -159,7 +159,7 @@ export default function TermsPage() {
                 Subscriptions are billed monthly in advance. Payments are processed securely via our payment provider. By subscribing, you authorize us to charge your payment method on a recurring monthly basis.
               </p>
               <p>
-                <strong className="text-slate-300">Cancellation:</strong> You may cancel your subscription at any time from your account settings or by contacting info@gbict.nl. Cancellation takes effect at the end of the current billing period. We do not offer refunds for the current billing period upon cancellation, except where required by Dutch consumer protection law.
+                <strong className="text-[var(--text-muted)]">Cancellation:</strong> You may cancel your subscription at any time from your account settings or by contacting info@gbict.nl. Cancellation takes effect at the end of the current billing period. We do not offer refunds for the current billing period upon cancellation, except where required by Dutch consumer protection law.
               </p>
               <p>
                 If a payment fails, we will retry the charge and notify you by email. After 7 days of non-payment, your subscription may be suspended.
@@ -168,16 +168,16 @@ export default function TermsPage() {
 
             <Section title="6. Savings estimates and disclaimers">
               <p>
-                The energy savings estimates shown in the dashboard, on our website, and in any marketing materials are <strong className="text-slate-300">illustrative projections only</strong> and are not guaranteed. Actual savings depend on factors outside our control, including but not limited to: energy market prices, your energy contract terms, battery hardware performance, solar generation, and household consumption patterns.
+                The energy savings estimates shown in the dashboard, on our website, and in any marketing materials are <strong className="text-[var(--text-muted)]">illustrative projections only</strong> and are not guaranteed. Actual savings depend on factors outside our control, including but not limited to: energy market prices, your energy contract terms, battery hardware performance, solar generation, and household consumption patterns.
               </p>
               <p>
-                <strong className="text-slate-300">GBICT Energy is not liable for any energy costs, charges, or losses you may incur</strong>, including those resulting from optimization decisions made by the platform. You retain full responsibility for your energy contract and any costs associated with it.
+                <strong className="text-[var(--text-muted)]">GBICT Energy is not liable for any energy costs, charges, or losses you may incur</strong>, including those resulting from optimization decisions made by the platform. You retain full responsibility for your energy contract and any costs associated with it.
               </p>
             </Section>
 
             <Section title="7. Uptime and service availability">
               <p>
-                We target a <strong className="text-slate-300">98% monthly uptime</strong> for the core optimization service. This is a target, not a binding service level agreement (SLA), unless you have a Business plan with a dedicated SLA in your contract.
+                We target a <strong className="text-[var(--text-muted)]">98% monthly uptime</strong> for the core optimization service. This is a target, not a binding service level agreement (SLA), unless you have a Business plan with a dedicated SLA in your contract.
               </p>
               <p>
                 Scheduled maintenance will be announced in advance via the dashboard and/or email. We are not liable for losses arising from service unavailability, interruptions, or data delays.
@@ -223,7 +223,7 @@ export default function TermsPage() {
 
             <Section title="12. Governing law and jurisdiction">
               <p>
-                These Terms are governed by the laws of <strong className="text-slate-300">the Netherlands</strong>, without regard to conflict-of-law principles. Any disputes shall be resolved exclusively by the competent courts in <strong className="text-slate-300">Almere, Netherlands</strong>.
+                These Terms are governed by the laws of <strong className="text-[var(--text-muted)]">the Netherlands</strong>, without regard to conflict-of-law principles. Any disputes shall be resolved exclusively by the competent courts in <strong className="text-[var(--text-muted)]">Almere, Netherlands</strong>.
               </p>
               <p>
                 If you are a consumer, you may also have rights under mandatory consumer protection legislation in your country of residence.
@@ -243,8 +243,8 @@ export default function TermsPage() {
             </Section>
 
             <div className="mt-8 rounded-xl border border-emerald-500/20 bg-emerald-500/[0.06] px-6 py-5">
-              <p className="text-[14px] text-slate-300">
-                <strong className="text-slate-100">Questions?</strong> Email us at{" "}
+              <p className="text-[14px] text-[var(--text-muted)]">
+                <strong className="text-[var(--text)]">Questions?</strong> Email us at{" "}
                 <a href="mailto:info@gbict.nl" className="text-emerald-400 hover:text-emerald-300">info@gbict.nl</a>.
                 We respond within 24 hours on business days.
               </p>

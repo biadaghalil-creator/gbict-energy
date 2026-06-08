@@ -40,24 +40,24 @@ export default function ReferralClient({
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-50" style={{ letterSpacing: '-0.02em' }}>
+        <h1 className="text-2xl font-bold tracking-tight text-[var(--text)]" style={{ letterSpacing: '-0.02em' }}>
           Vrienden uitnodigen
         </h1>
-        <p className="mt-1 text-sm text-slate-400">
+        <p className="mt-1 text-sm text-[var(--text-muted)]">
           Nodig vrienden uit en verdien credits voor elk succesvolle aanmelding.
         </p>
       </div>
 
       {/* Referral code card */}
-      <Card className="border-white/[0.06] bg-[#0D0E16]">
+      <Card className="border-[var(--border)] bg-[var(--surface)]">
         <CardHeader>
-          <CardTitle className="text-xs font-medium uppercase tracking-wide text-slate-500">
+          <CardTitle className="text-xs font-medium uppercase tracking-wide text-[var(--text-faint)]">
             Jouw referral code
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-3">
-            <div className="flex-1 rounded-xl bg-white/[0.04]/60 px-5 py-4 text-center font-mono text-3xl font-bold tracking-widest text-emerald-400 ring-1 ring-slate-700">
+            <div className="flex-1 rounded-xl bg-[var(--surface-2)]/60 px-5 py-4 text-center font-mono text-3xl font-bold tracking-widest text-emerald-400 ring-1 ring-slate-700">
               {referralCode}
             </div>
             <button
@@ -66,7 +66,7 @@ export default function ReferralClient({
               className={`flex items-center gap-2 rounded-xl px-4 py-4 text-sm font-medium transition-all ${
                 copied
                   ? 'bg-emerald-950/40 text-emerald-400 ring-1 ring-emerald-500/30'
-                  : 'bg-white/[0.04] text-slate-300 hover:bg-slate-700 hover:text-slate-100'
+                  : 'bg-[var(--surface-2)] text-[var(--text-muted)] hover:bg-slate-700 hover:text-[var(--text)]'
               }`}
             >
               {copied
@@ -80,18 +80,18 @@ export default function ReferralClient({
 
       {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-2">
-        <Card className="border-white/[0.06] bg-[#0D0E16]">
+        <Card className="border-[var(--border)] bg-[var(--surface)]">
           <CardContent className="py-6">
-            <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Verdiende credits</p>
-            <p className={`mt-2 text-3xl font-bold tracking-tight ${creditsEur > 0 ? 'text-emerald-400' : 'text-slate-600'}`}>
+            <p className="text-xs font-medium uppercase tracking-wide text-[var(--text-faint)]">Verdiende credits</p>
+            <p className={`mt-2 text-3xl font-bold tracking-tight ${creditsEur > 0 ? 'text-emerald-400' : 'text-[var(--text-faint)]'}`}>
               €{creditsEur.toFixed(2)}
             </p>
           </CardContent>
         </Card>
-        <Card className="border-white/[0.06] bg-[#0D0E16]">
+        <Card className="border-[var(--border)] bg-[var(--surface)]">
           <CardContent className="py-6">
-            <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Vrienden aangemeld</p>
-            <p className={`mt-2 text-3xl font-bold tracking-tight ${referrals > 0 ? 'text-slate-50' : 'text-slate-600'}`}>
+            <p className="text-xs font-medium uppercase tracking-wide text-[var(--text-faint)]">Vrienden aangemeld</p>
+            <p className={`mt-2 text-3xl font-bold tracking-tight ${referrals > 0 ? 'text-[var(--text)]' : 'text-[var(--text-faint)]'}`}>
               {referrals}
             </p>
           </CardContent>
@@ -99,9 +99,9 @@ export default function ReferralClient({
       </div>
 
       {/* How it works */}
-      <Card className="border-white/[0.06] bg-[#0D0E16]">
+      <Card className="border-[var(--border)] bg-[var(--surface)]">
         <CardHeader>
-          <CardTitle className="text-xs font-medium uppercase tracking-wide text-slate-500">
+          <CardTitle className="text-xs font-medium uppercase tracking-wide text-[var(--text-faint)]">
             Hoe het werkt
           </CardTitle>
         </CardHeader>
@@ -115,8 +115,8 @@ export default function ReferralClient({
                     <Icon className="h-4 w-4" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-slate-200">{step.title}</p>
-                    <p className="mt-0.5 text-xs text-slate-500">{step.desc}</p>
+                    <p className="text-sm font-semibold text-[var(--text)]">{step.title}</p>
+                    <p className="mt-0.5 text-xs text-[var(--text-faint)]">{step.desc}</p>
                   </div>
                 </div>
               )
@@ -126,9 +126,9 @@ export default function ReferralClient({
       </Card>
 
       {/* Share buttons */}
-      <Card className="border-white/[0.06] bg-[#0D0E16]">
+      <Card className="border-[var(--border)] bg-[var(--surface)]">
         <CardHeader>
-          <CardTitle className="text-xs font-medium uppercase tracking-wide text-slate-500">
+          <CardTitle className="text-xs font-medium uppercase tracking-wide text-[var(--text-faint)]">
             Deel via
           </CardTitle>
         </CardHeader>
@@ -147,7 +147,7 @@ export default function ReferralClient({
             </a>
             <a
               href={mailtoUrl}
-              className="flex items-center gap-2 rounded-xl bg-white/[0.04] px-4 py-2.5 text-sm font-medium text-slate-300 transition-colors hover:bg-slate-700 hover:text-slate-100"
+              className="flex items-center gap-2 rounded-xl bg-[var(--surface-2)] px-4 py-2.5 text-sm font-medium text-[var(--text-muted)] transition-colors hover:bg-slate-700 hover:text-[var(--text)]"
             >
               <Mail className="h-4 w-4" />
               E-mail
@@ -158,10 +158,10 @@ export default function ReferralClient({
 
       {/* Friends list placeholder */}
       {referrals === 0 && (
-        <Card className="border-dashed border-white/[0.06] bg-slate-900/30">
+        <Card className="border-dashed border-[var(--border)] bg-[var(--surface)]/30">
           <CardContent className="flex flex-col items-center gap-2 py-10 text-center">
-            <Gift className="h-10 w-10 text-slate-700" />
-            <p className="mt-2 text-sm text-slate-500">
+            <Gift className="h-10 w-10 text-[var(--text-faint)]" />
+            <p className="mt-2 text-sm text-[var(--text-faint)]">
               Nog niemand uitgenodigd. Deel je code om te beginnen!
             </p>
           </CardContent>
