@@ -354,7 +354,7 @@ function Benefits() {
   ];
   return (
     <section id="results" className="relative overflow-hidden bg-[var(--band)] py-[120px]">
-      <div className="pointer-events-none absolute left-1/2 top-[-220px] h-[520px] w-[900px] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse,rgba(16,185,129,0.16),transparent_65%)]" />
+      <div className="pointer-events-none absolute left-1/2 top-[-220px] h-[520px] w-[900px] -translate-x-1/2 glow-drift rounded-full bg-[radial-gradient(ellipse,rgba(16,185,129,0.16),transparent_65%)]" />
       <div className="relative mx-auto max-w-[1140px] px-6">
         <SectionHead title="What GBICT does for you" />
         <div className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -386,7 +386,7 @@ function BigCTA() {
     <section className="py-[120px]">
       <div className="mx-auto max-w-[1140px] px-6">
         <div className="relative overflow-hidden rounded-3xl border border-[var(--border)] bg-[var(--surface)] px-6 py-[100px] text-center">
-          <div className="pointer-events-none absolute left-1/2 top-[-200px] h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse,rgba(16,185,129,0.2),transparent_65%)]" />
+          <div className="pointer-events-none absolute left-1/2 top-[-200px] h-[520px] w-[820px] -translate-x-1/2 glow-drift rounded-full bg-[radial-gradient(ellipse,rgba(16,185,129,0.2),transparent_65%)]" />
           <h2 className="relative text-[clamp(32px,4.4vw,52px)] font-extrabold tracking-[-0.04em]">Ready to save automatically?</h2>
           <p className="relative mt-5 text-[18px] text-[var(--text-muted)]">Connect your battery in 2 minutes. No technical knowledge needed.</p>
           <a href="/signup" className={btnPrimary + " relative mt-9"}>Start 14-day free trial</a>
@@ -457,7 +457,7 @@ export default function Page() {
     <main className="relative min-h-screen overflow-x-hidden bg-[var(--bg)] font-sans text-[var(--text)] antialiased">
       {/* atmosphere */}
       <div className="pointer-events-none fixed inset-0 z-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_100%_80%_at_50%_0%,#000_40%,transparent_90%)]" />
-      <div className="pointer-events-none fixed left-1/2 top-[-320px] z-0 h-[820px] w-[1200px] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_60%_60%_at_50%_50%,rgba(16,185,129,0.25),rgba(5,150,105,0.1)_45%,transparent_70%)] blur-xl" />
+      <div className="pointer-events-none fixed left-1/2 top-[-320px] z-0 h-[820px] w-[1200px] -translate-x-1/2 glow-drift rounded-full bg-[radial-gradient(ellipse_60%_60%_at_50%_50%,rgba(16,185,129,0.25),rgba(5,150,105,0.1)_45%,transparent_70%)] blur-xl" />
       <div className="relative z-[2]">
         <Nav />
         <Hero />
