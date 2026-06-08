@@ -1,0 +1,29 @@
+name: Revoke surplus dev certificates
+
+# One-off maintenance: free the certificate cap by revoking development
+# certificates accumulated by CI. Distribution certs are kept. Manual trigger.
+on:
+  workflow_dispatch:
+    inputs:
+      revoke:
+        description: 'Set to "1" to actually revoke development certs (default: dry-run list only)'
+        required: false
+        default: '0'
+
+jobs:
+  revoke:
+    runs-on: macos-latest
+    env:
+      ASC_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Write API key
+        run: |
+          mkdir -p "$HOME/.appstoreconnect/private_keys"
+          echo "${{ secrets.APP_STORE_CONNECT_API_KEY }}" > "$HOME/.appstoreconnect/private_keys/AuthKey_${ASC_KEY_ID}.p8"
+      - name: List / revoke development certificates
+        env:
+          ASC_KEY_PATH: /Users/runner/.appstoreconnect/private_keys/AuthKey_${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}.p8
+          REVOKE: ${{ github.event.inputs.revoke }}
+        run: ruby scripts/revoke-dev-certs.rb
