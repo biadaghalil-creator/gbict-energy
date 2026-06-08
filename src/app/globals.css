@@ -568,7 +568,7 @@ body {
   color:var(--fg2);backdrop-filter:blur(var(--glass-blur))}
 .gbict-landing .badge .lucide{width:14px;height:14px;color:var(--accent-bright)}
 .gbict-landing .badge-glow{border-color:var(--glass-border-strong);color:var(--fg2);background:var(--glass-fill);box-shadow:none}
-.gbict-landing .brand-mark{border:1px solid rgba(139,92,246,.18)}
+.gbict-landing .brand-mark{border:0}
 
 /* ---- Glass card ---- */
 .gbict-landing .glass-card{background:var(--glass-fill);border:1px solid var(--glass-border);border-radius:var(--r-lg);

@@ -29,7 +29,7 @@ const NAV: [string, string][] = [
 
 /* ---------- Shared primitives ---------- */
 
-function Brand({ size = 44 }: { size?: number }) {
+function Brand({ size = 56 }: { size?: number }) {
   return (
     <img
       className="brand-mark"
@@ -37,7 +37,7 @@ function Brand({ size = 44 }: { size?: number }) {
       alt="GBICT Energy"
       width={size}
       height={size}
-      style={{ width: size, height: size, borderRadius: 11, display: "block" }}
+      style={{ width: size, height: size, borderRadius: 13, display: "block" }}
     />
   );
 }

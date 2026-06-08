@@ -2,14 +2,14 @@
 
 import { useState, useEffect, useCallback } from 'react'
 
-export type Locale = 'en' | 'nl' | 'de' | 'fr' | 'es'
+export type Locale = 'en' | 'nl' | 'de' | 'fr'
 
-const LOCALES: Locale[] = ['en', 'nl', 'de', 'fr', 'es']
+const LOCALES: Locale[] = ['en', 'nl', 'de', 'fr']
 const LOCALE_LABELS: Record<Locale, string> = {
-  en: 'EN', nl: 'NL', de: 'DE', fr: 'FR', es: 'ES',
+  en: 'EN', nl: 'NL', de: 'DE', fr: 'FR',
 }
 const LOCALE_NAMES: Record<Locale, string> = {
-  en: 'English', nl: 'Nederlands', de: 'Deutsch', fr: 'Français', es: 'Español',
+  en: 'English', nl: 'Nederlands', de: 'Deutsch', fr: 'Français',
 }
 
 function readLocaleCookie(): Locale {
