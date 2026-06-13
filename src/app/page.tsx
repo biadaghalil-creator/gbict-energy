@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import type { ReactNode, CSSProperties } from "react";
 import {
   Zap, BatteryCharging, Radio, Sun, Lock, LineChart, Check, Menu, Globe, ChevronDown, X,
-  Leaf, Play, ArrowRight, TrendingUp, TrendingDown, Sparkles, Activity,
+  Leaf, ArrowUpRight, TrendingUp, TrendingDown, Sparkles, Activity,
   PiggyBank, CalendarClock, BellRing, ShieldCheck, Server, UserCheck,
   BadgeCheck, Shield, Home, Bell, BatteryFull, CloudSun, Share2, Link as LinkIcon, GitFork,
 } from "lucide-react";
@@ -14,10 +14,9 @@ import { useIsNative } from "@/lib/native";
 
 /* ============================================================
    GBICT Energy — landing page (Next.js App Router page.tsx)
-   Faithful port of the iPwr standalone design. Always dark.
-   Uses the design's own CSS classes (appended to globals.css)
-   wrapped in .dark + .gbict-landing. English copy only.
-   Card is captured at signup, so no "no credit card" claims.
+   Re-skinned to the "Auros" abyssal-teal trading-terminal look.
+   Always dark. Scoped CSS lives under .gbict-landing in globals.css.
+   English copy only. Card is captured at signup (no "no card" claims).
    ============================================================ */
 
 const NAV: [string, string][] = [
@@ -39,6 +38,25 @@ function Brand({ size = 40 }: { size?: number }) {
       height={size}
       style={{ width: size, height: size, borderRadius: Math.round(size * 0.28), display: "block" }}
     />
+  );
+}
+
+/* Eyebrow: 6px teal dot + uppercase label */
+function Eyebrow({ children }: { children: ReactNode }) {
+  return (
+    <p className="eyebrow">
+      <span className="eyebrow-dot" />
+      {children}
+    </p>
+  );
+}
+
+/* Corner ghost ↗ square used on Auros cards */
+function CornerArrow() {
+  return (
+    <span className="corner-arrow" aria-hidden="true">
+      <ArrowUpRight className="lucide" />
+    </span>
   );
 }
 
@@ -111,7 +129,8 @@ function Nav() {
               Sign in
             </a>
             <a className="btn btn-primary" href="/signup">
-              Start free trial
+              <span>Start free trial</span>
+              <ArrowUpRight className="lucide" />
             </a>
             <button className="nav-toggle" aria-label="Menu" onClick={() => setOpen((o) => !o)}>
               {open ? <X className="lucide" /> : <Menu className="lucide" />}
@@ -130,7 +149,8 @@ function Nav() {
           <div className="mobile-actions">
             <LangSwitcher />
             <a className="btn btn-primary" href="/signup">
-              Start free trial
+              <span>Start free trial</span>
+              <ArrowUpRight className="lucide" />
             </a>
           </div>
         </div>
@@ -159,7 +179,7 @@ function Section({
       <div className="container">
         {(eyebrow || title || sub) && (
           <div className="center" style={{ marginBottom: 4 }}>
-            {eyebrow && <p className="eyebrow">{eyebrow}</p>}
+            {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
             {title && <h2 className="section-title">{title}</h2>}
             {sub && <p className="section-sub">{sub}</p>}
           </div>
@@ -170,7 +190,135 @@ function Section({
   );
 }
 
-/* ---------- Hero: battery dashboard card ---------- */
+/* ---------- Auros signature: particle sphere (hero centerpiece) ---------- */
+
+function ParticleSphere() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const reduce = window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+
+    // Build a roughly even point distribution on a sphere (Fibonacci sphere).
+    const N = 850;
+    const golden = Math.PI * (3 - Math.sqrt(5));
+    const pts: { x: number; y: number; z: number }[] = [];
+    for (let i = 0; i < N; i++) {
+      const y = 1 - (i / (N - 1)) * 2; // -1..1
+      const r = Math.sqrt(1 - y * y);
+      const theta = golden * i;
+      pts.push({ x: Math.cos(theta) * r, y, z: Math.sin(theta) * r });
+    }
+
+    let raf = 0;
+    let angle = 0;
+    let w = 0, h = 0, dpr = 1, R = 0, cx = 0, cy = 0;
+
+    const resize = () => {
+      const rect = canvas.getBoundingClientRect();
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = rect.width;
+      h = rect.height;
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      R = Math.min(w, h) * 0.42;
+      cx = w / 2;
+      cy = h / 2;
+    };
+
+    const draw = () => {
+      ctx.clearRect(0, 0, w, h);
+      const cosA = Math.cos(angle);
+      const sinA = Math.sin(angle);
+      // Tilt the sphere slightly so it reads as 3D.
+      const tilt = 0.42;
+      const cosT = Math.cos(tilt);
+      const sinT = Math.sin(tilt);
+
+      for (let i = 0; i < pts.length; i++) {
+        const p = pts[i];
+        // rotate around Y
+        let x = p.x * cosA - p.z * sinA;
+        let z = p.x * sinA + p.z * cosA;
+        // tilt around X
+        const yy = p.y * cosT - z * sinT;
+        z = p.y * sinT + z * cosT;
+        x = x;
+
+        const depth = (z + 1) / 2; // 0 (back) .. 1 (front)
+        const sx = cx + x * R;
+        const sy = cy + yy * R;
+        const size = 0.5 + depth * 1.7;
+        const alpha = 0.12 + depth * 0.78;
+
+        // teal -> cyan glow front-to-back
+        const g = Math.round(130 + depth * 95);
+        const b = Math.round(124 + depth * 90);
+        ctx.beginPath();
+        ctx.arc(sx, sy, size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0, ${g}, ${b}, ${alpha})`;
+        ctx.fill();
+      }
+      angle += 0.0016;
+    };
+
+    const tick = () => {
+      draw();
+      raf = requestAnimationFrame(tick);
+    };
+
+    resize();
+    window.addEventListener("resize", resize);
+
+    if (reduce) {
+      draw(); // static frame
+    } else {
+      raf = requestAnimationFrame(tick);
+    }
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
+
+  return (
+    <div className="sphere-wrap" aria-hidden="true">
+      <div className="sphere-halo" />
+      <canvas ref={canvasRef} className="sphere-canvas" />
+    </div>
+  );
+}
+
+/* ---------- Auros signature: sparse node-network decoration ---------- */
+
+function NodeNetwork({ className = "" }: { className?: string }) {
+  // Organic (not a grid) cluster of nodes joined by thin lines.
+  const nodes: [number, number][] = [
+    [12, 30], [28, 14], [40, 44], [58, 22], [72, 52],
+    [86, 30], [22, 70], [48, 78], [66, 88], [90, 70], [6, 56],
+  ];
+  const links: [number, number][] = [
+    [0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [2, 6], [6, 7], [7, 8], [8, 9], [4, 9], [0, 10], [10, 6],
+  ];
+  return (
+    <svg className={"node-net " + className} viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+      {links.map(([a, b], i) => (
+        <line key={i} x1={nodes[a][0]} y1={nodes[a][1]} x2={nodes[b][0]} y2={nodes[b][1]} />
+      ))}
+      {nodes.map(([x, y], i) => (
+        <circle key={i} cx={x} cy={y} r={i % 3 === 0 ? 1.4 : 0.9} />
+      ))}
+    </svg>
+  );
+}
+
+/* ---------- Hero: battery dashboard card (secondary visual, teal) ---------- */
 
 const DASH_SLOTS: [("ok" | "sell" | "idle"), number][] = [
   ["ok", 42], ["ok", 64], ["idle", 28], ["idle", 46],
@@ -178,9 +326,9 @@ const DASH_SLOTS: [("ok" | "sell" | "idle"), number][] = [
   ["idle", 44], ["ok", 52], ["ok", 60], ["idle", 34],
 ];
 const SLOT_COLOR: Record<string, string> = {
-  ok: "#10b981",
+  ok: "#00827c",
   sell: "var(--bad)",
-  idle: "rgba(148,163,184,.18)",
+  idle: "rgba(187,199,198,.16)",
 };
 
 function BatteryDash() {
@@ -198,9 +346,7 @@ function BatteryDash() {
         <span className="v">78</span>
         <span className="u">% state of charge</span>
       </div>
-      <div className="dash-sub" style={{ fontSize: 11.5, color: "#475569", marginTop: 2 }}>
-        optimal charge window · now until 06:00
-      </div>
+      <div className="dash-sub">optimal charge window · now until 06:00</div>
       <div className="dash-bar">
         <i style={{ width: "78%" }} />
       </div>
@@ -209,7 +355,7 @@ function BatteryDash() {
           <div className="k">Spot price now</div>
           <div className="vv">
             €0.0421
-            <span style={{ fontSize: 11, color: "var(--slate-500)" }}>/kWh</span>
+            <span className="unit">/kWh</span>
           </div>
         </div>
         <div className="kv">
@@ -225,13 +371,13 @@ function BatteryDash() {
       </div>
       <div className="dash-legend">
         <span>
-          <i style={{ background: "#10b981" }} /> Charge
+          <i style={{ background: "#00827c" }} /> Charge
         </span>
         <span>
           <i style={{ background: "var(--bad)" }} /> Sell
         </span>
         <span>
-          <i style={{ background: "rgba(148,163,184,.30)" }} /> Idle
+          <i style={{ background: "rgba(187,199,198,.30)" }} /> Idle
         </span>
       </div>
     </div>
@@ -250,12 +396,12 @@ function PowerChart() {
       <svg viewBox="0 0 300 104" preserveAspectRatio="none">
         <defs>
           <linearGradient id="pcSolar" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="rgba(52,211,153,.34)" />
-            <stop offset="100%" stopColor="rgba(52,211,153,0)" />
+            <stop offset="0%" stopColor="rgba(0,130,124,.40)" />
+            <stop offset="100%" stopColor="rgba(0,130,124,0)" />
           </linearGradient>
           <linearGradient id="pcUse" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="rgba(139,92,246,.30)" />
-            <stop offset="100%" stopColor="rgba(139,92,246,0)" />
+            <stop offset="0%" stopColor="rgba(203,255,252,.26)" />
+            <stop offset="100%" stopColor="rgba(203,255,252,0)" />
           </linearGradient>
         </defs>
         <line className="grid-l" x1="0" y1="34" x2="300" y2="34" />
@@ -267,7 +413,7 @@ function PowerChart() {
       </svg>
       <div className="pchart-legend">
         <span>
-          <i style={{ background: "var(--trust)" }} /> Solar
+          <i style={{ background: "var(--accent)" }} /> Solar
         </span>
         <span>
           <i style={{ background: "var(--accent-bright)" }} /> Home use
@@ -323,22 +469,22 @@ function PhoneApp({ screen = "flow", size = "" }: { screen?: Screen; size?: stri
                 </div>
                 <div className="app-sched" style={{ marginTop: 16 }}>
                   {[34, 52, 40, 66, 48, 80, 60].map((h, i) => (
-                    <i key={i} style={{ height: h + "%", background: i === 5 ? "var(--trust)" : "rgba(52,211,153,.32)" }} />
+                    <i key={i} style={{ height: h + "%", background: i === 5 ? "var(--accent)" : "rgba(0,130,124,.34)" }} />
                   ))}
                 </div>
               </div>
               <div className="app-card" style={{ paddingTop: 6, paddingBottom: 6 }}>
                 <div className="app-row">
                   <span className="t">Cheap-hour charging</span>
-                  <b style={{ color: "var(--trust)", fontFamily: "var(--font-mono)", fontSize: 13 }}>€42.10</b>
+                  <b className="app-amt">€42.10</b>
                 </div>
                 <div className="app-row">
                   <span className="t">Peak-hour selling</span>
-                  <b style={{ color: "var(--trust)", fontFamily: "var(--font-mono)", fontSize: 13 }}>€21.30</b>
+                  <b className="app-amt">€21.30</b>
                 </div>
                 <div className="app-row">
                   <span className="t">Solar self-use</span>
-                  <b style={{ color: "var(--trust)", fontFamily: "var(--font-mono)", fontSize: 13 }}>€8.00</b>
+                  <b className="app-amt">€8.00</b>
                 </div>
               </div>
             </>
@@ -360,7 +506,7 @@ function PhoneApp({ screen = "flow", size = "" }: { screen?: Screen; size?: stri
                       key={i}
                       style={{
                         height: h + "%",
-                        background: s === "ok" ? "var(--accent)" : s === "sell" ? "var(--bad)" : "rgba(148,163,184,.22)",
+                        background: s === "ok" ? "var(--accent)" : s === "sell" ? "var(--bad)" : "rgba(187,199,198,.22)",
                       }}
                     />
                   ))}
@@ -385,43 +531,31 @@ function PhoneApp({ screen = "flow", size = "" }: { screen?: Screen; size?: stri
 
           {screen === "alerts" && (
             <>
-              <div className="app-card" style={{ display: "flex", gap: 11, alignItems: "flex-start" }}>
-                <span className="show-ico" style={{ width: 34, height: 34, margin: 0, borderRadius: 10 }}>
+              <div className="app-card alert-card">
+                <span className="alert-ico">
                   <TrendingDown className="lucide" />
                 </span>
                 <div>
-                  <b style={{ fontSize: 13, color: "var(--fg1)" }}>Cheap window ahead</b>
-                  <p style={{ margin: "4px 0 0", fontSize: 11.5, color: "var(--slate-500)", lineHeight: 1.4 }}>
-                    Prices drop to €0.04/kWh at 02:00 — charging scheduled.
-                  </p>
+                  <b>Cheap window ahead</b>
+                  <p>Prices drop to €0.04/kWh at 02:00 — charging scheduled.</p>
                 </div>
               </div>
-              <div className="app-card" style={{ display: "flex", gap: 11, alignItems: "flex-start" }}>
-                <span
-                  className="show-ico"
-                  style={{ width: 34, height: 34, margin: 0, borderRadius: 10, background: "var(--trust-dim)", borderColor: "rgba(52,211,153,.3)", color: "var(--trust)" }}
-                >
+              <div className="app-card alert-card">
+                <span className="alert-ico ok">
                   <BatteryFull className="lucide" />
                 </span>
                 <div>
-                  <b style={{ fontSize: 13, color: "var(--fg1)" }}>Battery full</b>
-                  <p style={{ margin: "4px 0 0", fontSize: 11.5, color: "var(--slate-500)", lineHeight: 1.4 }}>
-                    100% reached before the evening peak. Ready to sell.
-                  </p>
+                  <b>Battery full</b>
+                  <p>100% reached before the evening peak. Ready to sell.</p>
                 </div>
               </div>
-              <div className="app-card" style={{ display: "flex", gap: 11, alignItems: "flex-start" }}>
-                <span
-                  className="show-ico"
-                  style={{ width: 34, height: 34, margin: 0, borderRadius: 10, background: "rgba(34,211,238,.14)", borderColor: "rgba(34,211,238,.3)", color: "var(--cyan-bright)" }}
-                >
+              <div className="app-card alert-card">
+                <span className="alert-ico cyan">
                   <CloudSun className="lucide" />
                 </span>
                 <div>
-                  <b style={{ fontSize: 13, color: "var(--fg1)" }}>Sunny tomorrow</b>
-                  <p style={{ margin: "4px 0 0", fontSize: 11.5, color: "var(--slate-500)", lineHeight: 1.4 }}>
-                    Forecast +6 kWh solar — plan adjusted automatically.
-                  </p>
+                  <b>Sunny tomorrow</b>
+                  <p>Forecast +6 kWh solar — plan adjusted automatically.</p>
                 </div>
               </div>
             </>
@@ -439,55 +573,16 @@ function PhoneApp({ screen = "flow", size = "" }: { screen?: Screen; size?: stri
   );
 }
 
-/* ---------- Hero (iPwr stage) ---------- */
-
-function StageComposition() {
-  return (
-    <div className="stage parallax">
-      <div className="stage-inner">
-        <div className="stage-glow" />
-        <div className="stage-ring">
-          <span className="orb" />
-        </div>
-
-        <div className="stage-dash">
-          <BatteryDash />
-        </div>
-
-        <div className="stage-phone">
-          <PhoneApp screen="flow" size="sm" />
-        </div>
-
-        <div className="chip chip-a">
-          <span className="ico">
-            <TrendingUp className="lucide" />
-          </span>
-          <span>
-            <span className="k">Saved today</span>
-            <span className="v save">+€2.14</span>
-          </span>
-        </div>
-        <div className="chip chip-b">
-          <span className="ico">
-            <Zap className="lucide" />
-          </span>
-          <span>
-            <span className="k">Spot now</span>
-            <span className="v">€0.042</span>
-          </span>
-        </div>
-      </div>
-    </div>
-  );
-}
+/* ---------- Hero (Auros stage) ---------- */
 
 function Hero() {
   return (
     <section className="hero-x" id="top" data-hero="stage">
+      <NodeNetwork className="hero-net" />
       <div className="container">
         <div className="hero-x-grid">
           <div className="reveal in">
-            <span className="badge badge-glow">
+            <span className="badge">
               <Leaf className="lucide" /> Hardware-agnostic platform
             </span>
             <h1>
@@ -500,10 +595,9 @@ function Hero() {
             <div className="hero-cta">
               <a className="btn btn-primary btn-lg" href="/signup">
                 <span>Start 14-day free trial</span>
-                <ArrowRight className="lucide" />
+                <ArrowUpRight className="lucide" />
               </a>
-              <a className="btn btn-glass btn-lg" href="#how">
-                <Play className="lucide" />
+              <a className="btn btn-ghost-aurora btn-lg" href="#how">
                 <span>How it works</span>
               </a>
             </div>
@@ -519,7 +613,29 @@ function Hero() {
               </span>
             </div>
           </div>
-          <StageComposition />
+          <div className="stage parallax">
+            <div className="stage-inner">
+              <ParticleSphere />
+              <div className="chip chip-a">
+                <span className="ico">
+                  <TrendingUp className="lucide" />
+                </span>
+                <span>
+                  <span className="k">Saved today</span>
+                  <span className="v save">+€2.14</span>
+                </span>
+              </div>
+              <div className="chip chip-b">
+                <span className="ico">
+                  <Zap className="lucide" />
+                </span>
+                <span>
+                  <span className="k">Spot now</span>
+                  <span className="v">€0.042</span>
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -536,7 +652,7 @@ function Metrics() {
     ["98%", "uptime guarantee", "key"],
   ];
   return (
-    <div className="container" style={{ marginTop: -36, position: "relative", zIndex: 5 }}>
+    <div className="container metrics-wrap">
       <div className="metrics">
         {stats.map(([n, l, c]) => (
           <div className="metric" key={l}>
@@ -561,6 +677,7 @@ function ProblemSolution() {
     >
       <div className="split">
         <div className="split-card problem reveal">
+          <CornerArrow />
           <span className="split-tag">
             <TrendingDown className="lucide" /> The problem
           </span>
@@ -575,6 +692,7 @@ function ProblemSolution() {
           </div>
         </div>
         <div className="split-card solution reveal d1">
+          <CornerArrow />
           <span className="split-tag">
             <Sparkles className="lucide" /> Our solution
           </span>
@@ -762,7 +880,13 @@ function AppShowcase() {
               </ul>
             </div>
             <div className="show-vis reveal d1">
-              <PhoneApp screen={r.screen} />
+              {i === 0 ? (
+                <div className="show-dash">
+                  <BatteryDash />
+                </div>
+              ) : (
+                <PhoneApp screen={r.screen} />
+              )}
             </div>
           </div>
         ))}
@@ -794,6 +918,7 @@ function Features() {
         <div className="feat-row-2">
           {items.slice(0, 2).map((f) => (
             <div className="feat feat-lg" key={f.title}>
+              <CornerArrow />
               <span className="ic-left">
                 <f.Icon className="lucide" />
               </span>
@@ -807,6 +932,7 @@ function Features() {
         <div className="feat-row-3">
           {items.slice(2, 5).map((f) => (
             <div className="feat" key={f.title}>
+              <CornerArrow />
               <div className="ftitle">
                 <f.Icon className="lucide" />
                 {f.title}
@@ -816,6 +942,7 @@ function Features() {
           ))}
         </div>
         <div className="feat feat-wide">
+          <CornerArrow />
           <div className="wmeta">
             <div className="ftitle">
               <Wide.Icon className="lucide" />
@@ -910,7 +1037,7 @@ function Pricing() {
     >
       <div className="price-grid">
         {plans.map((p) => (
-          <div className={"glass-card price" + (p.popular ? " hi" : "")} key={p.name}>
+          <div className={"price" + (p.popular ? " hi" : "")} key={p.name}>
             {p.popular && <span className="rec">Most popular</span>}
             <div className="pname">{p.name}</div>
             <div className="ptag">{p.tag}</div>
@@ -932,7 +1059,7 @@ function Pricing() {
                 </li>
               ))}
             </ul>
-            <a className={"btn price-btn " + (p.popular ? "btn-primary" : "btn-glass")} href="/signup">
+            <a className={"btn price-btn " + (p.popular ? "btn-primary" : "btn-ghost-aurora")} href="/signup">
               <span>{p.cta}</span>
             </a>
             <div className="pnote">{p.note}</div>
@@ -1027,10 +1154,12 @@ function BigCTA() {
     <section className="section">
       <div className="container">
         <div className="cta-wrap">
+          <NodeNetwork className="cta-net" />
           <h2>Ready to save automatically?</h2>
           <p>Connect your battery in 2 minutes. No technical knowledge needed.</p>
           <a className="btn btn-primary btn-lg" href="/signup">
             <span>Start 14-day free trial</span>
+            <ArrowUpRight className="lucide" />
           </a>
         </div>
       </div>
@@ -1157,7 +1286,7 @@ export default function Page() {
 
   if (native) {
     // Dark holding screen while redirecting (hidden behind the native splash).
-    return <main className="min-h-screen bg-[#07080D]" />;
+    return <main className="min-h-screen bg-[#012624]" />;
   }
 
   return (
