@@ -578,63 +578,29 @@ function PhoneApp({ screen = "flow", size = "" }: { screen?: Screen; size?: stri
 function Hero() {
   return (
     <section className="hero-x" id="top" data-hero="stage">
+      {/* Particle sphere — the brand centerpiece, floating large behind the text */}
+      <div className="hero-sphere parallax" aria-hidden="true">
+        <div className="stage-inner">
+          <ParticleSphere />
+        </div>
+      </div>
       <NodeNetwork className="hero-net" />
       <div className="container">
-        <div className="hero-x-grid">
-          <div className="reveal in">
-            <span className="badge">
-              <Leaf className="lucide" /> Hardware-agnostic platform
-            </span>
-            <h1>
-              The smartest way to make your battery <span className="key">work for you</span>
-            </h1>
-            <p className="sub">
-              Connect any home battery to any dynamic energy contract. GBICT optimizes
-              automatically — charge cheap, sell expensive.
-            </p>
-            <div className="hero-cta">
-              <a className="btn btn-primary btn-lg" href="/signup">
-                <span>Start 14-day free trial</span>
-                <ArrowUpRight className="lucide" />
-              </a>
-              <a className="btn btn-ghost-aurora btn-lg" href="#how">
-                <span>How it works</span>
-              </a>
-            </div>
-            <div className="micro">
-              <span>
-                <Check className="lucide" /> Works with any battery
-              </span>
-              <span>
-                <Check className="lucide" /> No vendor lock-in
-              </span>
-              <span>
-                <Check className="lucide" /> 14 days free
-              </span>
-            </div>
-          </div>
-          <div className="stage parallax">
-            <div className="stage-inner">
-              <ParticleSphere />
-              <div className="chip chip-a">
-                <span className="ico">
-                  <TrendingUp className="lucide" />
-                </span>
-                <span>
-                  <span className="k">Saved today</span>
-                  <span className="v save">+€2.14</span>
-                </span>
-              </div>
-              <div className="chip chip-b">
-                <span className="ico">
-                  <Zap className="lucide" />
-                </span>
-                <span>
-                  <span className="k">Spot now</span>
-                  <span className="v">€0.042</span>
-                </span>
-              </div>
-            </div>
+        <div className="hero-copy reveal in">
+          <Eyebrow>GBICT Energy</Eyebrow>
+          <h1>The smartest way to make your battery work for you</h1>
+          <p className="sub">
+            Connect any home battery to any dynamic energy contract. GBICT optimizes
+            automatically — charge cheap, sell expensive.
+          </p>
+          <div className="hero-cta">
+            <a className="btn btn-primary btn-lg" href="/signup">
+              <span>Start 14-day free trial</span>
+              <ArrowUpRight className="lucide" />
+            </a>
+            <a className="btn btn-ghost-aurora btn-lg" href="#how">
+              <span>How it works</span>
+            </a>
           </div>
         </div>
       </div>

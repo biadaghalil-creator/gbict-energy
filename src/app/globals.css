@@ -604,41 +604,26 @@ body {
 .gbict-landing .node-net{position:absolute;pointer-events:none;z-index:1;opacity:.5}
 .gbict-landing .node-net line{stroke:var(--border);stroke-width:.3}
 .gbict-landing .node-net circle{fill:var(--head)}
-.gbict-landing .hero-net{top:6%;right:4%;width:240px;height:200px;opacity:.35}
+.gbict-landing .hero-net{top:10%;right:5%;width:230px;height:190px;opacity:.28}
 .gbict-landing .cta-net{top:8%;left:6%;width:200px;height:160px;opacity:.4}
 
-/* ---- HERO ---- */
-.gbict-landing .hero-x{position:relative;padding:120px 0 96px;overflow:hidden;min-height:calc(100vh - 64px);display:flex;align-items:center}
-.gbict-landing .hero-x .container{width:100%}
-.gbict-landing .hero-x-grid{display:grid;grid-template-columns:1.04fr 1fr;gap:56px;align-items:center}
-.gbict-landing .hero-x .badge{margin-bottom:26px}
-.gbict-landing .hero-x h1{font-size:clamp(46px,6vw,84px);font-weight:400;letter-spacing:-1.2px;line-height:1.1;margin:0;color:var(--head)}
-.gbict-landing .hero-x h1 .key{
-  background:linear-gradient(90deg,#cbfffc 0%,#edfffe 50%,#fad1ff 100%);
-  background-size:200% auto;-webkit-background-clip:text;background-clip:text;
-  -webkit-text-fill-color:transparent;color:transparent;animation:gbictShimmerKey 8s linear infinite alternate;
-}
-.gbict-landing .hero-x .sub{font-size:18px;color:var(--body);line-height:1.6;margin:28px 0 0;max-width:520px;text-wrap:pretty}
-.gbict-landing .hero-x .hero-cta{display:flex;gap:14px;margin-top:36px;flex-wrap:wrap}
-.gbict-landing .hero-x .micro{margin-top:22px;font-size:13px;color:var(--fg3);display:flex;gap:20px;flex-wrap:wrap}
-.gbict-landing .hero-x .micro span{display:inline-flex;align-items:center;gap:7px}
-.gbict-landing .hero-x .micro .lucide{width:14px;height:14px;color:var(--accent)}
+/* ---- HERO (centered single column, particle sphere floating behind) ---- */
+.gbict-landing .hero-x{position:relative;padding:140px 0 120px;overflow:hidden;min-height:calc(100vh - 64px);display:flex;align-items:center}
+.gbict-landing .hero-x .container{width:100%;position:relative;z-index:2}
+.gbict-landing .hero-copy{max-width:920px;margin:0 auto;display:flex;flex-direction:column;align-items:center;text-align:center}
+.gbict-landing .hero-copy .eyebrow{justify-content:center;margin-bottom:30px}
+.gbict-landing .hero-x h1{font-size:clamp(48px,8.5vw,96px);font-weight:400;letter-spacing:-0.045em;line-height:1.0;margin:0;color:var(--head);max-width:14ch}
+.gbict-landing .hero-x .sub{font-size:17px;color:var(--body);line-height:1.5;margin:28px auto 0;max-width:540px;text-wrap:pretty}
+.gbict-landing .hero-x .hero-cta{display:flex;gap:14px;margin-top:40px;flex-wrap:wrap;justify-content:center}
 
-/* hero stage holds the sphere + floating chips */
-.gbict-landing .stage{position:relative;height:560px;perspective:1600px}
+/* particle sphere: large, centered, behind the text — the brand centerpiece */
+.gbict-landing .hero-sphere{position:absolute;left:50%;top:50%;transform:translate(-50%,-52%);
+  width:min(820px,94vw);height:min(820px,94vw);z-index:0;pointer-events:none;opacity:.92}
 .gbict-landing .stage-inner{position:absolute;inset:0;transition:transform .4s cubic-bezier(.22,.61,.36,1)}
-
-/* floating chips (data points) */
-.gbict-landing .chip{position:absolute;display:flex;align-items:center;gap:10px;padding:11px 15px;border-radius:var(--r-card);
-  background:var(--card);border:1px solid var(--border);z-index:6;white-space:nowrap}
-.gbict-landing .chip .ico{width:30px;height:30px;border-radius:var(--r-ctrl);display:grid;place-items:center;flex-shrink:0;
-  background:var(--elevated);color:var(--accent-bright)}
-.gbict-landing .chip .ico .lucide{width:16px;height:16px}
-.gbict-landing .chip .k{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg3)}
-.gbict-landing .chip .v{font-family:var(--font-mono);font-size:16px;font-weight:500;color:var(--head);margin-top:2px;display:block}
-.gbict-landing .chip .v.save{color:var(--accent-bright)}
-.gbict-landing .chip-a{top:6%;left:-2%;animation:gbictFloatYlg 9s ease-in-out infinite}
-.gbict-landing .chip-b{bottom:8%;right:0%;animation:gbictFloatY 7.5s ease-in-out infinite;animation-delay:-2s}
+/* keep the headline readable over the densest part of the sphere */
+.gbict-landing .hero-x::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:min(900px,96vw);height:560px;z-index:1;pointer-events:none;
+  background:radial-gradient(ellipse 60% 55% at 50% 50%,rgba(1,38,36,.78),rgba(1,38,36,.35) 55%,transparent 75%)}
 
 /* ---- HERO / showcase dashboard card (secondary visual, teal) ---- */
 .gbict-landing .dash{padding:32px;border-radius:var(--r-card);background:var(--card);border:0;position:relative;overflow:hidden}
@@ -956,9 +941,8 @@ body {
 }
 
 @media (max-width:980px){
-  .gbict-landing .hero-x-grid{grid-template-columns:1fr;gap:30px}
-  .gbict-landing .stage{height:420px;margin-top:10px}
-  .gbict-landing .hero-x{padding:80px 0 72px;min-height:0}
+  .gbict-landing .hero-x{padding:100px 0 84px;min-height:0}
+  .gbict-landing .hero-sphere{width:min(620px,96vw);height:min(620px,96vw)}
   .gbict-landing .hero-net{display:none}
   .gbict-landing .show-row,.gbict-landing .show-row.flip{grid-template-columns:1fr;gap:36px}
   .gbict-landing .show-row.flip .show-copy,.gbict-landing .show-row.flip .show-vis{order:0}
@@ -973,13 +957,10 @@ body {
   .gbict-landing .dash-kv{flex-direction:column}
   .gbict-landing .sec-grid{grid-template-columns:1fr}
   .gbict-landing .nav-right .btn-primary{display:none}
-  .gbict-landing .hero-x{padding:56px 0 44px}
-  .gbict-landing .hero-x h1{font-size:clamp(32px,8.6vw,44px);letter-spacing:-.8px;line-height:1.08}
+  .gbict-landing .hero-x{padding:72px 0 56px}
+  .gbict-landing .hero-x h1{font-size:clamp(36px,11vw,56px);letter-spacing:-.035em;line-height:1.04}
   .gbict-landing .hero-x .sub{font-size:16px;margin-top:18px}
-  .gbict-landing .hero-x .micro{gap:12px;margin-top:18px}
-  .gbict-landing .stage{height:300px}
-  .gbict-landing .chip-a{left:0}
-  .gbict-landing .chip-b{right:0}
+  .gbict-landing .hero-sphere{width:min(440px,98vw);height:min(440px,98vw)}
   .gbict-landing .calc-controls,.gbict-landing .calc-result{padding:24px}
   .gbict-landing .feat,.gbict-landing .split-card,.gbict-landing .sec-card,.gbict-landing .price{padding:28px}
   .gbict-landing .section{padding:48px 0}
