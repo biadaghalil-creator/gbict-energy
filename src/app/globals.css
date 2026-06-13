@@ -444,7 +444,8 @@ body {
    depth via tonal difference (NO drop shadows on cards).
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300..600&family=Geist+Mono:wght@400..600&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@400,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400..600&display=swap');
 
 /* ---- Design tokens (scoped) ---- */
 .gbict-landing {
@@ -469,7 +470,7 @@ body {
   --fg3:           #8aa19f;
   --bad:           #cbfffc;   /* "sell" marker — cyan-teal, never red/pink fill */
 
-  --font-sans: 'Geist', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Satoshi', 'Geist', system-ui, -apple-system, sans-serif;
   --font-mono: 'Geist Mono', ui-monospace, 'SF Mono', monospace;
 
   /* gradients (rationed) */
@@ -613,6 +614,14 @@ body {
 .gbict-landing .hero-copy{max-width:920px;margin:0 auto;display:flex;flex-direction:column;align-items:center;text-align:center}
 .gbict-landing .hero-copy .eyebrow{justify-content:center;margin-bottom:30px}
 .gbict-landing .hero-x h1{font-size:clamp(48px,8.5vw,96px);font-weight:400;letter-spacing:-0.045em;line-height:1.0;margin:0;color:var(--head);max-width:14ch}
+/* headline word reveal — each word rolls up from behind a mask on load */
+.gbict-landing .hero-head .w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em}
+.gbict-landing .hero-head .w > span{display:inline-block;transform:translateY(115%);opacity:0;
+  animation:gbictWordUp .85s cubic-bezier(.19,.83,.3,1) forwards}
+@keyframes gbictWordUp{to{transform:translateY(0);opacity:1}}
+@media (prefers-reduced-motion:reduce){
+  .gbict-landing .hero-head .w > span{transform:none;opacity:1;animation:none}
+}
 .gbict-landing .hero-x .sub{font-size:17px;color:var(--body);line-height:1.5;margin:28px auto 0;max-width:540px;text-wrap:pretty}
 .gbict-landing .hero-x .hero-cta{display:flex;gap:14px;margin-top:40px;flex-wrap:wrap;justify-content:center}
 

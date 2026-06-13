@@ -588,7 +588,16 @@ function Hero() {
       <div className="container">
         <div className="hero-copy reveal in">
           <Eyebrow>GBICT Energy</Eyebrow>
-          <h1>The smartest way to make your battery work for you</h1>
+          <h1 className="hero-head">
+            {"The smartest way to make your battery work for you"
+              .split(" ")
+              .flatMap((word, i, arr) => [
+                <span className="w" key={i}>
+                  <span style={{ animationDelay: `${0.15 + i * 0.07}s` }}>{word}</span>
+                </span>,
+                i < arr.length - 1 ? <span key={`s${i}`}> </span> : null,
+              ])}
+          </h1>
           <p className="sub">
             Connect any home battery to any dynamic energy contract. GBICT optimizes
             automatically — charge cheap, sell expensive.
