@@ -16,9 +16,15 @@ const tabs: { href: string; key: keyof TranslationDict['dashboard']['nav']; icon
   { href: '/dashboard/instellingen', key: 'profile',     icon: Settings },
 ]
 
+// Eén cirkel-slot is 56px breed (w-14); de actieve highlight schuift hierlangs.
+const SLOT = 56
+
 /**
- * iOS-style bottom tab bar. Only rendered inside the native app — on the
- * website the existing sidebar/drawer stays untouched.
+ * Zwevende, ronde bottom-navigatie — alleen in de native app.
+ * Een glazen pill die los van de schermrand zweeft, met een vloeiend
+ * schuivende emerald-cirkel achter het actieve icoon. Kleurt automatisch
+ * mee met light/dark (via de --surface/--border/--text variabelen), die op
+ * hun beurt met de tijd van dag wisselen (zie ThemeController).
  */
 export default function NativeTabBar() {
   const native = useIsNative()
@@ -27,9 +33,36 @@ export default function NativeTabBar() {
 
   if (!native) return null
 
+  const activeIndex = tabs.findIndex((tab) =>
+    tab.exact ? pathname === tab.href : pathname.startsWith(tab.href)
+  )
+
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-[var(--border)] bg-[var(--surface)] backdrop-blur-xl pb-[env(safe-area-inset-bottom)] md:hidden">
-      <div className="flex items-stretch justify-around px-1.5 pt-1.5">
+    <nav
+      className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center pb-[calc(env(safe-area-inset-bottom)+14px)] md:hidden"
+      aria-label="Hoofdnavigatie"
+    >
+      <div
+        className="pointer-events-auto relative flex rounded-full bg-[var(--surface)] p-1.5 backdrop-blur-2xl"
+        style={{
+          backgroundColor: 'color-mix(in oklab, var(--surface) 78%, transparent)',
+          boxShadow:
+            '0 12px 34px -10px rgba(2,6,23,0.35), 0 6px 18px -10px rgba(16,185,129,0.45), inset 0 1px 0 rgba(255,255,255,0.10), 0 0 0 1px var(--border)',
+        }}
+      >
+        {/* Vloeiend schuivende emerald-cirkel achter het actieve icoon */}
+        <span
+          aria-hidden
+          className={cn(
+            'absolute left-1.5 top-1.5 h-14 w-14 rounded-full bg-gradient-to-b from-emerald-400 to-emerald-600 transition-all duration-300 ease-[cubic-bezier(0.34,1.4,0.5,1)]',
+            activeIndex < 0 && 'scale-0 opacity-0'
+          )}
+          style={{
+            transform: `translateX(${Math.max(activeIndex, 0) * SLOT}px)`,
+            boxShadow: '0 8px 20px -6px rgba(16,185,129,0.6)',
+          }}
+        />
+
         {tabs.map((tab) => {
           const Icon = tab.icon
           const active = tab.exact ? pathname === tab.href : pathname.startsWith(tab.href)
@@ -37,13 +70,19 @@ export default function NativeTabBar() {
             <Link
               key={tab.href}
               href={tab.href}
-              className={cn(
-                'flex flex-1 flex-col items-center gap-1 rounded-xl py-1.5 text-[10px] font-medium transition-colors',
-                active ? 'text-emerald-300' : 'text-[var(--text-faint)]'
-              )}
+              aria-label={t.dashboard.nav[tab.key]}
+              aria-current={active ? 'page' : undefined}
+              className="relative z-10 flex h-14 w-14 items-center justify-center"
             >
-              <Icon className={cn('h-[22px] w-[22px] transition-colors', active ? 'text-emerald-400' : 'text-[var(--text-faint)]')} />
-              <span className="leading-none">{t.dashboard.nav[tab.key]}</span>
+              <Icon
+                className={cn(
+                  'h-[23px] w-[23px] transition-all duration-300',
+                  active
+                    ? 'scale-105 text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.25)]'
+                    : 'text-[var(--text-faint)]'
+                )}
+                strokeWidth={active ? 2.4 : 2}
+              />
             </Link>
           )
         })}
