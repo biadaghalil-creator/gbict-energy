@@ -148,13 +148,21 @@ export async function testVictronCredentials(
 }
 
 // ── Enphase ──────────────────────────────────────────────────────────────────
+// Enphase v4 vereist een geregistreerde GBICT-app + OAuth-consent flow (geen
+// simpele key+id meer — de oude v2 key-API is uitgefaseerd). Zolang de app-env-
+// vars niet gezet zijn, is de koppeling niet beschikbaar; de UI toont Enphase
+// daarom als 'binnenkort'. Signatuur blijft staan zodat de UI blijft compileren.
 
 export async function testEnphaseCredentials(
-  apiKey: string,
-  systemId: string
+  _apiKey: string,
+  _systemId: string
 ): Promise<{ ok: boolean; systemName?: string; error?: string }> {
-  const { testEnphaseCredentials: _test } = await import('@/lib/enphase')
-  return _test(apiKey, systemId)
+  const { enphaseConfigured } = await import('@/lib/enphase')
+  if (!enphaseConfigured()) {
+    return { ok: false, error: 'Enphase-koppeling is binnenkort beschikbaar via "Koppel met Enphase".' }
+  }
+  // App geregistreerd → koppelen verloopt via de OAuth-consent flow, niet via key+id.
+  return { ok: false, error: 'Koppel je Enphase-account via de knop "Koppel met Enphase".' }
 }
 
 // ── SolarEdge ────────────────────────────────────────────────────────────────
@@ -186,64 +194,38 @@ export async function testSmaCredentials(
   return _test(email, password)
 }
 
-// ── Tado (warmtepomp / thermostaat) ──────────────────────────────────────────
+// ── Tado (warmtepomp / thermostaat) — OAuth device-code flow ──────────────────
+// Sinds maart 2025 is de wachtwoord-login dood. We starten een device-code flow:
+// de gebruiker keurt de koppeling goed op een Tado-URL, wij pollen de token.
 
-export async function testTadoCredentials(
-  username: string,
-  password: string
-): Promise<{ ok: boolean; homeName?: string; error?: string }> {
-  // Best-effort verbindingscheck tegen Tado's OAuth endpoint.
-  // Tado heeft geen officiële publieke API; we gebruiken de bekende
-  // 'tado-web-app' client flow. Defensief: nooit throwen.
-  if (!username.trim() || !password.trim()) {
-    return { ok: false, error: 'Vul je e-mail en wachtwoord in.' }
+export async function startTadoAuth(): Promise<{
+  ok: boolean
+  deviceCode?: string
+  userCode?: string
+  verificationUri?: string
+  interval?: number
+  error?: string
+}> {
+  const { startTadoDeviceAuth } = await import('@/lib/tado')
+  const auth = await startTadoDeviceAuth()
+  if (!auth) return { ok: false, error: 'Kon Tado niet bereiken. Probeer het later opnieuw.' }
+  return {
+    ok: true,
+    deviceCode: auth.deviceCode,
+    userCode: auth.userCode,
+    verificationUri: auth.verificationUri,
+    interval: auth.interval,
   }
+}
 
-  try {
-    const body = new URLSearchParams({
-      client_id: 'tado-web-app',
-      grant_type: 'password',
-      scope: 'home.user',
-      username: username.trim(),
-      password: password.trim(),
-    })
-
-    const res = await fetch('https://auth.tado.com/oauth/token', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: body.toString(),
-    })
-
-    if (res.status === 401 || res.status === 400) {
-      return { ok: false, error: 'Inloggegevens onjuist. Controleer je Tado e-mail en wachtwoord.' }
-    }
-
-    if (!res.ok) {
-      // Endpoint onbereikbaar of gewijzigd — we kunnen niet betrouwbaar verifiëren.
-      // Niet-401: laat de gebruiker toch koppelen, maar wees eerlijk over de status.
-      return { ok: true, error: 'Kon Tado niet volledig verifiëren, maar de inloggegevens zijn opgeslagen.' }
-    }
-
-    // Probeer de home-naam op te halen (best-effort, mag falen).
-    let homeName: string | undefined
-    try {
-      const json = await res.json()
-      const token = json?.access_token as string | undefined
-      if (token) {
-        const me = await fetch('https://my.tado.com/api/v2/me', {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        if (me.ok) {
-          const meJson = await me.json()
-          homeName = meJson?.homes?.[0]?.name
-        }
-      }
-    } catch {
-      // Home-naam ophalen is optioneel.
-    }
-
-    return { ok: true, homeName }
-  } catch {
-    return { ok: false, error: 'Kon Tado niet bereiken. Probeer het later opnieuw.' }
-  }
+export async function pollTadoAuth(deviceCode: string): Promise<{
+  status: 'ok' | 'pending' | 'denied' | 'expired' | 'error'
+  refreshToken?: string
+  homeName?: string
+}> {
+  const { pollTadoToken, getTadoHomeName } = await import('@/lib/tado')
+  const result = await pollTadoToken(deviceCode)
+  if (result.status !== 'ok' || !result.tokens) return { status: result.status }
+  const homeName = await getTadoHomeName(result.tokens.accessToken)
+  return { status: 'ok', refreshToken: result.tokens.refreshToken, homeName }
 }

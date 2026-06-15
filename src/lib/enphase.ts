@@ -1,13 +1,14 @@
-// Enphase Enlighten cloud API v2 — https://developer.enphase.com
-// Vereist: API key + System ID (verkrijgbaar via enlighten.enphaseenergy.com)
+// Enphase API v4 — https://developer-v4.enphase.com
+// De oude v2 key-API (enlighten.enphaseenergy.com/api/v2) is uitgefaseerd en
+// redirect nu naar /login. v4 vereist een GEREGISTREERDE Enphase-app:
+//   - OAuth2 authorization-code flow (per gebruiker een access/refresh-token)
+//   - elke datacall stuurt header `key: <API_KEY>` + `Authorization: Bearer <token>`
+// GBICT moet de app aanmaken op developer-v4.enphase.com en deze env-vars zetten:
+//   ENPHASE_CLIENT_ID, ENPHASE_CLIENT_SECRET, ENPHASE_API_KEY
+// Zolang die ontbreken is de koppeling niet beschikbaar (UI toont 'binnenkort').
 
-const ENPHASE_BASE = 'https://enlighten.enphaseenergy.com/api/v2'
-
-export type EnphaseSystemInfo = {
-  systemId: number
-  name: string
-  status: string
-}
+const ENPHASE_API = 'https://api.enphaseenergy.com/api/v4'
+const ENPHASE_OAUTH = 'https://api.enphaseenergy.com/oauth'
 
 export type EnphaseBatteryStatus = {
   soc: number         // state of charge 0-100 %
@@ -16,51 +17,103 @@ export type EnphaseBatteryStatus = {
   energyToday: number // Wh geproduceerd vandaag
 }
 
-export async function testEnphaseCredentials(
-  apiKey: string,
-  systemId: string
-): Promise<{ ok: boolean; systemName?: string; error?: string }> {
+export function enphaseConfigured(): boolean {
+  return Boolean(
+    process.env.ENPHASE_CLIENT_ID &&
+    process.env.ENPHASE_CLIENT_SECRET &&
+    process.env.ENPHASE_API_KEY
+  )
+}
+
+// Bouw de OAuth-consent URL waar de gebruiker zijn Enphase-account koppelt.
+export function enphaseAuthUrl(redirectUri: string): string | null {
+  const clientId = process.env.ENPHASE_CLIENT_ID
+  if (!clientId) return null
+  const params = new URLSearchParams({
+    response_type: 'code',
+    client_id: clientId,
+    redirect_uri: redirectUri,
+  })
+  return `${ENPHASE_OAUTH}/authorize?${params}`
+}
+
+// Wissel de authorization-code in voor access/refresh tokens (Basic auth).
+export async function exchangeEnphaseCode(
+  code: string,
+  redirectUri: string
+): Promise<{ accessToken: string; refreshToken: string } | null> {
+  const clientId = process.env.ENPHASE_CLIENT_ID
+  const clientSecret = process.env.ENPHASE_CLIENT_SECRET
+  if (!clientId || !clientSecret) return null
   try {
-    // Probeer een systeem-info call te doen
-    const res = await fetch(
-      `${ENPHASE_BASE}/systems/${systemId}/summary?key=${encodeURIComponent(apiKey)}`,
-      { signal: AbortSignal.timeout(8000) }
-    )
-
-    if (res.status === 401 || res.status === 403) {
-      return { ok: false, error: 'Ongeldige API key. Controleer je Enphase developer account.' }
-    }
-    if (res.status === 404) {
-      return { ok: false, error: 'Systeem ID niet gevonden. Controleer het nummer in je Enlighten portal.' }
-    }
-    if (!res.ok) {
-      return { ok: false, error: `Enphase API fout (${res.status}). Probeer opnieuw.` }
-    }
-
-    const data = await res.json()
-    const name = data.system_name ?? data.name ?? `Systeem ${systemId}`
-    return { ok: true, systemName: name }
+    const basic = Buffer.from(`${clientId}:${clientSecret}`).toString('base64')
+    const res = await fetch(`${ENPHASE_OAUTH}/token`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Basic ${basic}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        grant_type: 'authorization_code',
+        redirect_uri: redirectUri,
+        code,
+      }),
+      signal: AbortSignal.timeout(8000),
+    })
+    if (!res.ok) return null
+    const d = await res.json()
+    if (!d.access_token) return null
+    return { accessToken: d.access_token, refreshToken: d.refresh_token }
   } catch {
-    return { ok: false, error: 'Kon Enphase niet bereiken. Controleer je internetverbinding.' }
+    return null
+  }
+}
+
+export type EnphaseSystem = { systemId: string; name: string }
+
+// Haal de installaties (systems) op die bij dit Enphase-account horen.
+export async function getEnphaseSystems(accessToken: string): Promise<EnphaseSystem[]> {
+  const apiKey = process.env.ENPHASE_API_KEY
+  if (!apiKey) return []
+  try {
+    const res = await fetch(`${ENPHASE_API}/systems?key=${encodeURIComponent(apiKey)}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+      signal: AbortSignal.timeout(8000),
+      cache: 'no-store',
+    })
+    if (!res.ok) return []
+    const data = await res.json()
+    const systems: Record<string, unknown>[] = data.systems ?? []
+    return systems.map((s) => ({
+      systemId: String(s.system_id ?? s.systemId ?? ''),
+      name: String(s.name ?? `Systeem ${s.system_id ?? ''}`),
+    }))
+  } catch {
+    return []
   }
 }
 
 export async function getEnphaseStatus(
-  apiKey: string,
+  accessToken: string,
   systemId: string
 ): Promise<EnphaseBatteryStatus | null> {
+  const apiKey = process.env.ENPHASE_API_KEY
+  if (!apiKey) return null
   try {
-    const res = await fetch(
-      `${ENPHASE_BASE}/systems/${systemId}/summary?key=${encodeURIComponent(apiKey)}`,
-      { signal: AbortSignal.timeout(8000), cache: 'no-store' }
-    )
+    const res = await fetch(`${ENPHASE_API}/systems/${systemId}/summary`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        key: apiKey,
+      },
+      signal: AbortSignal.timeout(8000),
+      cache: 'no-store',
+    })
     if (!res.ok) return null
     const data = await res.json()
 
-    // Enlighten API v2 — storage info
-    const storage = data.storage ?? {}
-    const soc = Number(storage.charge_status ?? 0) * 100
-    const power = Number(storage.current_power_kw ?? 0) * 1000
+    // v4 summary — battery/storage velden
+    const soc = Number(data.battery?.percentFull ?? data.energy_lifetime ? data.battery?.percentFull ?? 0 : 0)
+    const power = Number(data.battery?.power ?? 0)
 
     return {
       soc,

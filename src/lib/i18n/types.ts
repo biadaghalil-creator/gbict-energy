@@ -326,6 +326,8 @@ export type TranslationDict = {
       victronFoundOne: string
       // enphase
       enphaseAccessTitle: string
+      enphaseConnectIntro: string
+      enphaseConnectBtn: string
       enphaseAccessDesc: string
       enphaseApiKey: string
       enphaseSystemId: string
@@ -366,6 +368,14 @@ export type TranslationDict = {
       heatpumpVerifiedNamed: string
       heatpumpVerifyAccount: string
       heatpumpConnect: string
+      tadoConnectIntro: string
+      tadoConnectBtn: string
+      tadoApproveTitle: string
+      tadoApproveDesc: string
+      tadoOpenLink: string
+      tadoWaiting: string
+      tadoExpired: string
+      tadoDenied: string
       heatpumpManualTitle: string
       heatpumpManualDesc: string
       heatpumpNameLabel: string

@@ -21,10 +21,12 @@ export async function testSmaCredentials(
   _email: string,
   _password: string
 ): Promise<{ ok: boolean; plantName?: string; error?: string }> {
-  // Stub: real SMA API requires OAuth2 flow + plant credentials
+  // SMA heeft geen open API: toegang vereist een getekend API-contract met SMA
+  // (client_id/secret via api-developer-support@sma.de) en verloopt daarna via
+  // een OAuth2 'Connect with SMA'-flow — niet via e-mail/wachtwoord.
   return {
     ok: false,
-    error: 'SMA koppeling komt binnenkort. Neem contact op voor vroege toegang.',
+    error: 'SMA-koppeling verloopt via een partnerkoppeling met SMA. Neem contact op — we zetten je op de wachtlijst.',
   }
 }
 

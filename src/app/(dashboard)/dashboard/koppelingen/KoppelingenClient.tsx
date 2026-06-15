@@ -1,12 +1,12 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useEffect, useRef } from 'react'
 import {
   saveDevice, deleteDevice,
   testTibberToken, testSessyCredentials,
-  testVictronCredentials, testEnphaseCredentials, testSolarEdgeCredentials,
+  testVictronCredentials, testSolarEdgeCredentials,
   testFroniusConnection, testSmaCredentials,
-  testTadoCredentials,
+  startTadoAuth, pollTadoAuth,
   type DeviceType,
 } from './actions'
 import { Zap, Gauge, BatteryCharging, Sun, CloudSun, Plug, Flame, Thermometer, Car } from 'lucide-react'
@@ -111,12 +111,6 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
   const [victronTesting,  setVictronTesting]  = useState(false)
 
   // Enphase
-  const [enphaseKey,     setEnphaseKey]     = useState('')
-  const [enphaseId,      setEnphaseId]      = useState('')
-  const [enphaseName,    setEnphaseName]    = useState('')
-  const [enphaseOk,      setEnphaseOk]      = useState(false)
-  const [enphaseError,   setEnphaseError]   = useState('')
-  const [enphaseTesting, setEnphaseTesting] = useState(false)
 
   // SolarEdge (battery)
   const [seKey,     setSeKey]     = useState('')
@@ -146,15 +140,17 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
   const [smaError,   setSmaError]   = useState('')
   const [smaTesting, setSmaTesting] = useState(false)
 
-  // Warmtepomp (Tado / handmatig)
+  // Warmtepomp (Tado device-code flow / handmatig)
   const [heatpumpBrand,   setHeatpumpBrand]   = useState<'tado' | 'generic'>('tado')
-  const [heatpumpEmail,   setHeatpumpEmail]   = useState('')
-  const [heatpumpPass,    setHeatpumpPass]    = useState('')
   const [heatpumpLabel,   setHeatpumpLabel]   = useState('')
   const [heatpumpHome,    setHeatpumpHome]    = useState('')
-  const [heatpumpOk,      setHeatpumpOk]      = useState(false)
   const [heatpumpError,   setHeatpumpError]   = useState('')
-  const [heatpumpTesting, setHeatpumpTesting] = useState(false)
+  // Tado device-flow status: idle → waiting (gebruiker keurt goed) → connected
+  const [tadoStatus,    setTadoStatus]    = useState<'idle' | 'starting' | 'waiting' | 'connected'>('idle')
+  const [tadoUserCode,  setTadoUserCode]  = useState('')
+  const [tadoVerifyUrl, setTadoVerifyUrl] = useState('')
+  const tadoDeviceCode = useRef('')
+  const tadoTimer = useRef<ReturnType<typeof setInterval> | null>(null)
 
   function openModal() {
     setStep('category')
@@ -164,16 +160,22 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
     setVictronEmail(''); setVictronPass(''); setVictronIdUser(null)
     setVictronSites([]); setVictronSiteId(null); setVictronSiteName('')
     setVictronOk(false); setVictronError('')
-    setEnphaseKey(''); setEnphaseId(''); setEnphaseName(''); setEnphaseOk(false); setEnphaseError('')
     setSeKey(''); setSeSiteId(''); setSeName(''); setSeOk(false); setSeError('')
     setSolarSeKey(''); setSolarSeSiteId(''); setSolarSeName(''); setSolarSeOk(false); setSolarSeError('')
     setFroniusIp(''); setFroniusOk(false); setFroniusError('')
     setSmaEmail(''); setSmaPass(''); setSmaError('')
-    setHeatpumpBrand('tado'); setHeatpumpEmail(''); setHeatpumpPass('')
-    setHeatpumpLabel(''); setHeatpumpHome(''); setHeatpumpOk(false)
-    setHeatpumpError('')
+    setHeatpumpBrand('tado'); setHeatpumpLabel(''); setHeatpumpHome('')
+    setHeatpumpError(''); resetTado()
   }
-  function closeModal() { setStep('idle') }
+  function resetTado() {
+    if (tadoTimer.current) { clearInterval(tadoTimer.current); tadoTimer.current = null }
+    tadoDeviceCode.current = ''
+    setTadoStatus('idle'); setTadoUserCode(''); setTadoVerifyUrl('')
+  }
+  function closeModal() { resetTado(); setStep('idle') }
+
+  // Stop de Tado-poll als de modal sluit / component unmount.
+  useEffect(() => () => { if (tadoTimer.current) clearInterval(tadoTimer.current) }, [])
 
   function addDevice(partial: Omit<Device, 'id' | 'created_at'>) {
     setDevices(prev => [...prev, { ...partial, id: crypto.randomUUID(), created_at: new Date().toISOString() }])
@@ -271,31 +273,6 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
   }
 
   // ── Enphase ──────────────────────────────────────────────────────────────
-  async function handleTestEnphase() {
-    setEnphaseError(''); setEnphaseOk(false); setEnphaseName('')
-    if (!enphaseKey.trim() || !enphaseId.trim()) { setEnphaseError(c.errEnterApiSystem); return }
-    setEnphaseTesting(true)
-    const r = await testEnphaseCredentials(enphaseKey.trim(), enphaseId.trim())
-    setEnphaseTesting(false)
-    if (!r.ok) { setEnphaseError(r.error ?? c.errVerifyFailed); return }
-    setEnphaseName(r.systemName ?? `Systeem ${enphaseId}`)
-    setEnphaseOk(true)
-  }
-
-  function handleSaveEnphase() {
-    if (!enphaseOk) return
-    startTransition(async () => {
-      const r = await saveDevice({
-        type: 'battery_enphase',
-        brand: 'Enphase',
-        label: enphaseName,
-        config: { apiKey: enphaseKey.trim(), systemId: enphaseId.trim() },
-        status: 'active',
-      })
-      if (r.error) { setEnphaseError(r.error); return }
-      addDevice({ type: 'battery_enphase', brand: 'Enphase', name: enphaseName, status: 'active' })
-    })
-  }
 
   // ── SolarEdge ────────────────────────────────────────────────────────────
   async function handleTestSolarEdge() {
@@ -386,42 +363,60 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
     setSmaError(r.error ?? c.errUnknown)
   }
 
-  // ── Warmtepomp ─────────────────────────────────────────────────────────────
-  async function handleTestHeatpump() {
-    setHeatpumpError(''); setHeatpumpOk(false); setHeatpumpHome('')
-    if (!heatpumpEmail.trim() || !heatpumpPass.trim()) { setHeatpumpError(c.errEnterEmailPassword); return }
-    setHeatpumpTesting(true)
-    const r = await testTadoCredentials(heatpumpEmail.trim(), heatpumpPass.trim())
-    setHeatpumpTesting(false)
-    if (!r.ok) { setHeatpumpError(r.error ?? c.errLoginFailed); return }
-    setHeatpumpHome(r.homeName ?? '')
-    if (r.error) setHeatpumpError(r.error)
-    setHeatpumpOk(true)
+  // ── Warmtepomp — Tado device-code flow ─────────────────────────────────────
+  // 1. Start: vraag een device-code aan en open de Tado-goedkeuringspagina.
+  // 2. Poll: wacht tot de gebruiker goedkeurt, sla dan het refresh-token op.
+  async function handleStartTado() {
+    setHeatpumpError(''); resetTado(); setTadoStatus('starting')
+    const r = await startTadoAuth()
+    if (!r.ok || !r.deviceCode || !r.userCode || !r.verificationUri) {
+      setTadoStatus('idle'); setHeatpumpError(r.error ?? c.errLoginFailed); return
+    }
+    tadoDeviceCode.current = r.deviceCode
+    setTadoUserCode(r.userCode)
+    setTadoVerifyUrl(r.verificationUri)
+    setTadoStatus('waiting')
+    // Open de goedkeuringspagina meteen in een nieuw tabblad.
+    window.open(r.verificationUri, '_blank', 'noopener,noreferrer')
+    const intervalMs = Math.max((r.interval ?? 5), 5) * 1000
+    tadoTimer.current = setInterval(pollTado, intervalMs)
   }
 
-  function handleSaveHeatpump() {
-    if (heatpumpBrand === 'tado') {
-      if (!heatpumpOk) return
-      startTransition(async () => {
-        const r = await saveDevice({
-          type: 'heatpump_tado', brand: 'Tado', label: 'Warmtepomp',
-          config: { username: heatpumpEmail.trim(), password: heatpumpPass.trim() },
-          status: 'active',
-        })
-        if (r.error) { setHeatpumpError(r.error); return }
-        addDevice({ type: 'heatpump_tado', brand: 'Tado', name: 'Warmtepomp', status: 'active' })
-      })
-    } else {
-      const label = heatpumpLabel.trim() || 'Warmtepomp'
-      startTransition(async () => {
-        const r = await saveDevice({
-          type: 'heatpump_generic', brand: 'Warmtepomp', label,
-          config: {}, status: 'pending',
-        })
-        if (r.error) { setHeatpumpError(r.error); return }
-        addDevice({ type: 'heatpump_generic', brand: 'Warmtepomp', name: label, status: 'pending' })
-      })
+  async function pollTado() {
+    if (!tadoDeviceCode.current) return
+    const r = await pollTadoAuth(tadoDeviceCode.current)
+    if (r.status === 'pending') return
+    if (tadoTimer.current) { clearInterval(tadoTimer.current); tadoTimer.current = null }
+    if (r.status !== 'ok' || !r.refreshToken) {
+      setTadoStatus('idle')
+      setHeatpumpError(r.status === 'expired' ? c.tadoExpired : r.status === 'denied' ? c.tadoDenied : c.errLoginFailed)
+      return
     }
+    setHeatpumpHome(r.homeName ?? '')
+    const refreshToken = r.refreshToken
+    const name = r.homeName ? `Tado (${r.homeName})` : 'Warmtepomp'
+    startTransition(async () => {
+      const save = await saveDevice({
+        type: 'heatpump_tado', brand: 'Tado', label: name,
+        config: { refresh_token: refreshToken },
+        status: 'active',
+      })
+      if (save.error) { setTadoStatus('idle'); setHeatpumpError(save.error); return }
+      addDevice({ type: 'heatpump_tado', brand: 'Tado', name, status: 'active' })
+      setTadoStatus('connected')
+    })
+  }
+
+  function handleSaveHeatpumpGeneric() {
+    const label = heatpumpLabel.trim() || 'Warmtepomp'
+    startTransition(async () => {
+      const r = await saveDevice({
+        type: 'heatpump_generic', brand: 'Warmtepomp', label,
+        config: {}, status: 'pending',
+      })
+      if (r.error) { setHeatpumpError(r.error); return }
+      addDevice({ type: 'heatpump_generic', brand: 'Warmtepomp', name: label, status: 'pending' })
+    })
   }
 
   // ── Verwijderen ──────────────────────────────────────────────────────────
@@ -558,16 +553,7 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
               )}
 
               {step === 'enphase-setup' && (
-                <EnphaseStep
-                  c={c}
-                  apiKey={enphaseKey} systemId={enphaseId}
-                  onApiKeyChange={setEnphaseKey} onSystemIdChange={setEnphaseId}
-                  systemName={enphaseName}
-                  onTest={handleTestEnphase} onSave={handleSaveEnphase}
-                  onBack={() => setStep('category')}
-                  testPending={enphaseTesting} savePending={isPending}
-                  verified={enphaseOk} error={enphaseError}
-                />
+                <EnphaseStep c={c} onBack={() => setStep('category')} />
               )}
 
               {step === 'solaredge-setup' && (
@@ -621,14 +607,13 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
                 <HeatpumpStep
                   c={c}
                   brand={heatpumpBrand} onBrandChange={setHeatpumpBrand}
-                  email={heatpumpEmail} password={heatpumpPass}
-                  onEmailChange={setHeatpumpEmail} onPasswordChange={setHeatpumpPass}
                   label={heatpumpLabel} onLabelChange={setHeatpumpLabel}
                   homeName={heatpumpHome}
-                  onTest={handleTestHeatpump} onSave={handleSaveHeatpump}
+                  tadoStatus={tadoStatus} tadoUserCode={tadoUserCode} tadoVerifyUrl={tadoVerifyUrl}
+                  onStartTado={handleStartTado} onSaveGeneric={handleSaveHeatpumpGeneric}
                   onBack={() => setStep('category')}
-                  testPending={heatpumpTesting} savePending={isPending}
-                  verified={heatpumpOk} error={heatpumpError}
+                  savePending={isPending}
+                  error={heatpumpError}
                 />
               )}
 
@@ -952,43 +937,23 @@ function VictronStep({ c,
 
 // ── Enphase step ───────────────────────────────────────────────────────────
 
-function EnphaseStep({ c,
-  apiKey, systemId, onApiKeyChange, onSystemIdChange,
-  systemName, onTest, onSave, onBack,
-  testPending, savePending, verified, error,
-}: {
-  apiKey: string; systemId: string
-  onApiKeyChange: (v: string) => void; onSystemIdChange: (v: string) => void
-  systemName: string
-  onTest: () => void; onSave: () => void; onBack: () => void
-  testPending: boolean; savePending: boolean; verified: boolean; error: string
-  c: Conn
-}) {
+function EnphaseStep({ c, onBack }: { onBack: () => void; c: Conn }) {
+  // Enphase v4 verloopt via OAuth: de gebruiker keurt de toegang goed bij
+  // Enphase zelf. Geen API-key/systeem-ID meer invoeren — gewoon doorklikken.
   return (
     <div className="space-y-4">
       <div className="rounded-xl bg-[var(--surface-2)] px-4 py-3">
         <p className="text-xs font-medium text-[var(--text-muted)]">{c.enphaseAccessTitle}</p>
-        <p className="mt-0.5 text-xs text-[var(--text-muted)]">
-          Haal je API key op via{' '}
-          <a href="https://developer.enphase.com" target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:underline">developer.enphase.com</a>.
-          Je systeem ID staat in de URL van je{' '}
-          <a href="https://enlighten.enphaseenergy.com" target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:underline">Enlighten portal</a>.
-        </p>
+        <p className="mt-0.5 text-xs text-[var(--text-muted)]">{c.enphaseConnectIntro}</p>
       </div>
-      <Field label={c.enphaseApiKey}>
-        <Input type="password" value={apiKey} onChange={e => onApiKeyChange(e.target.value)} placeholder="••••••••••••••••" />
-      </Field>
-      <Field label={c.enphaseSystemId} hint={c.enphaseSystemIdHint}>
-        <Input type="text" value={systemId} onChange={e => onSystemIdChange(e.target.value)} placeholder="123456" />
-      </Field>
-      {error && <ErrorBox msg={error} />}
-      {verified && <SuccessBox msg={`✓ ${fill(c.enphaseSystemFound, { name: systemName })}`} />}
       <div className="flex gap-2 pt-1">
         <BackBtn onClick={onBack} c={c} />
-        {!verified
-          ? <TestBtn onClick={onTest} pending={testPending || !apiKey.trim() || !systemId.trim()} c={c} />
-          : <SaveBtn onClick={onSave} pending={savePending} label={c.solarEdgeConnectBattery} c={c} />
-        }
+        <a
+          href="/api/enphase/connect"
+          className="flex-1 rounded-xl bg-emerald-500 px-4 py-2.5 text-center text-sm font-medium text-white transition-colors hover:bg-emerald-600"
+        >
+          {c.enphaseConnectBtn}
+        </a>
       </div>
     </div>
   )
@@ -1175,19 +1140,21 @@ function SmaStep({ c,
 
 function HeatpumpStep({ c,
   brand, onBrandChange,
-  email, password, onEmailChange, onPasswordChange,
   label, onLabelChange,
-  homeName, onTest, onSave, onBack,
-  testPending, savePending, verified, error,
+  homeName, onBack,
+  tadoStatus, tadoUserCode, tadoVerifyUrl,
+  onStartTado, onSaveGeneric,
+  savePending, error,
 }: {
   brand: 'tado' | 'generic'
   onBrandChange: (b: 'tado' | 'generic') => void
-  email: string; password: string
-  onEmailChange: (v: string) => void; onPasswordChange: (v: string) => void
   label: string; onLabelChange: (v: string) => void
   homeName: string
-  onTest: () => void; onSave: () => void; onBack: () => void
-  testPending: boolean; savePending: boolean; verified: boolean; error: string
+  onBack: () => void
+  tadoStatus: 'idle' | 'starting' | 'waiting' | 'connected'
+  tadoUserCode: string; tadoVerifyUrl: string
+  onStartTado: () => void; onSaveGeneric: () => void
+  savePending: boolean; error: string
   c: Conn
 }) {
   return (
@@ -1223,27 +1190,40 @@ function HeatpumpStep({ c,
 
       {brand === 'tado' ? (
         <>
-          <div className="rounded-xl bg-[var(--surface-2)] px-4 py-3">
-            <p className="text-xs font-medium text-[var(--text-muted)]">{c.heatpumpTadoAccountTitle}</p>
-            <p className="mt-0.5 text-xs text-[var(--text-muted)]">
-              {c.heatpumpTadoAccountDesc.replace(' app.tado.com.', '')}{' '}
-              <a href="https://app.tado.com" target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:underline">app.tado.com</a>.
-            </p>
-          </div>
-          <Field label={c.email}>
-            <Input type="email" value={email} onChange={e => onEmailChange(e.target.value)} placeholder="naam@email.nl" />
-          </Field>
-          <Field label={c.password}>
-            <Input type="password" value={password} onChange={e => onPasswordChange(e.target.value)} placeholder="••••••••" />
-          </Field>
-          {error && <ErrorBox msg={error} />}
-          {verified && <SuccessBox msg={homeName ? `✓ ${fill(c.heatpumpVerifiedNamed, { name: homeName })}` : `✓ ${c.heatpumpVerified}`} />}
+          {tadoStatus === 'connected' ? (
+            <SuccessBox msg={homeName ? `✓ ${fill(c.heatpumpVerifiedNamed, { name: homeName })}` : `✓ ${c.heatpumpVerified}`} />
+          ) : tadoStatus === 'waiting' ? (
+            <div className="space-y-3">
+              <div className="rounded-xl bg-[var(--surface-2)] px-4 py-3">
+                <p className="text-xs font-medium text-[var(--text-muted)]">{c.tadoApproveTitle}</p>
+                <p className="mt-0.5 text-xs text-[var(--text-muted)]">{c.tadoApproveDesc}</p>
+                <div className="mt-2 rounded-lg bg-[var(--surface)] px-3 py-2 text-center font-mono text-lg font-semibold tracking-[0.3em] text-emerald-400">
+                  {tadoUserCode}
+                </div>
+                <a href={tadoVerifyUrl} target="_blank" rel="noopener noreferrer" className="mt-2 block text-center text-xs text-emerald-400 hover:underline">
+                  {c.tadoOpenLink}
+                </a>
+              </div>
+              <div className="flex items-center justify-center gap-2 text-xs text-[var(--text-muted)]">
+                <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" />
+                {c.tadoWaiting}
+              </div>
+              {error && <ErrorBox msg={error} />}
+            </div>
+          ) : (
+            <>
+              <div className="rounded-xl bg-[var(--surface-2)] px-4 py-3">
+                <p className="text-xs font-medium text-[var(--text-muted)]">{c.heatpumpTadoAccountTitle}</p>
+                <p className="mt-0.5 text-xs text-[var(--text-muted)]">{c.tadoConnectIntro}</p>
+              </div>
+              {error && <ErrorBox msg={error} />}
+            </>
+          )}
           <div className="flex gap-2 pt-1">
             <BackBtn onClick={onBack} c={c} />
-            {!verified
-              ? <TestBtn onClick={onTest} pending={testPending || !email.trim() || !password.trim()} label={c.heatpumpVerifyAccount} c={c} />
-              : <SaveBtn onClick={onSave} pending={savePending} label={c.heatpumpConnect} c={c} />
-            }
+            {tadoStatus !== 'connected' && (
+              <SaveBtn onClick={onStartTado} pending={savePending || tadoStatus === 'starting' || tadoStatus === 'waiting'} label={c.tadoConnectBtn} c={c} />
+            )}
           </div>
         </>
       ) : (
@@ -1260,7 +1240,7 @@ function HeatpumpStep({ c,
           {error && <ErrorBox msg={error} />}
           <div className="flex gap-2 pt-1">
             <BackBtn onClick={onBack} c={c} />
-            <SaveBtn onClick={onSave} pending={savePending} label={c.heatpumpAdd} c={c} />
+            <SaveBtn onClick={onSaveGeneric} pending={savePending} label={c.heatpumpAdd} c={c} />
           </div>
         </>
       )}
