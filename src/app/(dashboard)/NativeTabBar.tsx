@@ -37,6 +37,7 @@ export default function NativeTabBar() {
   // bekijken/finetunen zonder app-cache-gedoe.
   const [preview, setPreview] = useState(false)
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- browser-only param, read after mount to stay hydration-safe
     setPreview(new URLSearchParams(window.location.search).has('previewnav'))
   }, [])
 
