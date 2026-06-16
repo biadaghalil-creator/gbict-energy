@@ -43,9 +43,6 @@ function HeroCard({ savings, tibber, hasSessy, t }: {
 
   return (
     <div className="relative lg:col-span-2 overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-7">
-      {/* Gradient glow */}
-      <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(16,185,129,0.3),transparent_70%)]" />
-      <div className="pointer-events-none absolute -bottom-10 left-20 h-40 w-40 rounded-full bg-[radial-gradient(circle,rgba(5,150,105,0.15),transparent_70%)]" />
 
       <div className="relative">
         <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-emerald-400">
@@ -166,8 +163,7 @@ function BatteryCard({ sessy, t }: { sessy: SessyStatus | null; t: TranslationDi
 /* ── VPP / upgrade card ─────────────────────────────────── */
 function VppCard({ enrolled, t }: { enrolled: boolean; t: TranslationDict }) {
   return (
-    <div className="relative flex flex-col justify-between overflow-hidden rounded-2xl border border-emerald-500/20 bg-[var(--surface)] p-6">
-      <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-[radial-gradient(circle,rgba(16,185,129,0.2),transparent_70%)]" />
+    <div className="relative flex flex-col justify-between overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6">
       <div className="relative">
         <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/10 ring-1 ring-emerald-500/20">
           <Zap className="h-4 w-4 text-emerald-400" />

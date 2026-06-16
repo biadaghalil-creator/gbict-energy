@@ -15,7 +15,6 @@ import { cn } from '@/lib/utils'
 import { useIsNative } from '@/lib/native'
 import NativeTabBar from './NativeTabBar'
 import ThemeToggle from '@/components/ThemeToggle'
-import EcoGlow from '@/components/EcoGlow'
 import WidgetSync from '@/components/WidgetSync'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 import { useT } from '@/hooks/use-t'
@@ -216,9 +215,8 @@ export default function DashboardShell({
       'flex bg-[var(--bg)] text-[var(--text)] antialiased',
       native ? 'h-screen overflow-hidden' : 'min-h-screen'
     )}>
-      {/* ── Background atmosphere (same as landing page) ── */}
+      {/* ── Background atmosphere (subtiel grid, geen groene waas) ── */}
       <div className="pointer-events-none fixed inset-0 z-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_100%_80%_at_50%_0%,#000_40%,transparent_90%)]" />
-      <EcoGlow />
       <WidgetSync />
 
       {/* ── Desktop Sidebar ── */}

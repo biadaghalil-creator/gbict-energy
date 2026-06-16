@@ -50,7 +50,7 @@ export default function NativeTabBar() {
   return (
     <nav
       className={cn(
-        'pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center pb-[calc(env(safe-area-inset-bottom)+14px)]',
+        'pointer-events-none fixed inset-x-0 top-0 z-[60] flex justify-center pt-[calc(env(safe-area-inset-top)+12px)]',
         !preview && 'md:hidden'
       )}
       aria-label="Hoofdnavigatie"
