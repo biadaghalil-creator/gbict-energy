@@ -92,14 +92,14 @@ body {
 
 /* ─── FLOATING NAV — 3D glossy emerald orb (active tab) ─── */
 .nav-orb {
-  /* Levend groen: emerald → teal die langzaam heen-en-weer schuift */
-  background-image: linear-gradient(135deg, #34d399 0%, #10b981 34%, #0d9488 68%, #059669 100%);
+  /* Verfijnd, duurzaam groen dat langzaam heen-en-weer schuift (geen neon/teal) */
+  background-image: linear-gradient(135deg, #6cc4a0 0%, #2d9069 48%, #185f46 100%);
   background-size: 200% 200%;
   animation: nav-orb-shift 6s ease-in-out infinite;
   box-shadow:
-    0 9px 22px -6px rgba(16, 185, 129, 0.60),   /* zachte gloed eronder */
-    inset 0 1.5px 1px rgba(255, 255, 255, 0.60), /* glans bovenrand */
-    inset 0 -7px 12px -5px rgba(3, 64, 50, 0.78);/* diepte onderin (3D) */
+    0 9px 22px -6px rgba(31, 118, 86, 0.55),     /* zachte gloed eronder */
+    inset 0 1.5px 1px rgba(255, 255, 255, 0.50),  /* glans bovenrand */
+    inset 0 -7px 12px -5px rgba(8, 40, 28, 0.80); /* diepte onderin (3D) */
 }
 @keyframes nav-orb-shift {
   0%, 100% { background-position: 0% 50%; }
@@ -371,6 +371,29 @@ body {
   --text-muted: #94a3b8;    /* slate-400 */
   --text-faint: #64748b;    /* slate-500 */
   --band: #05060B;          /* deep band (night) */
+}
+
+/* ─── APP-ONLY POLISH (html.native-app) ───────────────────
+   Verfijnde, duurzame groentint (minder neon, premium) + een
+   warm bos-zwart in dark mode i.p.v. blauw-zwart. Scope = alleen
+   de native app; de website blijft exact zoals hij is.            */
+html.native-app {
+  --color-emerald-200: #c4e7d6;
+  --color-emerald-300: #9bd2b5;
+  --color-emerald-400: #52ab87;  /* hoofd-accent — kalmer dan #34d399 */
+  --color-emerald-500: #2d9069;  /* knoppen */
+  --color-emerald-600: #1f7656;
+  --color-emerald-700: #185f46;
+  --color-emerald-800: #124838;
+  --color-emerald-900: #0e3a2d;
+  --color-emerald-950: #07251c;
+}
+html.native-app.dark {
+  --bg: #08110C;                            /* diep bos-zwart */
+  --surface: #0C160F;                       /* groen-getint oppervlak */
+  --surface-2: rgba(190, 255, 220, 0.045);
+  --border: rgba(190, 255, 220, 0.07);
+  --header: rgba(8, 17, 12, 0.82);
 }
 
 :root {
