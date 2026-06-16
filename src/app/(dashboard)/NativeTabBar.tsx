@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { LayoutDashboard, Plug, TrendingDown, Bell, Settings } from 'lucide-react'
 import { useIsNative } from '@/lib/native'
 import { cn } from '@/lib/utils'
@@ -31,7 +32,15 @@ export default function NativeTabBar() {
   const pathname = usePathname()
   const { t } = useT()
 
-  if (!native) return null
+  // Preview-modus: voeg ?previewnav toe aan de URL om de balk ook in een
+  // gewone browser te zien (zonder de native app). Handig om het ontwerp te
+  // bekijken/finetunen zonder app-cache-gedoe.
+  const [preview, setPreview] = useState(false)
+  useEffect(() => {
+    setPreview(new URLSearchParams(window.location.search).has('previewnav'))
+  }, [])
+
+  if (!native && !preview) return null
 
   const activeIndex = tabs.findIndex((tab) =>
     tab.exact ? pathname === tab.href : pathname.startsWith(tab.href)
@@ -39,7 +48,10 @@ export default function NativeTabBar() {
 
   return (
     <nav
-      className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center pb-[calc(env(safe-area-inset-bottom)+14px)] md:hidden"
+      className={cn(
+        'pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center pb-[calc(env(safe-area-inset-bottom)+14px)]',
+        !preview && 'md:hidden'
+      )}
       aria-label="Hoofdnavigatie"
     >
       <div
