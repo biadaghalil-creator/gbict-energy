@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils'
 import { useIsNative } from '@/lib/native'
 import ThemeToggle from '@/components/ThemeToggle'
 import WidgetSync from '@/components/WidgetSync'
+import NativeTabBar from './NativeTabBar'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 import { useT } from '@/hooks/use-t'
 
@@ -38,6 +39,9 @@ export default function DashboardShell({
   const isActive = (item: typeof navItems[number]) =>
     item.exact ? pathname === item.href : pathname.startsWith(item.href)
 
+  const currentPage = navItems.find(isActive)
+  const currentTitle = currentPage ? t.dashboard.nav[currentPage.key] : t.dashboard.nav.dashboard
+
   async function handleLogout() {
     const supabase = createClient()
     await supabase.auth.signOut()
@@ -62,49 +66,59 @@ export default function DashboardShell({
         )}
       >
         <div className="mx-auto flex h-[60px] w-full max-w-7xl items-center gap-5 px-5">
-          {/* Logo */}
-          <Link href="/dashboard" className="group flex shrink-0 items-center gap-2.5">
-            <img
-              src="/gbict-logo.png"
-              alt="GBICT"
-              width={34}
-              height={34}
-              className="block rounded-[9px] transition-transform group-hover:scale-105"
-            />
-            <div className="hidden leading-none sm:block">
-              <p className="text-[14px] font-extrabold tracking-tight text-[var(--text)]">GBICT</p>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-emerald-400">Energy</p>
-            </div>
-          </Link>
+          {native ? (
+            /* In de app: alleen de paginatitel — navigeren gaat via de
+               zwevende orb-balk onderaan. */
+            <span className="text-[17px] font-bold tracking-[-0.02em] text-[var(--text)]">
+              {currentTitle}
+            </span>
+          ) : (
+            <>
+              {/* Logo */}
+              <Link href="/dashboard" className="group flex shrink-0 items-center gap-2.5">
+                <img
+                  src="/gbict-logo.png"
+                  alt="GBICT"
+                  width={34}
+                  height={34}
+                  className="block rounded-[9px] transition-transform group-hover:scale-105"
+                />
+                <div className="hidden leading-none sm:block">
+                  <p className="text-[14px] font-extrabold tracking-tight text-[var(--text)]">GBICT</p>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-emerald-400">Energy</p>
+                </div>
+              </Link>
 
-          {/* Nav-links — horizontaal, scrollt op smal scherm */}
-          <nav className="flex flex-1 items-center gap-1 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {navItems.map((item) => {
-              const active = isActive(item)
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    'relative flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-[13px] font-medium transition-colors',
-                    active
-                      ? 'bg-emerald-500/12 text-emerald-500 dark:text-emerald-300'
-                      : 'text-[var(--text-faint)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]'
-                  )}
-                >
-                  {t.dashboard.nav[item.key]}
-                  {item.badgeKey && (
-                    <span className="rounded-md bg-emerald-500/15 px-1.5 py-0.5 text-[9px] font-bold uppercase text-emerald-500 dark:text-emerald-400">
-                      {t.dashboard.nav[item.badgeKey]}
-                    </span>
-                  )}
-                </Link>
-              )
-            })}
-          </nav>
+              {/* Nav-links — horizontaal, scrollt op smal scherm */}
+              <nav className="flex flex-1 items-center gap-1 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                {navItems.map((item) => {
+                  const active = isActive(item)
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className={cn(
+                        'relative flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-[13px] font-medium transition-colors',
+                        active
+                          ? 'bg-emerald-500/12 text-emerald-500 dark:text-emerald-300'
+                          : 'text-[var(--text-faint)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]'
+                      )}
+                    >
+                      {t.dashboard.nav[item.key]}
+                      {item.badgeKey && (
+                        <span className="rounded-md bg-emerald-500/15 px-1.5 py-0.5 text-[9px] font-bold uppercase text-emerald-500 dark:text-emerald-400">
+                          {t.dashboard.nav[item.badgeKey]}
+                        </span>
+                      )}
+                    </Link>
+                  )
+                })}
+              </nav>
+            </>
+          )}
 
           {/* Rechts: taal, thema, notificaties, account, uitloggen */}
-          <div className="flex shrink-0 items-center gap-1.5">
+          <div className="ml-auto flex shrink-0 items-center gap-1.5">
             <LanguageSwitcher currentLocale={locale} />
             <ThemeToggle />
             <Link
@@ -133,10 +147,13 @@ export default function DashboardShell({
 
       {/* ── Content ── */}
       <main className="relative z-10 flex-1 overflow-auto">
-        <div className="mx-auto w-full max-w-6xl px-5 py-8">
+        <div className={cn('mx-auto w-full max-w-6xl px-5 py-8', native && 'pb-28')}>
           {children}
         </div>
       </main>
+
+      {/* Zwevende orb-navigatie — alleen in de native app (onderaan) */}
+      <NativeTabBar />
     </div>
   )
 }
