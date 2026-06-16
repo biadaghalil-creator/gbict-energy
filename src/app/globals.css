@@ -90,6 +90,25 @@ body {
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
+/* ─── FLOATING NAV — 3D glossy emerald orb (active tab) ─── */
+.nav-orb {
+  /* Levend groen: emerald → teal die langzaam heen-en-weer schuift */
+  background-image: linear-gradient(135deg, #34d399 0%, #10b981 34%, #0d9488 68%, #059669 100%);
+  background-size: 200% 200%;
+  animation: nav-orb-shift 6s ease-in-out infinite;
+  box-shadow:
+    0 9px 22px -6px rgba(16, 185, 129, 0.60),   /* zachte gloed eronder */
+    inset 0 1.5px 1px rgba(255, 255, 255, 0.60), /* glans bovenrand */
+    inset 0 -7px 12px -5px rgba(3, 64, 50, 0.78);/* diepte onderin (3D) */
+}
+@keyframes nav-orb-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-orb { animation: none; }
+}
+
 /* ─── 3D SECONDARY BUTTON (glass) ────────────────────── */
 .btn-3d-secondary {
   position: relative;

@@ -54,13 +54,10 @@ export default function NativeTabBar() {
         <span
           aria-hidden
           className={cn(
-            'absolute left-1.5 top-1.5 h-14 w-14 rounded-full bg-gradient-to-b from-emerald-400 to-emerald-600 transition-all duration-300 ease-[cubic-bezier(0.34,1.4,0.5,1)]',
+            'nav-orb absolute left-1.5 top-1.5 h-14 w-14 rounded-full transition-all duration-300 ease-[cubic-bezier(0.34,1.4,0.5,1)]',
             activeIndex < 0 && 'scale-0 opacity-0'
           )}
-          style={{
-            transform: `translateX(${Math.max(activeIndex, 0) * SLOT}px)`,
-            boxShadow: '0 8px 20px -6px rgba(16,185,129,0.6)',
-          }}
+          style={{ transform: `translateX(${Math.max(activeIndex, 0) * SLOT}px)` }}
         />
 
         {tabs.map((tab) => {
