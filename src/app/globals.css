@@ -92,14 +92,14 @@ body {
 
 /* ─── FLOATING NAV — 3D glossy emerald orb (active tab) ─── */
 .nav-orb {
-  /* Verfijnd, duurzaam groen dat langzaam heen-en-weer schuift (geen neon/teal) */
-  background-image: linear-gradient(135deg, #6cc4a0 0%, #2d9069 48%, #185f46 100%);
+  /* Auros dock-accent: teal → cyan, schuift langzaam heen-en-weer */
+  background-image: linear-gradient(105deg, #00827c 0%, #2fc8bf 52%, #cbfffc 100%);
   background-size: 200% 200%;
   animation: nav-orb-shift 6s ease-in-out infinite;
   box-shadow:
-    0 9px 22px -6px rgba(31, 118, 86, 0.55),     /* zachte gloed eronder */
-    inset 0 1.5px 1px rgba(255, 255, 255, 0.50),  /* glans bovenrand */
-    inset 0 -7px 12px -5px rgba(8, 40, 28, 0.80); /* diepte onderin (3D) */
+    0 9px 22px -6px rgba(0, 130, 124, 0.60),      /* teal gloed eronder */
+    inset 0 1.5px 1px rgba(255, 255, 255, 0.55),  /* glans bovenrand */
+    inset 0 -7px 12px -5px rgba(1, 29, 28, 0.65); /* diepte onderin (3D) */
 }
 @keyframes nav-orb-shift {
   0%, 100% { background-position: 0% 50%; }
@@ -373,27 +373,51 @@ body {
   --band: #05060B;          /* deep band (night) */
 }
 
-/* ─── APP-ONLY POLISH (html.native-app) ───────────────────
-   Verfijnde, duurzame groentint (minder neon, premium) + een
-   warm bos-zwart in dark mode i.p.v. blauw-zwart. Scope = alleen
-   de native app; de website blijft exact zoals hij is.            */
-html.native-app {
-  --color-emerald-200: #c4e7d6;
-  --color-emerald-300: #9bd2b5;
-  --color-emerald-400: #52ab87;  /* hoofd-accent — kalmer dan #34d399 */
-  --color-emerald-500: #2d9069;  /* knoppen */
-  --color-emerald-600: #1f7656;
-  --color-emerald-700: #185f46;
-  --color-emerald-800: #124838;
-  --color-emerald-900: #0e3a2d;
-  --color-emerald-950: #07251c;
+/* ─── APP-ONLY: "Auros" design system (html.native-app) ────
+   Dark-teal abyssal canvas met teal→cyan accenten (uit het
+   meegeleverde app-design). Scope = alleen de native app; de
+   website blijft exact zoals hij is. Mode-bewust: light = day,
+   .dark = night.                                                */
+
+/* Day (light) — accent = diep teal, zacht teal-wit canvas */
+html.native-app:not(.dark) {
+  --bg: #eef3f2;
+  --surface: #ffffff;
+  --surface-2: #e3ecea;
+  --border: rgba(1, 38, 36, 0.08);
+  --header: rgba(238, 243, 242, 0.85);
+  --text: #042b28;
+  --text-muted: #5b6b69;
+  --text-faint: rgba(91, 107, 105, 0.72);
+  --color-emerald-200: #b6e4e0;
+  --color-emerald-300: #4fb2ab;
+  --color-emerald-400: #00827c;  /* accent op licht */
+  --color-emerald-500: #00756f;  /* knoppen */
+  --color-emerald-600: #016560;
+  --color-emerald-700: #014f4b;
+  --color-emerald-800: #013b38;
+  --color-emerald-900: #012b29;
+  --color-emerald-950: #011d1c;
 }
+/* Night (dark) — abyssal teal canvas, helder cyan-teal accent */
 html.native-app.dark {
-  --bg: #08110C;                            /* diep bos-zwart */
-  --surface: #0C160F;                       /* groen-getint oppervlak */
-  --surface-2: rgba(190, 255, 220, 0.045);
-  --border: rgba(190, 255, 220, 0.07);
-  --header: rgba(8, 17, 12, 0.82);
+  --bg: #012624;
+  --surface: #06302d;
+  --surface-2: rgba(0, 55, 52, 0.46);
+  --border: rgba(237, 255, 254, 0.10);
+  --header: rgba(1, 29, 28, 0.82);
+  --text: #ffffff;
+  --text-muted: #bbc7c6;
+  --text-faint: rgba(187, 199, 198, 0.62);
+  --color-emerald-200: #e8fffe;
+  --color-emerald-300: #b8fbf6;
+  --color-emerald-400: #8af0ea;  /* accent op donker */
+  --color-emerald-500: #34c9c0;
+  --color-emerald-600: #00a39b;
+  --color-emerald-700: #00827c;
+  --color-emerald-800: #016560;
+  --color-emerald-900: #014f4b;
+  --color-emerald-950: #012b29;
 }
 
 :root {
