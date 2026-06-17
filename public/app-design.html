@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>GBICT Energy — App design voorstel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* Warm, aards, duurzaam — cream/zand + salie/bosgroen */
+    --bg:#efe9dd; --frame:#fbfaf6; --surface:#ffffff; --surface-2:#f1ece1;
+    --ink:#21261f; --muted:#5c6157; --faint:#8a8f81; --hair:rgba(40,38,28,.10);
+    --acc:#3f6b4f; --acc-2:#5c8a6a; --acc-soft:#e7efe5; --sand:#cdbb9a;
+    --sell:#c08a3e; --grad:linear-gradient(135deg,#3f6b4f,#6a9c78);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Inter,system-ui,sans-serif;background:
+      radial-gradient(120% 70% at 15% -5%, #e9e2d2, transparent 60%),
+      radial-gradient(120% 80% at 100% 0%, #e7efe5, transparent 55%),
+      var(--bg);
+    color:var(--ink);-webkit-font-smoothing:antialiased;min-height:100vh;padding:48px 20px 90px}
+  .head{max-width:1100px;margin:0 auto 38px}
+  .badge{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--acc);
+    background:var(--acc-soft);border:1px solid rgba(63,107,79,.18);padding:7px 13px;border-radius:999px}
+  .head h1{margin-top:18px;font-family:Fraunces,serif;font-weight:500;font-size:clamp(30px,5vw,46px);letter-spacing:-.5px;line-height:1.05}
+  .head p{margin-top:12px;font-size:16px;color:var(--muted);max-width:60ch;line-height:1.55}
+  .head .note{margin-top:10px;font-size:13.5px;color:var(--faint)}
+
+  .gallery{display:flex;flex-wrap:wrap;gap:48px 36px;justify-content:center;max-width:1100px;margin:0 auto}
+  .col{display:flex;flex-direction:column;gap:14px;align-items:center}
+  .cap{font-size:13px;font-weight:600;color:var(--muted)}
+
+  /* phone */
+  .phone{width:390px;height:844px;border-radius:54px;background:var(--frame);position:relative;overflow:hidden;
+    box-shadow:0 50px 90px -40px rgba(40,38,28,.5), 0 0 0 11px #1c1a16, 0 0 0 12px #2c2a24;}
+  .scr{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden}
+  .scr::-webkit-scrollbar{display:none}
+  .status{height:54px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 30px 6px;font-size:14px;font-weight:600}
+  .pad{padding:0 20px}
+
+  .appbar{display:flex;align-items:center;justify-content:space-between;padding:6px 20px 0}
+  .appbar .title{font-family:Fraunces,serif;font-weight:500;font-size:19px;letter-spacing:-.2px}
+  .tools{display:flex;gap:8px}
+  .ic{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--surface);border:1px solid var(--hair);color:var(--muted)}
+  .ic svg{width:18px;height:18px}
+  .avatar{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--grad);color:#fff;font-weight:700;font-size:14px}
+
+  .pageh{padding:20px 20px 4px}
+  .eyebrow{font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--acc);display:inline-flex;align-items:center;gap:8px}
+  .eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--acc)}
+  .pageh h2{font-family:Fraunces,serif;font-weight:500;font-size:32px;letter-spacing:-.6px;line-height:1.05;margin-top:10px;color:var(--ink)}
+  .pageh .sub{margin-top:8px;font-size:14.5px;color:var(--muted)}
+
+  .card{background:var(--surface);border:1px solid var(--hair);border-radius:26px;padding:24px;
+    box-shadow:0 2px 26px -16px rgba(40,38,28,.30);margin:14px 20px 0}
+  .stat{display:flex;gap:0;margin-top:22px}
+  .stat .s{flex:1}
+  .stat .s+ .s{border-left:1px solid var(--hair);padding-left:18px}
+  .stat .s:not(:last-child){padding-right:18px}
+  .stat .k{font-size:12px;color:var(--muted)}
+  .stat .v{margin-top:6px;font-size:26px;font-weight:700;letter-spacing:-.5px;font-variant-numeric:tabular-nums}
+  .stat .v.acc{color:var(--acc)}
+
+  .btnrow{display:flex;gap:12px;margin-top:24px}
+  .btn{flex:1;height:52px;border-radius:999px;border:0;font-family:inherit;font-size:15px;font-weight:600;
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer}
+  .btn svg{width:18px;height:18px}
+  .btn-primary{background:var(--grad);color:#fff;box-shadow:0 12px 26px -12px rgba(63,107,79,.7)}
+  .btn-ghost{background:var(--surface);color:var(--ink);border:1px solid var(--hair)}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 20px 0}
+  .mini{background:var(--surface);border:1px solid var(--hair);border-radius:24px;padding:20px;box-shadow:0 2px 26px -16px rgba(40,38,28,.30)}
+  .mini .badge2{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:var(--acc-soft);color:var(--acc)}
+  .mini .badge2 svg{width:19px;height:19px}
+  .soc{display:flex;align-items:baseline;gap:6px;margin-top:16px}
+  .soc .v{font-size:46px;font-weight:700;letter-spacing:-2px;line-height:.9;font-variant-numeric:tabular-nums}
+  .soc .u{font-size:13px;color:var(--muted)}
+  .bar{margin-top:14px;height:7px;border-radius:999px;background:var(--surface-2);overflow:hidden}
+  .bar i{display:block;height:100%;border-radius:999px;background:var(--grad);width:78%}
+  .mini .lbl{font-size:11.5px;color:var(--muted);margin-top:14px}
+  .mini h4{font-size:13.5px;font-weight:700;margin-top:14px}
+  .mini p.d{font-size:12.5px;color:var(--muted);margin-top:3px;line-height:1.4}
+  .chip{display:inline-flex;align-items:center;gap:6px;margin-top:14px;font-size:12.5px;font-weight:600;color:var(--acc);
+    background:var(--acc-soft);padding:8px 13px;border-radius:999px}
+
+  .seclabel{font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--faint);margin:26px 24px 0}
+  .chart{display:flex;align-items:flex-end;gap:4px;height:128px;margin-top:18px}
+  .chart .b{flex:1;border-radius:5px 5px 2px 2px;min-height:6px}
+  .legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:16px;font-size:12px;color:var(--muted)}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .legend i{width:9px;height:9px;border-radius:3px}
+  .toggle{display:inline-flex;background:var(--surface-2);border-radius:999px;padding:4px}
+  .toggle b{font-size:12px;font-weight:600;padding:6px 14px;border-radius:999px}
+  .toggle b.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+  .toggle b.off{color:var(--muted)}
+
+  .sched{display:grid;gap:15px;margin-top:18px}
+  .sline{display:grid;grid-template-columns:48px auto 1fr auto;align-items:center;gap:12px}
+  .sline .t{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .tag{font-size:11.5px;font-weight:700;padding:5px 10px;border-radius:8px}
+  .tag.c{background:var(--acc-soft);color:var(--acc)}
+  .tag.s{background:#f6ecdb;color:var(--sell)}
+  .track{height:6px;border-radius:999px;background:var(--surface-2);overflow:hidden}
+  .track i{display:block;height:100%;border-radius:999px}
+  .track i.c{background:var(--grad)}
+  .track i.s{background:linear-gradient(90deg,#e0b878,var(--sell))}
+  .sline .pr{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+  /* dock */
+  .dock{position:absolute;left:50%;transform:translateX(-50%);bottom:24px;height:64px;display:flex;align-items:center;gap:2px;
+    padding:6px;border-radius:999px;background:rgba(251,250,246,.82);backdrop-filter:blur(20px);border:1px solid var(--hair);
+    box-shadow:0 18px 44px -14px rgba(40,38,28,.45)}
+  .dock a{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;color:var(--faint);position:relative}
+  .dock a svg{width:23px;height:23px;position:relative;z-index:1}
+  .dock a.on{color:#fff}
+  .dock a.on::before{content:"";position:absolute;inset:0;border-radius:50%;background:var(--grad);box-shadow:0 9px 20px -7px rgba(63,107,79,.6)}
+  .island{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:120px;height:33px;background:#000;border-radius:20px;z-index:5}
+</style>
+</head>
+<body>
+  <div class="head">
+    <span class="badge">● App design voorstel — warm &amp; duurzaam</span>
+    <h1>GBICT Energy — de app, opnieuw ontworpen</h1>
+    <p>Premium en rustig, in de geest van Superpower: warme cream-achtergrond, één natuurlijk salie/bosgroen accent, veel witruimte, zachte ronde kaarten en strakke pill-knoppen. De zwevende orb-menubalk blijft.</p>
+    <p class="note">Dit is een statisch ontwerp-voorstel om te bekijken en bij te sturen — nog niet de live app. Zeg wat je goed/anders wilt, dan bouw ik dit in de echte app.</p>
+  </div>
+
+  <div class="gallery">
+    <!-- DASHBOARD -->
+    <div class="col">
+      <div class="phone">
+        <div class="island"></div>
+        <div class="scr">
+          <div class="status"><span>9:41</span><span>● ● ●  ▮</span></div>
+          <div class="appbar">
+            <span class="title">Dashboard</span>
+            <div class="tools">
+              <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></div>
+              <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
+              <div class="avatar">G</div>
+            </div>
+          </div>
+
+          <div class="pageh">
+            <span class="eyebrow">Vandaag</span>
+            <h2>Je thuisenergie<br>in één oogopslag</h2>
+            <p class="sub">GBICT laadt goedkoop en verkoopt duur — automatisch.</p>
+          </div>
+
+          <div class="card">
+            <div class="stat">
+              <div class="s"><div class="k">Bespaard vandaag</div><div class="v acc">€2,14</div></div>
+              <div class="s"><div class="k">Deze maand</div><div class="v acc">€41,80</div></div>
+              <div class="s"><div class="k">Spotprijs nu</div><div class="v">€0,042</div></div>
+            </div>
+            <div class="btnrow">
+              <button class="btn btn-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 8-8"/><path d="M21 7v6h-6"/></svg>
+                Besparingen
+              </button>
+              <button class="btn btn-ghost">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 2v6M15 2v6M5 8h14l-1 11a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"/></svg>
+                Koppelen
+              </button>
+            </div>
+          </div>
+
+          <div class="grid2">
+            <div class="mini">
+              <div class="badge2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="16" height="10" rx="2"/><path d="M22 11v2M6 11l2 2 4-4"/></svg></div>
+              <div class="lbl">Thuisbatterij · Sessy</div>
+              <div class="soc"><span class="v">78</span><span class="u">% geladen</span></div>
+              <div class="bar"><i></i></div>
+              <p class="d" style="margin-top:12px">Laadt nu · goedkoop tot 06:00</p>
+            </div>
+            <div class="mini">
+              <div class="badge2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h7l-1 8 10-12h-7z"/></svg></div>
+              <h4>Virtual Power Plant</h4>
+              <p class="d">Verdien extra door stroom terug te leveren op piekmomenten.</p>
+              <span class="chip">Meedoen — beta →</span>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start">
+              <div><div style="font-weight:700;font-size:15px">Energieprijzen</div><div style="font-size:12px;color:var(--muted);margin-top:2px">EPEX spotprijs · vandaag</div></div>
+              <div class="toggle"><b class="on">Vandaag</b><b class="off">Morgen</b></div>
+            </div>
+            <div class="chart" id="chart"></div>
+            <div class="legend">
+              <span><i style="background:var(--acc)"></i>Laden</span>
+              <span><i style="background:var(--sell)"></i>Verkopen</span>
+              <span><i style="background:#cdd3c6"></i>Goedkoop</span>
+              <span><i style="background:#d9b9a0"></i>Piek</span>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;margin-bottom:120px">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div><div style="font-weight:700;font-size:15px">Optimalisatie</div><div style="font-size:12px;color:var(--muted);margin-top:2px">Geplande acties vandaag</div></div>
+              <span class="chip" style="margin-top:0">~ €0,60</span>
+            </div>
+            <div class="sched">
+              <div class="sline"><span class="t">10:00</span><span class="tag c">Laden</span><div class="track"><i class="c" style="width:40%"></i></div><span class="pr">€0,09</span></div>
+              <div class="sline"><span class="t">12:00</span><span class="tag c">Laden</span><div class="track"><i class="c" style="width:28%"></i></div><span class="pr">€0,07</span></div>
+              <div class="sline"><span class="t">18:00</span><span class="tag s">Verkopen</span><div class="track"><i class="s" style="width:88%"></i></div><span class="pr">€0,22</span></div>
+              <div class="sline"><span class="t">19:00</span><span class="tag s">Verkopen</span><div class="track"><i class="s" style="width:78%"></i></div><span class="pr">€0,20</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dock">
+          <a class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg></a>
+          <a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 2v6M15 2v6M5 8h14l-1 11a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"/></svg></a>
+          <a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 8-8"/></svg></a>
+          <a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/></svg></a>
+          <a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.6-2-3.4-2.3 1a7 7 0 0 0-1.7-1l-.3-2.5H9.4l-.3 2.5a7 7 0 0 0-1.7 1l-2.3-1-2 3.4 2 1.6a7 7 0 0 0 0 2l-2 1.6 2 3.4 2.3-1a7 7 0 0 0 1.7 1l.3 2.5h5.2l.3-2.5a7 7 0 0 0 1.7-1l2.3 1 2-3.4-2-1.6c.1-.3.1-.7.1-1z"/></svg></a>
+        </div>
+      </div>
+      <div class="cap">Dashboard</div>
+    </div>
+  </div>
+
+<script>
+  // prijs-grafiek balkjes
+  var prices=[.11,.10,.09,.08,.07,.07,.08,.10,.13,.15,.14,.12,.11,.10,.11,.13,.18,.22,.21,.19,.16,.14,.12,.11];
+  var min=Math.min.apply(0,prices),max=Math.max.apply(0,prices),rng=max-min;
+  var charge=[10,12], sell=[18,19], el=document.getElementById('chart');
+  prices.forEach(function(p,h){
+    var bar=document.createElement('div');bar.className='b';
+    bar.style.height=(((p-min)/rng)*72+28)+'%';
+    var r=(p-min)/rng, col= r<.33?'#cdd3c6': r>.66?'#d9b9a0':'#bcc6b4';
+    if(charge.indexOf(h)>=0)col='var(--acc)';
+    if(sell.indexOf(h)>=0)col='var(--sell)';
+    bar.style.background=col;
+    el.appendChild(bar);
+  });
+</script>
+</body>
+</html>
