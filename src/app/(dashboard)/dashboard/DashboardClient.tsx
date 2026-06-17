@@ -42,7 +42,7 @@ function HeroCard({ savings, tibber, hasSessy, t }: {
   const currentPrice = tibber?.current?.total
 
   return (
-    <div className="relative lg:col-span-2 overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-7">
+    <div className="relative lg:col-span-2 overflow-hidden rounded-[26px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_2px_26px_-16px_rgba(20,24,15,0.30)] p-7">
 
       <div className="relative">
         <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-emerald-400">
@@ -88,17 +88,17 @@ function HeroCard({ savings, tibber, hasSessy, t }: {
         <div className="mt-7 flex items-center gap-3">
           <Link
             href="/dashboard/besparingen"
-            className="inline-flex h-9 items-center gap-2 rounded-full bg-[#047857] px-5 text-[13px] font-semibold text-white transition-colors hover:bg-[#059669]"
+            className="inline-flex h-12 items-center gap-2 rounded-full bg-emerald-600 px-6 text-[14px] font-semibold text-white shadow-[0_8px_22px_-10px_rgba(63,107,79,0.7)] transition hover:brightness-[1.06]"
           >
-            <TrendingUp className="h-3.5 w-3.5" />
+            <TrendingUp className="h-4 w-4" />
             {t.dashboard.overview.viewSavings}
           </Link>
           {!hasSessy && (
             <Link
               href="/dashboard/koppelingen"
-              className="inline-flex h-9 items-center gap-2 rounded-full border border-[var(--border)] px-5 text-[13px] font-medium text-[var(--text-muted)] transition-colors hover:bg-[var(--surface-2)]"
+              className="inline-flex h-12 items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface)] px-6 text-[14px] font-medium text-[var(--text)] transition-colors hover:bg-[var(--surface-2)]"
             >
-              <Plug className="h-3.5 w-3.5" />
+              <Plug className="h-4 w-4" />
               {t.dashboard.overview.connectDevice}
             </Link>
           )}
@@ -112,7 +112,7 @@ function HeroCard({ savings, tibber, hasSessy, t }: {
 function BatteryCard({ sessy, t }: { sessy: SessyStatus | null; t: TranslationDict }) {
   if (!sessy) {
     return (
-      <div className="flex flex-col justify-between rounded-2xl border border-dashed border-[var(--border)] bg-[var(--surface)] p-6">
+      <div className="flex flex-col justify-between rounded-[26px] border border-dashed border-[var(--border)] bg-[var(--surface)] p-6">
         <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--surface)]">
           <BatteryCharging className="h-4 w-4 text-[var(--text-faint)]" />
         </div>
@@ -128,7 +128,7 @@ function BatteryCard({ sessy, t }: { sessy: SessyStatus | null; t: TranslationDi
   }
 
   return (
-    <div className="flex flex-col justify-between rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6">
+    <div className="flex flex-col justify-between rounded-[26px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_2px_26px_-16px_rgba(20,24,15,0.30)] p-6">
       <div className="flex items-center justify-between">
         <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/10 ring-1 ring-emerald-500/20">
           <BatteryCharging className="h-4 w-4 text-emerald-400" />
@@ -163,7 +163,7 @@ function BatteryCard({ sessy, t }: { sessy: SessyStatus | null; t: TranslationDi
 /* ── VPP / upgrade card ─────────────────────────────────── */
 function VppCard({ enrolled, t }: { enrolled: boolean; t: TranslationDict }) {
   return (
-    <div className="relative flex flex-col justify-between overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6">
+    <div className="relative flex flex-col justify-between overflow-hidden rounded-[26px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_2px_26px_-16px_rgba(20,24,15,0.30)] p-6">
       <div className="relative">
         <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/10 ring-1 ring-emerald-500/20">
           <Zap className="h-4 w-4 text-emerald-400" />
@@ -190,7 +190,7 @@ function PriceChart({ prices, schedule, t }: { prices: PricePoint[]; schedule?: 
   const now = new Date().getHours()
 
   return (
-    <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6">
+    <div className="rounded-[26px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_2px_26px_-16px_rgba(20,24,15,0.30)] p-6">
       <div className="mb-5 flex items-center justify-between">
         <div>
           <p className="text-[14px] font-semibold text-[var(--text)]">{t.dashboard.priceChart.title}</p>
@@ -202,7 +202,7 @@ function PriceChart({ prices, schedule, t }: { prices: PricePoint[]; schedule?: 
         </div>
       </div>
 
-      <div className="flex h-[96px] items-end gap-[3px]">
+      <div className="flex h-[120px] items-end gap-[3px]">
         {prices.map((price, i) => {
           const hour = new Date(price.startsAt).getHours()
           const h = ((price.total - min) / range) * 70 + 30
@@ -217,7 +217,7 @@ function PriceChart({ prices, schedule, t }: { prices: PricePoint[]; schedule?: 
               <div className="pointer-events-none absolute bottom-[calc(100%+4px)] left-1/2 z-20 hidden -translate-x-1/2 whitespace-nowrap rounded-lg border border-[var(--border)] bg-[var(--bg)] px-2 py-1.5 text-[10.5px] text-[var(--text-muted)] shadow-xl group-hover:block">
                 {String(hour).padStart(2,'0')}:00 · €{price.total.toFixed(4)}
               </div>
-              <div className={`w-full rounded-t-[3px] ${color} ${hour === now ? 'ring-1 ring-white/30' : ''}`}
+              <div className={`w-full rounded-t-[5px] ${color} ${hour === now ? 'ring-1 ring-[var(--text)]/25' : ''}`}
                 style={{ height: `${h}%` }} />
               {hour % 6 === 0 && <span className="mt-1 text-[9px] tabular-nums text-[var(--text-faint)]">{hour}</span>}
             </div>
@@ -245,7 +245,7 @@ function ScheduleList({ schedule, estimatedSavings, t }: {
   const maxPrice = Math.max(...schedule.map(s => s.price), 0.01)
 
   return (
-    <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6">
+    <div className="rounded-[26px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_2px_26px_-16px_rgba(20,24,15,0.30)] p-6">
       <div className="mb-5 flex items-center justify-between">
         <div>
           <p className="text-[14px] font-semibold text-[var(--text)]">{t.dashboard.schedule.title}</p>
@@ -304,7 +304,7 @@ function ActivityTable({ t, tag }: { t: TranslationDict; tag: string }) {
   }, [])
 
   return (
-    <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)]">
+    <div className="rounded-[26px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_2px_26px_-16px_rgba(20,24,15,0.30)]">
       <div className="flex items-center justify-between border-b border-[var(--border)] px-6 py-4">
         <p className="text-[14px] font-semibold text-[var(--text)]">{t.dashboard.activityTable.title}</p>
         <Link href="/dashboard/besparingen" className="flex items-center gap-1 text-[12px] font-medium text-emerald-400 hover:text-emerald-300">
