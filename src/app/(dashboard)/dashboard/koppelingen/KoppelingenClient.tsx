@@ -456,7 +456,7 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
           {devices.map((device) => {
             const statusInfo = statusLabel(device.status, c)
             return (
-              <div key={device.id} className="relative rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5">
+              <div key={device.id} className="relative rounded-[26px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_2px_26px_-16px_rgba(20,24,15,0.30)] p-5">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--surface-2)]">

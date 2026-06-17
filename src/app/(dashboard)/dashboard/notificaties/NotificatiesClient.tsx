@@ -83,19 +83,19 @@ export default function NotificatiesClient({ logs }: { logs: OptimizationLog[] }
 
       {/* Mini stats row */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5">
+        <div className="rounded-[26px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_2px_26px_-16px_rgba(20,24,15,0.30)] p-5">
           <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--text-faint)]">{t.dashboard.activity.statTotalActions}</p>
           <p className="mt-3 font-mono text-[26px] font-bold tracking-[-0.03em] text-[var(--text)]">{logs.length}</p>
           <p className="mt-1 text-[11px] text-[var(--text-faint)]">{t.dashboard.activity.statAutomated}</p>
         </div>
-        <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5">
+        <div className="rounded-[26px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_2px_26px_-16px_rgba(20,24,15,0.30)] p-5">
           <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--text-faint)]">{t.dashboard.activity.statChargeSell}</p>
           <p className="mt-3 font-mono text-[26px] font-bold tracking-[-0.03em] text-[var(--text)]">
             {chargeCount}<span className="text-[var(--text-faint)]">/</span>{dischargeCount}
           </p>
           <p className="mt-1 text-[11px] text-[var(--text-faint)]">{t.dashboard.activity.statSplit}</p>
         </div>
-        <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5">
+        <div className="rounded-[26px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_2px_26px_-16px_rgba(20,24,15,0.30)] p-5">
           <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--text-faint)]">{t.dashboard.activity.statTotalSaved}</p>
           <p className={`mt-3 font-mono text-[26px] font-bold tracking-[-0.03em] ${totalSaved > 0 ? 'text-emerald-400' : 'text-[var(--text-faint)]'}`}>
             €{totalSaved.toFixed(2)}
@@ -119,7 +119,7 @@ export default function NotificatiesClient({ logs }: { logs: OptimizationLog[] }
 
       {/* Activity feed */}
       {filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-[var(--border)] bg-[var(--surface)] py-16">
+        <div className="flex flex-col items-center justify-center rounded-[26px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_2px_26px_-16px_rgba(20,24,15,0.30)] py-16">
           <Activity className="h-10 w-10 text-[var(--text-faint)]" />
           <p className="mt-4 text-[13px] text-[var(--text-faint)]">{t.dashboard.activity.emptyTitle}</p>
           <p className="mt-1 text-[12px] text-[var(--text-faint)]">{t.dashboard.activity.emptyDesc}</p>
@@ -135,7 +135,7 @@ export default function NotificatiesClient({ logs }: { logs: OptimizationLog[] }
               </p>
 
               {/* Log items */}
-              <div className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)]">
+              <div className="overflow-hidden rounded-[26px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_2px_26px_-16px_rgba(20,24,15,0.30)]">
                 {dayLogs.map((log, index) => {
                   const charging = isChargeAction(log.action)
                   return (

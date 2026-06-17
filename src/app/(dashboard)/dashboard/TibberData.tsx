@@ -41,7 +41,7 @@ export default function TibberData() {
   return (
     <>
       {/* Current price card */}
-      <div className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6">
+      <div className="overflow-hidden rounded-[26px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_2px_26px_-16px_rgba(20,24,15,0.30)] p-6">
         <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--text-faint)]">
           Spotprijs nu
         </p>
@@ -69,7 +69,7 @@ export default function TibberData() {
 
       {/* Estimated savings card */}
       {!loading && optimization && (
-        <div className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6">
+        <div className="overflow-hidden rounded-[26px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_2px_26px_-16px_rgba(20,24,15,0.30)] p-6">
           <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--text-faint)]">
             Estimated savings today
           </p>
@@ -91,7 +91,7 @@ export default function TibberData() {
 
       {/* Optimization schedule today */}
       {!loading && optimization && optimization.schedule.filter(s => s.action !== 'idle').length > 0 && (
-        <div className="col-span-full overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6">
+        <div className="col-span-full overflow-hidden rounded-[26px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_2px_26px_-16px_rgba(20,24,15,0.30)] p-6">
           <p className="mb-5 text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--text-faint)]">
             Optimization schedule · today
           </p>
@@ -134,7 +134,7 @@ export default function TibberData() {
           </div>
 
           {tomorrowOptimization && tomorrowOptimization.schedule.filter(s => s.action !== 'idle').length > 0 && (
-            <div className="col-span-full overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6">
+            <div className="col-span-full overflow-hidden rounded-[26px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_2px_26px_-16px_rgba(20,24,15,0.30)] p-6">
               <div className="mb-5 flex items-center justify-between">
                 <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--text-faint)]">
                   Planned schedule · tomorrow

@@ -21,7 +21,7 @@ export default function PriceChart({
   const currentHour = new Date().getHours()
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6">
+    <div className="overflow-hidden rounded-[26px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_2px_26px_-16px_rgba(20,24,15,0.30)] p-6">
       {/* Header */}
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--text-faint)]">{label}</p>

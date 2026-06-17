@@ -76,7 +76,7 @@ function TopSavingsList({ recent, loading, t, tag }: { recent: RecentLog[]; load
   const maxSaving = Math.max(...top.map(r => r.savings_eur), 0.01)
 
   return (
-    <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6">
+    <div className="rounded-[26px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_2px_26px_-16px_rgba(20,24,15,0.30)] p-6">
       <div className="mb-5 flex items-center justify-between">
         <div>
           <p className="text-[14px] font-semibold text-[var(--text)]">{t.dashboard.savings.topTitle}</p>
@@ -149,7 +149,7 @@ export default function BesparingenClient() {
       {/* Stat cards */}
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         {stats.map(s => (
-          <div key={s.label} className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5">
+          <div key={s.label} className="rounded-[26px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_2px_26px_-16px_rgba(20,24,15,0.30)] p-5">
             <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--text-faint)]">{s.label}</p>
             {loading
               ? <Skeleton className="mt-3 h-8 w-20 bg-[var(--surface-2)]" />
@@ -166,7 +166,7 @@ export default function BesparingenClient() {
 
       {/* Chart + top list */}
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1.5fr_1fr]">
-        <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6">
+        <div className="rounded-[26px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_2px_26px_-16px_rgba(20,24,15,0.30)] p-6">
           <div className="mb-5 flex items-center justify-between">
             <div>
               <p className="text-[14px] font-semibold text-[var(--text)]">{t.dashboard.savings.breakdownTitle}</p>
@@ -192,7 +192,7 @@ export default function BesparingenClient() {
       </div>
 
       {/* Transaction table */}
-      <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)]">
+      <div className="rounded-[26px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_2px_26px_-16px_rgba(20,24,15,0.30)]">
         <div className="flex items-center justify-between border-b border-[var(--border)] px-6 py-4">
           <p className="text-[14px] font-semibold text-[var(--text)]">{t.dashboard.savings.historyTitle}</p>
           <span className="text-[11px] text-[var(--text-faint)]">{fill(t.dashboard.savings.historyLastDays, { days: activeDays })}</span>

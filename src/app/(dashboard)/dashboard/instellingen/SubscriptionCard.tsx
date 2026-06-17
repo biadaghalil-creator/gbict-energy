@@ -77,7 +77,7 @@ export default function SubscriptionCard({ status, plan, currentPeriodEnd, trial
       className={
         active
           ? 'relative overflow-hidden rounded-2xl border border-emerald-500/40 bg-gradient-to-br from-emerald-600/20 via-[var(--surface)] to-[var(--surface)] p-6 shadow-[0_0_40px_rgba(16,185,129,0.12),inset_0_1px_0_rgba(16,185,129,0.25)] backdrop-blur'
-          : 'rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 backdrop-blur'
+          : 'rounded-[26px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_2px_26px_-16px_rgba(20,24,15,0.30)] p-6 backdrop-blur'
       }
     >
       {active && (

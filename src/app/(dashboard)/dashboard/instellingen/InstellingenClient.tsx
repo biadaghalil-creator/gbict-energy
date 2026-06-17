@@ -79,7 +79,7 @@ function Section({ icon: Icon, title, sub, children }: {
   children: React.ReactNode
 }) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)]">
+    <div className="overflow-hidden rounded-[26px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_2px_26px_-16px_rgba(20,24,15,0.30)]">
       <div className="border-b border-[var(--border)] px-6 py-4">
         <h2 className="flex items-center gap-2 text-[13px] font-semibold text-[var(--text)]">
           <Icon className="h-4 w-4 text-[var(--text-faint)]" />

@@ -28,7 +28,7 @@ export default function SessyCard() {
   const stateInfo = status ? sessyStateLabel(status.system_state) : null
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6">
+    <div className="overflow-hidden rounded-[26px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_2px_26px_-16px_rgba(20,24,15,0.30)] p-6">
       {/* Header */}
       <div className="mb-5 flex items-center justify-between">
         <span className="flex items-center gap-2 text-[13px] font-medium text-[var(--text-muted)]">
