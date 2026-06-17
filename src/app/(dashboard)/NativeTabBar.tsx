@@ -76,7 +76,7 @@ export default function NativeTabBar() {
                 className={cn(
                   'h-[23px] w-[23px] transition-all duration-300',
                   active
-                    ? 'scale-105 text-[#011d1c] drop-shadow-[0_1px_1px_rgba(255,255,255,0.25)]'
+                    ? 'scale-105 text-white drop-shadow-[0_1px_2px_rgba(13,23,17,0.4)]'
                     : 'text-[var(--text-faint)]'
                 )}
                 strokeWidth={active ? 2.4 : 2}

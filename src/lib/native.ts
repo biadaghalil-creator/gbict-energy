@@ -19,6 +19,9 @@ export function isNativeApp(): boolean {
     if (typeof cap.isNativePlatform === 'function' && cap.isNativePlatform()) return true
     if (typeof cap.getPlatform === 'function' && cap.getPlatform() !== 'web') return true
   }
+  // Preview-schakelaar: ?appview in de URL toont de app-look in een gewone
+  // browser (handig om het app-design te bekijken/finetunen zonder app-cache).
+  if (/[?&]appview\b/.test(window.location.search)) return true
   return /GBICTEnergyApp/i.test(navigator.userAgent)
 }
 
@@ -26,6 +29,7 @@ export function isNativeApp(): boolean {
 export function useIsNative(): boolean {
   const [native, setNative] = useState(false)
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- native/preview detectie kan pas na mount (browser-only)
     setNative(isNativeApp())
   }, [])
   return native

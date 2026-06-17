@@ -92,14 +92,14 @@ body {
 
 /* ─── FLOATING NAV — 3D glossy emerald orb (active tab) ─── */
 .nav-orb {
-  /* Auros dock-accent: teal → cyan, schuift langzaam heen-en-weer */
-  background-image: linear-gradient(105deg, #00827c 0%, #2fc8bf 52%, #cbfffc 100%);
+  /* Natuurlijk accent: bosgroen → salie, schuift langzaam heen-en-weer */
+  background-image: linear-gradient(135deg, #3f6b4f 0%, #5c8a6a 52%, #8fb996 100%);
   background-size: 200% 200%;
   animation: nav-orb-shift 6s ease-in-out infinite;
   box-shadow:
-    0 9px 22px -6px rgba(0, 130, 124, 0.60),      /* teal gloed eronder */
-    inset 0 1.5px 1px rgba(255, 255, 255, 0.55),  /* glans bovenrand */
-    inset 0 -7px 12px -5px rgba(1, 29, 28, 0.65); /* diepte onderin (3D) */
+    0 9px 22px -6px rgba(63, 107, 79, 0.55),      /* groene gloed eronder */
+    inset 0 1.5px 1px rgba(255, 255, 255, 0.45),  /* glans bovenrand */
+    inset 0 -7px 12px -5px rgba(13, 23, 17, 0.70);/* diepte onderin (3D) */
 }
 @keyframes nav-orb-shift {
   0%, 100% { background-position: 0% 50%; }
@@ -373,51 +373,50 @@ body {
   --band: #05060B;          /* deep band (night) */
 }
 
-/* ─── APP-ONLY: "Auros" design system (html.native-app) ────
-   Dark-teal abyssal canvas met teal→cyan accenten (uit het
-   meegeleverde app-design). Scope = alleen de native app; de
-   website blijft exact zoals hij is. Mode-bewust: light = day,
-   .dark = night.                                                */
+/* ─── APP-ONLY: warm, aardse "natuurlijke" look (html.native-app)
+   Cream/zand canvas met een natuurlijk salie/bosgroen accent —
+   rustig, premium, duurzaam (totaal andere richting dan teal).
+   Scope = alleen de native app; de website blijft ongemoeid.    */
 
-/* Day (light) — accent = diep teal, zacht teal-wit canvas */
+/* Day (light) — warm bone/cream + salie-bosgroen accent */
 html.native-app:not(.dark) {
-  --bg: #eef3f2;
-  --surface: #ffffff;
-  --surface-2: #e3ecea;
-  --border: rgba(1, 38, 36, 0.08);
-  --header: rgba(238, 243, 242, 0.85);
-  --text: #042b28;
-  --text-muted: #5b6b69;
-  --text-faint: rgba(91, 107, 105, 0.72);
-  --color-emerald-200: #b6e4e0;
-  --color-emerald-300: #4fb2ab;
-  --color-emerald-400: #00827c;  /* accent op licht */
-  --color-emerald-500: #00756f;  /* knoppen */
-  --color-emerald-600: #016560;
-  --color-emerald-700: #014f4b;
-  --color-emerald-800: #013b38;
-  --color-emerald-900: #012b29;
-  --color-emerald-950: #011d1c;
+  --bg: #f4f1ea;            /* warm cream */
+  --surface: #fbfaf6;       /* warm bijna-wit */
+  --surface-2: #ece7db;     /* zand-tint / hover */
+  --border: rgba(40, 38, 28, 0.10);
+  --header: rgba(244, 241, 234, 0.85);
+  --text: #232821;          /* warm houtskool */
+  --text-muted: #5c6157;
+  --text-faint: rgba(92, 97, 87, 0.70);
+  --color-emerald-200: #cfe0d2;
+  --color-emerald-300: #88ab92;
+  --color-emerald-400: #3f6b4f;  /* accent op licht — bosgroen */
+  --color-emerald-500: #355e45;  /* knoppen */
+  --color-emerald-600: #2c4e3a;
+  --color-emerald-700: #233e2e;
+  --color-emerald-800: #1b3024;
+  --color-emerald-900: #14241b;
+  --color-emerald-950: #0d1711;
 }
-/* Night (dark) — abyssal teal canvas, helder cyan-teal accent */
+/* Night (dark) — diep warm bos-houtskool + zachte mosgroen accent */
 html.native-app.dark {
-  --bg: #012624;
-  --surface: #06302d;
-  --surface-2: rgba(0, 55, 52, 0.46);
-  --border: rgba(237, 255, 254, 0.10);
-  --header: rgba(1, 29, 28, 0.82);
-  --text: #ffffff;
-  --text-muted: #bbc7c6;
-  --text-faint: rgba(187, 199, 198, 0.62);
-  --color-emerald-200: #e8fffe;
-  --color-emerald-300: #b8fbf6;
-  --color-emerald-400: #8af0ea;  /* accent op donker */
-  --color-emerald-500: #34c9c0;
-  --color-emerald-600: #00a39b;
-  --color-emerald-700: #00827c;
-  --color-emerald-800: #016560;
-  --color-emerald-900: #014f4b;
-  --color-emerald-950: #012b29;
+  --bg: #14180f;            /* diep warm bos-houtskool */
+  --surface: #1c2118;       /* warm donker oppervlak */
+  --surface-2: rgba(220, 230, 200, 0.05);
+  --border: rgba(220, 230, 200, 0.09);
+  --header: rgba(20, 24, 15, 0.82);
+  --text: #f1efe6;          /* warm off-white */
+  --text-muted: #a8ac9d;
+  --text-faint: rgba(168, 172, 157, 0.62);
+  --color-emerald-200: #dcebd9;
+  --color-emerald-300: #b3d4b7;
+  --color-emerald-400: #8fb996;  /* accent op donker — zachte mos/salie */
+  --color-emerald-500: #6f9e7a;
+  --color-emerald-600: #588663;
+  --color-emerald-700: #456b4f;
+  --color-emerald-800: #34503c;
+  --color-emerald-900: #26392c;
+  --color-emerald-950: #18241c;
 }
 
 :root {
