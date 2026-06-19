@@ -297,6 +297,14 @@ body {
   -webkit-user-select: text;
   user-select: text;
 }
+/* iOS zoomt automatisch in zodra je een veld met tekst < 16px focust. Forceer
+   16px op alle invoervelden in de app, zodat de webview NIET inzoomt tijdens
+   het typen. Alleen in de app (html.native-app) — de website blijft ongemoeid. */
+.native-app input,
+.native-app textarea,
+.native-app select {
+  font-size: 16px;
+}
 
 /* ─── SCROLLBAR ──────────────────────────────────────── */
 ::-webkit-scrollbar { width: 6px; }
