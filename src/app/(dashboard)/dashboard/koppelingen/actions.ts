@@ -17,6 +17,8 @@ export type DeviceType =
   | 'solar_fronius'
   | 'heatpump_tado'
   | 'heatpump_generic'
+  | 'ev_generic'
+  | 'ev_v2g'
 
 export type NewDevice = {
   type: DeviceType

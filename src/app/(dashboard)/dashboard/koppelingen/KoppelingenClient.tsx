@@ -32,6 +32,7 @@ type Step =
   | 'battery-other'
   | 'solar-solaredge-setup' | 'solar-fronius-setup' | 'solar-sma-setup'
   | 'heatpump-setup'
+  | 'ev-setup'
   | 'done'
 
 const DEVICE_ICONS: Record<string, React.ElementType> = {
@@ -47,6 +48,8 @@ const DEVICE_ICONS: Record<string, React.ElementType> = {
   solar_fronius:        Sun,
   heatpump_tado:        Flame,
   heatpump_generic:     Flame,
+  ev_generic:           Car,
+  ev_v2g:               Car,
 }
 
 function statusLabel(status: string, c: Conn): { label: string; color: string } {
@@ -69,6 +72,7 @@ function modalTitle(step: Step, c: Conn): string {
     'solar-fronius-setup':   c.modalFronius,
     'solar-sma-setup':       c.modalSma,
     'heatpump-setup':        c.modalHeatpump,
+    'ev-setup':              c.modalEv,
     done:                    c.modalDone,
   }
   return titles[step] ?? ''
@@ -152,6 +156,13 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
   const tadoDeviceCode = useRef('')
   const tadoTimer = useRef<ReturnType<typeof setInterval> | null>(null)
 
+  // Elektrische auto (EV / V2G) — merk-onafhankelijk registreren
+  const [evBrand,     setEvBrand]     = useState('')
+  const [evCapacity,  setEvCapacity]  = useState('')
+  const [evV2g,       setEvV2g]       = useState(false)
+  const [evMinCharge, setEvMinCharge] = useState('80')
+  const [evError,     setEvError]     = useState('')
+
   function openModal() {
     setStep('category')
     setTibberToken(''); setTibberName(''); setTibberError('')
@@ -166,6 +177,7 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
     setSmaEmail(''); setSmaPass(''); setSmaError('')
     setHeatpumpBrand('tado'); setHeatpumpLabel(''); setHeatpumpHome('')
     setHeatpumpError(''); resetTado()
+    setEvBrand(''); setEvCapacity(''); setEvV2g(false); setEvMinCharge('80'); setEvError('')
   }
   function resetTado() {
     if (tadoTimer.current) { clearInterval(tadoTimer.current); tadoTimer.current = null }
@@ -428,6 +440,30 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
     })
   }
 
+  // ── Elektrische auto (EV / V2G) ────────────────────────────────────────────
+  // Merk-onafhankelijk: we registreren de auto als flexibele accu. Echte
+  // aansturing (slim laden / V2G-teruglevering) gaat live zodra de partner-
+  // integratie is gekoppeld — vandaar status 'pending'.
+  function handleSaveEv() {
+    setEvError('')
+    const brand = evBrand.trim() || 'Elektrische auto'
+    startTransition(async () => {
+      const r = await saveDevice({
+        type: evV2g ? 'ev_v2g' : 'ev_generic',
+        brand,
+        label: brand,
+        config: {
+          capacity_kwh: evCapacity.trim(),
+          v2g: String(evV2g),
+          min_charge_pct: (evMinCharge.trim() || '80'),
+        },
+        status: 'pending',
+      })
+      if (r.error) { setEvError(r.error); return }
+      addDevice({ type: evV2g ? 'ev_v2g' : 'ev_generic', brand, name: brand, status: 'pending' })
+    })
+  }
+
   // ── Verwijderen ──────────────────────────────────────────────────────────
   function handleDelete(id: string) {
     setDeletingId(id)
@@ -647,6 +683,18 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
                 />
               )}
 
+              {step === 'ev-setup' && (
+                <EvStep
+                  c={c}
+                  brand={evBrand} onBrandChange={setEvBrand}
+                  capacity={evCapacity} onCapacityChange={setEvCapacity}
+                  v2g={evV2g} onV2gChange={setEvV2g}
+                  minCharge={evMinCharge} onMinChargeChange={setEvMinCharge}
+                  onSave={handleSaveEv} onBack={() => setStep('category')}
+                  savePending={isPending} error={evError}
+                />
+              )}
+
               {step === 'battery-other' && <BatteryOtherStep onBack={() => setStep('category')} c={c} />}
 
               {step === 'done' && (
@@ -695,8 +743,7 @@ function heatingCategories(c: Conn): ReadonlyArray<{ id: Step; icon: React.Eleme
 }
 function chargingCategories(c: Conn): ReadonlyArray<{ id: Step; icon: React.ElementType; title: string; sub: string; soon?: boolean }> {
   return [
-    { id: 'idle', icon: Car,             title: c.chargerTitle, sub: c.chargerSub, soon: true },
-    { id: 'idle', icon: BatteryCharging, title: c.v2gTitle,     sub: c.v2gSub,     soon: true },
+    { id: 'ev-setup', icon: Car, title: c.evTitle, sub: c.evSub },
   ]
 }
 
@@ -1274,6 +1321,73 @@ function HeatpumpStep({ c,
           </div>
         </>
       )}
+    </div>
+  )
+}
+
+// ── Elektrische auto (EV / V2G) step ───────────────────────────────────────
+
+function EvStep({ c,
+  brand, onBrandChange,
+  capacity, onCapacityChange,
+  v2g, onV2gChange,
+  minCharge, onMinChargeChange,
+  onSave, onBack, savePending, error,
+}: {
+  brand: string; onBrandChange: (v: string) => void
+  capacity: string; onCapacityChange: (v: string) => void
+  v2g: boolean; onV2gChange: (v: boolean) => void
+  minCharge: string; onMinChargeChange: (v: string) => void
+  onSave: () => void; onBack: () => void
+  savePending: boolean; error: string
+  c: Conn
+}) {
+  return (
+    <div className="space-y-4">
+      <p className="text-sm text-[var(--text-faint)]">{c.evIntro}</p>
+
+      <Field label={c.evBrandLabel} hint={c.evBrandHint}>
+        <Input type="text" value={brand} onChange={e => onBrandChange(e.target.value)} placeholder="Renault 5 E-Tech" />
+      </Field>
+
+      <Field label={c.evCapacityLabel} hint={c.evCapacityHint}>
+        <Input type="number" inputMode="numeric" value={capacity} onChange={e => onCapacityChange(e.target.value)} placeholder="52" />
+      </Field>
+
+      {/* V2G toggle */}
+      <button
+        type="button"
+        onClick={() => onV2gChange(!v2g)}
+        className={`flex w-full items-start gap-3 rounded-xl border px-4 py-3 text-left transition-colors ${
+          v2g
+            ? 'border-emerald-500/40 bg-emerald-500/[0.08]'
+            : 'border-[var(--border)] hover:border-emerald-500/30'
+        }`}
+      >
+        <span className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border ${
+          v2g ? 'border-emerald-500 bg-emerald-500' : 'border-[var(--border)]'
+        }`}>
+          {v2g && (
+            <svg className="h-3 w-3 text-white" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M2 6l3 3 5-5" />
+            </svg>
+          )}
+        </span>
+        <span className="flex-1">
+          <span className={`block text-sm font-medium ${v2g ? 'text-emerald-400' : 'text-[var(--text)]'}`}>{c.evV2gToggle}</span>
+          <span className="mt-0.5 block text-xs text-[var(--text-muted)]">{c.evV2gHint}</span>
+        </span>
+      </button>
+
+      <Field label={c.evMinChargeLabel} hint={c.evMinChargeHint}>
+        <Input type="number" inputMode="numeric" min={0} max={100} value={minCharge} onChange={e => onMinChargeChange(e.target.value)} placeholder="80" />
+      </Field>
+
+      {error && <ErrorBox msg={error} />}
+      <div className="flex gap-2 pt-1">
+        <BackBtn onClick={onBack} c={c} />
+        <SaveBtn onClick={onSave} pending={savePending} label={c.evAdd} c={c} />
+      </div>
     </div>
   )
 }

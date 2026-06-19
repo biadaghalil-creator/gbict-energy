@@ -295,6 +295,19 @@ export type TranslationDict = {
       chargerSub: string
       v2gTitle: string
       v2gSub: string
+      modalEv: string
+      evTitle: string
+      evSub: string
+      evIntro: string
+      evBrandLabel: string
+      evBrandHint: string
+      evCapacityLabel: string
+      evCapacityHint: string
+      evV2gToggle: string
+      evV2gHint: string
+      evMinChargeLabel: string
+      evMinChargeHint: string
+      evAdd: string
       heatpumpTitle: string
       heatpumpSub: string
       // common field labels
