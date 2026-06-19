@@ -308,6 +308,17 @@ export type TranslationDict = {
       evMinChargeLabel: string
       evMinChargeHint: string
       evAdd: string
+      evAutoConnect: string
+      evAutoConnectHint: string
+      evOrManual: string
+      batteryOtherSelectBrand: string
+      batteryOtherNameHint: string
+      batteryOtherAdd: string
+      errSelectBrand: string
+      modalThermostat: string
+      thermostatIntro: string
+      thermostatNameHint: string
+      thermostatAdd: string
       heatpumpTitle: string
       heatpumpSub: string
       // common field labels

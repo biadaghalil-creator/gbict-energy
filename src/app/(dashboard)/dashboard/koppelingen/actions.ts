@@ -17,8 +17,10 @@ export type DeviceType =
   | 'solar_fronius'
   | 'heatpump_tado'
   | 'heatpump_generic'
+  | 'thermostat_generic'
   | 'ev_generic'
   | 'ev_v2g'
+  | 'battery_other'
 
 export type NewDevice = {
   type: DeviceType

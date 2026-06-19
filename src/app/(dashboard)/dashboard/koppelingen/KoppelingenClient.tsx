@@ -32,6 +32,7 @@ type Step =
   | 'battery-other'
   | 'solar-solaredge-setup' | 'solar-fronius-setup' | 'solar-sma-setup'
   | 'heatpump-setup'
+  | 'thermostat-setup'
   | 'ev-setup'
   | 'done'
 
@@ -48,8 +49,10 @@ const DEVICE_ICONS: Record<string, React.ElementType> = {
   solar_fronius:        Sun,
   heatpump_tado:        Flame,
   heatpump_generic:     Flame,
+  thermostat_generic:   Thermometer,
   ev_generic:           Car,
   ev_v2g:               Car,
+  battery_other:        BatteryCharging,
 }
 
 function statusLabel(status: string, c: Conn): { label: string; color: string } {
@@ -72,6 +75,7 @@ function modalTitle(step: Step, c: Conn): string {
     'solar-fronius-setup':   c.modalFronius,
     'solar-sma-setup':       c.modalSma,
     'heatpump-setup':        c.modalHeatpump,
+    'thermostat-setup':      c.modalThermostat,
     'ev-setup':              c.modalEv,
     done:                    c.modalDone,
   }
@@ -163,6 +167,15 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
   const [evMinCharge, setEvMinCharge] = useState('80')
   const [evError,     setEvError]     = useState('')
 
+  // Andere batterij (merk-onafhankelijk registreren)
+  const [otherBrand, setOtherBrand] = useState('')
+  const [otherLabel, setOtherLabel] = useState('')
+  const [otherError, setOtherError] = useState('')
+
+  // Thermostaat (generiek)
+  const [thermoLabel, setThermoLabel] = useState('')
+  const [thermoError, setThermoError] = useState('')
+
   function openModal() {
     setStep('category')
     setTibberToken(''); setTibberName(''); setTibberError('')
@@ -178,6 +191,8 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
     setHeatpumpBrand('tado'); setHeatpumpLabel(''); setHeatpumpHome('')
     setHeatpumpError(''); resetTado()
     setEvBrand(''); setEvCapacity(''); setEvV2g(false); setEvMinCharge('80'); setEvError('')
+    setOtherBrand(''); setOtherLabel(''); setOtherError('')
+    setThermoLabel(''); setThermoError('')
   }
   function resetTado() {
     if (tadoTimer.current) { clearInterval(tadoTimer.current); tadoTimer.current = null }
@@ -464,6 +479,30 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
     })
   }
 
+  // ── Andere batterij (merk-onafhankelijk) ───────────────────────────────────
+  function handleSaveBatteryOther() {
+    setOtherError('')
+    const brand = otherBrand.trim()
+    if (!brand) { setOtherError(c.errSelectBrand); return }
+    const label = otherLabel.trim() || brand
+    startTransition(async () => {
+      const r = await saveDevice({ type: 'battery_other', brand, label, config: {}, status: 'pending' })
+      if (r.error) { setOtherError(r.error); return }
+      addDevice({ type: 'battery_other', brand, name: label, status: 'pending' })
+    })
+  }
+
+  // ── Thermostaat (generiek) ─────────────────────────────────────────────────
+  function handleSaveThermostat() {
+    setThermoError('')
+    const label = thermoLabel.trim() || 'Thermostaat'
+    startTransition(async () => {
+      const r = await saveDevice({ type: 'thermostat_generic', brand: 'Thermostaat', label, config: {}, status: 'pending' })
+      if (r.error) { setThermoError(r.error); return }
+      addDevice({ type: 'thermostat_generic', brand: 'Thermostaat', name: label, status: 'pending' })
+    })
+  }
+
   // ── Verwijderen ──────────────────────────────────────────────────────────
   function handleDelete(id: string) {
     setDeletingId(id)
@@ -695,7 +734,24 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
                 />
               )}
 
-              {step === 'battery-other' && <BatteryOtherStep onBack={() => setStep('category')} c={c} />}
+              {step === 'thermostat-setup' && (
+                <ThermostatStep
+                  c={c}
+                  label={thermoLabel} onLabelChange={setThermoLabel}
+                  onSave={handleSaveThermostat} onBack={() => setStep('category')}
+                  savePending={isPending} error={thermoError}
+                />
+              )}
+
+              {step === 'battery-other' && (
+                <BatteryOtherStep
+                  c={c}
+                  brand={otherBrand} onBrandChange={setOtherBrand}
+                  label={otherLabel} onLabelChange={setOtherLabel}
+                  onSave={handleSaveBatteryOther} onBack={() => setStep('category')}
+                  savePending={isPending} error={otherError}
+                />
+              )}
 
               {step === 'done' && (
                 <div className="py-4 text-center">
@@ -725,7 +781,7 @@ function batteryCategories(c: Conn): ReadonlyArray<{ id: Step; icon: React.Eleme
     { id: 'victron-setup',   icon: BatteryCharging, title: 'Victron Energy',   sub: c.victronSub },
     { id: 'enphase-setup',   icon: Sun,             title: 'Enphase',          sub: c.enphaseSub },
     { id: 'solaredge-setup', icon: CloudSun,        title: 'SolarEdge',        sub: c.solarEdgeSub },
-    { id: 'battery-other',   icon: Plug,            title: c.batteryOtherTitle, sub: c.batteryOtherSub, soon: true },
+    { id: 'battery-other',   icon: Plug,            title: c.batteryOtherTitle, sub: c.batteryOtherSub },
   ]
 }
 function solarCategories(c: Conn): ReadonlyArray<{ id: Step; icon: React.ElementType; title: string; sub: string; soon?: boolean }> {
@@ -737,8 +793,8 @@ function solarCategories(c: Conn): ReadonlyArray<{ id: Step; icon: React.Element
 }
 function heatingCategories(c: Conn): ReadonlyArray<{ id: Step; icon: React.ElementType; title: string; sub: string; soon?: boolean }> {
   return [
-    { id: 'heatpump-setup', icon: Flame,       title: c.heatpumpTitle,   sub: c.heatpumpSub },
-    { id: 'idle',           icon: Thermometer, title: c.thermostatTitle, sub: c.thermostatSub, soon: true },
+    { id: 'heatpump-setup',   icon: Flame,       title: c.heatpumpTitle,   sub: c.heatpumpSub },
+    { id: 'thermostat-setup', icon: Thermometer, title: c.thermostatTitle, sub: c.thermostatSub },
   ]
 }
 function chargingCategories(c: Conn): ReadonlyArray<{ id: Step; icon: React.ElementType; title: string; sub: string; soon?: boolean }> {
@@ -1342,9 +1398,31 @@ function EvStep({ c,
   savePending: boolean; error: string
   c: Conn
 }) {
+  // Automatisch koppelen verschijnt zodra de EV-partner-koppeling aanstaat
+  // (NEXT_PUBLIC_EV_AUTOCONNECT). Tot die tijd: handmatig registreren.
+  const autoConnect = process.env.NEXT_PUBLIC_EV_AUTOCONNECT === '1'
+
   return (
     <div className="space-y-4">
       <p className="text-sm text-[var(--text-faint)]">{c.evIntro}</p>
+
+      {autoConnect && (
+        <>
+          <a
+            href="/api/ev/connect"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-emerald-700"
+          >
+            <Car className="h-4 w-4" />
+            {c.evAutoConnect}
+          </a>
+          <p className="text-center text-[11px] text-[var(--text-muted)]">{c.evAutoConnectHint}</p>
+          <div className="flex items-center gap-3 py-1 text-[11px] uppercase tracking-wide text-[var(--text-muted)]">
+            <span className="h-px flex-1 bg-[var(--border)]" />
+            {c.evOrManual}
+            <span className="h-px flex-1 bg-[var(--border)]" />
+          </div>
+        </>
+      )}
 
       <Field label={c.evBrandLabel} hint={c.evBrandHint}>
         <Input type="text" value={brand} onChange={e => onBrandChange(e.target.value)} placeholder="Renault 5 E-Tech" />
@@ -1394,21 +1472,71 @@ function EvStep({ c,
 
 // ── Battery other step ─────────────────────────────────────────────────────
 
-const OTHER_BRANDS = ['Tesla Powerwall', 'GoodWe', 'Growatt', 'Huawei FusionSolar', 'Alpha ESS', 'Pylontech']
+const OTHER_BRANDS = ['Tesla Powerwall', 'GoodWe', 'Growatt', 'Huawei FusionSolar', 'Alpha ESS', 'Pylontech', 'Anders']
 
-function BatteryOtherStep({ c, onBack }: { onBack: () => void; c: Conn }) {
+function BatteryOtherStep({ c, brand, onBrandChange, label, onLabelChange, onSave, onBack, savePending, error }: {
+  brand: string; onBrandChange: (v: string) => void
+  label: string; onLabelChange: (v: string) => void
+  onSave: () => void; onBack: () => void
+  savePending: boolean; error: string
+  c: Conn
+}) {
   return (
     <div className="space-y-4">
       <p className="text-sm text-[var(--text-faint)]">{c.batteryOtherIntro}</p>
-      <div className="grid grid-cols-2 gap-2">
-        {OTHER_BRANDS.map(b => (
-          <div key={b} className="flex items-center justify-between rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2.5">
-            <span className="text-sm text-[var(--text-faint)]">{b}</span>
-            <span className="rounded-full bg-[var(--surface-2)] px-1.5 py-0.5 text-[10px] text-[var(--text-muted)]">{c.comingSoon}</span>
-          </div>
-        ))}
+      <div>
+        <p className="mb-1.5 text-xs font-medium text-[var(--text-muted)]">{c.batteryOtherSelectBrand}</p>
+        <div className="grid grid-cols-2 gap-2">
+          {OTHER_BRANDS.map(b => {
+            const selected = brand === b
+            return (
+              <button
+                key={b}
+                type="button"
+                onClick={() => onBrandChange(b)}
+                className={`rounded-xl border px-3 py-2.5 text-left text-sm transition-colors ${
+                  selected
+                    ? 'border-emerald-500/40 bg-emerald-500/[0.08] font-medium text-emerald-400'
+                    : 'border-[var(--border)] hover:border-emerald-500/30'
+                }`}
+              >
+                {b}
+              </button>
+            )
+          })}
+        </div>
       </div>
-      <button onClick={onBack} className="w-full rounded-xl border border-[var(--border)] py-2.5 text-sm text-[var(--text-muted)] hover:bg-[var(--surface-2)]">{c.back}</button>
+      <Field label={c.heatpumpNameLabel} hint={c.batteryOtherNameHint}>
+        <Input type="text" value={label} onChange={e => onLabelChange(e.target.value)} placeholder={brand || 'Thuisbatterij'} />
+      </Field>
+      {error && <ErrorBox msg={error} />}
+      <div className="flex gap-2 pt-1">
+        <BackBtn onClick={onBack} c={c} />
+        <SaveBtn onClick={onSave} pending={savePending || !brand} label={c.batteryOtherAdd} c={c} />
+      </div>
+    </div>
+  )
+}
+
+// ── Thermostaat step ───────────────────────────────────────────────────────
+
+function ThermostatStep({ c, label, onLabelChange, onSave, onBack, savePending, error }: {
+  label: string; onLabelChange: (v: string) => void
+  onSave: () => void; onBack: () => void
+  savePending: boolean; error: string
+  c: Conn
+}) {
+  return (
+    <div className="space-y-4">
+      <p className="text-sm text-[var(--text-faint)]">{c.thermostatIntro}</p>
+      <Field label={c.heatpumpNameLabel} hint={c.thermostatNameHint}>
+        <Input type="text" value={label} onChange={e => onLabelChange(e.target.value)} placeholder="Thermostaat" />
+      </Field>
+      {error && <ErrorBox msg={error} />}
+      <div className="flex gap-2 pt-1">
+        <BackBtn onClick={onBack} c={c} />
+        <SaveBtn onClick={onSave} pending={savePending} label={c.thermostatAdd} c={c} />
+      </div>
     </div>
   )
 }
