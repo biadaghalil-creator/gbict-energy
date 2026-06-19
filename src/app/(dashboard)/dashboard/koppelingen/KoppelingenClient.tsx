@@ -177,6 +177,15 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
   // Stop de Tado-poll als de modal sluit / component unmount.
   useEffect(() => () => { if (tadoTimer.current) clearInterval(tadoTimer.current) }, [])
 
+  // Vergrendel het scrollen van de pagina-achtergrond zolang de modal open is,
+  // zodat de lijst niet "wegglijdt" achter het venster (iOS rubber-band).
+  useEffect(() => {
+    if (step === 'idle') return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = prev }
+  }, [step])
+
   function addDevice(partial: Omit<Device, 'id' | 'created_at'>) {
     setDevices(prev => [...prev, { ...partial, id: crypto.randomUUID(), created_at: new Date().toISOString() }])
     setStep('done')
@@ -488,11 +497,29 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
         </div>
       )}
 
-      {/* Modal */}
+      {/* Modal — bottom-sheet op mobiel, gecentreerde kaart op desktop.
+          z-[80] zodat hij boven de zwevende orb-balk (z-60) en de topbalk
+          (z-30) staat. flex-col met scrollende body voorkomt dat de titel/
+          sluitknop op iOS van het scherm worden geduwd. */}
       {step !== 'idle' && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md rounded-2xl bg-[var(--surface)] shadow-xl">
-            <div className="flex items-center justify-between border-b border-[var(--border)] px-6 py-4">
+        <div className="fixed inset-0 z-[80] flex items-end justify-center sm:items-center">
+          <button
+            aria-label="Sluiten"
+            onClick={closeModal}
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+          />
+          <div
+            className="relative flex w-full max-w-md flex-col overflow-hidden rounded-t-3xl bg-[var(--surface)] shadow-2xl sm:rounded-3xl"
+            style={{
+              maxHeight: 'calc(100dvh - env(safe-area-inset-top) - 16px)',
+              marginTop: 'env(safe-area-inset-top)',
+            }}
+          >
+            {/* Sleep-handvat (alleen mobiel) */}
+            <div className="flex shrink-0 justify-center pt-2.5 sm:hidden">
+              <span className="h-1 w-9 rounded-full bg-[var(--border)]" />
+            </div>
+            <div className="flex shrink-0 items-center justify-between border-b border-[var(--border)] px-6 py-4">
               <h2 className="text-base font-semibold text-[var(--text)]">
                 {modalTitle(step, c)}
               </h2>
@@ -503,7 +530,10 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
               </button>
             </div>
 
-            <div className="max-h-[80vh] overflow-y-auto px-6 py-5">
+            <div
+              className="flex-1 overflow-y-auto overscroll-contain px-6 py-5"
+              style={{ paddingBottom: 'calc(1.25rem + env(safe-area-inset-bottom))' }}
+            >
               {step === 'category' && <CategoryStep onSelect={setStep} c={c} />}
 
               {step === 'tibber-token' && (

@@ -36,6 +36,10 @@ export default function DashboardShell({
   const native = useIsNative()
   const { t, locale } = useT()
 
+  // De onboarding-flow is een schoon volledig-scherm proces: geen topbalk en
+  // geen zwevende orb-navigatie eromheen (anders kun je er middenin wegtikken).
+  const hideChrome = pathname === '/onboarding'
+
   const isActive = (item: typeof navItems[number]) =>
     item.exact ? pathname === item.href : pathname.startsWith(item.href)
 
@@ -58,7 +62,8 @@ export default function DashboardShell({
       <div className="pointer-events-none fixed inset-0 z-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_100%_80%_at_50%_0%,#000_40%,transparent_90%)]" />
       <WidgetSync />
 
-      {/* ── Horizontale topbalk (zoals de website) ── */}
+      {/* ── Horizontale topbalk (zoals de website) — verborgen tijdens onboarding ── */}
+      {!hideChrome && (
       <header
         className={cn(
           'sticky top-0 z-30 border-b border-[var(--border)] bg-[var(--header)] backdrop-blur-xl',
@@ -144,16 +149,24 @@ export default function DashboardShell({
           </div>
         </div>
       </header>
+      )}
 
       {/* ── Content ── */}
       <main className="relative z-10 flex-1 overflow-auto">
-        <div className={cn('mx-auto w-full max-w-6xl px-5 py-8', native && 'pb-28')}>
+        <div
+          className={cn(
+            'mx-auto w-full max-w-6xl px-5 py-8',
+            native && !hideChrome && 'pb-28',
+            // Geen topbalk tijdens onboarding → zelf de notch-ruimte vrijhouden.
+            hideChrome && native && 'pt-[calc(env(safe-area-inset-top)+8px)]'
+          )}
+        >
           {children}
         </div>
       </main>
 
-      {/* Zwevende orb-navigatie — alleen in de native app (onderaan) */}
-      <NativeTabBar />
+      {/* Zwevende orb-navigatie — alleen in de native app (onderaan), niet tijdens onboarding */}
+      {!hideChrome && <NativeTabBar />}
     </div>
   )
 }

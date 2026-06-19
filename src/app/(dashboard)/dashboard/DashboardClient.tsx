@@ -85,7 +85,7 @@ function HeroCard({ savings, tibber, hasSessy, t }: {
           )}
         </div>
 
-        <div className="mt-7 flex items-center gap-3">
+        <div className="mt-7 flex flex-wrap items-center gap-3">
           <Link
             href="/dashboard/besparingen"
             className="inline-flex h-12 items-center gap-2 rounded-full bg-emerald-600 px-6 text-[14px] font-semibold text-white shadow-[0_8px_22px_-10px_rgba(63,107,79,0.7)] transition hover:brightness-[1.06]"
