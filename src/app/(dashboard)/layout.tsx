@@ -1,7 +1,13 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import { hasActiveSubscription } from '@/lib/plans'
 import DashboardShell from './DashboardShell'
+import NoAccess from './NoAccess'
+
+// ── Toegang ────────────────────────────────────────────────────────────────
+// Tijdelijke privé-fase: ALLEEN deze gebruikers mogen de app in. De rest ziet
+// een "geen toegang"-scherm. Toegestane gebruikers krijgen volledige toegang
+// zonder betaal-gate (Stripe komt later). Voeg hier e-mails toe om door te laten.
+const ALLOWED_EMAILS = ['ghalil@gbict.nl']
 
 export default async function DashboardLayout({
   children,
@@ -15,15 +21,12 @@ export default async function DashboardLayout({
 
   if (!user) redirect('/login')
 
-  // Payment first: no access to the app (incl. onboarding) without an active
-  // or trialing subscription. New users are sent to the plan + card step.
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('subscription_status')
-    .eq('id', user.id)
-    .single()
-
-  if (!hasActiveSubscription(profile?.subscription_status)) redirect('/start')
+  const email = (user.email ?? '').trim().toLowerCase()
+  if (!ALLOWED_EMAILS.includes(email)) {
+    // Niemand anders mag er nu in. Geen redirect (voorkomt loops) — gewoon
+    // een duidelijk scherm met de mogelijkheid om uit te loggen.
+    return <NoAccess email={user.email ?? ''} />
+  }
 
   return (
     <DashboardShell userEmail={user.email ?? ''}>
