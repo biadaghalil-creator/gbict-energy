@@ -150,6 +150,15 @@ export const fr: TranslationDict = {
       viewStatus: 'Voir le statut',
       joinBeta: 'Rejoindre la bêta',
     },
+    evCard: {
+      capacity: 'Batterie',
+      chargePlan: 'Plan de charge intelligent ce soir',
+      sellPlan: 'Réinjection autour du pic',
+      cheaper: '{pct}% moins cher que la moyenne',
+      avgPrice: 'moy.',
+      pendingNote: "Le pilotage automatique s'active dès que votre borne ou partenaire est connecté.",
+      noPrices: "Le plan de charge apparaît dès que les prix du jour sont disponibles.",
+    },
     priceChart: {
       title: "Prix de l'énergie",
       subtitle: "Prix spot EPEX aujourd'hui (€/kWh)",

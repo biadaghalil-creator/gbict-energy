@@ -150,6 +150,15 @@ export const nl: TranslationDict = {
       viewStatus: 'Bekijk status',
       joinBeta: 'Aanmelden bèta',
     },
+    evCard: {
+      capacity: 'Accu',
+      chargePlan: 'Slim laadplan vanavond',
+      sellPlan: 'Terugleveren rond piek',
+      cheaper: '{pct}% goedkoper dan gemiddeld',
+      avgPrice: 'gem.',
+      pendingNote: 'Automatische aansturing schakelt in zodra je laadpaal of partner gekoppeld is.',
+      noPrices: 'Laadplan verschijnt zodra de dagprijzen binnen zijn.',
+    },
     priceChart: {
       title: 'Energieprijzen',
       subtitle: 'EPEX-spotprijzen vandaag (€/kWh)',

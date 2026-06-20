@@ -4,13 +4,23 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import {
   Zap, TrendingUp, TrendingDown, BatteryCharging,
-  ArrowUpRight, Plug, ExternalLink,
+  ArrowUpRight, Plug, ExternalLink, Car,
 } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useT } from '@/hooks/use-t'
+import { useT, fill } from '@/hooks/use-t'
 import type { TranslationDict } from '@/lib/i18n'
 
 /* ── Types ─────────────────────────────────────────────── */
+export type DeviceSummary = {
+  type: string
+  name: string
+  brand: string
+  status: string
+  capacityKwh?: string
+  v2g?: boolean
+  minChargePct?: string
+}
+
 type SavingsData = {
   today_eur: number; month_eur: number; total_eur: number
   discharge_count: number; charge_count: number; logs_today: number
@@ -181,6 +191,87 @@ function VppCard({ enrolled, t }: { enrolled: boolean; t: TranslationDict }) {
   )
 }
 
+/* ── EV / V2G card ──────────────────────────────────────── */
+function fmtHour(startsAt: string) {
+  return `${String(new Date(startsAt).getHours()).padStart(2, '0')}:00`
+}
+
+function EvCard({ ev, prices, t }: { ev: DeviceSummary; prices: PricePoint[]; t: TranslationDict }) {
+  const isV2g = ev.v2g === true || ev.type === 'ev_v2g'
+  const capacity = Number(ev.capacityKwh)
+  const hasPrices = prices.length >= 6
+
+  // Aantal goedkoopste uren ~ accugrootte (1u ≈ 7 kW laden), tussen 3 en 6.
+  const chargeHours = capacity > 0 ? Math.min(6, Math.max(3, Math.round(capacity / 11))) : 4
+  const byPriceAsc = [...prices].sort((a, b) => a.total - b.total)
+  const cheap = byPriceAsc.slice(0, chargeHours)
+    .sort((a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime())
+  const peak = isV2g
+    ? [...prices].sort((a, b) => b.total - a.total).slice(0, 3)
+        .sort((a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime())
+    : []
+
+  const avgAll = prices.length ? prices.reduce((s, p) => s + p.total, 0) / prices.length : 0
+  const avgCheap = cheap.length ? cheap.reduce((s, p) => s + p.total, 0) / cheap.length : 0
+  const cheaperPct = avgAll > 0 ? Math.round(((avgAll - avgCheap) / avgAll) * 100) : 0
+
+  return (
+    <div className="relative flex flex-col overflow-hidden rounded-[26px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_2px_26px_-16px_rgba(20,24,15,0.30)] p-6">
+      <div className="flex items-start justify-between">
+        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/10 ring-1 ring-emerald-500/20">
+          <Car className="h-4 w-4 text-emerald-400" />
+        </div>
+        {isV2g && (
+          <span className="rounded-md bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-500 ring-1 ring-emerald-500/20">V2G</span>
+        )}
+      </div>
+
+      <p className="mt-4 text-[15px] font-semibold text-[var(--text)]">{ev.name}</p>
+      {capacity > 0 && (
+        <p className="mt-0.5 text-[12px] text-[var(--text-faint)]">{t.dashboard.evCard.capacity} · {capacity} kWh</p>
+      )}
+
+      {hasPrices ? (
+        <div className="mt-4 space-y-3">
+          <div>
+            <p className="text-[11px] font-medium text-[var(--text-muted)]">{t.dashboard.evCard.chargePlan}</p>
+            <div className="mt-1.5 flex flex-wrap gap-1.5">
+              {cheap.map((p) => (
+                <span key={p.startsAt} className="rounded-md bg-emerald-500/10 px-2 py-0.5 font-mono text-[11px] font-medium text-emerald-500">
+                  {fmtHour(p.startsAt)}
+                </span>
+              ))}
+            </div>
+            <p className="mt-1.5 text-[11px] text-[var(--text-faint)]">
+              {t.dashboard.evCard.avgPrice} {fmtSmall(avgCheap)}{t.dashboard.overview.perKwh}
+              {cheaperPct > 0 && <span className="ml-2 text-emerald-500">· {fill(t.dashboard.evCard.cheaper, { pct: cheaperPct })}</span>}
+            </p>
+          </div>
+
+          {isV2g && peak.length > 0 && (
+            <div>
+              <p className="text-[11px] font-medium text-[var(--text-muted)]">{t.dashboard.evCard.sellPlan}</p>
+              <div className="mt-1.5 flex flex-wrap gap-1.5">
+                {peak.map((p) => (
+                  <span key={p.startsAt} className="rounded-md bg-amber-500/10 px-2 py-0.5 font-mono text-[11px] font-medium text-amber-500">
+                    {fmtHour(p.startsAt)}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      ) : (
+        <p className="mt-4 text-[12px] text-[var(--text-faint)]">{t.dashboard.evCard.noPrices}</p>
+      )}
+
+      <p className="mt-4 border-t border-[var(--border)] pt-3 text-[11px] leading-relaxed text-[var(--text-faint)]">
+        {t.dashboard.evCard.pendingNote}
+      </p>
+    </div>
+  )
+}
+
 /* ── Price bar chart ────────────────────────────────────── */
 function PriceChart({ prices, schedule, t }: { prices: PricePoint[]; schedule?: ScheduleSlot[]; t: TranslationDict }) {
   if (!prices.length) return null
@@ -292,8 +383,10 @@ function ScheduleList({ schedule, estimatedSavings, t }: {
 }
 
 /* ── Recent activity table ──────────────────────────────── */
+type LogRow = { action: string; created_at: string; kwh: number; price_eur: number; savings_eur: number }
+
 function ActivityTable({ t, tag }: { t: TranslationDict; tag: string }) {
-  const [logs, setLogs] = useState<any[]>([])
+  const [logs, setLogs] = useState<LogRow[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -332,7 +425,7 @@ function ActivityTable({ t, tag }: { t: TranslationDict; tag: string }) {
         </div>
       ) : (
         <div className="divide-y divide-white/[0.04]">
-          {logs.map((log: any, i: number) => {
+          {logs.map((log: LogRow, i: number) => {
             const isCharge = log.action === 'charge'
             const dt = new Date(log.created_at)
             const timeStr = dt.toLocaleString(tag, { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' })
@@ -370,13 +463,15 @@ function ActivityTable({ t, tag }: { t: TranslationDict; tag: string }) {
 
 /* ── Main dashboard client component ───────────────────── */
 export default function DashboardClient({
-  hasTibber, hasSessy, hasSolar,
+  hasTibber, hasSessy, hasSolar, devices = [],
 }: {
   hasTibber: boolean
   hasSessy: boolean
   hasSolar: boolean
+  devices?: DeviceSummary[]
 }) {
   const { t, tag } = useT()
+  const ev = devices.find(d => d.type === 'ev_generic' || d.type === 'ev_v2g')
   const [savings, setSavings] = useState<SavingsData | null>(null)
   const [sessy, setSessy] = useState<SessyStatus | null>(null)
   const [tibber, setTibber] = useState<TibberData | null>(null)
@@ -422,6 +517,13 @@ export default function DashboardClient({
           <BatteryCard sessy={sessy} t={t} />
           <VppCard enrolled={false} t={t} />
         </div>
+
+        {/* Gekoppelde EV — slim laadplan uit de live prijzen */}
+        {ev && (
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <EvCard ev={ev} prices={todayPrices} t={t} />
+          </div>
+        )}
 
         {/* Row 2: Price chart + Schedule — live EPEX prices for everyone */}
         {todayPrices.length > 0 ? (

@@ -154,6 +154,16 @@ export type TranslationDict = {
       viewStatus: string
       joinBeta: string
     }
+    // EV / V2G card on dashboard
+    evCard: {
+      capacity: string
+      chargePlan: string
+      sellPlan: string
+      cheaper: string
+      avgPrice: string
+      pendingNote: string
+      noPrices: string
+    }
     // Price chart
     priceChart: {
       title: string

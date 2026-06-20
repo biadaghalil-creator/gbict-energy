@@ -150,6 +150,15 @@ export const en: TranslationDict = {
       viewStatus: 'View status',
       joinBeta: 'Join beta',
     },
+    evCard: {
+      capacity: 'Battery',
+      chargePlan: 'Smart charge plan tonight',
+      sellPlan: 'Export around peak',
+      cheaper: '{pct}% cheaper than average',
+      avgPrice: 'avg.',
+      pendingNote: 'Automatic steering switches on once your charger or partner is connected.',
+      noPrices: 'The charge plan appears once today\'s prices are in.',
+    },
     priceChart: {
       title: 'Energy prices',
       subtitle: 'EPEX spot prices today (€/kWh)',

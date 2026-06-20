@@ -150,6 +150,15 @@ export const de: TranslationDict = {
       viewStatus: 'Status ansehen',
       joinBeta: 'Beta beitreten',
     },
+    evCard: {
+      capacity: 'Akku',
+      chargePlan: 'Smarter Ladeplan heute Abend',
+      sellPlan: 'Rückspeisung um die Spitze',
+      cheaper: '{pct}% günstiger als der Durchschnitt',
+      avgPrice: 'Ø',
+      pendingNote: 'Die automatische Steuerung schaltet sich ein, sobald deine Ladestation oder dein Partner verbunden ist.',
+      noPrices: 'Der Ladeplan erscheint, sobald die Tagespreise da sind.',
+    },
     priceChart: {
       title: 'Energiepreise',
       subtitle: 'EPEX-Spotpreise heute (€/kWh)',
