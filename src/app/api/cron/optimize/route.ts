@@ -10,11 +10,15 @@
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { getSessyToken, setSessySetpoint } from '@/lib/sessy'
-import { getVictronToken } from '@/lib/victron'
+import { getVictronToken, getVictronPortalId } from '@/lib/victron'
+import { setVictronSetpointViaMqtt } from '@/lib/victron-mqtt'
 import { fetchDayAheadPrices, currentHourPrice } from '@/lib/energyzero'
 import { optimizeSchedule } from '@/lib/optimize'
 import { sendDailySummary, sendCheapHourAlert } from '@/lib/email'
 import { NextResponse } from 'next/server'
+
+// MQTT (Victron-control) gebruikt Node's TLS/net — forceer de Node-runtime.
+export const runtime = 'nodejs'
 
 const BATTERY_KWH = 1.0  // kWh per uur actie
 
@@ -102,18 +106,29 @@ export async function GET(req: Request) {
           await setSessySetpoint(tokenData.access_token, setpoint)
         }
       } else if (device.type === 'battery_victron') {
-        // Victron: VRM API — log intent
-        // Directe setpoint via VRM REST API is niet beschikbaar.
-        // Opties: lokale Venus OS MQTT (toekomstig), of handmatige modus via VRM.
-        // We loggen de optimalisatie-intentie zodat besparingen traceerbaar zijn.
+        // Victron: echte ESS-setpoint via de VRM cloud MQTT-broker (de REST-API
+        // is read-only). Vereist dat de installatie remote control toestaat.
+        // Lukt het niet, dan loggen we de intentie zodat besparingen traceerbaar
+        // blijven — de cron mag hier nooit op stuklopen.
         try {
           const auth = await getVictronToken(device.config.email, device.config.password)
           if (auth) {
-            // Token vernieuwd — opgeslagen voor monitoring
+            const portalId = device.config.portalId
+              || await getVictronPortalId(auth.token, auth.idUser, Number(device.config.idSite))
+            const ok = portalId
+              ? await setVictronSetpointViaMqtt({
+                  portalId,
+                  email: device.config.email,
+                  token: auth.token,
+                  watts: setpoint,
+                })
+              : false
+            results[device.id] = ok ? `victron:mqtt:${action}` : `victron:intent:${action}`
+          } else {
             results[device.id] = `victron:intent:${action}`
           }
         } catch {
-          // Non-fatal — log toch
+          results[device.id] = `victron:intent:${action}`
         }
       } else if (device.type === 'battery_enphase') {
         // Enphase: Enlighten API is read-only voor consumer API keys.

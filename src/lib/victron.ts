@@ -11,6 +11,7 @@ export type VictronAuth = {
 export type VictronInstallation = {
   idSite: number
   name: string
+  identifier?: string   // VRM portal-ID (GX-identifier) — nodig voor MQTT-control
 }
 
 export type VictronBatteryStatus = {
@@ -54,10 +55,21 @@ export async function getVictronInstallations(
     return (data.records ?? []).map((r: Record<string, unknown>) => ({
       idSite: Number(r.idSite),
       name: String(r.name ?? `Site ${r.idSite}`),
+      identifier: r.identifier ? String(r.identifier) : undefined,
     }))
   } catch {
     return []
   }
+}
+
+/** Zoek de VRM portal-ID (GX-identifier) van een installatie op via idSite. */
+export async function getVictronPortalId(
+  token: string,
+  idUser: number,
+  idSite: number
+): Promise<string | null> {
+  const installations = await getVictronInstallations(token, idUser)
+  return installations.find(i => i.idSite === idSite)?.identifier ?? null
 }
 
 export async function getVictronBatteryStatus(
