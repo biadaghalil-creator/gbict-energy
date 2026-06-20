@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useTransition, useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import {
   saveDevice, deleteDevice,
   testTibberToken, testSessyCredentials,
@@ -87,6 +88,7 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
   const c = t.dashboard.connections
   const [devices, setDevices]        = useState<Device[]>(initialDevices)
   const [step, setStep]              = useState<Step>('idle')
+  const [mounted, setMounted]        = useState(false)
   const [isPending, startTransition] = useTransition()
   const [deletingId, setDeletingId]  = useState<string | null>(null)
 
@@ -200,6 +202,11 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
     setTadoStatus('idle'); setTadoUserCode(''); setTadoVerifyUrl('')
   }
   function closeModal() { resetTado(); setStep('idle') }
+
+  // De modal wordt via een portal in document.body gerenderd, buiten alle
+  // stacking-contexts — pas na mount (portal werkt niet tijdens SSR).
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- mount-detectie is browser-only
+  useEffect(() => { setMounted(true) }, [])
 
   // Stop de Tado-poll als de modal sluit / component unmount.
   useEffect(() => () => { if (tadoTimer.current) clearInterval(tadoTimer.current) }, [])
@@ -576,7 +583,7 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
           z-[80] zodat hij boven de zwevende orb-balk (z-60) en de topbalk
           (z-30) staat. flex-col met scrollende body voorkomt dat de titel/
           sluitknop op iOS van het scherm worden geduwd. */}
-      {step !== 'idle' && (
+      {step !== 'idle' && mounted && createPortal(
         <div className="fixed inset-0 z-[80] flex items-end justify-center sm:items-center">
           <button
             aria-label="Sluiten"
@@ -761,7 +768,8 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
               )}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   )
