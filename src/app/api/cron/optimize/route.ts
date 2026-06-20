@@ -12,6 +12,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { getSessyToken, setSessySetpoint } from '@/lib/sessy'
 import { getVictronToken, getVictronPortalId } from '@/lib/victron'
 import { setVictronSetpointViaMqtt } from '@/lib/victron-mqtt'
+import { enodeConfigured, getEnodeVehicles, setEnodeCharging } from '@/lib/enode'
 import { fetchDayAheadPrices, currentHourPrice } from '@/lib/energyzero'
 import { optimizeSchedule } from '@/lib/optimize'
 import { sendDailySummary, sendCheapHourAlert } from '@/lib/email'
@@ -214,6 +215,62 @@ export async function GET(req: Request) {
   } catch (err) {
     // Niet-kritisch — warmtepomp-adviezen mogen de cron nooit laten falen.
     console.error('Warmtepomp-adviesblok overgeslagen:', err)
+  }
+
+  // ── EV-laden (Enode) ───────────────────────────────────────────────────────
+  // Merk-onafhankelijk slim laden: START in goedkope uren, STOP daarbuiten.
+  // Via de Enode-aggregator zodra die geconfigureerd is; anders alleen advies-
+  // logging. Defensief — mag de batterij-flow nooit breken.
+  try {
+    const { data: evDevices } = await supabase
+      .from('devices')
+      .select('id, user_id, type')
+      .in('type', ['ev_generic', 'ev_v2g'])
+
+    if (evDevices?.length) {
+      const evHour = new Date().getHours()
+
+      for (const device of evDevices) {
+        try {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('optimize_mode, subscription_status')
+            .eq('id', device.user_id)
+            .single()
+
+          const subStatus = profile?.subscription_status as string | undefined
+          if (subStatus !== 'active' && subStatus !== 'trialing') continue
+
+          const mode = (profile?.optimize_mode as 'max_savings' | 'comfort' | 'eco') ?? 'max_savings'
+          const { schedule } = optimizeSchedule(todayPrices, mode)
+          const slot = schedule.find(s => s.hour === evHour)
+          const shouldCharge = slot?.action === 'charge'
+
+          let controlled = false
+          if (enodeConfigured()) {
+            const vehicles = await getEnodeVehicles(device.user_id)
+            for (const v of vehicles) {
+              const ok = await setEnodeCharging(v.id, shouldCharge ? 'START' : 'STOP')
+              controlled = controlled || ok
+            }
+          }
+
+          await supabase.from('optimization_logs').insert({
+            user_id: device.user_id,
+            action: shouldCharge ? 'charge' : 'idle',
+            price_eur: currentPrice.total,
+            kwh: 0,
+            savings_eur: 0,
+            source: controlled ? 'ev:enode' : 'ev',
+          })
+        } catch (err) {
+          console.error(`Fout bij EV ${device.id}:`, err)
+        }
+      }
+    }
+  } catch (err) {
+    // Niet-kritisch — EV-blok mag de cron nooit laten falen.
+    console.error('EV-blok overgeslagen:', err)
   }
 
   // ── E-mail notificaties ──────────────────────────────────────────────────
