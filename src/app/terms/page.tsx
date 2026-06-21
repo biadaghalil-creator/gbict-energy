@@ -1,66 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Menu, FileText } from "lucide-react";
-
-const NAV_LINKS = [
-  ["How it works", "/#how"],
-  ["Integrations", "/#features"],
-  ["Pricing", "/#pricing"],
-  ["Contact", "/contact"],
-] as const;
-
-const btnPrimary =
-  "inline-flex items-center justify-center h-12 px-7 rounded-full bg-[#047857] hover:bg-[#059669] " +
-  "text-white text-[15px] font-semibold tracking-[-0.01em] shadow-[0_1px_3px_rgba(0,0,0,0.3)] transition-colors";
-
-function Nav() {
-  const [open, setOpen] = useState(false);
-  return (
-    <nav className="sticky top-0 z-50 border-b border-[var(--border)] bg-[var(--header)] backdrop-blur-md">
-      <div className="mx-auto flex h-[68px] max-w-[1140px] items-center gap-7 px-6">
-        <a href="/" className="shrink-0">
-          <img src="/gbict-logo.png" alt="GBICT Energy" width={56} height={56} className="block rounded-[13px]" />
-        </a>
-        <div className="ml-3 hidden gap-7 md:flex">
-          {NAV_LINKS.map(([t, h]) => (
-            <a key={h} href={h} className="text-[14.5px] font-medium text-[var(--text-muted)] transition-colors hover:text-[var(--text)]">{t}</a>
-          ))}
-        </div>
-        <div className="ml-auto flex items-center gap-3">
-          <a href="/login" className="hidden text-[15px] font-medium text-[var(--text-muted)] transition-colors hover:text-[var(--text)] md:inline-flex">Sign in</a>
-          <a href="/signup" className={btnPrimary + " hidden md:inline-flex"}>Start free</a>
-          <button aria-label="Menu" className="text-[var(--text)] md:hidden" onClick={() => setOpen((o) => !o)}><Menu className="h-6 w-6" /></button>
-        </div>
-      </div>
-      {open && (
-        <div className="flex flex-col gap-1 border-b border-[var(--border)] bg-[var(--bg)] px-6 pb-5 pt-3 backdrop-blur-md md:hidden">
-          {NAV_LINKS.map(([t, h]) => (
-            <a key={h} href={h} className="border-b border-[var(--border)] py-3 text-base text-[var(--text-muted)]" onClick={() => setOpen(false)}>{t}</a>
-          ))}
-          <a href="/signup" className={btnPrimary + " mt-3"}>Start free</a>
-        </div>
-      )}
-    </nav>
-  );
-}
-
-function Footer() {
-  return (
-    <footer className="border-t border-[var(--border)] pb-10 pt-12">
-      <div className="mx-auto max-w-[1140px] px-6">
-        <div className="flex flex-col items-center justify-between gap-3.5 text-[13px] text-[var(--text-faint)] md:flex-row">
-          <span>© 2026 GBICT Energy · Almere, Netherlands</span>
-          <div className="flex gap-5">
-            <a href="/privacy" className="hover:text-[var(--text)]">Privacy Policy</a>
-            <a href="/terms" className="text-emerald-400 hover:text-emerald-300">Terms of Service</a>
-            <a href="/contact" className="hover:text-[var(--text)]">Contact</a>
-          </div>
-        </div>
-      </div>
-    </footer>
-  );
-}
+import { FileText } from "lucide-react";
+import { SiteNav, SiteFooter } from "@/components/SiteChrome";
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -73,10 +14,10 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 export default function TermsPage() {
   return (
-    <main className="dark relative min-h-screen overflow-x-hidden bg-[var(--bg)] font-sans text-[var(--text)] antialiased">
-      <div className="pointer-events-none fixed inset-0 z-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_100%_80%_at_50%_0%,#000_40%,transparent_90%)]" />
-      <div className="relative z-[2]">
-        <Nav />
+    <main className="gbict-landing relative min-h-screen overflow-x-hidden" data-dir="grid">
+      <div className="atmos"><div className="glow g1" /><div className="glow g2" /><div className="glow g3" /></div>
+      <div className="wrap">
+        <SiteNav />
 
         <div className="mx-auto max-w-[800px] px-6 py-20">
           {/* Header */}
@@ -252,7 +193,7 @@ export default function TermsPage() {
           </div>
         </div>
 
-        <Footer />
+        <SiteFooter />
       </div>
     </main>
   );

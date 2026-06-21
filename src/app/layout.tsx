@@ -19,9 +19,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GBICT Energy — Het besturingssysteem voor jouw thuisenergie",
+  title: "GBICT Energy — One platform for your battery, solar and grid",
   description:
-    "Verbind elke batterij met elk dynamisch energiecontract. Bespaar automatisch honderden euro's per jaar met AI-gestuurde optimalisatie.",
+    "Connect your home battery, solar and dynamic energy contract into one platform that charges, stores and sells power at exactly the right moment — automatically lowering your bill.",
 };
 
 // viewport-fit=cover enables env(safe-area-inset-*) so the native app can
@@ -44,6 +44,12 @@ export default function RootLayout({
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&display=swap"
+          rel="stylesheet"
+        />
       </head>
       <body className="min-h-full flex flex-col bg-[var(--bg)] text-[var(--text)]">
         <NativeInit />
