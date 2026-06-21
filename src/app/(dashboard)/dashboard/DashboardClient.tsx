@@ -159,7 +159,7 @@ function BatteryCard({ sessy, t }: { sessy: SessyStatus | null; t: TranslationDi
         <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-[var(--surface-2)]">
           <div
             className="h-full rounded-full transition-all duration-700"
-            style={{ width: `${sessy.state_of_charge}%`, background: 'linear-gradient(90deg, #047857, #34D399)' }}
+            style={{ width: `${sessy.state_of_charge}%`, background: 'linear-gradient(90deg, #5b21b6, #34D399)' }}
           />
         </div>
         {sessy.power !== 0 && (

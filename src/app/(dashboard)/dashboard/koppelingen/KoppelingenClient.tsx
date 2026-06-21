@@ -530,7 +530,7 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
         </div>
         <button
           onClick={openModal}
-          className="inline-flex h-10 items-center gap-2 rounded-full bg-[#047857] px-5 text-sm font-medium text-white transition-colors hover:bg-[#059669]"
+          className="inline-flex h-10 items-center gap-2 rounded-full bg-[#5b21b6] px-5 text-sm font-medium text-white transition-colors hover:bg-[#6d28d9]"
         >
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -932,7 +932,7 @@ function BackBtn({ onClick, c }: { onClick: () => void; c: Conn }) {
 
 function SaveBtn({ onClick, pending, label, c }: { onClick: () => void; pending: boolean; label?: string; c: Conn }) {
   return (
-    <button onClick={onClick} disabled={pending} className="flex-1 rounded-xl bg-[#047857] py-2.5 text-sm font-medium text-white hover:bg-[#059669] disabled:opacity-50">
+    <button onClick={onClick} disabled={pending} className="flex-1 rounded-xl bg-[#5b21b6] py-2.5 text-sm font-medium text-white hover:bg-[#6d28d9] disabled:opacity-50">
       {pending ? c.saving : (label ?? c.saveConnection)}
     </button>
   )
@@ -940,7 +940,7 @@ function SaveBtn({ onClick, pending, label, c }: { onClick: () => void; pending:
 
 function TestBtn({ onClick, pending, label, c }: { onClick: () => void; pending: boolean; label?: string; c: Conn }) {
   return (
-    <button onClick={onClick} disabled={pending} className="flex-1 rounded-xl bg-[#047857] py-2.5 text-sm font-medium text-white hover:bg-[#059669] disabled:opacity-50">
+    <button onClick={onClick} disabled={pending} className="flex-1 rounded-xl bg-[#5b21b6] py-2.5 text-sm font-medium text-white hover:bg-[#6d28d9] disabled:opacity-50">
       {pending ? c.verifying : (label ?? c.testConnection)}
     </button>
   )
@@ -1557,7 +1557,7 @@ function EmptyState({ onAdd, c }: { onAdd: () => void; c: Conn }) {
       <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/10 ring-1 ring-emerald-500/20"><Plug className="h-6 w-6 text-emerald-400" /></div>
       <h2 className="mt-4 text-base font-semibold text-[var(--text)]">{c.emptyTitle}</h2>
       <p className="mt-2 text-sm text-[var(--text-faint)]">{c.emptyDesc}</p>
-      <button onClick={onAdd} className="mt-5 inline-flex h-10 items-center justify-center rounded-full bg-[#047857] px-6 text-sm font-medium text-white transition-colors hover:bg-[#059669]">
+      <button onClick={onAdd} className="mt-5 inline-flex h-10 items-center justify-center rounded-full bg-[#5b21b6] px-6 text-sm font-medium text-white transition-colors hover:bg-[#6d28d9]">
         {c.addDevice}
       </button>
     </div>

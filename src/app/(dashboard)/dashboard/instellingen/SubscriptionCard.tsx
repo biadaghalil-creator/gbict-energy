@@ -133,7 +133,7 @@ export default function SubscriptionCard({ status, plan, currentPeriodEnd, trial
                 <button
                   onClick={() => startCheckout(p.id)}
                   disabled={loading !== null}
-                  className="mt-5 inline-flex h-11 items-center justify-center gap-2 rounded-full bg-[#047857] px-6 text-[14px] font-semibold text-white transition-colors hover:bg-[#059669] disabled:opacity-50"
+                  className="mt-5 inline-flex h-11 items-center justify-center gap-2 rounded-full bg-[#5b21b6] px-6 text-[14px] font-semibold text-white transition-colors hover:bg-[#6d28d9] disabled:opacity-50"
                 >
                   {loading === p.id && <Loader2 className="h-4 w-4 animate-spin" />}
                   {t.dashboard.settings.subStartTrial}

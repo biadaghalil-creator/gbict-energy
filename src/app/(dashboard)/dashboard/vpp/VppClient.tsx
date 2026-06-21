@@ -185,7 +185,7 @@ export default function VppClient({
           <button
             onClick={toggle}
             disabled={isPending}
-            className="inline-flex w-full h-11 items-center justify-center gap-2 rounded-full bg-[#047857] px-7 text-[14px] font-semibold text-white shadow-[0_1px_3px_rgba(0,0,0,0.3)] transition-colors hover:bg-[#059669] disabled:opacity-50"
+            className="inline-flex w-full h-11 items-center justify-center gap-2 rounded-full bg-[#5b21b6] px-7 text-[14px] font-semibold text-white shadow-[0_1px_3px_rgba(0,0,0,0.3)] transition-colors hover:bg-[#6d28d9] disabled:opacity-50"
           >
             <Zap className="h-4 w-4" />
             {isPending ? t.dashboard.vpp.enrolling : t.dashboard.vpp.enroll}

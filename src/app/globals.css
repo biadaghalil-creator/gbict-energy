@@ -381,50 +381,31 @@ body {
   --band: #05060B;          /* deep band (night) */
 }
 
-/* ─── APP-ONLY: warm, aardse "natuurlijke" look (html.native-app)
-   Cream/zand canvas met een natuurlijk salie/bosgroen accent —
-   rustig, premium, duurzaam (totaal andere richting dan teal).
-   Scope = alleen de native app; de website blijft ongemoeid.    */
-
-/* Day (light) — warm bone/cream + salie-bosgroen accent */
-html.native-app:not(.dark) {
-  --bg: #f4f1ea;            /* warm cream */
-  --surface: #fbfaf6;       /* warm bijna-wit */
-  --surface-2: #ece7db;     /* zand-tint / hover */
-  --border: rgba(40, 38, 28, 0.10);
-  --header: rgba(244, 241, 234, 0.85);
-  --text: #232821;          /* warm houtskool */
-  --text-muted: #5c6157;
-  --text-faint: rgba(92, 97, 87, 0.70);
-  --color-emerald-200: #cfe0d2;
-  --color-emerald-300: #88ab92;
-  --color-emerald-400: #3f6b4f;  /* accent op licht — bosgroen */
-  --color-emerald-500: #355e45;  /* knoppen */
-  --color-emerald-600: #2c4e3a;
-  --color-emerald-700: #233e2e;
-  --color-emerald-800: #1b3024;
-  --color-emerald-900: #14241b;
-  --color-emerald-950: #0d1711;
-}
-/* Night (dark) — diep warm bos-houtskool + zachte mosgroen accent */
+/* ─── APP-ONLY: "premium violet" donker design-systeem (html.native-app)
+   Near-black canvas (#07080D, blauwe ondertoon), paars accent, glas-
+   oppervlakken met violette rand. Dark-only — beide varianten krijgen
+   dezelfde donkere look. Scope = alleen de app; de website blijft ongemoeid.
+   Bron: GBICT Energy Design System (colors_and_type.css / README).         */
+html.native-app:not(.dark),
 html.native-app.dark {
-  --bg: #14180f;            /* diep warm bos-houtskool */
-  --surface: #1c2118;       /* warm donker oppervlak */
-  --surface-2: rgba(220, 230, 200, 0.05);
-  --border: rgba(220, 230, 200, 0.09);
-  --header: rgba(20, 24, 15, 0.82);
-  --text: #f1efe6;          /* warm off-white */
-  --text-muted: #a8ac9d;
-  --text-faint: rgba(168, 172, 157, 0.62);
-  --color-emerald-200: #dcebd9;
-  --color-emerald-300: #b3d4b7;
-  --color-emerald-400: #8fb996;  /* accent op donker — zachte mos/salie */
-  --color-emerald-500: #6f9e7a;
-  --color-emerald-600: #588663;
-  --color-emerald-700: #456b4f;
-  --color-emerald-800: #34503c;
-  --color-emerald-900: #26392c;
-  --color-emerald-950: #18241c;
+  --bg: #07080D;            /* near-black, blauwe ondertoon */
+  --surface: #0d0e16;       /* opgetild paneel / kaart */
+  --surface-2: rgba(139, 92, 246, 0.07);  /* violet-getinte hover/fill */
+  --border: rgba(139, 92, 246, 0.16);     /* violette glas-rand */
+  --header: rgba(7, 8, 13, 0.82);
+  --text: #f8fafc;          /* near-white */
+  --text-muted: #94a3b8;    /* slate-400 */
+  --text-faint: #64748b;    /* slate-500 */
+  /* accent = violet (CTA's, actieve staat, icon-vlakken, key data) */
+  --color-emerald-200: #ddd6fe;
+  --color-emerald-300: #c4b5fd;
+  --color-emerald-400: #a78bfa;
+  --color-emerald-500: #8b5cf6;
+  --color-emerald-600: #7c3aed;
+  --color-emerald-700: #6d28d9;
+  --color-emerald-800: #5b21b6;
+  --color-emerald-900: #4c1d95;
+  --color-emerald-950: #2e1065;
 }
 
 :root {
