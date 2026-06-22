@@ -48,9 +48,17 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* Voorkom dat iOS tekst automatisch opblaast ("text boost") — dat liet de
+   app/website "heel ingezoomd" ogen. 100% = gebruik de echte font-sizes. */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 body {
   font-family: var(--font-geist-sans), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;            /* geen horizontale schuif op mobiel */
 }
 
 /* ─── 3D PRIMARY BUTTON (yellow) ─────────────────────── */
