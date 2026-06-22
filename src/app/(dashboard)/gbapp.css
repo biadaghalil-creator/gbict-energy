@@ -75,3 +75,144 @@
 
 /* spacing helper */
 .gbapp .stack > * + * { margin-top: 14px; }
+
+/* ============================================================
+   WEB DASHBOARD — bento grid (ported from GBICT Energy Dashboard export)
+   All selectors prefixed with .gbapp so nothing leaks to the
+   marketing site. Reuses the warm app tokens above.
+   ============================================================ */
+.gbapp .num { font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+
+/* page head */
+.gbapp .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; margin-bottom: 26px; }
+.gbapp .page-head .eyebrow { font-size: 13px; font-weight: 600; color: var(--ink-3); letter-spacing: .01em; }
+.gbapp .page-head h1 { font-size: 34px; font-weight: 700; letter-spacing: -.03em; margin: 6px 0 0; color: var(--ink); }
+.gbapp .head-r { display: flex; align-items: center; gap: 12px; }
+
+/* bento grid */
+.gbapp .bento { display: grid; grid-template-columns: repeat(12, 1fr); gap: 18px; }
+.gbapp .bento .card { border-radius: 26px; box-shadow: var(--shadow, 0 1px 2px rgba(33,29,22,.04), 0 8px 24px rgba(33,29,22,.06)); }
+.gbapp .pad { padding: 26px 28px; }
+.gbapp .col4 { grid-column: span 4; }
+.gbapp .col5 { grid-column: span 5; }
+.gbapp .col6 { grid-column: span 6; }
+.gbapp .col7 { grid-column: span 7; }
+.gbapp .col8 { grid-column: span 8; }
+.gbapp .col12 { grid-column: span 12; }
+
+/* hero savings */
+.gbapp .hero { position: relative; overflow: hidden; border-radius: 28px; padding: 32px 36px; border: none;
+  background: linear-gradient(152deg, var(--accent) 0%, var(--accent-deep) 100%);
+  box-shadow: 0 18px 44px -22px color-mix(in srgb, var(--accent) 70%, transparent), 0 1px 0 rgba(255,255,255,.12) inset; }
+.gbapp .hero::after { content: ""; position: absolute; right: -70px; top: -110px; width: 360px; height: 360px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,.14), transparent 64%); pointer-events: none; }
+.gbapp .hero-grid { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 28px; }
+.gbapp .hero .k { font-size: 14px; font-weight: 600; color: rgba(255,255,255,.84); }
+.gbapp .hero .big { font-size: 62px; font-weight: 700; letter-spacing: -.04em; color: #fff; line-height: 1; margin: 8px 0 10px; }
+.gbapp .hero .sub { font-size: 14px; color: rgba(255,255,255,.78); }
+.gbapp .hero-cta { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
+.gbapp .hero-ring { flex: none; }
+
+/* buttons (web dashboard variants — narrower than the auto-width .btn above) */
+.gbapp .wbtn { display: inline-flex; align-items: center; justify-content: center; gap: 9px; height: 50px; padding: 0 22px; border-radius: 99px;
+  font-size: 14.5px; font-weight: 650; letter-spacing: -.01em; cursor: pointer; border: 1px solid transparent; transition: .16s; white-space: nowrap;
+  text-decoration: none; font-family: inherit; }
+.gbapp .wbtn-white { background: #fff; color: var(--accent-deep); }
+.gbapp .wbtn-white:hover { transform: translateY(-1px); box-shadow: 0 10px 24px -10px rgba(0,0,0,.4); }
+.gbapp .wbtn-glass { background: rgba(255,255,255,.15); color: #fff; border-color: rgba(255,255,255,.32); }
+.gbapp .wbtn-glass:hover { background: rgba(255,255,255,.24); }
+
+/* ring helper centre content */
+.gbapp .ring-rc { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; }
+
+/* battery card */
+.gbapp .bat { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px; padding: 26px; }
+.gbapp .bat .rc b { font-size: 30px; font-weight: 700; color: var(--ink); letter-spacing: -.02em; }
+.gbapp .bat .rc span { font-size: 12.5px; color: var(--ink-3); }
+.gbapp .bat .title { font-size: 16px; font-weight: 700; color: var(--ink); margin-top: 14px; }
+.gbapp .bat .pill-sell { display: inline-flex; align-items: center; gap: 7px; height: 32px; padding: 0 14px; border-radius: 99px; margin-top: 10px;
+  font-size: 12.5px; font-weight: 650; color: var(--sell); background: color-mix(in srgb, var(--sell) 14%, transparent); }
+
+/* stat cards */
+.gbapp .stat { position: relative; }
+.gbapp .stat .k { font-size: 13px; font-weight: 600; color: var(--ink-2); }
+.gbapp .stat .v { font-size: 32px; font-weight: 700; letter-spacing: -.03em; color: var(--ink); margin-top: 14px; line-height: 1; }
+.gbapp .stat .d { display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; font-weight: 600; margin-top: 10px; }
+.gbapp .stat .d.pos { color: var(--accent); }
+.dark .gbapp .stat .d.pos { color: var(--color-emerald-400); }
+.gbapp .stat .d.neg { color: var(--sell); }
+.gbapp .stat .ic { position: absolute; top: 24px; right: 26px; width: 40px; height: 40px; border-radius: 13px; display: grid; place-items: center; background: var(--accent-tint); color: var(--accent-deep); }
+.dark .gbapp .stat .ic { color: var(--color-emerald-400); }
+.gbapp .stat .ic.sun { background: var(--sun-tint); color: var(--sun); }
+
+/* price card */
+.gbapp .ep-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.gbapp .ep .lab { font-size: 14px; font-weight: 600; color: var(--ink-2); }
+.gbapp .ep .price { font-size: 30px; font-weight: 700; letter-spacing: -.03em; color: var(--ink); margin-top: 8px; display: flex; align-items: baseline; gap: 8px; }
+.gbapp .ep .price small { font-size: 14px; font-weight: 500; color: var(--ink-3); }
+.gbapp .chip { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 14px; border-radius: 99px;
+  font-size: 12.5px; font-weight: 650; color: var(--accent-deep); background: var(--accent-tint); }
+.dark .gbapp .chip { color: var(--color-emerald-400); }
+.gbapp .chip.neg { color: var(--sell); background: color-mix(in srgb, var(--sell) 14%, transparent); }
+.gbapp .chartbox { position: relative; margin-top: 14px; }
+.gbapp .axis { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--ink-3); margin-top: 10px; }
+
+/* live flow card */
+.gbapp .flow .lab { font-size: 14px; font-weight: 600; color: var(--ink-2); margin-bottom: 4px; }
+.gbapp .flow-list { display: flex; flex-direction: column; }
+.gbapp .frow { display: flex; align-items: center; gap: 14px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+.gbapp .frow:last-child { border-bottom: 0; }
+.gbapp .frow .fic { width: 44px; height: 44px; border-radius: 13px; display: grid; place-items: center; flex: none; background: var(--accent-tint); color: var(--accent-deep); }
+.dark .gbapp .frow .fic { color: var(--color-emerald-400); }
+.gbapp .frow .fic.solar { background: var(--sun-tint); color: var(--sun); }
+.gbapp .frow .fic.home { background: color-mix(in srgb, var(--ink) 6%, transparent); color: var(--ink-2); }
+.gbapp .frow .ft { flex: 1; min-width: 0; }
+.gbapp .frow .ft b { display: block; font-size: 15px; font-weight: 600; color: var(--ink); }
+.gbapp .frow .ft span { display: block; font-size: 12.5px; color: var(--ink-3); margin-top: 1px; }
+.gbapp .frow .fv { font-size: 17px; font-weight: 700; color: var(--ink); }
+.gbapp .frow .fv.pos { color: var(--accent); }
+.dark .gbapp .frow .fv.pos { color: var(--color-emerald-400); }
+
+/* schedule / plan */
+.gbapp .sc-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 6px; }
+.gbapp .sc-head h3 { font-size: 18px; font-weight: 700; letter-spacing: -.02em; margin: 0; color: var(--ink); }
+.gbapp .sc-link { display: inline-flex; align-items: center; gap: 4px; border: none; background: none; color: var(--accent); font-weight: 650; font-size: 13.5px; cursor: pointer; font-family: inherit; text-decoration: none; }
+.dark .gbapp .sc-link { color: var(--color-emerald-400); }
+.gbapp .sline { display: flex; align-items: center; gap: 15px; padding: 15px 0; border-bottom: 1px solid var(--line); }
+.gbapp .sline:last-child { border-bottom: 0; }
+.gbapp .sc-ic { width: 44px; height: 44px; border-radius: 13px; display: grid; place-items: center; flex: none; }
+.gbapp .sc-ic.charge { background: var(--accent-tint); color: var(--accent-deep); }
+.dark .gbapp .sc-ic.charge { color: var(--color-emerald-400); }
+.gbapp .sc-ic.solar { background: var(--sun-tint); color: var(--sun); }
+.gbapp .sc-ic.sell { background: color-mix(in srgb, var(--sell) 14%, transparent); color: var(--sell); }
+.gbapp .sc-main { flex: 1; min-width: 0; }
+.gbapp .sc-main .t { font-size: 15.5px; font-weight: 600; color: var(--ink); }
+.gbapp .sc-main .s { font-size: 12.5px; color: var(--ink-3); margin-top: 2px; }
+.gbapp .sc-time { font-size: 14px; font-weight: 600; color: var(--ink-2); flex: none; }
+
+/* forecast */
+.gbapp .fc-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.gbapp .fc-head .fci { color: var(--accent); display: flex; }
+.dark .gbapp .fc-head .fci { color: var(--color-emerald-400); }
+.gbapp .fc-head b { font-size: 17px; font-weight: 700; letter-spacing: -.02em; color: var(--ink); }
+.gbapp .forecast p { font-size: 15px; line-height: 1.6; color: var(--ink-2); margin: 0; }
+.gbapp .forecast p b { color: var(--ink); }
+.gbapp .forecast p b.acc { color: var(--accent); }
+.dark .gbapp .forecast p b.acc { color: var(--color-emerald-400); }
+.gbapp .fc-foot { display: flex; align-items: center; gap: 10px; margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); }
+.gbapp .fc-foot .mini { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+.gbapp .fc-foot .mini .mk { font-size: 12px; color: var(--ink-3); font-weight: 600; }
+.gbapp .fc-foot .mini .mv { font-size: 18px; font-weight: 700; color: var(--ink); }
+
+/* responsive — ported breakpoints */
+@media (max-width: 1080px) {
+  .gbapp .col8, .gbapp .col7, .gbapp .col5, .gbapp .col6 { grid-column: span 12; }
+  .gbapp .col4 { grid-column: span 6; }
+  .gbapp .hero .big { font-size: 52px; }
+}
+@media (max-width: 680px) {
+  .gbapp .col4 { grid-column: span 12; }
+  .gbapp .page-head { flex-direction: column; align-items: flex-start; }
+  .gbapp .hero { padding: 26px 22px; }
+  .gbapp .hero-ring { display: none; }
+}

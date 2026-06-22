@@ -76,8 +76,8 @@ export default function TermsPage() {
                       <td className="px-5 py-3.5 text-[var(--text-muted)]">Unlimited devices, hourly optimization, VPP, priority support</td>
                     </tr>
                     <tr>
-                      <td className="px-5 py-3.5 text-[var(--text-muted)] font-medium">Business</td>
-                      <td className="px-5 py-3.5 text-[var(--text-muted)]">Custom</td>
+                      <td className="px-5 py-3.5 text-[var(--text-muted)] font-medium">Enterprise</td>
+                      <td className="px-5 py-3.5 text-[var(--text-muted)]">Contact us</td>
                       <td className="px-5 py-3.5 text-[var(--text-muted)]">Multiple locations, white-label, dedicated SLA, account manager</td>
                     </tr>
                   </tbody>
@@ -118,7 +118,7 @@ export default function TermsPage() {
 
             <Section title="7. Uptime and service availability">
               <p>
-                We target a <strong className="text-[var(--text-muted)]">98% monthly uptime</strong> for the core optimization service. This is a target, not a binding service level agreement (SLA), unless you have a Business plan with a dedicated SLA in your contract.
+                We target a <strong className="text-[var(--text-muted)]">98% monthly uptime</strong> for the core optimization service. This is a target, not a binding service level agreement (SLA), unless you have an Enterprise plan with a dedicated SLA in your contract.
               </p>
               <p>
                 Scheduled maintenance will be announced in advance via the dashboard and/or email. We are not liable for losses arising from service unavailability, interruptions, or data delays.
@@ -128,7 +128,7 @@ export default function TermsPage() {
             <Section title="8. Acceptable use">
               <p>You agree not to:</p>
               <ul className="ml-5 mt-3 list-disc space-y-2">
-                <li>Resell, sublicense, or white-label the Service without a written Business agreement with GBICT Energy.</li>
+                <li>Resell, sublicense, or white-label the Service without a written Enterprise agreement with GBICT Energy.</li>
                 <li>Reverse engineer, decompile, or attempt to extract the source code of the platform.</li>
                 <li>Use the Service to store or transmit malware, or to conduct any unlawful activity.</li>
                 <li>Access the API in excess of your plan&apos;s rate limits, or use automated scripts to scrape data beyond normal use.</li>

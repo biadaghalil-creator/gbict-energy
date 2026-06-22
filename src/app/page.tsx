@@ -158,7 +158,7 @@ function DashboardMock() {
       <div className="dash-body">
         <div className="dash-cell">
           <div className="lbl">Saved this month</div>
-          <div className="big">€71<span className="sm">.40</span></div>
+          <div className="big">€38<span className="sm">.20</span></div>
           <div className="delta"><Icon name="trending-up" /> +18% vs. last month</div>
           <div className="bars">
             {[34, 52, 40, 66, 48, 80, 60, 44, 72].map((v, i) => (
@@ -168,7 +168,7 @@ function DashboardMock() {
         </div>
         <div className="dash-cell">
           <div className="lbl">Self-sufficiency</div>
-          <div className="big">92<span className="sm">%</span></div>
+          <div className="big">78<span className="sm">%</span></div>
           <div className="delta"><Icon name="sun" /> running on your sun</div>
           <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 9 }}>
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5, color: "var(--fg-2)" }}>
@@ -214,7 +214,7 @@ function PhoneApp({ screen = "flow" }: { screen?: string }) {
           </div>
           <div className="pa-card">
             <div className="l">Self-sufficiency now</div>
-            <div className="num">92<span className="sm"> %</span></div>
+            <div className="num">78<span className="sm"> %</span></div>
             <div className="dl"><Icon name="trending-up" /> running on your own sun</div>
           </div>
         </>}
@@ -222,7 +222,7 @@ function PhoneApp({ screen = "flow" }: { screen?: string }) {
         {screen === "savings" && <>
           <div className="pa-card">
             <div className="l">Saved this month</div>
-            <div className="num">€71<span className="sm">.40</span></div>
+            <div className="num">€38<span className="sm">.20</span></div>
             <div className="dl"><Icon name="trending-up" /> +18% vs. last month</div>
             <div className="pa-bars">
               {[34, 52, 40, 66, 48, 80, 60].map((v, i) => <i key={i} className={i === 5 ? "hot" : ""} style={{ height: v + "%" }}></i>)}
@@ -378,9 +378,12 @@ function Calculator() {
   const [solar, setSolar] = useState(4);
   const [usage, setUsage] = useState("med");
   const usageF = ({ low: 0.8, med: 1, high: 1.35 } as Record<string, number>)[usage];
-  const arbitrage = Math.round(batt * 38 * usageF);
-  const solarOpt = Math.round(solar * 46 * usageF);
-  const vpp = Math.round(batt * 9);
+  // Per-kWh multipliers tuned so the DEFAULT sliders (batt 10, solar 4, usage med → usageF 1)
+  // resolve to ~€420/yr — our canonical typical-savings figure:
+  //   arbitrage 10*24*1 = 240 + solarOpt 4*30*1 = 120 + vpp 10*5 = 50 = €410.
+  const arbitrage = Math.round(batt * 24 * usageF);
+  const solarOpt = Math.round(solar * 30 * usageF);
+  const vpp = Math.round(batt * 5);
   const total = arbitrage + solarOpt + vpp;
   return (
     <section className="section" id="calculator">
