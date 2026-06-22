@@ -57,7 +57,7 @@ function OnbWelcome({ onNext, onLogin }) {
           Connect your battery, solar and dynamic contract. We charge when power is cheap, sell when it's dear — automatically.
         </p>
         <div className="rise" style={{ display: 'flex', gap: 22, animationDelay: '.28s' }}>
-          {[['€340', 'saved / yr*'], ['100%', 'hands-off'], ['2 min', 'to set up']].map((s, i) => (
+          {[['€420', 'saved / yr*'], ['100%', 'hands-off'], ['2 min', 'to set up']].map((s, i) => (
             <div key={i}>
               <div className="num" style={{ fontSize: 22, fontWeight: 700, color: 'var(--ink)', letterSpacing: '-.02em' }}>{s[0]}</div>
               <div style={{ fontSize: 12.5, color: 'var(--ink-3)', marginTop: 2 }}>{s[1]}</div>
