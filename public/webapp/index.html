@@ -5,6 +5,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GBICT Energy — Dashboard</title>
+<!-- Toegangscontrole: alleen ingelogde (toegestane) gebruikers zien dit dashboard. -->
+<script>
+(function () {
+  document.documentElement.style.visibility = 'hidden';
+  fetch('/api/auth/me', { cache: 'no-store' })
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      if (d && d.allowed) { document.documentElement.style.visibility = ''; }
+      else { window.location.replace('/login'); }
+    })
+    .catch(function () { window.location.replace('/login'); });
+})();
+</script>
 <link rel="preconnect" href="https://api.fontshare.com">
 <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700,900&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@0.456.0/dist/umd/lucide.min.js"></script>
