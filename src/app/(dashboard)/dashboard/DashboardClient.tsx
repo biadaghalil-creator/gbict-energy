@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import {
-  Zap, TrendingUp, TrendingDown, BatteryCharging,
-  ArrowUpRight, Plug, ExternalLink, Car,
+  TrendingUp, TrendingDown, BatteryCharging,
+  ArrowUpRight, Plug, Car, Sun, ArrowDown,
 } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useT, fill } from '@/hooks/use-t'
@@ -40,153 +40,72 @@ type TibberData = {
 const fmt = (n: number) => `€${n.toFixed(2).replace('.', ',')}`
 const fmtSmall = (n: number) => `€${n.toFixed(4)}`
 
-/* ── Hero card ──────────────────────────────────────────── */
-function HeroCard({ savings, tibber, hasSessy, t }: {
-  savings: SavingsData | null
-  tibber: TibberData | null
-  hasSessy: boolean
-  t: TranslationDict
+/* ── Battery ring (SVG) ─────────────────────────────────── */
+function Ring({ pct, size = 86, sw = 9, color = '#ffffff', track = 'rgba(255,255,255,0.28)', children }: {
+  pct: number; size?: number; sw?: number; color?: string; track?: string; children?: React.ReactNode
 }) {
-  const todaySaved = savings?.today_eur ?? 0
-  const monthSaved = savings?.month_eur ?? 0
-  const currentPrice = tibber?.current?.total
-
+  const r = (size - sw) / 2
+  const C = 2 * Math.PI * r
+  const off = C * (1 - Math.max(0, Math.min(100, pct)) / 100)
   return (
-    <div className="relative lg:col-span-2 overflow-hidden rounded-[26px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_2px_26px_-16px_rgba(20,24,15,0.30)] p-7">
-
-      <div className="relative">
-        <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-emerald-400">
-          {t.dashboard.overview.todayLabel}
-        </p>
-        <h2 className="mt-2 text-[28px] font-extrabold leading-tight tracking-[-0.035em] text-[var(--text)]">
-          {hasSessy ? t.dashboard.overview.autoActiveTitle : t.dashboard.overview.connectFirstTitle}
-        </h2>
-        <p className="mt-2 max-w-md text-[14px] leading-[1.6] text-[var(--text-faint)]">
-          {hasSessy
-            ? t.dashboard.overview.autoActiveDesc
-            : t.dashboard.overview.connectFirstDesc}
-        </p>
-
-        {/* Stats row */}
-        <div className="mt-7 flex flex-wrap gap-6">
-          <div>
-            <p className="text-[11px] text-[var(--text-faint)]">{t.dashboard.overview.savedToday}</p>
-            <p className={`mt-1 font-mono text-[22px] font-semibold tracking-tight ${todaySaved > 0 ? 'text-emerald-400' : 'text-[var(--text-faint)]'}`}>
-              {fmt(todaySaved)}
-            </p>
-          </div>
-          <div className="w-px bg-[var(--surface-2)]" />
-          <div>
-            <p className="text-[11px] text-[var(--text-faint)]">{t.dashboard.overview.thisMonth}</p>
-            <p className={`mt-1 font-mono text-[22px] font-semibold tracking-tight ${monthSaved > 0 ? 'text-emerald-400' : 'text-[var(--text-faint)]'}`}>
-              {fmt(monthSaved)}
-            </p>
-          </div>
-          {currentPrice && (
-            <>
-              <div className="w-px bg-[var(--surface-2)]" />
-              <div>
-                <p className="text-[11px] text-[var(--text-faint)]">{t.dashboard.overview.spotPriceNow}</p>
-                <p className="mt-1 font-mono text-[22px] font-semibold tracking-tight text-[var(--text)]">
-                  {fmtSmall(currentPrice)}<span className="ml-1 text-[12px] text-[var(--text-faint)]">{t.dashboard.overview.perKwh}</span>
-                </p>
-              </div>
-            </>
-          )}
-        </div>
-
-        <div className="mt-7 flex flex-wrap items-center gap-3">
-          <Link
-            href="/dashboard/besparingen"
-            className="inline-flex h-12 items-center gap-2 rounded-full bg-emerald-600 px-6 text-[14px] font-semibold text-white shadow-[0_8px_22px_-10px_rgba(63,107,79,0.7)] transition hover:brightness-[1.06]"
-          >
-            <TrendingUp className="h-4 w-4" />
-            {t.dashboard.overview.viewSavings}
-          </Link>
-          {!hasSessy && (
-            <Link
-              href="/dashboard/koppelingen"
-              className="inline-flex h-12 items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface)] px-6 text-[14px] font-medium text-[var(--text)] transition-colors hover:bg-[var(--surface-2)]"
-            >
-              <Plug className="h-4 w-4" />
-              {t.dashboard.overview.connectDevice}
-            </Link>
-          )}
-        </div>
-      </div>
+    <div className="relative shrink-0" style={{ width: size, height: size }}>
+      <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={track} strokeWidth={sw} />
+        <circle
+          cx={size / 2} cy={size / 2} r={r} fill="none" stroke={color} strokeWidth={sw} strokeLinecap="round"
+          strokeDasharray={C} strokeDashoffset={off}
+          style={{ transition: 'stroke-dashoffset 1.2s cubic-bezier(.22,.68,.32,1)' }}
+        />
+      </svg>
+      <div className="absolute inset-0 flex flex-col items-center justify-center">{children}</div>
     </div>
   )
 }
 
-/* ── Battery status card ────────────────────────────────── */
-function BatteryCard({ sessy, t }: { sessy: SessyStatus | null; t: TranslationDict }) {
-  if (!sessy) {
-    return (
-      <div className="flex flex-col justify-between rounded-[26px] border border-dashed border-[var(--border)] bg-[var(--surface)] p-6">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--surface)]">
-          <BatteryCharging className="h-4 w-4 text-[var(--text-faint)]" />
-        </div>
-        <div>
-          <p className="text-[13px] font-semibold text-[var(--text-faint)]">{t.dashboard.battery.title}</p>
-          <p className="mt-0.5 text-[12px] text-[var(--text-faint)]">{t.dashboard.battery.noDevice}</p>
-          <Link href="/dashboard/koppelingen" className="mt-3 flex items-center gap-1 text-[12px] font-medium text-emerald-400 hover:text-emerald-300">
-            {t.dashboard.common.connect} <ArrowUpRight className="h-3 w-3" />
-          </Link>
-        </div>
-      </div>
-    )
+/* ── Smooth price curve (SVG) ───────────────────────────── */
+function PriceCurve({ prices }: { prices: PricePoint[] }) {
+  if (prices.length < 2) return null
+  const totals = prices.map(p => p.total)
+  const min = Math.min(...totals), max = Math.max(...totals)
+  const range = max - min || 0.01
+  const norm = totals.map(v => (v - min) / range)
+  const W = 320, H = 96, pad = 6, n = norm.length
+  const xs = (i: number) => pad + (i / (n - 1)) * (W - pad * 2)
+  const ys = (v: number) => pad + (1 - v) * (H - pad * 2)
+  let d = `M ${xs(0)} ${ys(norm[0])}`
+  for (let i = 1; i < n; i++) {
+    const x0 = xs(i - 1), y0 = ys(norm[i - 1]), x1 = xs(i), y1 = ys(norm[i])
+    const cx = (x0 + x1) / 2
+    d += ` C ${cx} ${y0}, ${cx} ${y1}, ${x1} ${y1}`
   }
-
+  const area = `${d} L ${xs(n - 1)} ${H} L ${xs(0)} ${H} Z`
+  const nowHour = new Date().getHours()
+  let nowI = prices.findIndex(p => new Date(p.startsAt).getHours() === nowHour)
+  if (nowI < 0) nowI = 0
+  const nowX = xs(nowI), nowY = ys(norm[nowI])
   return (
-    <div className="flex flex-col justify-between rounded-[26px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_2px_26px_-16px_rgba(20,24,15,0.30)] p-6">
-      <div className="flex items-center justify-between">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/10 ring-1 ring-emerald-500/20">
-          <BatteryCharging className="h-4 w-4 text-emerald-400" />
-        </div>
-        <span className="flex items-center gap-1.5 text-[11px] text-[var(--text-faint)]">
-          <span className="h-[12px] w-[3px] rounded-sm bg-emerald-400" />
-          {sessy.power !== 0 ? (sessy.power > 0 ? t.dashboard.battery.charging : t.dashboard.battery.discharging) : t.dashboard.battery.standby}
-        </span>
-      </div>
-      <div>
-        <p className="text-[11px] text-[var(--text-faint)]">{t.dashboard.battery.label}</p>
-        <div className="mt-1 flex items-baseline gap-1.5">
-          <span className="font-mono text-[32px] font-bold tracking-[-0.03em] text-[var(--text)]">
-            {sessy.state_of_charge}
-          </span>
-          <span className="text-[13px] text-[var(--text-faint)]">%</span>
-        </div>
-        <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-[var(--surface-2)]">
-          <div
-            className="h-full rounded-full transition-all duration-700"
-            style={{ width: `${sessy.state_of_charge}%`, background: 'linear-gradient(90deg, #2F5D3A, #34D399)' }}
-          />
-        </div>
-        {sessy.power !== 0 && (
-          <p className="mt-2 text-[11.5px] text-[var(--text-faint)]">{Math.abs(sessy.power)}W {sessy.power > 0 ? t.dashboard.battery.chargingW : t.dashboard.battery.dischargingW}</p>
-        )}
-      </div>
-    </div>
+    <svg viewBox={`0 0 ${W} ${H}`} width="100%" height={H} preserveAspectRatio="none" className="block">
+      <defs>
+        <linearGradient id="pcFill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="var(--color-emerald-500)" stopOpacity="0.22" />
+          <stop offset="1" stopColor="var(--color-emerald-500)" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <path d={area} fill="url(#pcFill)" />
+      <path d={d} fill="none" stroke="var(--color-emerald-500)" strokeWidth="2.4" strokeLinecap="round" />
+      <line x1={nowX} y1="2" x2={nowX} y2={H - 2} stroke="var(--text-faint)" strokeWidth="1" strokeDasharray="3 3" opacity="0.5" />
+      <circle cx={nowX} cy={nowY} r="5.5" fill="var(--color-emerald-500)" stroke="var(--surface)" strokeWidth="2.5" />
+    </svg>
   )
 }
 
-/* ── VPP / upgrade card ─────────────────────────────────── */
-function VppCard({ enrolled, t }: { enrolled: boolean; t: TranslationDict }) {
+/* ── Stat card ──────────────────────────────────────────── */
+function Stat({ k, v, d, dpos }: { k: string; v: string; d?: string; dpos?: boolean }) {
   return (
-    <div className="relative flex flex-col justify-between overflow-hidden rounded-[26px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_2px_26px_-16px_rgba(20,24,15,0.30)] p-6">
-      <div className="relative">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/10 ring-1 ring-emerald-500/20">
-          <Zap className="h-4 w-4 text-emerald-400" />
-        </div>
-        <p className="mt-4 text-[13px] font-semibold text-[var(--text)]">{t.dashboard.vppCard.title}</p>
-        <p className="mt-1 text-[12px] text-[var(--text-faint)]">{t.dashboard.vppCard.desc}</p>
-      </div>
-      <Link
-        href="/dashboard/vpp"
-        className="relative mt-5 inline-flex h-8 items-center gap-1.5 rounded-lg bg-emerald-500/10 px-3 text-[12px] font-semibold text-emerald-400 ring-1 ring-emerald-500/20 transition-colors hover:bg-emerald-500/15"
-      >
-        {enrolled ? t.dashboard.vppCard.viewStatus : t.dashboard.vppCard.joinBeta} <ExternalLink className="h-3 w-3" />
-      </Link>
+    <div className="rounded-[22px] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[0_2px_26px_-18px_rgba(20,24,15,0.30)]">
+      <p className="text-[12px] text-[var(--text-muted)]">{k}</p>
+      <p className="mt-2 font-mono text-[26px] font-bold tracking-[-0.02em] text-[var(--text)]">{v}</p>
+      {d && <p className={`mt-1 text-[12px] ${dpos ? 'text-emerald-500' : 'text-[var(--text-faint)]'}`}>{d}</p>}
     </div>
   )
 }
@@ -200,8 +119,6 @@ function EvCard({ ev, prices, t }: { ev: DeviceSummary; prices: PricePoint[]; t:
   const isV2g = ev.v2g === true || ev.type === 'ev_v2g'
   const capacity = Number(ev.capacityKwh)
   const hasPrices = prices.length >= 6
-
-  // Aantal goedkoopste uren ~ accugrootte (1u ≈ 7 kW laden), tussen 3 en 6.
   const chargeHours = capacity > 0 ? Math.min(6, Math.max(3, Math.round(capacity / 11))) : 4
   const byPriceAsc = [...prices].sort((a, b) => a.total - b.total)
   const cheap = byPriceAsc.slice(0, chargeHours)
@@ -210,27 +127,24 @@ function EvCard({ ev, prices, t }: { ev: DeviceSummary; prices: PricePoint[]; t:
     ? [...prices].sort((a, b) => b.total - a.total).slice(0, 3)
         .sort((a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime())
     : []
-
   const avgAll = prices.length ? prices.reduce((s, p) => s + p.total, 0) / prices.length : 0
   const avgCheap = cheap.length ? cheap.reduce((s, p) => s + p.total, 0) / cheap.length : 0
   const cheaperPct = avgAll > 0 ? Math.round(((avgAll - avgCheap) / avgAll) * 100) : 0
 
   return (
-    <div className="relative flex flex-col overflow-hidden rounded-[26px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_2px_26px_-16px_rgba(20,24,15,0.30)] p-6">
+    <div className="rounded-[26px] border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[0_2px_26px_-16px_rgba(20,24,15,0.30)]">
       <div className="flex items-start justify-between">
         <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/10 ring-1 ring-emerald-500/20">
-          <Car className="h-4 w-4 text-emerald-400" />
+          <Car className="h-4 w-4 text-emerald-500" />
         </div>
         {isV2g && (
           <span className="rounded-md bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-500 ring-1 ring-emerald-500/20">V2G</span>
         )}
       </div>
-
       <p className="mt-4 text-[15px] font-semibold text-[var(--text)]">{ev.name}</p>
       {capacity > 0 && (
         <p className="mt-0.5 text-[12px] text-[var(--text-faint)]">{t.dashboard.evCard.capacity} · {capacity} kWh</p>
       )}
-
       {hasPrices ? (
         <div className="mt-4 space-y-3">
           <div>
@@ -247,13 +161,12 @@ function EvCard({ ev, prices, t }: { ev: DeviceSummary; prices: PricePoint[]; t:
               {cheaperPct > 0 && <span className="ml-2 text-emerald-500">· {fill(t.dashboard.evCard.cheaper, { pct: cheaperPct })}</span>}
             </p>
           </div>
-
           {isV2g && peak.length > 0 && (
             <div>
               <p className="text-[11px] font-medium text-[var(--text-muted)]">{t.dashboard.evCard.sellPlan}</p>
               <div className="mt-1.5 flex flex-wrap gap-1.5">
                 {peak.map((p) => (
-                  <span key={p.startsAt} className="rounded-md bg-amber-500/10 px-2 py-0.5 font-mono text-[11px] font-medium text-amber-500">
+                  <span key={p.startsAt} className="rounded-md bg-amber-500/10 px-2 py-0.5 font-mono text-[11px] font-medium text-amber-600">
                     {fmtHour(p.startsAt)}
                   </span>
                 ))}
@@ -264,7 +177,6 @@ function EvCard({ ev, prices, t }: { ev: DeviceSummary; prices: PricePoint[]; t:
       ) : (
         <p className="mt-4 text-[12px] text-[var(--text-faint)]">{t.dashboard.evCard.noPrices}</p>
       )}
-
       <p className="mt-4 border-t border-[var(--border)] pt-3 text-[11px] leading-relaxed text-[var(--text-faint)]">
         {t.dashboard.evCard.pendingNote}
       </p>
@@ -272,107 +184,31 @@ function EvCard({ ev, prices, t }: { ev: DeviceSummary; prices: PricePoint[]; t:
   )
 }
 
-/* ── Price bar chart ────────────────────────────────────── */
-function PriceChart({ prices, schedule, t }: { prices: PricePoint[]; schedule?: ScheduleSlot[]; t: TranslationDict }) {
-  if (!prices.length) return null
-  const totals = prices.map(p => p.total)
-  const min = Math.min(...totals), max = Math.max(...totals)
-  const range = max - min || 0.01
-  const now = new Date().getHours()
-
+/* ── Today's plan (schedule rows) ───────────────────────── */
+function PlanCard({ schedule, estimatedSavings, t }: { schedule: ScheduleSlot[]; estimatedSavings: number; t: TranslationDict }) {
+  const active = schedule.filter(s => s.action !== 'idle').slice(0, 6)
   return (
-    <div className="rounded-[26px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_2px_26px_-16px_rgba(20,24,15,0.30)] p-6">
-      <div className="mb-5 flex items-center justify-between">
-        <div>
-          <p className="text-[14px] font-semibold text-[var(--text)]">{t.dashboard.priceChart.title}</p>
-          <p className="mt-0.5 text-[11px] text-[var(--text-faint)]">{t.dashboard.priceChart.subtitle}</p>
-        </div>
-        <div className="flex gap-1 rounded-lg bg-[var(--surface-2)] p-1">
-          <span className="rounded-md bg-emerald-500/15 px-3 py-1 text-[11px] font-semibold text-emerald-400">{t.dashboard.priceChart.today}</span>
-          <span className="px-3 py-1 text-[11px] font-medium text-[var(--text-faint)]">{t.dashboard.priceChart.tomorrow}</span>
-        </div>
+    <div className="rounded-[26px] border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[0_2px_26px_-16px_rgba(20,24,15,0.30)]">
+      <div className="mb-3 flex items-center justify-between">
+        <p className="text-[16px] font-bold text-[var(--text)]">{t.dashboard.schedule.title}</p>
+        <span className="rounded-full bg-emerald-500/10 px-2.5 py-1 text-[12px] font-semibold text-emerald-600 ring-1 ring-emerald-500/20">~{fmt(estimatedSavings)}</span>
       </div>
-
-      <div className="flex h-[120px] items-end gap-[3px]">
-        {prices.map((price, i) => {
-          const hour = new Date(price.startsAt).getHours()
-          const h = ((price.total - min) / range) * 70 + 30
-          const ratio = (price.total - min) / range
-          const slot = schedule?.find(s => new Date(s.startsAt).getHours() === hour)
-          let color = ratio < 0.33 ? 'bg-emerald-500/50' : ratio > 0.66 ? 'bg-red-500/50' : 'bg-[var(--text-faint)]/30'
-          if (slot?.action === 'charge') color = 'bg-emerald-500'
-          else if (slot?.action === 'discharge') color = 'bg-amber-500'
-
-          return (
-            <div key={i} className="group relative flex flex-1 flex-col items-center">
-              <div className="pointer-events-none absolute bottom-[calc(100%+4px)] left-1/2 z-20 hidden -translate-x-1/2 whitespace-nowrap rounded-lg border border-[var(--border)] bg-[var(--bg)] px-2 py-1.5 text-[10.5px] text-[var(--text-muted)] shadow-xl group-hover:block">
-                {String(hour).padStart(2,'0')}:00 · €{price.total.toFixed(4)}
-              </div>
-              <div className={`w-full rounded-t-[5px] ${color} ${hour === now ? 'ring-1 ring-[var(--text)]/25' : ''}`}
-                style={{ height: `${h}%` }} />
-              {hour % 6 === 0 && <span className="mt-1 text-[9px] tabular-nums text-[var(--text-faint)]">{hour}</span>}
-            </div>
-          )
-        })}
-      </div>
-
-      <div className="mt-4 flex gap-5 text-[11px] text-[var(--text-faint)]">
-        <span className="flex items-center gap-1.5"><i className="inline-block h-2 w-2 rounded-sm bg-emerald-500" />{t.dashboard.priceChart.charge}</span>
-        <span className="flex items-center gap-1.5"><i className="inline-block h-2 w-2 rounded-sm bg-amber-500" />{t.dashboard.priceChart.sell}</span>
-        <span className="flex items-center gap-1.5"><i className="inline-block h-2 w-2 rounded-sm bg-emerald-500/50" />{t.dashboard.priceChart.cheap}</span>
-        <span className="flex items-center gap-1.5"><i className="inline-block h-2 w-2 rounded-sm bg-red-500/50" />{t.dashboard.priceChart.peak}</span>
-      </div>
-    </div>
-  )
-}
-
-/* ── Optimization schedule list ─────────────────────────── */
-function ScheduleList({ schedule, estimatedSavings, t }: {
-  schedule: ScheduleSlot[]
-  estimatedSavings: number
-  t: TranslationDict
-}) {
-  const active = schedule.filter(s => s.action !== 'idle')
-  const maxPrice = Math.max(...schedule.map(s => s.price), 0.01)
-
-  return (
-    <div className="rounded-[26px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_2px_26px_-16px_rgba(20,24,15,0.30)] p-6">
-      <div className="mb-5 flex items-center justify-between">
-        <div>
-          <p className="text-[14px] font-semibold text-[var(--text)]">{t.dashboard.schedule.title}</p>
-          <p className="mt-0.5 text-[11px] text-[var(--text-faint)]">{t.dashboard.schedule.subtitle}</p>
-        </div>
-        <span className="rounded-lg bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-400 ring-1 ring-emerald-500/20">
-          ~{fmt(estimatedSavings)}
-        </span>
-      </div>
-
       {active.length === 0 ? (
         <p className="py-6 text-center text-[13px] text-[var(--text-faint)]">{t.dashboard.schedule.none}</p>
       ) : (
-        <div className="space-y-3">
-          {active.slice(0, 6).map((slot) => {
-            const barPct = (slot.price / maxPrice) * 100
+        <div>
+          {active.map((slot, i) => {
             const isCharge = slot.action === 'charge'
             return (
-              <div key={slot.hour} className="flex items-center gap-3">
-                <span className="w-10 shrink-0 font-mono text-[12px] tabular-nums text-[var(--text-faint)]">
-                  {String(slot.hour).padStart(2, '0')}:00
-                </span>
-                <span className={`shrink-0 rounded-md px-2 py-0.5 text-[11px] font-semibold ${
-                  isCharge ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'
-                }`}>
-                  {isCharge ? t.dashboard.schedule.charge : t.dashboard.schedule.sell}
-                </span>
-                <div className="relative flex-1 overflow-hidden rounded-full bg-[var(--surface-2)]" style={{ height: '6px' }}>
-                  <div
-                    className={`h-full rounded-full transition-all ${isCharge ? 'bg-emerald-500' : 'bg-amber-500'}`}
-                    style={{ width: `${barPct}%` }}
-                  />
+              <div key={slot.hour} className={`flex items-center gap-3.5 py-3 ${i > 0 ? 'border-t border-[var(--border)]' : ''}`}>
+                <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${isCharge ? 'bg-emerald-500/12 text-emerald-600' : 'bg-amber-500/12 text-amber-600'}`}>
+                  {isCharge ? <ArrowDown className="h-5 w-5" /> : <ArrowUpRight className="h-5 w-5" />}
                 </div>
-                <span className="w-16 shrink-0 text-right font-mono text-[11px] text-[var(--text-faint)]">
-                  €{slot.price.toFixed(4)}
-                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[14.5px] font-semibold text-[var(--text)]">{isCharge ? t.dashboard.schedule.charge : t.dashboard.schedule.sell}</p>
+                  <p className="mt-0.5 font-mono text-[12px] text-[var(--text-muted)]">{fmtSmall(slot.price)}{t.dashboard.overview.perKwh}</p>
+                </div>
+                <span className="shrink-0 font-mono text-[13px] font-semibold text-[var(--text-muted)] tabular-nums">{String(slot.hour).padStart(2, '0')}:00</span>
               </div>
             )
           })}
@@ -400,14 +236,13 @@ function ActivityTable({ t, tag }: { t: TranslationDict; tag: string }) {
     <div className="rounded-[26px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_2px_26px_-16px_rgba(20,24,15,0.30)]">
       <div className="flex items-center justify-between border-b border-[var(--border)] px-6 py-4">
         <p className="text-[14px] font-semibold text-[var(--text)]">{t.dashboard.activityTable.title}</p>
-        <Link href="/dashboard/besparingen" className="flex items-center gap-1 text-[12px] font-medium text-emerald-400 hover:text-emerald-300">
+        <Link href="/dashboard/besparingen" className="flex items-center gap-1 text-[12px] font-medium text-emerald-500 hover:text-emerald-400">
           {t.dashboard.common.viewAll} <ArrowUpRight className="h-3 w-3" />
         </Link>
       </div>
-
       {loading ? (
-        <div className="space-y-0 divide-y divide-white/[0.04]">
-          {[1,2,3,4].map(i => (
+        <div className="divide-y divide-[var(--border)]">
+          {[1, 2, 3, 4].map(i => (
             <div key={i} className="flex items-center gap-4 px-6 py-3.5">
               <Skeleton className="h-8 w-8 rounded-xl bg-[var(--surface-2)]" />
               <div className="flex-1 space-y-1.5">
@@ -424,20 +259,15 @@ function ActivityTable({ t, tag }: { t: TranslationDict; tag: string }) {
           <p className="mt-1 text-[12px] text-[var(--text-faint)]">{t.dashboard.activityTable.noneDesc}</p>
         </div>
       ) : (
-        <div className="divide-y divide-white/[0.04]">
+        <div className="divide-y divide-[var(--border)]">
           {logs.map((log: LogRow, i: number) => {
             const isCharge = log.action === 'charge'
             const dt = new Date(log.created_at)
-            const timeStr = dt.toLocaleString(tag, { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' })
+            const timeStr = dt.toLocaleString(tag, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
             return (
               <div key={i} className="flex items-center gap-4 px-6 py-3.5">
-                <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${
-                  isCharge ? 'bg-emerald-500/10 ring-1 ring-emerald-500/20' : 'bg-amber-500/10 ring-1 ring-amber-500/20'
-                }`}>
-                  {isCharge
-                    ? <TrendingDown className="h-3.5 w-3.5 text-emerald-400" />
-                    : <TrendingUp className="h-3.5 w-3.5 text-amber-400" />
-                  }
+                <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${isCharge ? 'bg-emerald-500/10 ring-1 ring-emerald-500/20' : 'bg-amber-500/10 ring-1 ring-amber-500/20'}`}>
+                  {isCharge ? <TrendingDown className="h-3.5 w-3.5 text-emerald-500" /> : <TrendingUp className="h-3.5 w-3.5 text-amber-600" />}
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-[13px] font-medium text-[var(--text-muted)]">
@@ -446,10 +276,10 @@ function ActivityTable({ t, tag }: { t: TranslationDict; tag: string }) {
                   </p>
                   <p className="mt-0.5 text-[11.5px] text-[var(--text-faint)]">
                     {timeStr}
-                    {log.price_eur > 0 && <span className="ml-2">@ €{log.price_eur.toFixed(4)}/kWh</span>}
+                    {log.price_eur > 0 && <span className="ml-2">@ {fmtSmall(log.price_eur)}/kWh</span>}
                   </p>
                 </div>
-                <span className={`text-[13px] font-semibold ${(log.savings_eur ?? 0) > 0 ? 'text-emerald-400' : 'text-[var(--text-faint)]'}`}>
+                <span className={`text-[13px] font-semibold ${(log.savings_eur ?? 0) > 0 ? 'text-emerald-500' : 'text-[var(--text-faint)]'}`}>
                   {(log.savings_eur ?? 0) > 0 ? `+${fmt(log.savings_eur)}` : '—'}
                 </span>
               </div>
@@ -463,11 +293,11 @@ function ActivityTable({ t, tag }: { t: TranslationDict; tag: string }) {
 
 /* ── Main dashboard client component ───────────────────── */
 export default function DashboardClient({
-  hasTibber, hasSessy, hasSolar, devices = [],
+  hasTibber, hasSessy, devices = [],
 }: {
   hasTibber: boolean
   hasSessy: boolean
-  hasSolar: boolean
+  hasSolar?: boolean
   devices?: DeviceSummary[]
 }) {
   const { t, tag } = useT()
@@ -481,66 +311,113 @@ export default function DashboardClient({
       fetch('/api/savings').then(r => r.json()).then(setSavings).catch(() => {})
       fetch('/api/sessy/status').then(r => r.json()).then(setSessy).catch(() => {})
     }
-    // Live EPEX-spotprijzen werken voor iedereen (EnergyZero-fallback),
-    // ook zonder Tibber-koppeling.
     fetch('/api/tibber/prices').then(r => r.json()).then(setTibber).catch(() => {})
   }, [hasTibber, hasSessy])
 
   const schedule = tibber?.optimization?.schedule ?? []
   const todayPrices = tibber?.today ?? []
   const estimatedSavings = tibber?.optimization?.estimatedSavings ?? 0
+  const todaySaved = savings?.today_eur ?? 0
+  const monthSaved = savings?.month_eur ?? 0
+  const totalSaved = savings?.total_eur ?? 0
+  const soc = sessy?.state_of_charge ?? 0
+  const currentPrice = tibber?.current?.total
+  const dayAvg = todayPrices.length ? todayPrices.reduce((s, p) => s + p.total, 0) / todayPrices.length : 0
+  const belowAvg = currentPrice != null && dayAvg > 0 ? currentPrice <= dayAvg : true
 
   return (
-    <div className="space-y-7">
-      {/* Page header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-[26px] font-extrabold tracking-[-0.035em] text-[var(--text)]">
-            {t.dashboard.overview.title}
-          </h1>
-          <p className="mt-1 text-[13px] text-[var(--text-faint)]">
-            {t.dashboard.overview.subtitle}
-          </p>
+    <div className="space-y-4">
+      {/* Greeting */}
+      <div className="flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <h1 className="text-[24px] font-bold tracking-[-0.02em] text-[var(--text)]">{t.dashboard.overview.title}</h1>
+          <p className="mt-0.5 text-[13px] text-[var(--text-faint)]">{t.dashboard.overview.subtitle}</p>
         </div>
-        <Link
-          href="/dashboard/besparingen"
-          className="flex items-center gap-1 text-[13px] font-medium text-emerald-400 transition-colors hover:text-emerald-300"
-        >
-          {t.dashboard.common.seeMore} <ArrowUpRight className="h-3.5 w-3.5" />
-        </Link>
+        <span className="flex shrink-0 items-center gap-2 rounded-full bg-emerald-500/12 px-3 py-1.5 text-[12px] font-semibold text-emerald-600 ring-1 ring-emerald-500/20">
+          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+          {hasSessy ? t.dashboard.battery.charging : t.dashboard.nav.dashboard}
+        </span>
       </div>
 
-      <div className="space-y-5">
-        {/* Row 1: Hero + Battery + VPP */}
-        <div className="grid grid-cols-1 gap-5 lg:grid-cols-4">
-          <HeroCard savings={savings} tibber={tibber} hasSessy={hasSessy} t={t} />
-          <BatteryCard sessy={sessy} t={t} />
-          <VppCard enrolled={false} t={t} />
+      {/* Hero — green accent: saved today + battery ring */}
+      <div
+        className="relative overflow-hidden rounded-[28px] p-6 text-white shadow-[0_14px_34px_-18px_rgba(47,93,58,0.7)]"
+        style={{ background: 'linear-gradient(155deg, var(--color-emerald-600) 0%, var(--color-emerald-700) 100%)' }}
+      >
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-[13px] font-semibold text-white/85">{t.dashboard.overview.savedToday}</p>
+            <p className="mt-1 font-mono text-[42px] font-bold leading-none tracking-[-0.03em]">{fmt(todaySaved)}</p>
+            <p className="mt-2 text-[13px] text-white/85">{fmt(monthSaved)} · {fmt(totalSaved)}</p>
+          </div>
+          <Ring pct={soc} size={88} sw={9}>
+            <BatteryCharging className="h-5 w-5 text-white" />
+            <span className="mt-0.5 font-mono text-[15px] font-bold text-white">{soc}%</span>
+          </Ring>
         </div>
-
-        {/* Gekoppelde EV — slim laadplan uit de live prijzen */}
-        {ev && (
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            <EvCard ev={ev} prices={todayPrices} t={t} />
-          </div>
-        )}
-
-        {/* Row 2: Price chart + Schedule — live EPEX prices for everyone */}
-        {todayPrices.length > 0 ? (
-          <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1.4fr_1fr]">
-            <PriceChart prices={todayPrices} schedule={schedule} t={t} />
-            <ScheduleList schedule={schedule} estimatedSavings={estimatedSavings} t={t} />
-          </div>
-        ) : (
-          <div className="rounded-2xl border border-dashed border-[var(--border)] bg-[var(--surface)] p-10 text-center">
-            <Plug className="mx-auto h-8 w-8 text-[var(--text-faint)]" />
-            <p className="mt-4 text-[14px] font-medium text-[var(--text-faint)]">{t.dashboard.priceChart.loading}</p>
-          </div>
-        )}
-
-        {/* Row 3: Activity table */}
-        {hasSessy && <ActivityTable t={t} tag={tag} />}
+        <div className="mt-5 flex flex-wrap gap-2.5">
+          <Link href="/dashboard/besparingen" className="inline-flex h-11 items-center gap-2 rounded-full bg-white px-5 text-[14px] font-semibold text-[var(--color-emerald-700)] transition hover:brightness-[0.97]">
+            <TrendingUp className="h-4 w-4" /> {t.dashboard.overview.viewSavings}
+          </Link>
+          {!hasSessy && (
+            <Link href="/dashboard/koppelingen" className="inline-flex h-11 items-center gap-2 rounded-full border border-white/30 px-5 text-[14px] font-medium text-white transition hover:bg-white/10">
+              <Plug className="h-4 w-4" /> {t.dashboard.overview.connectDevice}
+            </Link>
+          )}
+        </div>
       </div>
+
+      {/* Two stat cards */}
+      <div className="grid grid-cols-2 gap-4">
+        <Stat k={t.dashboard.overview.thisMonth} v={fmt(monthSaved)} d={monthSaved > 0 ? fmt(totalSaved) : undefined} dpos />
+        <Stat
+          k={t.dashboard.overview.spotPriceNow}
+          v={currentPrice != null ? fmtSmall(currentPrice) : '—'}
+          d={currentPrice != null ? (belowAvg ? t.dashboard.priceChart.cheap : t.dashboard.priceChart.peak) : undefined}
+          dpos={belowAvg}
+        />
+      </div>
+
+      {/* Price card with smooth curve */}
+      {todayPrices.length > 0 ? (
+        <div className="rounded-[26px] border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[0_2px_26px_-16px_rgba(20,24,15,0.30)]">
+          <div className="mb-3 flex items-center justify-between">
+            <div>
+              <p className="text-[13px] font-semibold text-[var(--text-muted)]">{t.dashboard.priceChart.title}</p>
+              <div className="mt-1 flex items-baseline gap-1.5">
+                <span className="font-mono text-[24px] font-bold text-[var(--text)]">{currentPrice != null ? fmtSmall(currentPrice) : '—'}</span>
+                <span className="text-[12px] text-[var(--text-faint)]">{t.dashboard.overview.perKwh}</span>
+              </div>
+            </div>
+            <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[12px] font-semibold ${belowAvg ? 'bg-emerald-500/10 text-emerald-600' : 'bg-amber-500/10 text-amber-600'}`}>
+              {belowAvg ? <ArrowDown className="h-3.5 w-3.5" /> : <TrendingUp className="h-3.5 w-3.5" />}
+              {belowAvg ? t.dashboard.priceChart.cheap : t.dashboard.priceChart.peak}
+            </span>
+          </div>
+          <PriceCurve prices={todayPrices} />
+        </div>
+      ) : (
+        <div className="rounded-[26px] border border-dashed border-[var(--border)] bg-[var(--surface)] p-10 text-center">
+          <Plug className="mx-auto h-8 w-8 text-[var(--text-faint)]" />
+          <p className="mt-4 text-[14px] font-medium text-[var(--text-faint)]">{t.dashboard.priceChart.loading}</p>
+        </div>
+      )}
+
+      {/* EV card */}
+      {ev && <EvCard ev={ev} prices={todayPrices} t={t} />}
+
+      {/* Today's plan */}
+      {todayPrices.length > 0 && <PlanCard schedule={schedule} estimatedSavings={estimatedSavings} t={t} />}
+
+      {/* Recent activity */}
+      {hasSessy && <ActivityTable t={t} tag={tag} />}
+
+      {/* Solar loading hint (keeps Sun import used) */}
+      {savings == null && hasSessy && (
+        <p className="flex items-center justify-center gap-1.5 text-[12px] text-[var(--text-faint)]">
+          <Sun className="h-3.5 w-3.5" /> {t.dashboard.priceChart.loading}
+        </p>
+      )}
     </div>
   )
 }
