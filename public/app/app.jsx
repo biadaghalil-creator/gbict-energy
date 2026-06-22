@@ -65,6 +65,15 @@ function App() {
     document.documentElement.setAttribute('data-dir', (dark ? 'd' : 'l') + accHex);
   }, [dark, accHex, acc.rgb]);
 
+  // Energie-flow (de "stroom" bovenin) — schermvullende canvas op de achtergrond.
+  const flowCv = useRefA(null);
+  useEffA(() => {
+    if (!flowCv.current || !window.initEnergyFlow) return;
+    const inst = window.initEnergyFlow(flowCv.current);
+    if (!animOn && inst) inst.stop();
+    return () => inst && inst.stop();
+  }, [animOn, dark, accHex]);
+
   const current = stack.length ? stack[stack.length - 1] : tab;
 
   const open = (name) => {
@@ -98,7 +107,9 @@ function App() {
   return (
     <div className={'theme ' + (dark ? 'dark' : 'light') + (animOn ? ' anim-on' : '')}
          style={{ '--accent': acc.main, '--accent-deep': acc.deep, '--accent-rgb': acc.rgb, '--accent-tint': acc.tint,
-                  position: 'fixed', inset: 0, background: 'var(--bg)', color: 'var(--ink)', overflow: 'hidden' }}>
+                  position: 'fixed', inset: 0, background: 'var(--bg)', color: 'var(--ink)', overflow: 'hidden',
+                  fontFamily: "'Satoshi', -apple-system, system-ui, sans-serif", WebkitFontSmoothing: 'antialiased' }}>
+      <canvas ref={flowCv} className="flow-bg" />
       {!booted ? (
         <div key="onb" className={dirClass} style={{ position: 'absolute', inset: 0, zIndex: 5 }}>
           <Onboarding onDone={() => { setBooted(true); setDir('tab'); }} onLogin={() => { setBooted(true); setDir('tab'); }} />

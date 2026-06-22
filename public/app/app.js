@@ -48,6 +48,13 @@ function App() {
     r.setProperty("--accent-rgb", acc.rgb);
     document.documentElement.setAttribute("data-dir", (dark ? "d" : "l") + accHex);
   }, [dark, accHex, acc.rgb]);
+  const flowCv = useRefA(null);
+  useEffA(() => {
+    if (!flowCv.current || !window.initEnergyFlow) return;
+    const inst = window.initEnergyFlow(flowCv.current);
+    if (!animOn && inst) inst.stop();
+    return () => inst && inst.stop();
+  }, [animOn, dark, accHex]);
   const current = stack.length ? stack[stack.length - 1] : tab;
   const open = (name) => {
     if (TABS.includes(name)) {
@@ -108,9 +115,12 @@ function App() {
         inset: 0,
         background: "var(--bg)",
         color: "var(--ink)",
-        overflow: "hidden"
+        overflow: "hidden",
+        fontFamily: "'Satoshi', -apple-system, system-ui, sans-serif",
+        WebkitFontSmoothing: "antialiased"
       }
     },
+    /* @__PURE__ */ React.createElement("canvas", { ref: flowCv, className: "flow-bg" }),
     !booted ? /* @__PURE__ */ React.createElement("div", { key: "onb", className: dirClass, style: { position: "absolute", inset: 0, zIndex: 5 } }, /* @__PURE__ */ React.createElement(Onboarding, { onDone: () => {
       setBooted(true);
       setDir("tab");
