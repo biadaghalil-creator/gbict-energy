@@ -93,50 +93,26 @@ function App() {
 
   const dirClass = dir === 'push' ? 'scr-push' : dir === 'pop' ? 'scr-pop' : 'scr-tab';
 
+  // Volledig scherm: alleen de app zelf (geen showcase-canvas, geen nep-
+  // telefoonframe, geen tweaks-paneel). De echte iPhone levert de statusbalk.
   return (
-    <div className={'theme ' + (dark ? 'dark' : 'light') + ' stage ' + (dark ? 'dark' : '') + (animOn ? ' anim-on' : '')}
-         style={{ '--accent': acc.main, '--accent-deep': acc.deep, '--accent-rgb': acc.rgb, '--accent-tint': acc.tint }}>
-
-      <div className="stage-head">
-        <div className="eyebrow"><Mark size={18} /> GBICT Energy · App prototype</div>
-        <h1>The home-energy app, reimagined.</h1>
-        <p>A warm, hands-off iOS app for batteries, solar and dynamic power. Tap through onboarding, then use the orb-dock to explore. Open <b>Tweaks</b> to switch layout, accent and theme.</p>
-      </div>
-
-      <Device flow animOn={animOn} themeKey={(dark ? 'd' : 'l') + accHex}>
-        {!booted ? (
-          <div key="onb" className={dirClass} style={{ position: 'absolute', inset: 0, zIndex: 5 }}>
-            <Onboarding onDone={() => { setBooted(true); setDir('tab'); }} onLogin={() => { setBooted(true); setDir('tab'); }} />
+    <div className={'theme ' + (dark ? 'dark' : 'light') + (animOn ? ' anim-on' : '')}
+         style={{ '--accent': acc.main, '--accent-deep': acc.deep, '--accent-rgb': acc.rgb, '--accent-tint': acc.tint,
+                  position: 'fixed', inset: 0, background: 'var(--bg)', color: 'var(--ink)', overflow: 'hidden' }}>
+      {!booted ? (
+        <div key="onb" className={dirClass} style={{ position: 'absolute', inset: 0, zIndex: 5 }}>
+          <Onboarding onDone={() => { setBooted(true); setDir('tab'); }} onLogin={() => { setBooted(true); setDir('tab'); }} />
+        </div>
+      ) : (
+        <>
+          <div key={current + navSeq.current} className={dirClass + (stack.length ? ' pushed' : '')} style={{ position: 'absolute', inset: 0, zIndex: 5 }}>
+            {stack.length > 0 && <button className="backorb" onClick={back}><Icon name="chevL" size={20} /></button>}
+            {renderScreen()}
           </div>
-        ) : (
-          <>
-            <div key={current + navSeq.current} className={dirClass + (stack.length ? ' pushed' : '')} style={{ position: 'absolute', inset: 0, zIndex: 5 }}>
-              {stack.length > 0 && <button className="backorb" onClick={back}><Icon name="chevL" size={20} /></button>}
-              {renderScreen()}
-            </div>
-            {dockTab && <Dock tab={dockTab} onSelect={selectTab} />}
-            {sheet && <AddSheet onClose={() => setSheet(false)} />}
-          </>
-        )}
-      </Device>
-
-      {!booted && (
-        <button className="btn btn-ghost btn-sm" style={{ width: 'auto', marginTop: -8 }} onClick={() => { setBooted(true); setDir('tab'); }}>
-          Skip onboarding →
-        </button>
+          {dockTab && <Dock tab={dockTab} onSelect={selectTab} />}
+          {sheet && <AddSheet onClose={() => setSheet(false)} />}
+        </>
       )}
-
-      <TweaksPanel>
-        <TweakSection label="Dashboard" />
-        <TweakRadio label="Layout" value={t.layout || 'classic'}
-          options={[{ value: 'classic', label: 'Balanced' }, { value: 'focus', label: 'Focus' }, { value: 'timeline', label: 'Timeline' }]}
-          onChange={(v) => setTweak('layout', v)} />
-        <TweakSection label="Appearance" />
-        <TweakToggle label="Dark mode" value={dark} onChange={(v) => setTweak('dark', v)} />
-        <TweakToggle label="Live animations" value={animOn} onChange={(v) => setTweak('anim', v)} />
-        <TweakColor label="Accent" value={accHex}
-          options={Object.keys(ACCENTS)} onChange={(v) => setTweak('accent', v)} />
-      </TweaksPanel>
     </div>
   );
 }

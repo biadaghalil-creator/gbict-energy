@@ -98,38 +98,26 @@ function App() {
   return /* @__PURE__ */ React.createElement(
     "div",
     {
-      className: "theme " + (dark ? "dark" : "light") + " stage " + (dark ? "dark" : "") + (animOn ? " anim-on" : ""),
-      style: { "--accent": acc.main, "--accent-deep": acc.deep, "--accent-rgb": acc.rgb, "--accent-tint": acc.tint }
+      className: "theme " + (dark ? "dark" : "light") + (animOn ? " anim-on" : ""),
+      style: {
+        "--accent": acc.main,
+        "--accent-deep": acc.deep,
+        "--accent-rgb": acc.rgb,
+        "--accent-tint": acc.tint,
+        position: "fixed",
+        inset: 0,
+        background: "var(--bg)",
+        color: "var(--ink)",
+        overflow: "hidden"
+      }
     },
-    /* @__PURE__ */ React.createElement("div", { className: "stage-head" }, /* @__PURE__ */ React.createElement("div", { className: "eyebrow" }, /* @__PURE__ */ React.createElement(Mark, { size: 18 }), " GBICT Energy \xB7 App prototype"), /* @__PURE__ */ React.createElement("h1", null, "The home-energy app, reimagined."), /* @__PURE__ */ React.createElement("p", null, "A warm, hands-off iOS app for batteries, solar and dynamic power. Tap through onboarding, then use the orb-dock to explore. Open ", /* @__PURE__ */ React.createElement("b", null, "Tweaks"), " to switch layout, accent and theme.")),
-    /* @__PURE__ */ React.createElement(Device, { flow: true, animOn, themeKey: (dark ? "d" : "l") + accHex }, !booted ? /* @__PURE__ */ React.createElement("div", { key: "onb", className: dirClass, style: { position: "absolute", inset: 0, zIndex: 5 } }, /* @__PURE__ */ React.createElement(Onboarding, { onDone: () => {
+    !booted ? /* @__PURE__ */ React.createElement("div", { key: "onb", className: dirClass, style: { position: "absolute", inset: 0, zIndex: 5 } }, /* @__PURE__ */ React.createElement(Onboarding, { onDone: () => {
       setBooted(true);
       setDir("tab");
     }, onLogin: () => {
       setBooted(true);
       setDir("tab");
-    } })) : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { key: current + navSeq.current, className: dirClass + (stack.length ? " pushed" : ""), style: { position: "absolute", inset: 0, zIndex: 5 } }, stack.length > 0 && /* @__PURE__ */ React.createElement("button", { className: "backorb", onClick: back }, /* @__PURE__ */ React.createElement(Icon, { name: "chevL", size: 20 })), renderScreen()), dockTab && /* @__PURE__ */ React.createElement(Dock, { tab: dockTab, onSelect: selectTab }), sheet && /* @__PURE__ */ React.createElement(AddSheet, { onClose: () => setSheet(false) }))),
-    !booted && /* @__PURE__ */ React.createElement("button", { className: "btn btn-ghost btn-sm", style: { width: "auto", marginTop: -8 }, onClick: () => {
-      setBooted(true);
-      setDir("tab");
-    } }, "Skip onboarding \u2192"),
-    /* @__PURE__ */ React.createElement(TweaksPanel, null, /* @__PURE__ */ React.createElement(TweakSection, { label: "Dashboard" }), /* @__PURE__ */ React.createElement(
-      TweakRadio,
-      {
-        label: "Layout",
-        value: t.layout || "classic",
-        options: [{ value: "classic", label: "Balanced" }, { value: "focus", label: "Focus" }, { value: "timeline", label: "Timeline" }],
-        onChange: (v) => setTweak("layout", v)
-      }
-    ), /* @__PURE__ */ React.createElement(TweakSection, { label: "Appearance" }), /* @__PURE__ */ React.createElement(TweakToggle, { label: "Dark mode", value: dark, onChange: (v) => setTweak("dark", v) }), /* @__PURE__ */ React.createElement(TweakToggle, { label: "Live animations", value: animOn, onChange: (v) => setTweak("anim", v) }), /* @__PURE__ */ React.createElement(
-      TweakColor,
-      {
-        label: "Accent",
-        value: accHex,
-        options: Object.keys(ACCENTS),
-        onChange: (v) => setTweak("accent", v)
-      }
-    ))
+    } })) : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { key: current + navSeq.current, className: dirClass + (stack.length ? " pushed" : ""), style: { position: "absolute", inset: 0, zIndex: 5 } }, stack.length > 0 && /* @__PURE__ */ React.createElement("button", { className: "backorb", onClick: back }, /* @__PURE__ */ React.createElement(Icon, { name: "chevL", size: 20 })), renderScreen()), dockTab && /* @__PURE__ */ React.createElement(Dock, { tab: dockTab, onSelect: selectTab }), sheet && /* @__PURE__ */ React.createElement(AddSheet, { onClose: () => setSheet(false) }))
   );
 }
 ReactDOM.createRoot(document.getElementById("root")).render(/* @__PURE__ */ React.createElement(App, null));
