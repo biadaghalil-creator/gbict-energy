@@ -91,11 +91,12 @@ html, body { margin: 0; background: #ECE4D5; }
   position: absolute; top: 11px; left: 50%; transform: translateX(-50%);
   width: 118px; height: 34px; border-radius: 20px; background: #000; z-index: 80;
 }
-.device .flow-bg {
+.flow-bg {
   position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; opacity: .9;
-  /* the energy current lives in the top band, then dissolves into the bg */
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 11%, rgba(0,0,0,0) 22%);
-  mask-image: linear-gradient(to bottom, #000 0%, #000 11%, rgba(0,0,0,0) 22%);
+  /* the energy current lives in the top band, then dissolves smoothly into the
+     bg — langere, vloeiende fade zodat er geen harde lijn ontstaat */
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 6%, rgba(0,0,0,0) 34%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 6%, rgba(0,0,0,0) 34%);
 }
 .device .flow-veil {
   position: absolute; inset: 0; z-index: 1; pointer-events: none;
