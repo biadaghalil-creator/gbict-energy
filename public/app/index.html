@@ -4,11 +4,24 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>GBICT Energy</title>
-<!-- Oude build laadt /app/ — stuur meteen door naar het dashboard.
-     Cream achtergrond zodat er geen wit flits is tijdens de doorverwijzing. -->
-<style>html,body{margin:0;height:100%;background:#F3EEE3;}</style>
-<script>location.replace('/dashboard');</script>
-<meta http-equiv="refresh" content="0; url=/dashboard" />
+<link rel="preconnect" href="https://api.fontshare.com" />
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="theme.css" />
 </head>
-<body></body>
+<body>
+<div id="root"></div>
+
+<!-- React (production UMD, no SRI) -->
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+
+<!-- Pre-compiled design app (esbuild classic JSX) -->
+<script src="flow.js"></script>
+<script src="tweaks-panel.js"></script>
+<script src="ui.js"></script>
+<script src="screens-onboarding.js"></script>
+<script src="screens-dashboard.js"></script>
+<script src="screens-misc.js"></script>
+<script src="app.js"></script>
+</body>
 </html>

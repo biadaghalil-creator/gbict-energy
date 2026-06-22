@@ -15,9 +15,9 @@ const config: CapacitorConfig = {
      The iOS shell is just the native wrapper.
   ─────────────────────────────────────────────────────── */
   server: {
-    // De app opent direct het dashboard: niet-ingelogd -> /login, ingelogd ->
-    // dashboard. Geen marketing-landing, geen /app/-omweg.
-    url: 'https://gbict-energy.vercel.app/dashboard',
+    // De app laadt het design-prototype (public/app/ — exact het door de
+    // gebruiker gemaakte design).
+    url: 'https://gbict-energy.vercel.app/app/index.html',
     cleartext: false,
     androidScheme: 'https',
   },
