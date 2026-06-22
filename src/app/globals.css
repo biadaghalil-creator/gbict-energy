@@ -637,7 +637,7 @@ html.native-app.dark {
   .gbict-landing .nav-cta { gap: 8px; }
   .gbict-landing .nav-cta .btn { padding: 9px 15px; font-size: 13.5px; }
 }
-@media (max-width: 380px) {
+@media (max-width: 600px) {
   .gbict-landing .nav-cta .btn-ghost { display: none; }  /* alleen "Get started" houden */
 }
 
@@ -763,7 +763,14 @@ html.native-app.dark {
 .gbict-landing .app-feat .ttl svg { width: 19px; height: 19px; color: var(--accent); }
 .gbict-landing .app-feat p { margin: 10px 0 0 31px; color: var(--fg-2); font-size: 15px; max-height: 0; overflow: hidden; opacity: 0; transition: all .3s var(--ease); }
 .gbict-landing .app-feat.on p { max-height: 80px; opacity: 1; margin-top: 12px; }
-@media (max-width: 880px) { .gbict-landing .showcase-grid { grid-template-columns: 1fr; } .gbict-landing .phones { order: 2; } }
+@media (max-width: 880px) {
+  .gbict-landing .showcase-grid { grid-template-columns: 1fr; }
+  /* grid-kinderen mogen niet breder worden dan het scherm (anders cut tekst) */
+  .gbict-landing .showcase-grid > * { min-width: 0; }
+  .gbict-landing .phones { order: 2; gap: 0; max-width: 100%; }
+  .gbict-landing .phone.back { display: none; }   /* tweede telefoon weg op mobiel */
+  .gbict-landing .phone { width: min(248px, 74vw); }
+}
 
 .gbict-landing .phone { width: 248px; flex: none; border-radius: 38px; padding: 9px; background: linear-gradient(160deg, #16181d, #0a0b0e); position: relative; box-shadow: 0 40px 80px -40px rgba(0,0,0,.5), 0 1px 0 rgba(255,255,255,.08) inset; }
 .gbict-landing .phone.back { transform: rotateY(14deg) translateX(20px) scale(.92); opacity: .7; z-index: 0; }
