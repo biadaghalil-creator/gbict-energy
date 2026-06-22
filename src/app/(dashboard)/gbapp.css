@@ -1,0 +1,77 @@
+/* ============================================================
+   GBICT Energy — app design system, scoped to .gbapp
+   Exact component styles from the user's design (app/theme.css),
+   mapped onto the app's live theme tokens (warm green, light+dark).
+   Scoped so it never leaks to the marketing site.
+   ============================================================ */
+
+.gbapp {
+  --ink:        var(--text);
+  --ink-2:      var(--text-muted);
+  --ink-3:      var(--text-faint);
+  --card:       var(--surface);
+  --card-2:     var(--surface-2);
+  --line:       var(--border);
+  --accent:       var(--color-emerald-600);
+  --accent-deep:  var(--color-emerald-700);
+  --accent-tint:  color-mix(in srgb, var(--color-emerald-600) 13%, transparent);
+  --sun:        #D9A441;
+  --sun-tint:   rgba(217,164,65,0.14);
+  --sell:       #C2702C;
+  font-family: 'Satoshi', -apple-system, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: var(--ink);
+}
+
+/* typography */
+.gbapp .scr-eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.gbapp .scr-title { font-size: 28px; font-weight: 700; letter-spacing: -.02em; line-height: 1.08; color: var(--ink); margin: 0; }
+.gbapp .num { font-variant-numeric: tabular-nums; }
+
+/* cards */
+.gbapp .card { background: var(--card); border: .5px solid var(--line); border-radius: 26px; box-shadow: var(--shadow, 0 1px 2px rgba(33,29,22,.04), 0 8px 24px rgba(33,29,22,.06)); }
+.gbapp .card-pad { padding: 20px; }
+.gbapp .card-accent {
+  background: linear-gradient(155deg, var(--accent) 0%, var(--accent-deep) 100%);
+  color: #fff; border: none; border-radius: 28px;
+  box-shadow: 0 14px 34px color-mix(in srgb, var(--accent) 36%, transparent);
+}
+
+/* pills */
+.gbapp .pill { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: 99px; font-size: 12.5px; font-weight: 600; background: var(--accent-tint); color: var(--accent-deep); }
+.dark .gbapp .pill { color: var(--color-emerald-400); }
+.gbapp .pill.live::before { content:''; width:7px; height:7px; border-radius:50%; background: var(--accent); animation: gbLive 2.4s ease-out infinite; }
+@keyframes gbLive { 0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 55%,transparent);} 70%{box-shadow:0 0 0 8px transparent;} 100%{box-shadow:0 0 0 0 transparent;} }
+
+/* buttons */
+.gbapp .btn { display: inline-flex; align-items: center; justify-content: center; gap: 9px; height: 54px; padding: 0 24px; border-radius: 99px; border: none; font-family: inherit; font-size: 16px; font-weight: 650; letter-spacing: -.01em; cursor: pointer; width: 100%; box-sizing: border-box; text-decoration: none; transition: transform .16s, filter .16s; }
+.gbapp .btn:active { transform: scale(.97); }
+.gbapp .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 8px 20px color-mix(in srgb, var(--accent) 32%, transparent); }
+.gbapp .btn-primary:hover { filter: brightness(1.05); }
+.gbapp .btn-ghost { background: color-mix(in srgb, var(--ink) 6%, transparent); color: var(--ink); }
+.gbapp .btn-onaccent { background: #fff; color: var(--accent-deep); }
+
+/* stat cards */
+.gbapp .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.gbapp .stat-k { font-size: 12.5px; font-weight: 600; color: var(--ink-2); }
+.gbapp .stat-v { font-size: 26px; font-weight: 700; letter-spacing: -.02em; color: var(--ink); line-height: 1; margin-top: 8px; }
+.gbapp .stat-v.sm { font-size: 21px; }
+.gbapp .stat-d { font-size: 12px; font-weight: 600; margin-top: 6px; }
+.gbapp .stat-d.pos { color: var(--accent); }
+.dark .gbapp .stat-d.pos { color: var(--color-emerald-400); }
+.gbapp .stat-d.neg { color: var(--sell); }
+
+/* list rows */
+.gbapp .row { display: flex; align-items: center; gap: 14px; padding: 11px 0; }
+.gbapp .row + .row { border-top: .5px solid var(--line); }
+.gbapp .row-ic { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex: none; background: var(--accent-tint); color: var(--accent-deep); }
+.dark .gbapp .row-ic { color: var(--color-emerald-400); }
+.gbapp .row-ic.sun { background: var(--sun-tint); color: var(--sun); }
+.gbapp .row-ic.sell { background: color-mix(in srgb, var(--sell) 14%, transparent); color: var(--sell); }
+.gbapp .row-tx { flex: 1; min-width: 0; }
+.gbapp .row-tx b { display: block; font-size: 15.5px; font-weight: 600; color: var(--ink); letter-spacing: -.01em; }
+.gbapp .row-tx span { display: block; font-size: 13px; color: var(--ink-2); margin-top: 1px; }
+.gbapp .row-val { font-size: 15px; font-weight: 650; color: var(--ink); text-align: right; white-space: nowrap; }
+
+/* spacing helper */
+.gbapp .stack > * + * { margin-top: 14px; }
