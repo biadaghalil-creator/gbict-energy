@@ -30,8 +30,8 @@ const GB = {
     trust: ["Works with any battery", "No installer needed", "Live in 5 minutes"],
   },
   stats: [
-    { n: "€680", u: "", l: "Avg. saved per year" },
-    { n: "92", u: "%", l: "Self-sufficiency reached" },
+    { n: "€420", u: "", l: "Avg. saved per year*" },
+    { n: "78", u: "%", l: "Self-sufficiency reached" },
     { n: "24/7", u: "", l: "Autonomous optimization" },
     { n: "100%", u: "", l: "Hardware agnostic" },
   ],

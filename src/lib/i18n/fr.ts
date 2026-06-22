@@ -21,7 +21,7 @@ export const fr: TranslationDict = {
     heroTitle: 'Votre batterie, enfin',
     heroTitleHighlight: 'utilisée intelligemment',
     heroSubtitle:
-      'Branchez votre batterie, connectez votre contrat d\'énergie, et laissez tourner. Ça charge quand l\'électricité est pas chère et revend quand les prix montent. La plupart des gens économisent 150–300 € par an. Sans rien faire.',
+      'Branchez votre batterie, connectez votre contrat d\'énergie, et laissez tourner. Ça charge quand l\'électricité est pas chère et revend quand les prix montent. La plupart des gens économisent environ 420 € par an. Sans rien faire.',
     ctaPrimary: 'Essayer gratuitement',
     ctaSecondary: 'Voir comment ça marche',
     statsUsers: 'utilisateurs',

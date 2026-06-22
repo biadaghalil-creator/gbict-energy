@@ -15,7 +15,7 @@ const FAQS = [
   },
   {
     q: "How much can I actually save with GBICT Energy?",
-    a: "The average GBICT household saves around €847 per year. The exact amount depends on your battery capacity, solar setup, energy contract, and local spot price volatility. Your dashboard shows real-time savings so you always know exactly what GBICT is earning you.",
+    a: "A typical GBICT household (home battery + solar on a dynamic contract) saves around €420 per year. The exact amount depends on your battery capacity, solar setup, energy contract, and local spot price volatility. Your dashboard shows real-time savings so you always know exactly what GBICT is earning you.",
   },
   {
     q: "Is my data safe? Where is it stored?",

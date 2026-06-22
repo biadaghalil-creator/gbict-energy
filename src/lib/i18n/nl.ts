@@ -21,7 +21,7 @@ export const nl: TranslationDict = {
     heroTitle: 'Jouw batterij, eindelijk',
     heroTitleHighlight: 'slim ingezet',
     heroSubtitle:
-      'Koppel je batterij, verbind je energiecontract en laat het lopen. Het laadt op als stroom goedkoop is en levert terug als de prijs hoog is. De meeste gebruikers besparen €150–300 per jaar. Je hoeft er niets voor te doen.',
+      'Koppel je batterij, verbind je energiecontract en laat het lopen. Het laadt op als stroom goedkoop is en levert terug als de prijs hoog is. De meeste gebruikers besparen rond €420 per jaar. Je hoeft er niets voor te doen.',
     ctaPrimary: 'Gratis proberen',
     ctaSecondary: 'Bekijk hoe het werkt',
     statsUsers: 'gebruikers',

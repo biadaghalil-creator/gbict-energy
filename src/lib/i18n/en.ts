@@ -21,7 +21,7 @@ export const en: TranslationDict = {
     heroTitle: 'Your battery, finally',
     heroTitleHighlight: 'working for you',
     heroSubtitle:
-      'Plug in your battery, connect your energy deal, and let it run. It charges when electricity is cheap and sells when it\'s expensive. Most people save €150–300 a year. No fiddling required.',
+      'Plug in your battery, connect your energy deal, and let it run. It charges when electricity is cheap and sells when it\'s expensive. Most people save around €420 a year. No fiddling required.',
     ctaPrimary: 'Try it free',
     ctaSecondary: 'See how it works',
     statsUsers: 'users',
