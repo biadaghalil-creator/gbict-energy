@@ -330,8 +330,20 @@
     <span class="pill-live"><span class="di"></span>Optimising</span>
     <button class="ic-btn" title="Notifications"><i data-lucide="bell"></i><span class="dot"></span></button>
     <div class="avatar">L</div>
+    <button class="ic-btn" id="logoutBtn" title="Uitloggen"><i data-lucide="log-out"></i></button>
   </div>
 </nav>
+<script>
+  // Echte logout: wist de Supabase-sessie en stuurt terug naar de login.
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('#logoutBtn');
+    if (!b) return;
+    b.disabled = true;
+    fetch('/api/auth/logout', { method: 'POST' }).finally(function () {
+      window.location.href = '/login';
+    });
+  });
+</script>
 
 <!-- ============ PAGES ============ -->
 <div class="wrap">
