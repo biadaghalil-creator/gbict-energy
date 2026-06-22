@@ -17,7 +17,7 @@ const config: CapacitorConfig = {
   server: {
     // De app laadt het design-prototype (public/app/ — exact het door de
     // gebruiker aangeleverde bestand, niet nagebouwd).
-    url: 'https://gbict-energy.vercel.app/app/',
+    url: 'https://gbict-energy.vercel.app/app/index.html',
     cleartext: false,
     androidScheme: 'https',
   },
