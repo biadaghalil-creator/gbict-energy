@@ -110,7 +110,7 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
         <button
           type="button"
           onClick={() => setStep(2)}
-          className="mt-10 rounded-full bg-[#5b21b6] px-10 py-4 text-base font-semibold text-white shadow-lg shadow-emerald-500/25 transition-all hover:bg-[#6d28d9] hover:shadow-emerald-500/40"
+          className="mt-10 rounded-full bg-[#2F5D3A] px-10 py-4 text-base font-semibold text-white shadow-lg shadow-emerald-500/25 transition-all hover:bg-[#24492D] hover:shadow-emerald-500/40"
         >
           {t.dashboard.onboarding.getStarted}
         </button>
@@ -168,7 +168,7 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
           <button
             type="button"
             onClick={() => setStep(3)}
-            className="w-full rounded-full bg-[#5b21b6] py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#6d28d9]"
+            className="w-full rounded-full bg-[#2F5D3A] py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#24492D]"
           >
             {t.dashboard.onboarding.next}
           </button>
@@ -268,7 +268,7 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
           type="button"
           onClick={handleFinish}
           disabled={loading}
-          className="mt-10 rounded-full bg-[#5b21b6] px-10 py-4 text-base font-semibold text-white shadow-lg shadow-emerald-500/25 transition-all hover:bg-[#6d28d9] disabled:opacity-60"
+          className="mt-10 rounded-full bg-[#2F5D3A] px-10 py-4 text-base font-semibold text-white shadow-lg shadow-emerald-500/25 transition-all hover:bg-[#24492D] disabled:opacity-60"
         >
           {loading ? t.dashboard.onboarding.saving : t.dashboard.onboarding.toDashboard}
         </button>

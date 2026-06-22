@@ -389,31 +389,52 @@ body {
   --band: #05060B;          /* deep band (night) */
 }
 
-/* ─── APP-ONLY: "premium violet" donker design-systeem (html.native-app)
-   Near-black canvas (#07080D, blauwe ondertoon), paars accent, glas-
-   oppervlakken met violette rand. Dark-only — beide varianten krijgen
-   dezelfde donkere look. Scope = alleen de app; de website blijft ongemoeid.
-   Bron: GBICT Energy Design System (colors_and_type.css / README).         */
-html.native-app:not(.dark),
+/* ─── APP-ONLY: warm "Superpower" design-systeem (html.native-app)
+   Cream/zand canvas + salie→bosgroen accent, amber voor zon, oranje voor
+   verkoop. Light overdag, warm-donker 's avonds. Scope = alleen de app.
+   Bron: GBICT Energy app-design (GBICT-APP22 / app/theme.css).            */
+
+/* Day (light) — warm cream + bosgroen accent */
+html.native-app:not(.dark) {
+  --bg: #F3EEE3;            /* warm cream */
+  --surface: #FFFFFF;       /* kaart */
+  --surface-2: #ECE4D5;     /* zand-tint / hover */
+  --border: rgba(33, 29, 22, 0.09);
+  --header: rgba(243, 238, 227, 0.85);
+  --text: #211D16;          /* warm houtskool */
+  --text-muted: #5C5648;
+  --text-faint: #938C7C;
+  /* accent = salie→bosgroen */
+  --color-emerald-200: #cfe0d2;
+  --color-emerald-300: #9bbf9e;
+  --color-emerald-400: #5C8A5E;  /* salie — accent op licht */
+  --color-emerald-500: #3a6b45;
+  --color-emerald-600: #2F5D3A;  /* bosgroen — knoppen */
+  --color-emerald-700: #24492D;
+  --color-emerald-800: #1d3b24;
+  --color-emerald-900: #162c1b;
+  --color-emerald-950: #0e1c11;
+}
+/* Night (dark) — warm bos-houtskool + zachte salie accent */
 html.native-app.dark {
-  --bg: #07080D;            /* near-black, blauwe ondertoon */
-  --surface: #0d0e16;       /* opgetild paneel / kaart */
-  --surface-2: rgba(139, 92, 246, 0.07);  /* violet-getinte hover/fill */
-  --border: rgba(139, 92, 246, 0.16);     /* violette glas-rand */
-  --header: rgba(7, 8, 13, 0.82);
-  --text: #f8fafc;          /* near-white */
-  --text-muted: #94a3b8;    /* slate-400 */
-  --text-faint: #64748b;    /* slate-500 */
-  /* accent = violet (CTA's, actieve staat, icon-vlakken, key data) */
-  --color-emerald-200: #ddd6fe;
-  --color-emerald-300: #c4b5fd;
-  --color-emerald-400: #a78bfa;
-  --color-emerald-500: #8b5cf6;
-  --color-emerald-600: #7c3aed;
-  --color-emerald-700: #6d28d9;
-  --color-emerald-800: #5b21b6;
-  --color-emerald-900: #4c1d95;
-  --color-emerald-950: #2e1065;
+  --bg: #14160F;            /* warm donker */
+  --surface: #1F2318;       /* warm donker oppervlak */
+  --surface-2: #262A1C;
+  --border: rgba(255, 255, 255, 0.09);
+  --header: rgba(20, 22, 15, 0.82);
+  --text: #F1EEE3;          /* warm off-white */
+  --text-muted: #ACA893;
+  --text-faint: #726E5E;
+  /* accent = zachte salie/mosgroen op donker */
+  --color-emerald-200: #dcebd9;
+  --color-emerald-300: #b3d4b7;
+  --color-emerald-400: #93C081;  /* salie — accent op donker */
+  --color-emerald-500: #74A463;
+  --color-emerald-600: #6E9E63;
+  --color-emerald-700: #557d4d;
+  --color-emerald-800: #3f5e3a;
+  --color-emerald-900: #2c4228;
+  --color-emerald-950: #1b2a19;
 }
 
 :root {

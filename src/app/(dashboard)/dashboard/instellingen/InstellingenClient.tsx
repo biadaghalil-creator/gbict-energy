@@ -246,7 +246,7 @@ export default function InstellingenClient({ profile, email }: Props) {
         <button
           onClick={handleSave}
           disabled={isPending}
-          className="inline-flex h-11 items-center gap-2 rounded-full bg-[#5b21b6] px-7 text-[14px] font-semibold text-white shadow-[0_1px_3px_rgba(0,0,0,0.3)] transition-colors hover:bg-[#6d28d9] disabled:opacity-50"
+          className="inline-flex h-11 items-center gap-2 rounded-full bg-[#2F5D3A] px-7 text-[14px] font-semibold text-white shadow-[0_1px_3px_rgba(0,0,0,0.3)] transition-colors hover:bg-[#24492D] disabled:opacity-50"
         >
           {isPending ? t.dashboard.settings.saving : t.dashboard.settings.saveChanges}
         </button>
