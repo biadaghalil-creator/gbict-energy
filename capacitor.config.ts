@@ -15,28 +15,26 @@ const config: CapacitorConfig = {
      The iOS shell is just the native wrapper.
   ─────────────────────────────────────────────────────── */
   server: {
-    // De app laadt de echte app (Supabase-login + live data). Niet-ingelogd ->
-    // /login (warm design), ingelogd -> dashboard. Zo werkt inloggen/registreren echt.
-    url: 'https://gbict-energy.vercel.app/dashboard',
+    // Laad direct /login (geen 307-redirect → geen zwart tussenscherm).
+    // Niet-ingelogd -> login, ingelogd -> dashboard. Echte Supabase-auth.
+    url: 'https://gbict-energy.vercel.app/login',
     cleartext: false,
     androidScheme: 'https',
   },
 
   ios: {
-    // Edge-to-edge: we handle the notch / home-indicator insets ourselves in
-    // CSS (safe-area-inset). 'always' added its own insets and caused black
-    // strips and a shifting bottom bar on scroll.
     contentInset: 'never',
     scrollEnabled: true,
-    backgroundColor: '#07080D',
+    // Warm cream achtergrond (matcht het design) — geen zwarte flits meer.
+    backgroundColor: '#F3EEE3',
     preferredContentMode: 'mobile',
   },
 
   plugins: {
     SplashScreen: {
-      launchShowDuration: 1500,
+      launchShowDuration: 1200,
       launchAutoHide: true,
-      backgroundColor: '#07080D',
+      backgroundColor: '#F3EEE3',
       androidSplashResourceName: 'splash',
       androidScaleType: 'CENTER_CROP',
       showSpinner: false,
@@ -44,8 +42,8 @@ const config: CapacitorConfig = {
       splashImmersive: true,
     },
     StatusBar: {
-      style: 'light',
-      backgroundColor: '#07080D',
+      style: 'dark',
+      backgroundColor: '#F3EEE3',
     },
   },
 }
