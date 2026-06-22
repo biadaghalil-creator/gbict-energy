@@ -4,9 +4,10 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>GBICT Energy</title>
-<!-- De app draait nu in de echte app-met-login. Stuur door naar de root. -->
-<script>location.replace('/');</script>
-<meta http-equiv="refresh" content="0; url=/" />
+<!-- De app draait nu in de echte app-met-login. Direct naar het dashboard
+     (niet-ingelogd -> /login, ingelogd -> dashboard). -->
+<script>location.replace('/dashboard');</script>
+<meta http-equiv="refresh" content="0; url=/dashboard" />
 </head>
 <body></body>
 </html>
