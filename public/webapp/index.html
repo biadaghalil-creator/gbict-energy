@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<!-- @dsCard group="Brand" name="GBICT Energy — Web Dashboard" subtitle="Desktop app · warm cream/sage · hero savings · live flow · price curve · optimisation plan" viewport="1440x1120" -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GBICT Energy — Dashboard</title>
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700,900&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@0.456.0/dist/umd/lucide.min.js"></script>
+<script src="logo-data.js"></script>
+<script src="flow.js"></script>
+<style>
+  /* ============================================================
+     GBICT ENERGY — Web dashboard
+     Warm, premium, Superpower-style: cream/sand grounds, forest-sage
+     accents, generous whitespace, soft rounded cards. Mirrors the
+     iOS app's theme (app/theme.css) for a single visual language.
+     ============================================================ */
+  :root{
+    --bg:        #F3EEE3;
+    --bg-2:      #ECE4D5;
+    --card:      #FFFFFF;
+    --card-2:    #FBF7EF;
+    --ink:       #211D16;
+    --ink-2:     #5C5648;
+    --ink-3:     #938C7C;
+    --line:      rgba(33,29,22,0.09);
+    --line-2:    rgba(33,29,22,0.06);
+    --accent:        #2F5D3A;
+    --accent-deep:   #24492D;
+    --accent-soft:   #5C8A5E;
+    --accent-tint:   #E7EEE0;
+    --accent-rgb:    74,118,48;   /* read by flow.js */
+    --sun:       #D9A441;
+    --sun-tint:  #F6ECD6;
+    --sell:      #C2702C;
+    --sell-tint: #F4E6D8;
+    --shadow:    0 1px 2px rgba(33,29,22,.04), 0 8px 24px rgba(33,29,22,.06);
+    --shadow-lg: 0 2px 6px rgba(33,29,22,.06), 0 24px 60px rgba(33,29,22,.14);
+    --nav-h:     70px;
+    --font:      'Satoshi', -apple-system, system-ui, sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);
+    -webkit-font-smoothing:antialiased;overflow-x:hidden;
+  }
+  ::selection{background:var(--accent-tint)}
+  button{font-family:inherit}
+  .num{font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+
+  /* ambient ground — soft warm radial like the app stage */
+  .ground{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(125% 95% at 50% -12%, #FBF7EF 0%, #F0E9DC 46%, #E7DECD 100%)}
+
+  /* energy-flow current band — the app's signature live current, fading into the page */
+  .flow-band{position:absolute;top:0;left:0;width:100vw;height:660px;z-index:0;pointer-events:none;
+    -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 52%,rgba(0,0,0,0) 94%);
+    mask-image:linear-gradient(to bottom,#000 0%,#000 52%,rgba(0,0,0,0) 94%)}
+
+  /* ============================================================ TOP NAV (floating pill) */
+  .nav{position:sticky;top:18px;z-index:40;height:64px;display:flex;align-items:center;gap:26px;
+    max-width:1280px;margin:18px auto 0;padding:0 14px 0 22px;
+    border:1px solid var(--line);border-radius:99px;
+    background:color-mix(in srgb,var(--card) 80%, transparent);backdrop-filter:blur(20px) saturate(170%);-webkit-backdrop-filter:blur(20px) saturate(170%);
+    box-shadow:var(--shadow-lg)}
+  .brand{display:flex;align-items:center;gap:11px;flex:none}
+  .brand img{width:34px;height:34px;border-radius:9px;filter:drop-shadow(0 4px 10px rgba(33,29,22,.18))}
+  .brand .bw{display:flex;flex-direction:column;line-height:1.05}
+  .brand .bw b{font-size:16px;font-weight:700;letter-spacing:-.02em;color:var(--ink)}
+  .brand .bw span{font-size:13px;font-weight:700;letter-spacing:-.01em;color:var(--accent);margin-top:1px}
+
+  .nav-links{display:flex;align-items:center;gap:2px}
+  .nav-i{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:99px;cursor:pointer;
+    font-size:14.5px;font-weight:550;letter-spacing:-.01em;color:var(--ink-2);border:1px solid transparent;text-decoration:none;
+    transition:color .15s,background .15s;white-space:nowrap}
+  .nav-i:hover{color:var(--ink);background:color-mix(in srgb,var(--ink) 5%, transparent)}
+  .nav-i.on{color:var(--accent-deep);background:var(--accent-tint);font-weight:650}
+  .nav-i .beta{font-size:9.5px;font-weight:700;letter-spacing:.04em;padding:2px 6px;border-radius:6px;
+    background:var(--sun-tint);color:#9A6E1B}
+
+  .nav-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+  .pill-live{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 16px;border-radius:99px;
+    font-size:13.5px;font-weight:650;color:var(--accent-deep);background:var(--accent-tint)}
+  .pill-live .di{width:7px;height:7px;border-radius:50%;background:var(--accent);
+    box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 60%,transparent);animation:livepulse 2.4s ease-out infinite}
+  @keyframes livepulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 50%,transparent)}70%{box-shadow:0 0 0 8px transparent}100%{box-shadow:0 0 0 0 transparent}}
+  .ic-btn{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;cursor:pointer;flex:none;
+    border:1px solid var(--line);background:var(--card);color:var(--ink-2);transition:.15s;position:relative}
+  .ic-btn:hover{color:var(--ink);box-shadow:var(--shadow)}
+  .ic-btn svg{width:18px;height:18px}
+  .ic-btn .dot{position:absolute;top:8px;right:9px;width:8px;height:8px;border-radius:50%;background:var(--sell);border:2px solid var(--card)}
+  .avatar{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:15px;color:#fff;flex:none;cursor:pointer;
+    background:linear-gradient(150deg,var(--accent-soft),var(--accent-deep));box-shadow:0 4px 14px -4px rgba(47,93,58,.6)}
+
+  /* ============================================================ PAGE */
+  .wrap{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:28px 34px 90px}
+
+  .page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:26px}
+  .page-head .eyebrow{font-size:13px;font-weight:600;color:var(--ink-3);letter-spacing:.01em}
+  .page-head h1{font-size:34px;font-weight:700;letter-spacing:-.03em;margin:6px 0 0;color:var(--ink)}
+  .head-r{display:flex;align-items:center;gap:12px}
+  .seg{display:flex;gap:4px;padding:4px;border-radius:14px;background:color-mix(in srgb,var(--ink) 5%,transparent)}
+  .seg button{border:none;background:transparent;font-family:inherit;font-size:13px;font-weight:600;color:var(--ink-2);height:34px;padding:0 14px;border-radius:10px;cursor:pointer;transition:.18s}
+  .seg button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(33,29,22,.1)}
+
+  /* ============================================================ BENTO GRID */
+  .bento{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:26px;box-shadow:var(--shadow)}
+  .pad{padding:26px 28px}
+  .col4{grid-column:span 4}.col5{grid-column:span 5}.col6{grid-column:span 6}
+  .col7{grid-column:span 7}.col8{grid-column:span 8}.col12{grid-column:span 12}
+
+  /* ---- HERO savings ---- */
+  .hero{position:relative;overflow:hidden;border-radius:28px;padding:32px 36px;border:none;
+    background:linear-gradient(152deg,var(--accent) 0%,var(--accent-deep) 100%);
+    box-shadow:0 18px 44px -22px rgba(47,93,58,.7),0 1px 0 rgba(255,255,255,.12) inset}
+  .hero::after{content:"";position:absolute;right:-70px;top:-110px;width:360px;height:360px;border-radius:50%;
+    background:radial-gradient(circle,rgba(255,255,255,.14),transparent 64%);pointer-events:none}
+  .hero-grid{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:28px}
+  .hero .k{font-size:14px;font-weight:600;color:rgba(255,255,255,.84)}
+  .hero .big{font-size:62px;font-weight:700;letter-spacing:-.04em;color:#fff;line-height:1;margin:8px 0 10px}
+  .hero .sub{font-size:14px;color:rgba(255,255,255,.78)}
+  .hero-cta{display:flex;gap:12px;margin-top:24px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;height:50px;padding:0 22px;border-radius:99px;
+    font-size:14.5px;font-weight:650;letter-spacing:-.01em;cursor:pointer;border:1px solid transparent;transition:.16s;white-space:nowrap}
+  .btn svg{width:17px;height:17px;stroke-width:2.2}
+  .btn-white{background:#fff;color:var(--accent-deep)}
+  .btn-white:hover{transform:translateY(-1px);box-shadow:0 10px 24px -10px rgba(0,0,0,.4)}
+  .btn-glass{background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.32)}
+  .btn-glass:hover{background:rgba(255,255,255,.24)}
+  .hero-ring{flex:none}
+  .ring{position:relative;display:grid;place-items:center}
+  .ring svg{transform:rotate(-90deg)}
+  .ring .rc{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
+  .ring .rc svg{transform:none}
+
+  /* ---- battery card ---- */
+  .bat{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;padding:26px}
+  .bat .rc b{font-size:30px;font-weight:700;color:var(--ink);letter-spacing:-.02em}
+  .bat .rc span{font-size:12.5px;color:var(--ink-3)}
+  .bat .title{font-size:16px;font-weight:700;color:var(--ink);margin-top:14px}
+  .bat .pill-sell{display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 14px;border-radius:99px;margin-top:10px;
+    font-size:12.5px;font-weight:650;color:var(--sell);background:var(--sell-tint)}
+  .bat .pill-sell svg{width:14px;height:14px}
+
+  /* ---- stat cards ---- */
+  .stat .k{font-size:13px;font-weight:600;color:var(--ink-2)}
+  .stat .v{font-size:32px;font-weight:700;letter-spacing:-.03em;color:var(--ink);margin-top:14px;line-height:1}
+  .stat .d{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:600;margin-top:10px}
+  .stat .d.pos{color:var(--accent)}
+  .stat .d.pos svg{width:14px;height:14px}
+  .stat .ic{position:absolute;top:24px;right:26px;width:40px;height:40px;border-radius:13px;display:grid;place-items:center;background:var(--accent-tint);color:var(--accent-deep)}
+  .stat .ic.sun{background:var(--sun-tint);color:#B07F1C}
+  .stat .ic svg{width:19px;height:19px}
+  .stat{position:relative}
+
+  /* ---- price card ---- */
+  .ep-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+  .ep .lab{font-size:14px;font-weight:600;color:var(--ink-2)}
+  .ep .price{font-size:30px;font-weight:700;letter-spacing:-.03em;color:var(--ink);margin-top:8px;display:flex;align-items:baseline;gap:8px}
+  .ep .price small{font-size:14px;font-weight:500;color:var(--ink-3)}
+  .chip{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 14px;border-radius:99px;
+    font-size:12.5px;font-weight:650;color:var(--accent-deep);background:var(--accent-tint)}
+  .chip svg{width:14px;height:14px}
+  .chartbox{position:relative;height:170px;margin-top:24px}
+  .chartbox svg.area{position:absolute;inset:0;width:100%;height:100%;display:block;overflow:visible}
+  .axis{display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink-3);margin-top:10px}
+
+  /* ---- live flow card ---- */
+  .flow .lab{font-size:14px;font-weight:600;color:var(--ink-2);margin-bottom:4px}
+  .flow-list{display:flex;flex-direction:column}
+  .frow{display:flex;align-items:center;gap:14px;padding:16px 0;border-bottom:1px solid var(--line-2)}
+  .frow:last-child{border-bottom:0}
+  .frow .fic{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;flex:none}
+  .frow .fic svg{width:21px;height:21px;stroke-width:2}
+  .frow .fic.solar{background:var(--sun-tint);color:#B07F1C}
+  .frow .fic.home{background:color-mix(in srgb,var(--ink) 6%,transparent);color:var(--ink-2)}
+  .frow .fic.bat{background:var(--accent-tint);color:var(--accent-deep)}
+  .frow .ft{flex:1;min-width:0}
+  .frow .ft b{display:block;font-size:15px;font-weight:600;color:var(--ink)}
+  .frow .ft span{display:block;font-size:12.5px;color:var(--ink-3);margin-top:1px}
+  .frow .fv{font-size:17px;font-weight:700;color:var(--ink)}
+  .frow .fv.pos{color:var(--accent)}
+
+  /* ---- schedule / plan ---- */
+  .sc-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:6px}
+  .sc-head h3{font-size:18px;font-weight:700;letter-spacing:-.02em;margin:0;color:var(--ink)}
+  .sc-link{display:inline-flex;align-items:center;gap:4px;border:none;background:none;color:var(--accent);font-weight:650;font-size:13.5px;cursor:pointer;font-family:inherit}
+  .sc-link svg{width:15px;height:15px}
+  .sline{display:flex;align-items:center;gap:15px;padding:15px 0;border-bottom:1px solid var(--line-2)}
+  .sline:last-child{border-bottom:0}
+  .sc-ic{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;flex:none}
+  .sc-ic svg{width:20px;height:20px;stroke-width:2.1}
+  .sc-ic.charge{background:var(--accent-tint);color:var(--accent-deep)}
+  .sc-ic.solar{background:var(--sun-tint);color:#B07F1C}
+  .sc-ic.sell{background:var(--sell-tint);color:var(--sell)}
+  .sc-main{flex:1;min-width:0}
+  .sc-main .t{font-size:15.5px;font-weight:600;color:var(--ink)}
+  .sc-main .s{font-size:12.5px;color:var(--ink-3);margin-top:2px}
+  .sc-time{font-size:14px;font-weight:600;color:var(--ink-2);flex:none}
+
+  /* ---- forecast ---- */
+  .fc-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .fc-head svg{width:20px;height:20px;color:var(--accent)}
+  .fc-head b{font-size:17px;font-weight:700;letter-spacing:-.02em;color:var(--ink)}
+  .forecast p{font-size:15px;line-height:1.6;color:var(--ink-2);margin:0}
+  .forecast p b{color:var(--ink)}
+  .forecast p b.acc{color:var(--accent)}
+  .fc-foot{display:flex;align-items:center;gap:10px;margin-top:20px;padding-top:18px;border-top:1px solid var(--line-2)}
+  .fc-foot .mini{flex:1;display:flex;flex-direction:column;gap:3px}
+  .fc-foot .mini .mk{font-size:12px;color:var(--ink-3);font-weight:600}
+  .fc-foot .mini .mv{font-size:18px;font-weight:700;color:var(--ink)}
+
+  /* ---- page switching ---- */
+  .page{display:none}
+  .page.on{display:block}
+
+  /* ---- shared card title ---- */
+  .ctitle{font-size:17px;font-weight:700;letter-spacing:-.02em;color:var(--ink);margin:0 0 4px}
+  .csub{font-size:13.5px;color:var(--ink-3);margin:0 0 16px}
+
+  /* ---- dark CTA pill (nav-level) ---- */
+  .btn-dark{height:44px;padding:0 18px;background:var(--accent);color:#fff;box-shadow:0 8px 20px -10px rgba(47,93,58,.6)}
+  .btn-dark:hover{filter:brightness(1.06);transform:translateY(-1px)}
+
+  /* ---- generic list row (devices / settings / vpp) ---- */
+  .lrow{display:flex;align-items:center;gap:15px;padding:16px 0;border-bottom:1px solid var(--line-2)}
+  .lrow:last-child{border-bottom:0}
+  .lrow.click{cursor:pointer}
+  .lrow.click:hover .lt b{color:var(--accent-deep)}
+  .lic{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;flex:none;background:var(--accent-tint);color:var(--accent-deep)}
+  .lic.sun{background:var(--sun-tint);color:#B07F1C}
+  .lic.sell{background:var(--sell-tint);color:var(--sell)}
+  .lic.muted{background:color-mix(in srgb,var(--ink) 6%,transparent);color:var(--ink-2)}
+  .lic svg{width:21px;height:21px;stroke-width:2}
+  .lt{flex:1;min-width:0}
+  .lt b{display:block;font-size:15.5px;font-weight:600;color:var(--ink);transition:color .15s}
+  .lt span{display:block;font-size:13px;color:var(--ink-3);margin-top:1px}
+  .lr{flex:none;display:flex;align-items:center;gap:10px}
+  .lr .val{font-size:14px;font-weight:700;color:var(--ink)}
+  .lr .val.pos{color:var(--accent)}
+  .lr .time{font-size:12.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+  .chev{color:var(--ink-3);width:18px;height:18px}
+  .pill-on{display:inline-flex;align-items:center;gap:7px;height:30px;padding:0 13px;border-radius:99px;font-size:12.5px;font-weight:650;color:var(--accent-deep);background:var(--accent-tint)}
+  .pill-on .di{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 60%,transparent);animation:livepulse 2.4s ease-out infinite}
+  .lrow .meta{flex:none;text-align:right}
+
+  /* ---- toggle ---- */
+  .tgl{position:relative;width:50px;height:30px;border-radius:99px;border:none;cursor:pointer;background:color-mix(in srgb,var(--ink) 16%,transparent);transition:background .22s;flex:none;padding:0}
+  .tgl[data-on="1"]{background:var(--accent)}
+  .tgl i{position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .22s cubic-bezier(.3,.7,.4,1)}
+  .tgl[data-on="1"] i{transform:translateX(20px)}
+
+  /* ---- settings row ---- */
+  .srow{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 0;border-bottom:1px solid var(--line-2)}
+  .srow:last-child{border-bottom:0}
+  .srow .sl{display:flex;align-items:center;gap:14px}
+
+  /* ---- savings bars ---- */
+  .bars{display:flex;align-items:flex-end;gap:8px;height:170px;margin-top:22px}
+  .bar{flex:1;border-radius:7px 7px 4px 4px;min-height:4px;background:color-mix(in srgb,var(--accent) 24%,var(--card-2));transition:height .9s cubic-bezier(.22,.68,.32,1)}
+  .bar.hi{background:var(--accent)}
+
+  /* ---- savings breakdown ---- */
+  .bd{padding:14px 0;border-top:1px solid var(--line-2)}
+  .bd:first-of-type{border-top:0}
+  .bd-top{display:flex;justify-content:space-between;gap:10px;margin-bottom:9px}
+  .bd-top span{font-size:14px;font-weight:600;color:var(--ink)}
+  .bd-top b{font-size:14px;font-weight:700;color:var(--accent)}
+  .bd-track{height:8px;border-radius:99px;background:color-mix(in srgb,var(--ink) 7%,transparent);overflow:hidden}
+  .bd-fill{height:100%;border-radius:99px;background:var(--accent)}
+
+  /* ---- activity day label ---- */
+  .daylbl{font-size:12.5px;font-weight:700;color:var(--ink-3);letter-spacing:.06em;text-transform:uppercase;margin:0 0 10px 4px}
+
+  /* reveal — transform only so content always visible (capture/print/reduced-motion) */
+  .rv{animation:rvUp .6s cubic-bezier(.22,.61,.36,1) both}
+  .rv.d1{animation-delay:.05s}.rv.d2{animation-delay:.1s}.rv.d3{animation-delay:.15s}.rv.d4{animation-delay:.2s}.rv.d5{animation-delay:.25s}
+  @keyframes rvUp{from{transform:translateY(16px)}to{transform:none}}
+  @media (prefers-reduced-motion:reduce){.rv{animation:none}.pill-live .di{animation:none}}
+
+  /* responsive */
+  @media (max-width:1080px){
+    .nav{gap:14px;overflow-x:auto;scrollbar-width:none;margin:16px 16px 0;padding:0 12px 0 18px}
+    .nav::-webkit-scrollbar{display:none}
+    .col8,.col7,.col5,.col6{grid-column:span 12}
+    .col4{grid-column:span 6}
+    .hero .big{font-size:52px}
+  }
+  @media (max-width:680px){
+    .wrap{padding:24px 16px 72px}
+    .col4{grid-column:span 12}
+    .page-head{flex-direction:column;align-items:flex-start}
+    .hero{padding:26px 22px}.hero-ring{display:none}
+  }
+</style>
+</head>
+<body>
+<template id="__bundler_thumbnail" data-bg-color="#F3EEE3">
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100" height="100" rx="22" fill="#F3EEE3"/>
+  <rect x="24" y="28" width="52" height="30" rx="9" fill="#2F5D3A"/>
+  <path d="M44 35 L37 49 H43 L41 58 L51 43 H44 Z" fill="#fff"/>
+  <rect x="24" y="64" width="24" height="11" rx="4" fill="#E7EEE0"/>
+  <rect x="52" y="64" width="24" height="11" rx="4" fill="#F6ECD6"/>
+</svg>
+</template>
+
+<div class="ground"></div>
+<canvas class="flow-band" id="flowband"></canvas>
+
+<!-- ============ TOP NAV ============ -->
+<nav class="nav">
+  <div class="brand">
+    <img id="brandlogo" alt="GBICT Energy">
+    <div class="bw"><b>GBICT</b><span>Energy</span></div>
+  </div>
+  <div class="nav-links">
+    <a class="nav-i on" data-page="dashboard">Dashboard</a>
+    <a class="nav-i" data-page="connections">Connections</a>
+    <a class="nav-i" data-page="savings">Savings</a>
+    <a class="nav-i" data-page="activity">Activity</a>
+    <a class="nav-i" data-page="vpp">VPP <span class="beta">BETA</span></a>
+    <a class="nav-i" data-page="settings">Settings</a>
+  </div>
+  <div class="nav-right">
+    <span class="pill-live"><span class="di"></span>Optimising</span>
+    <button class="ic-btn" title="Notifications"><i data-lucide="bell"></i><span class="dot"></span></button>
+    <div class="avatar">L</div>
+  </div>
+</nav>
+
+<!-- ============ PAGES ============ -->
+<div class="wrap">
+
+<!-- ====== DASHBOARD ====== -->
+<section class="page on" data-page="dashboard">
+  <div class="page-head">
+    <div>
+      <div class="eyebrow">Good afternoon</div>
+      <h1>Lieke's home</h1>
+    </div>
+    <div class="head-r">
+      <div class="seg">
+        <button class="on">Today</button>
+        <button>Week</button>
+        <button>Month</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="bento">
+    <!-- HERO -->
+    <div class="hero col8 rv">
+      <div class="hero-grid">
+        <div>
+          <div class="k">Saved today</div>
+          <div class="big num">€1.84</div>
+          <div class="sub">€38.20 this month · €412 all-time</div>
+          <div class="hero-cta">
+            <button class="btn btn-white"><i data-lucide="trending-up"></i>View savings</button>
+            <button class="btn btn-glass"><i data-lucide="plug"></i>Connect device</button>
+          </div>
+        </div>
+        <div class="hero-ring">
+          <div class="ring" style="width:118px;height:118px">
+            <svg width="118" height="118" viewBox="0 0 118 118">
+              <circle cx="59" cy="59" r="50" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="9"></circle>
+              <circle id="heroRing" cx="59" cy="59" r="50" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round"></circle>
+            </svg>
+            <div class="rc" style="color:#fff">
+              <i data-lucide="battery-charging" style="width:20px;height:20px"></i>
+              <b class="num" style="font-size:20px;font-weight:700">78%</b>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BATTERY -->
+    <div class="card col4 bat rv d1">
+      <div class="ring" style="width:130px;height:130px">
+        <svg width="130" height="130" viewBox="0 0 130 130">
+          <circle cx="65" cy="65" r="56" fill="none" stroke="color-mix(in srgb,var(--ink) 9%,transparent)" stroke-width="11"></circle>
+          <circle id="batRing" cx="65" cy="65" r="56" fill="none" stroke="var(--accent)" stroke-width="11" stroke-linecap="round"></circle>
+        </svg>
+        <div class="rc"><b class="num">78%</b><span>3.9 / 5.0 kWh</span></div>
+      </div>
+      <div class="title">Sessy battery</div>
+      <div class="pill-sell"><i data-lucide="arrow-up-right"></i>Selling to grid · €0.80/kWh</div>
+    </div>
+
+    <!-- STAT 1 -->
+    <div class="card pad stat col4 rv d1">
+      <div class="ic"><i data-lucide="wallet"></i></div>
+      <div class="k">This month</div>
+      <div class="v num">€38.20</div>
+      <div class="d pos"><i data-lucide="arrow-up-right"></i>12% vs last</div>
+    </div>
+    <!-- STAT 2 -->
+    <div class="card pad stat col4 rv d2">
+      <div class="ic sun"><i data-lucide="sun"></i></div>
+      <div class="k">Solar today</div>
+      <div class="v num">8.4 kWh</div>
+      <div class="d pos"><i data-lucide="battery-charging"></i>3.1 kWh stored</div>
+    </div>
+    <!-- STAT 3 -->
+    <div class="card pad stat col4 rv d3">
+      <div class="ic"><i data-lucide="zap"></i></div>
+      <div class="k">Power price now</div>
+      <div class="v num">€0.42 <span style="font-size:15px;font-weight:500;color:var(--ink-3)">/kWh</span></div>
+      <div class="d pos"><i data-lucide="arrow-down"></i>Below average</div>
+    </div>
+
+    <!-- PRICE CURVE -->
+    <div class="card pad ep col8 rv d2">
+      <div class="ep-head">
+        <div>
+          <div class="lab">Power price today</div>
+          <div class="price num">€0.42 <small>/kWh now</small></div>
+        </div>
+        <span class="chip"><i data-lucide="arrow-down"></i>Below average</span>
+      </div>
+      <div class="chartbox">
+        <svg class="area" viewBox="0 0 1000 200" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="epFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="rgba(47,93,58,.22)"></stop>
+              <stop offset="100%" stop-color="rgba(47,93,58,0)"></stop>
+            </linearGradient>
+          </defs>
+          <path id="epArea" fill="url(#epFill)"></path>
+          <path id="epLine" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"></path>
+          <line id="epNow" stroke="rgba(33,29,22,.32)" stroke-width="2" stroke-dasharray="3 6" vector-effect="non-scaling-stroke"></line>
+          <circle id="epDot" r="6" fill="var(--accent)" stroke="#fff" stroke-width="3"></circle>
+        </svg>
+      </div>
+      <div class="axis"><span>00:00</span><span>cheapest 04:00</span><span>now 14:00</span><span>peak 18:00</span><span>24:00</span></div>
+    </div>
+
+    <!-- LIVE FLOW -->
+    <div class="card pad flow col4 rv d3">
+      <div class="lab">Live energy flow</div>
+      <div class="flow-list" id="flowlist"></div>
+    </div>
+
+    <!-- TODAY'S PLAN -->
+    <div class="card pad col7 rv d4">
+      <div class="sc-head">
+        <h3>Today's plan</h3>
+        <button class="sc-link">Why this plan? <i data-lucide="chevron-right"></i></button>
+      </div>
+      <div id="schedlist"></div>
+    </div>
+
+    <!-- FORECAST -->
+    <div class="card pad forecast col5 rv d5">
+      <div class="fc-head"><i data-lucide="sparkles"></i><b>Tomorrow's forecast</b></div>
+      <p>Sunny, with very cheap power between <b>01:00–05:00</b>. We'll fully charge overnight and expect to save about <b class="acc">€2.10</b>.</p>
+      <div class="fc-foot">
+        <div class="mini"><span class="mk">Solar</span><span class="mv num">11.2 kWh</span></div>
+        <div class="mini"><span class="mk">Cheapest</span><span class="mv num">€0.04</span></div>
+        <div class="mini"><span class="mk">Peak</span><span class="mv num">€0.79</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== CONNECTIONS ====== -->
+<section class="page" data-page="connections">
+  <div class="page-head">
+    <div><div class="eyebrow">Setup</div><h1>Connections</h1></div>
+    <div class="head-r"><button class="btn btn-dark"><i data-lucide="plus"></i>Add device</button></div>
+  </div>
+  <div class="bento">
+    <div class="card pad col8 rv">
+      <h3 class="ctitle">Connected devices</h3>
+      <p class="csub">4 devices · all live and optimising</p>
+      <div id="devlist"></div>
+    </div>
+    <div class="col4" style="display:flex;flex-direction:column;gap:18px">
+      <div class="card pad stat rv d1">
+        <div class="ic"><i data-lucide="check"></i></div>
+        <div class="k">System health</div>
+        <div class="v">All good</div>
+        <div class="d pos"><i data-lucide="activity"></i>Optimising live</div>
+      </div>
+      <div class="card pad rv d2">
+        <h3 class="ctitle">Add a device</h3>
+        <p class="csub">Hardware-agnostic — pick a type</p>
+        <div id="addlist"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== SAVINGS ====== -->
+<section class="page" data-page="savings">
+  <div class="page-head">
+    <div><div class="eyebrow">Insights</div><h1>Savings</h1></div>
+    <div class="head-r"><div class="seg" id="savseg"><button class="on">7 days</button><button>30 days</button><button>90 days</button></div></div>
+  </div>
+  <div class="bento">
+    <div class="card pad stat col4 rv">
+      <div class="ic"><i data-lucide="piggy-bank"></i></div>
+      <div class="k">All-time saved</div><div class="v num">€412</div>
+      <div class="d pos"><i data-lucide="calendar"></i>since March</div>
+    </div>
+    <div class="card pad stat col4 rv d1">
+      <div class="ic sun"><i data-lucide="leaf"></i></div>
+      <div class="k">CO₂ avoided</div><div class="v num">184 kg</div>
+      <div class="d pos"><i data-lucide="trees"></i>≈ 9 trees</div>
+    </div>
+    <div class="card pad stat col4 rv d2">
+      <div class="ic"><i data-lucide="wallet"></i></div>
+      <div class="k">This month</div><div class="v num">€38.20</div>
+      <div class="d pos"><i data-lucide="arrow-up-right"></i>12% vs last</div>
+    </div>
+    <div class="card pad col8 rv d2">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px">
+        <div><h3 class="ctitle" style="margin-bottom:2px">Saved this period</h3><p class="csub" style="margin:0">Daily savings across your devices</p></div>
+        <div class="num" id="savtotal" style="font-size:30px;font-weight:700;letter-spacing:-.03em;color:var(--ink)">€11.40</div>
+      </div>
+      <div class="bars" id="savbars"></div>
+    </div>
+    <div class="card pad col4 rv d3">
+      <h3 class="ctitle">Where it came from</h3>
+      <p class="csub">All-time breakdown</p>
+      <div class="bd"><div class="bd-top"><span>Arbitrage (buy low, sell high)</span><b class="num">€226</b></div><div class="bd-track"><div class="bd-fill" style="width:55%"></div></div></div>
+      <div class="bd"><div class="bd-top"><span>Avoided peak imports</span><b class="num">€121</b></div><div class="bd-track"><div class="bd-fill" style="width:29%"></div></div></div>
+      <div class="bd"><div class="bd-top"><span>Solar self-use</span><b class="num">€65</b></div><div class="bd-track"><div class="bd-fill" style="width:16%"></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== ACTIVITY ====== -->
+<section class="page" data-page="activity">
+  <div class="page-head">
+    <div><div class="eyebrow">Activity</div><h1>What your home did</h1></div>
+    <div class="head-r"><div class="seg" id="actseg"><button class="on">All</button><button>Charging</button><button>Selling</button></div></div>
+  </div>
+  <div class="bento">
+    <div class="col6 rv">
+      <p class="daylbl">Today</p>
+      <div class="card pad" id="act-today"></div>
+    </div>
+    <div class="col6 rv d1">
+      <p class="daylbl">Yesterday</p>
+      <div class="card pad" id="act-yest"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== VPP ====== -->
+<section class="page" data-page="vpp">
+  <div class="page-head">
+    <div><div class="eyebrow">Earn more · Beta</div><h1>Virtual Power Plant</h1></div>
+  </div>
+  <div class="bento">
+    <div class="hero col8 rv">
+      <div style="position:relative;z-index:1;max-width:560px">
+        <div style="width:48px;height:48px;border-radius:14px;background:rgba(255,255,255,.16);display:grid;place-items:center;color:#fff"><i data-lucide="network" style="width:24px;height:24px"></i></div>
+        <h2 style="font-size:30px;font-weight:700;letter-spacing:-.03em;color:#fff;margin:18px 0 10px;line-height:1.1">Your battery, part of something bigger.</h2>
+        <p style="font-size:15px;line-height:1.6;color:rgba(255,255,255,.84);margin:0 0 24px">Join thousands of homes acting as one giant battery. We trade your spare capacity on the imbalance market — you earn, the grid stays stable.</p>
+        <button class="btn btn-white" id="vppjoin">Join the VPP</button>
+      </div>
+    </div>
+    <div class="col4" style="display:flex;flex-direction:column;gap:18px">
+      <div class="card pad stat rv d1">
+        <div class="ic"><i data-lucide="coins"></i></div>
+        <div class="k">Extra / year</div><div class="v num">~€90</div>
+        <div class="d pos"><i data-lucide="plus"></i>on top of savings</div>
+      </div>
+      <div class="card pad stat rv d2">
+        <div class="ic"><i data-lucide="users"></i></div>
+        <div class="k">Homes pooled</div><div class="v num">4,210</div>
+        <div class="d pos"><i data-lucide="arrow-up-right"></i>and growing</div>
+      </div>
+    </div>
+    <div class="card pad col12 rv d3">
+      <h3 class="ctitle">How you earn</h3>
+      <div class="lrow"><div class="lic"><i data-lucide="circle-power"></i></div><div class="lt"><b>Standby reward</b><span>Paid just for being available</span></div></div>
+      <div class="lrow"><div class="lic"><i data-lucide="zap"></i></div><div class="lt"><b>Activation</b><span>Paid when we use your capacity</span></div></div>
+      <div class="lrow"><div class="lic"><i data-lucide="shield-check"></i></div><div class="lt"><b>Always protected</b><span>Your home needs always come first</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== SETTINGS ====== -->
+<section class="page" data-page="settings">
+  <div class="page-head">
+    <div><div class="eyebrow">Account</div><h1>Settings</h1></div>
+  </div>
+  <div class="bento">
+    <div class="hero col12 rv" style="padding:24px 30px">
+      <div style="position:relative;z-index:1;display:flex;align-items:center;gap:18px">
+        <div style="width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,.2);display:grid;place-items:center;font-size:24px;font-weight:700;color:#fff;flex:none">L</div>
+        <div style="flex:1">
+          <div style="font-size:20px;font-weight:700;color:#fff;letter-spacing:-.02em">Lieke de Vries</div>
+          <div style="font-size:13.5px;color:rgba(255,255,255,.82);margin-top:3px">Pro plan · member since March</div>
+        </div>
+        <i data-lucide="chevron-right" style="width:22px;height:22px;color:rgba(255,255,255,.7)"></i>
+      </div>
+    </div>
+    <div class="card pad col6 rv d1">
+      <h3 class="ctitle">Optimisation</h3>
+      <div class="srow">
+        <div class="sl"><div class="lic"><i data-lucide="power"></i></div><div><b style="font-size:15.5px;font-weight:650;color:var(--ink)">Auto-optimise</b><div style="font-size:13px;color:var(--ink-3)">Let GBICT run your battery</div></div></div>
+        <button class="tgl" data-on="1"><i></i></button>
+      </div>
+      <div style="font-size:13px;font-weight:600;color:var(--ink-2);margin:14px 0 10px">Optimisation mode</div>
+      <div class="seg"><button class="on">Max savings</button><button>Comfort</button><button>Eco</button></div>
+    </div>
+    <div class="card pad col6 rv d2">
+      <h3 class="ctitle">Preferences</h3>
+      <div class="srow">
+        <div class="sl"><div class="lic muted"><i data-lucide="moon"></i></div><b style="font-size:15.5px;font-weight:650;color:var(--ink)">Dark appearance</b></div>
+        <button class="tgl" data-on="0"><i></i></button>
+      </div>
+      <div class="srow">
+        <div class="sl"><div class="lic muted"><i data-lucide="bell"></i></div><b style="font-size:15.5px;font-weight:650;color:var(--ink)">Email notifications</b></div>
+        <button class="tgl" data-on="1"><i></i></button>
+      </div>
+    </div>
+    <div class="card pad col12 rv d3">
+      <h3 class="ctitle">More</h3>
+      <div class="lrow click js-nav" data-go="vpp"><div class="lic"><i data-lucide="network"></i></div><div class="lt"><b>Virtual Power Plant</b><span>Earn from grid balancing</span></div><div class="lr"><i data-lucide="chevron-right" class="chev"></i></div></div>
+      <div class="lrow"><div class="lic"><i data-lucide="gift"></i></div><div class="lt"><b>Refer a friend</b><span>Give €5, get €5</span></div><div class="lr"><i data-lucide="chevron-right" class="chev"></i></div></div>
+      <div class="lrow click js-nav" data-go="activity"><div class="lic"><i data-lucide="bell"></i></div><div class="lt"><b>Activity &amp; alerts</b><span>What your home did</span></div><div class="lr"><i data-lucide="chevron-right" class="chev"></i></div></div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<script>
+  // brand logo
+  if (window.LOGO_SRC) document.getElementById('brandlogo').src = window.LOGO_SRC;
+
+  // ---- energy-flow current band (app signature) ----
+  window.initEnergyFlow && window.initEnergyFlow(document.getElementById('flowband'));
+
+  // ---- live flow rows ----
+  const FLOW = [
+    { k:'solar', icon:'sun',              t:'Solar in',   s:'From your panels',  v:'2.1 kW',  cls:'' },
+    { k:'home',  icon:'home',             t:'Home use',   s:'Current draw',      v:'0.8 kW',  cls:'' },
+    { k:'bat',   icon:'battery-charging', t:'To battery', s:'Storing surplus',   v:'+1.3 kW', cls:'pos' },
+  ];
+  document.getElementById('flowlist').innerHTML = FLOW.map(r => `
+    <div class="frow">
+      <div class="fic ${r.k}"><i data-lucide="${r.icon}"></i></div>
+      <div class="ft"><b>${r.t}</b><span>${r.s}</span></div>
+      <div class="fv ${r.cls} num">${r.v}</div>
+    </div>`).join('');
+
+  // ---- today's plan rows ----
+  const SCHED = [
+    { k:'charge', t:'Charge battery',    s:'Cheapest window · €0.18/kWh', time:'02:00–05:00', icon:'arrow-down' },
+    { k:'solar',  t:'Solar + home use',  s:'Self-consumption',            time:'07:00–09:00', icon:'sun' },
+    { k:'sell',   t:'Sell to grid',      s:'Peak price · €0.80/kWh',      time:'17:00–20:00', icon:'arrow-up-right' },
+  ];
+  document.getElementById('schedlist').innerHTML = SCHED.map(r => `
+    <div class="sline">
+      <div class="sc-ic ${r.k}"><i data-lucide="${r.icon}"></i></div>
+      <div class="sc-main"><div class="t">${r.t}</div><div class="s">${r.s}</div></div>
+      <div class="sc-time num">${r.time}</div>
+    </div>`).join('');
+
+  // ---- energy-price sparkline (smooth catmull-rom) ----
+  (function () {
+    const W = 1000, base = 184;
+    // price curve over the day: flat-low overnight, dip ~04:00, evening peak ~18:00
+    const ys = [120,118,112,118,126,130,128,124,118,115,108,86,60,72,90,110,128,150,168,150,128,108,96,90];
+    const nowIdx = 13; // ~14:00 — below the evening peak
+    const n = ys.length;
+    const xs = ys.map((_, i) => 14 + i * ((W - 28) / (n - 1)));
+    const pts = ys.map((y, i) => [xs[i], y]);
+    function smooth(p) {
+      let d = `M${p[0][0].toFixed(1)} ${p[0][1].toFixed(1)}`;
+      for (let i = 0; i < p.length - 1; i++) {
+        const p0 = p[i - 1] || p[i], p1 = p[i], p2 = p[i + 1], p3 = p[i + 2] || p2;
+        const c1x = p1[0] + (p2[0] - p0[0]) / 6, c1y = p1[1] + (p2[1] - p0[1]) / 6;
+        const c2x = p2[0] - (p3[0] - p1[0]) / 6, c2y = p2[1] - (p3[1] - p1[1]) / 6;
+        d += ` C${c1x.toFixed(1)} ${c1y.toFixed(1)} ${c2x.toFixed(1)} ${c2y.toFixed(1)} ${p2[0].toFixed(1)} ${p2[1].toFixed(1)}`;
+      }
+      return d;
+    }
+    const line = smooth(pts);
+    document.getElementById('epLine').setAttribute('d', line);
+    document.getElementById('epArea').setAttribute('d', `${line} L${xs[n - 1].toFixed(1)} ${base} L${xs[0].toFixed(1)} ${base} Z`);
+    const nx = xs[nowIdx], ny = ys[nowIdx];
+    const now = document.getElementById('epNow');
+    now.setAttribute('x1', nx); now.setAttribute('x2', nx); now.setAttribute('y1', 8); now.setAttribute('y2', base);
+    document.getElementById('epDot').setAttribute('cx', nx);
+    document.getElementById('epDot').setAttribute('cy', ny);
+  })();
+
+  // ---- ring fills ----
+  function fillRing(el, r, pct) {
+    const c = 2 * Math.PI * r;
+    el.setAttribute('stroke-dasharray', c.toFixed(1));
+    el.setAttribute('stroke-dashoffset', c.toFixed(1));
+    el.style.transition = 'stroke-dashoffset 1.1s cubic-bezier(.22,.68,.32,1)';
+    requestAnimationFrame(() => requestAnimationFrame(() => el.setAttribute('stroke-dashoffset', (c * (1 - pct / 100)).toFixed(1))));
+  }
+  fillRing(document.getElementById('heroRing'), 50, 78);
+  fillRing(document.getElementById('batRing'), 56, 78);
+
+  // ---- connections: connected devices ----
+  const DEVICES = [
+    { icon:'gauge',            t:'HomeWizard P1', s:'Smart meter' },
+    { icon:'file-text',        t:'Tibber',        s:'Dynamic contract' },
+    { icon:'battery-charging', t:'Sessy',         s:'5.0 kWh battery' },
+    { icon:'sun', cls:'sun',   t:'SolarEdge',     s:'4.2 kWp array' },
+  ];
+  document.getElementById('devlist').innerHTML = DEVICES.map(d => `
+    <div class="lrow">
+      <div class="lic ${d.cls||''}"><i data-lucide="${d.icon}"></i></div>
+      <div class="lt"><b>${d.t}</b><span>${d.s}</span></div>
+      <div class="lr"><span class="pill-on"><span class="di"></span>Live</span><i data-lucide="chevron-right" class="chev"></i></div>
+    </div>`).join('');
+
+  // ---- connections: add-a-device types ----
+  const ADD = [
+    { icon:'battery-charging', t:'Home battery',   s:'Sessy, Victron, Tesla…' },
+    { icon:'sun', cls:'sun',   t:'Solar inverter', s:'SolarEdge, Fronius, SMA…' },
+    { icon:'car',              t:'EV / charger',   s:'Smart & V2G charging' },
+    { icon:'thermometer',      t:'Heat pump',      s:'Tado & more' },
+    { icon:'gauge',            t:'Smart meter',    s:'HomeWizard P1' },
+    { icon:'file-text',        t:'Energy contract',s:'Tibber & dynamic suppliers' },
+  ];
+  document.getElementById('addlist').innerHTML = ADD.map(d => `
+    <div class="lrow click">
+      <div class="lic ${d.cls||''}"><i data-lucide="${d.icon}"></i></div>
+      <div class="lt"><b>${d.t}</b><span>${d.s}</span></div>
+      <div class="lr"><i data-lucide="chevron-right" class="chev"></i></div>
+    </div>`).join('');
+
+  // ---- savings: bars + range ----
+  const SAV = {
+    '7 days':  { total:'€11.40',  bars:[40,55,38,72,60,84,50], hi:5 },
+    '30 days': { total:'€38.20',  bars:[30,42,55,38,60,72,48,66,40,58,80,52,46,62], hi:10 },
+    '90 days': { total:'€121.60', bars:[35,50,42,68,55,72,48,80,60,52,66,58], hi:7 },
+  };
+  function renderSav(range) {
+    const d = SAV[range]; const max = Math.max(...d.bars);
+    document.getElementById('savtotal').textContent = d.total;
+    const box = document.getElementById('savbars');
+    box.innerHTML = d.bars.map((h,i)=>`<div class="bar ${i===d.hi?'hi':''}" data-h="${Math.round(h/max*100)}"></div>`).join('');
+    requestAnimationFrame(()=>requestAnimationFrame(()=>box.querySelectorAll('.bar').forEach(b=>b.style.height=b.dataset.h+'%')));
+  }
+  renderSav('7 days');
+  document.querySelectorAll('#savseg button').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('#savseg button').forEach(x=>x.classList.remove('on')); b.classList.add('on');
+    renderSav(b.textContent.trim());
+  }));
+
+  // ---- activity feed + filter ----
+  const FEED = {
+    today: [
+      { t:'13:40', icon:'arrow-up-right', cls:'sell',   label:'Sold 1.3 kWh to grid',      sub:'Peak price €0.80',         v:'+€1.04', pos:true },
+      { t:'09:10', icon:'sun',            cls:'sun',    label:'Running on solar',          sub:'Home fully self-powered',  v:'' },
+      { t:'04:55', icon:'arrow-down',     cls:'',       label:'Battery charged to 92%',    sub:'Avg €0.18/kWh',            v:'−€0.74' },
+    ],
+    yest: [
+      { t:'18:20', icon:'arrow-up-right', cls:'sell',   label:'Sold 2.1 kWh to grid',      sub:'Peak price €0.76',         v:'+€1.60', pos:true },
+      { t:'03:00', icon:'arrow-down',     cls:'',       label:'Battery charged to 100%',   sub:'Cheapest night window',    v:'−€0.81' },
+    ],
+  };
+  function kind(it){ return it.cls==='sell' ? 'sell' : it.cls==='sun' ? 'solar' : 'charge'; }
+  function renderFeed(filter) {
+    const match = it => filter==='All' || (filter==='Charging' && kind(it)==='charge') || (filter==='Selling' && kind(it)==='sell');
+    const row = it => `
+      <div class="lrow">
+        <div class="lic ${it.cls}"><i data-lucide="${it.icon}"></i></div>
+        <div class="lt"><b>${it.label}</b><span>${it.sub}</span></div>
+        <div class="meta">${it.v?`<div class="val ${it.pos?'pos':''}">${it.v}</div>`:''}<div class="time">${it.t}</div></div>
+      </div>`;
+    const fill = (id, list) => {
+      const items = list.filter(match);
+      document.getElementById(id).innerHTML = items.length ? items.map(row).join('')
+        : `<div style="padding:18px 0;color:var(--ink-3);font-size:14px">Nothing here for this filter.</div>`;
+    };
+    fill('act-today', FEED.today); fill('act-yest', FEED.yest);
+    window.lucide && window.lucide.createIcons();
+  }
+  renderFeed('All');
+  document.querySelectorAll('#actseg button').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('#actseg button').forEach(x=>x.classList.remove('on')); b.classList.add('on');
+    renderFeed(b.textContent.trim());
+  }));
+
+  // ---- settings: optimisation mode seg + toggles ----
+  document.querySelectorAll('.seg').forEach(seg => {
+    if (seg.id) return; // savings/activity segs handled above
+    seg.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+      seg.querySelectorAll('button').forEach(x=>x.classList.remove('on')); b.classList.add('on');
+    }));
+  });
+  document.querySelectorAll('.tgl').forEach(t => t.addEventListener('click', () => {
+    t.dataset.on = t.dataset.on === '1' ? '0' : '1';
+  }));
+
+  // ---- VPP join ----
+  const vj = document.getElementById('vppjoin');
+  vj && vj.addEventListener('click', () => {
+    const on = vj.dataset.on === '1';
+    vj.dataset.on = on ? '0' : '1';
+    vj.innerHTML = on ? 'Join the VPP' : '<i data-lucide="check"></i> You\u2019re enrolled';
+    window.lucide && window.lucide.createIcons();
+  });
+
+  // ---- page switching ----
+  function goTo(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.toggle('on', p.dataset.page === page));
+    document.querySelectorAll('.nav-i').forEach(n => n.classList.toggle('on', n.dataset.page === page));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  document.querySelectorAll('.nav-i').forEach(el => el.addEventListener('click', () => goTo(el.dataset.page)));
+  document.querySelectorAll('.js-nav').forEach(el => el.addEventListener('click', () => goTo(el.dataset.go)));
+
+  window.lucide && window.lucide.createIcons();
+</script>
+</body>
+</html>
