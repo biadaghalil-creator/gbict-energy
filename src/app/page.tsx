@@ -293,8 +293,8 @@ function Nav() {
           {GB.nav.map((n, i) => <a key={i} href={n.href}>{n.label}</a>)}
         </div>
         <div className="nav-cta">
-          <a className="btn btn-ghost" href="/start" style={{ padding: "10px 18px" }}>Log in</a>
-          <a className="btn btn-primary" href="#pricing" style={{ padding: "10px 20px" }}>Get started</a>
+          <a className="btn btn-ghost" href="/start">Log in</a>
+          <a className="btn btn-primary" href="#pricing">Get started</a>
         </div>
       </div>
     </nav>

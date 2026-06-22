@@ -30,8 +30,8 @@ export function SiteNav() {
           {NAV.map((n) => <Link key={n.href} href={n.href}>{n.label}</Link>)}
         </div>
         <div className="nav-cta">
-          <Link className="btn btn-ghost" href="/start" style={{ padding: "10px 18px" }}>Log in</Link>
-          <Link className="btn btn-primary" href="/#pricing" style={{ padding: "10px 20px" }}>Get started</Link>
+          <Link className="btn btn-ghost" href="/start">Log in</Link>
+          <Link className="btn btn-primary" href="/#pricing">Get started</Link>
         </div>
       </div>
     </nav>

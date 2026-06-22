@@ -615,7 +615,8 @@ html.native-app.dark {
 .gbict-landing .nav.scrolled { background: color-mix(in srgb, var(--bg) 78%, transparent);
   backdrop-filter: blur(14px) saturate(1.4); -webkit-backdrop-filter: blur(14px) saturate(1.4);
   border-bottom-color: var(--border); }
-.gbict-landing .nav-inner { max-width: var(--maxw); margin: 0 auto; padding: 16px var(--pad);
+.gbict-landing .nav-inner { max-width: var(--maxw); margin: 0 auto;
+  padding: calc(16px + env(safe-area-inset-top)) var(--pad) 16px;
   display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .gbict-landing .brand { display: flex; align-items: center; gap: 11px; font-family: var(--display-font);
   font-weight: 600; font-size: 19px; letter-spacing: -0.02em; color: var(--fg); text-decoration: none; white-space: nowrap; }
@@ -626,7 +627,19 @@ html.native-app.dark {
 .gbict-landing .nav-links a { color: var(--fg-2); text-decoration: none; font-size: 15px; font-weight: 450; transition: color .18s; }
 .gbict-landing .nav-links a:hover { color: var(--fg); }
 .gbict-landing .nav-cta { display: flex; align-items: center; gap: 12px; }
+.gbict-landing .nav-cta .btn { padding: 10px 18px; }
 @media (max-width: 860px) { .gbict-landing .nav-links { display: none; } }
+/* Mobiel: compacte nav zodat de knoppen niet van het scherm lopen */
+@media (max-width: 560px) {
+  .gbict-landing .nav-inner { gap: 10px; }
+  .gbict-landing .brand { font-size: 16px; gap: 8px; }
+  .gbict-landing .brand .mark { width: 26px; height: 26px; border-radius: 8px; }
+  .gbict-landing .nav-cta { gap: 8px; }
+  .gbict-landing .nav-cta .btn { padding: 9px 15px; font-size: 13.5px; }
+}
+@media (max-width: 380px) {
+  .gbict-landing .nav-cta .btn-ghost { display: none; }  /* alleen "Get started" houden */
+}
 
 /* ---- Hero ---- */
 .gbict-landing .hero { padding: clamp(140px, 17vh, 200px) 0 clamp(60px, 8vw, 110px); }
