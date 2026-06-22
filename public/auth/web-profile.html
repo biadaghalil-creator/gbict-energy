@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<!-- @dsCard group="Brand" name="GBICT Energy — Create Profile (web)" subtitle="Split layout · profile setup · avatar, home details, device chips" viewport="1440x900" -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GBICT Energy — Create your profile</title>
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700,900&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@0.456.0/dist/umd/lucide.min.js"></script>
+<script src="logo-data.js"></script>
+<script src="flow.js"></script>
+<style>
+  :root{
+    --bg:#F3EEE3; --bg-2:#ECE4D5; --card:#FFFFFF; --card-2:#FBF7EF;
+    --ink:#211D16; --ink-2:#5C5648; --ink-3:#938C7C;
+    --line:rgba(33,29,22,0.09); --line-2:rgba(33,29,22,0.06);
+    --accent:#2F5D3A; --accent-deep:#24492D; --accent-soft:#5C8A5E; --accent-tint:#E7EEE0;
+    --accent-rgb:74,118,48; --sun:#D9A441; --sun-tint:#F6ECD6;
+    --shadow:0 1px 2px rgba(33,29,22,.04), 0 8px 24px rgba(33,29,22,.06);
+    --shadow-lg:0 2px 6px rgba(33,29,22,.06), 0 24px 60px rgba(33,29,22,.14);
+    --font:'Satoshi',-apple-system,system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:var(--font);color:var(--ink);-webkit-font-smoothing:antialiased;background:var(--bg)}
+  ::selection{background:var(--accent-tint)}
+  button,input{font-family:inherit}
+  .shell{display:flex;min-height:100vh}
+
+  /* LEFT brand panel */
+  .brandpane{position:relative;overflow:hidden;flex:0 0 46%;display:flex;flex-direction:column;
+    padding:46px 52px;color:#fff;background:linear-gradient(158deg,var(--accent) 0%,var(--accent-deep) 100%)}
+  .brandpane::after{content:"";position:absolute;right:-120px;top:-140px;width:460px;height:460px;border-radius:50%;
+    background:radial-gradient(circle,rgba(255,255,255,.14),transparent 64%);pointer-events:none}
+  .bp-logo{display:flex;align-items:center;gap:12px;position:relative;z-index:2}
+  .bp-logo img{width:38px;height:38px;border-radius:10px;filter:drop-shadow(0 4px 10px rgba(0,0,0,.3))}
+  .bp-logo b{font-size:17px;font-weight:700;letter-spacing:-.02em;line-height:1}
+  .bp-logo span{display:block;font-size:13px;font-weight:700;color:rgba(255,255,255,.7);margin-top:2px}
+  .bp-mid{margin-top:auto;margin-bottom:auto;position:relative;z-index:2;max-width:430px}
+  .bp-steps{display:flex;flex-direction:column;gap:24px;margin-bottom:30px}
+  .bp-step{display:flex;align-items:center;gap:14px}
+  .bp-step .dot{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;flex:none;font-weight:700;font-size:13px}
+  .bp-step.done .dot{background:#fff;color:var(--accent-deep)}
+  .bp-step.now .dot{background:rgba(255,255,255,.22);color:#fff;box-shadow:0 0 0 4px rgba(255,255,255,.12)}
+  .bp-step.todo .dot{background:rgba(255,255,255,.1);color:rgba(255,255,255,.55)}
+  .bp-step .dot svg{width:16px;height:16px}
+  .bp-step b{font-size:15.5px;font-weight:650}
+  .bp-step.todo b{color:rgba(255,255,255,.62);font-weight:600}
+  .bp-step span{display:block;font-size:13px;color:rgba(255,255,255,.7);margin-top:1px}
+  .bp-mid h1{font-size:34px;font-weight:700;letter-spacing:-.035em;line-height:1.1;margin:0}
+  .bp-foot{position:relative;z-index:2;font-size:13px;color:rgba(255,255,255,.6)}
+
+  /* RIGHT form panel */
+  .formpane{position:relative;flex:1;display:flex;align-items:center;justify-content:center;padding:40px 32px;overflow:hidden;
+    background:radial-gradient(125% 90% at 70% -10%, #FBF7EF 0%, #F0E9DC 50%, #E7DECD 100%)}
+  .flow-band{position:absolute;top:0;left:0;width:100%;height:360px;z-index:0;pointer-events:none;
+    -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 30%,rgba(0,0,0,0) 92%);
+    mask-image:linear-gradient(to bottom,#000 0%,#000 30%,rgba(0,0,0,0) 92%)}
+  .card{position:relative;z-index:1;width:100%;max-width:430px}
+  .ac-top{margin-bottom:24px}
+  .ac-top .eyebrow{font-size:12.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+  .ac-top h2{font-size:27px;font-weight:700;letter-spacing:-.03em;margin:0 0 6px}
+  .ac-top p{font-size:14.5px;color:var(--ink-2);margin:0}
+
+  .av-up{position:relative;width:88px;height:88px;margin:0 0 22px}
+  .av-up .circ{width:88px;height:88px;border-radius:50%;background:linear-gradient(150deg,var(--accent-soft),var(--accent-deep));display:grid;place-items:center;color:#fff;font-size:32px;font-weight:700}
+  .av-up .cam{position:absolute;right:-2px;bottom:-2px;width:32px;height:32px;border-radius:50%;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;color:var(--ink-2);box-shadow:var(--shadow);cursor:pointer}
+  .av-up .cam svg{width:16px;height:16px}
+
+  form{display:flex;flex-direction:column;gap:16px}
+  .field{display:flex;flex-direction:column;gap:7px}
+  .field label{font-size:13px;font-weight:600;color:var(--ink-2)}
+  .frow{display:grid;grid-template-columns:1fr 1.4fr;gap:12px}
+  .input{position:relative}
+  .input>svg{position:absolute;left:15px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--ink-3);pointer-events:none}
+  .input input{width:100%;height:52px;border-radius:14px;border:1px solid var(--line);background:var(--card);
+    padding:0 16px 0 44px;font-size:15px;color:var(--ink);transition:border-color .16s,box-shadow .16s;outline:none}
+  .input input.plain{padding-left:16px}
+  .input input::placeholder{color:var(--ink-3)}
+  .input input:focus{border-color:var(--accent-soft);box-shadow:0 0 0 3px var(--accent-tint)}
+  .input .eye{left:auto;right:14px;cursor:pointer;pointer-events:auto}
+
+  .chips{display:flex;flex-wrap:wrap;gap:10px}
+  .chip{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 16px;border-radius:99px;border:1px solid var(--line);background:var(--card);
+    font-size:14px;font-weight:600;color:var(--ink-2);cursor:pointer;transition:.15s;user-select:none}
+  .chip svg{width:16px;height:16px}
+  .chip:hover{border-color:var(--accent-soft)}
+  .chip.on{background:var(--accent-tint);border-color:var(--accent-soft);color:var(--accent-deep)}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;height:54px;border-radius:14px;border:none;
+    font-size:15.5px;font-weight:650;letter-spacing:-.01em;cursor:pointer;transition:.16s;width:100%}
+  .btn svg{width:18px;height:18px;stroke-width:2.2}
+  .btn-primary{background:var(--accent);color:#fff;box-shadow:0 10px 24px -10px rgba(47,93,58,.6);margin-top:4px}
+  .btn-primary:hover{filter:brightness(1.06);transform:translateY(-1px)}
+  .note{font-size:12.5px;color:var(--ink-3);text-align:center;margin:2px 0 0}
+
+  @media (max-width:900px){ .brandpane{display:none} }
+  @media (max-width:480px){ .formpane{padding:28px 18px} .frow{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<template id="__bundler_thumbnail" data-bg-color="#2F5D3A">
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100" height="100" rx="22" fill="#2F5D3A"/>
+  <circle cx="50" cy="40" r="14" fill="#fff"/>
+  <path d="M28 74 C28 60 72 60 72 74 Z" fill="#fff"/>
+</svg>
+</template>
+
+<div class="shell">
+  <aside class="brandpane">
+    <div class="bp-logo">
+      <img id="brandlogo" alt="GBICT Energy">
+      <div><b>GBICT</b><span>Energy</span></div>
+    </div>
+    <div class="bp-mid">
+      <h1>Just a few details and your home starts saving.</h1>
+      <div class="bp-steps" style="margin-top:30px">
+        <div class="bp-step done"><div class="dot"><i data-lucide="check"></i></div><div><b>Account created</b><span>Your email is verified</span></div></div>
+        <div class="bp-step now"><div class="dot">2</div><div><b>Your profile</b><span>Tell us about your home</span></div></div>
+        <div class="bp-step todo"><div class="dot">3</div><div><b>Connect a device</b><span>Battery, solar, contract…</span></div></div>
+      </div>
+    </div>
+    <div class="bp-foot">© 2026 GBICT Energy</div>
+  </aside>
+
+  <main class="formpane">
+    <canvas class="flow-band" id="flowband"></canvas>
+    <div class="card">
+      <div class="ac-top">
+        <div class="eyebrow">Step 2 of 3</div>
+        <h2>Create your profile</h2>
+        <p>A few details so we can tailor your savings.</p>
+      </div>
+
+      <div class="av-up">
+        <div class="circ" id="avinit">L</div>
+        <button class="cam" type="button" title="Upload photo"><i data-lucide="camera"></i></button>
+      </div>
+
+      <form id="profileform" autocomplete="off">
+        <div class="field">
+          <label for="name">Full name</label>
+          <div class="input"><i data-lucide="user"></i><input id="name" type="text" value="Lieke de Vries"></div>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <div class="input"><i data-lucide="mail"></i><input id="email" type="email" placeholder="you@home.nl"></div>
+        </div>
+        <div class="field">
+          <label for="phone">Phone number</label>
+          <div class="input"><i data-lucide="phone"></i><input id="phone" type="tel" placeholder="+31 6 1234 5678"></div>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <div class="input"><i data-lucide="lock"></i><input id="password" type="password" placeholder="••••••••"><i data-lucide="eye" class="eye" id="eye"></i></div>
+        </div>
+        <div class="field">
+          <label for="home">Home name</label>
+          <div class="input"><i data-lucide="house"></i><input id="home" type="text" placeholder="Lieke's home"></div>
+        </div>
+        <div class="frow">
+          <div class="field">
+            <label for="post">Postcode</label>
+            <div class="input"><input class="plain" id="post" type="text" placeholder="1011 AB"></div>
+          </div>
+          <div class="field">
+            <label for="city">City</label>
+            <div class="input"><input class="plain" id="city" type="text" placeholder="Amsterdam"></div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>What's in your home?</label>
+          <div class="chips" id="chips">
+            <div class="chip on" data-k="battery"><i data-lucide="battery-charging"></i>Battery</div>
+            <div class="chip on" data-k="solar"><i data-lucide="sun"></i>Solar</div>
+            <div class="chip" data-k="ev"><i data-lucide="car"></i>EV</div>
+            <div class="chip" data-k="heat"><i data-lucide="thermometer"></i>Heat pump</div>
+            <div class="chip" data-k="meter"><i data-lucide="gauge"></i>Smart meter</div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary"><i data-lucide="check"></i>Finish setup</button>
+        <p class="note">You can change any of this later in Settings.</p>
+      </form>
+    </div>
+  </main>
+</div>
+
+<script>
+  if (window.LOGO_SRC) document.getElementById('brandlogo').src = window.LOGO_SRC;
+  window.initEnergyFlow && window.initEnergyFlow(document.getElementById('flowband'));
+
+  // live initials from name
+  const nameEl = document.getElementById('name'), avEl = document.getElementById('avinit');
+  function initials(v){ const p = v.trim().split(/\s+/); return ((p[0]||'')[0]||'L').toUpperCase() + ((p[1]||'')[0]||'').toUpperCase(); }
+  nameEl.addEventListener('input', () => avEl.textContent = initials(nameEl.value) || 'L');
+
+  // device chips
+  document.querySelectorAll('#chips .chip').forEach(c => c.addEventListener('click', () => c.classList.toggle('on')));
+
+  // show/hide password
+  document.getElementById('eye').addEventListener('click', function(){
+    const pw = document.getElementById('password'); const show = pw.type === 'password';
+    pw.type = show ? 'text' : 'password';
+    this.setAttribute('data-lucide', show ? 'eye-off' : 'eye'); window.lucide && window.lucide.createIcons();
+  });
+
+  // finish → dashboard
+  document.getElementById('profileform').addEventListener('submit', e => { e.preventDefault(); window.location.href = 'web-login.html'; });
+
+  window.lucide && window.lucide.createIcons();
+</script>
+</body>
+</html>

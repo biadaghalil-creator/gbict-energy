@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<!-- @dsCard group="Brand" name="GBICT Energy — App Login & Sign up" subtitle="iOS frame · forest hero + rising sheet · tabbed sign in / create" viewport="900x980" -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GBICT Energy — App sign in</title>
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700,900&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@0.456.0/dist/umd/lucide.min.js"></script>
+<script src="logo-data.js"></script>
+<style>
+  :root{
+    --bg:#F3EEE3; --card:#FFFFFF; --card-2:#FBF7EF;
+    --ink:#211D16; --ink-2:#5C5648; --ink-3:#938C7C;
+    --line:rgba(33,29,22,0.09); --line-2:rgba(33,29,22,0.06);
+    --accent:#2F5D3A; --accent-deep:#24492D; --accent-soft:#5C8A5E; --accent-tint:#E7EEE0;
+    --shadow:0 1px 2px rgba(33,29,22,.04), 0 8px 24px rgba(33,29,22,.06);
+    --shadow-lg:0 2px 6px rgba(33,29,22,.06), 0 24px 60px rgba(33,29,22,.14);
+    --font:'Satoshi',-apple-system,system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:var(--font);color:var(--ink);-webkit-font-smoothing:antialiased;
+    display:flex;align-items:center;justify-content:center;min-height:100vh;padding:32px 16px;
+    background:radial-gradient(120% 90% at 50% -10%, #FBF7EF 0%, #F0E9DC 46%, #E7DECD 100%)}
+  button,input{font-family:inherit}
+
+  /* device chrome */
+  .device{position:relative;width:390px;height:844px;flex:none;border-radius:54px;background:var(--bg);
+    box-shadow:var(--shadow-lg),0 0 0 11px #0d0f0a,0 0 0 12.5px rgba(255,255,255,.06);overflow:hidden;isolation:isolate}
+  .island{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:118px;height:34px;border-radius:20px;background:#000;z-index:80}
+  .statusbar{position:absolute;top:0;left:0;right:0;height:54px;z-index:70;display:flex;align-items:center;justify-content:space-between;padding:0 30px;pointer-events:none}
+  .statusbar .t{font-size:15px;font-weight:650;color:#fff;padding-top:14px}
+  .statusbar .r{display:flex;align-items:center;gap:7px;padding-top:14px;color:#fff}
+  .statusbar svg{width:17px;height:17px}
+  .home-ind{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:99px;z-index:75;background:rgba(33,29,22,.28)}
+
+  .screen{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;overflow:hidden}
+
+  /* forest hero */
+  .hero{position:relative;flex:none;height:332px;padding:84px 30px 0;color:#fff;overflow:hidden;
+    background:linear-gradient(160deg,var(--accent) 0%,var(--accent-deep) 100%)}
+  .hero::after{content:"";position:absolute;right:-90px;top:-120px;width:320px;height:320px;border-radius:50%;
+    background:radial-gradient(circle,rgba(255,255,255,.16),transparent 64%);pointer-events:none}
+  .hero .mark{position:relative;z-index:2;width:58px;height:58px;border-radius:16px;overflow:hidden;box-shadow:0 8px 20px rgba(0,0,0,.3)}
+  .hero .mark img{width:100%;height:100%;object-fit:cover;display:block}
+  .hero h1{position:relative;z-index:2;font-size:30px;font-weight:700;letter-spacing:-.03em;line-height:1.12;margin:22px 0 8px}
+  .hero p{position:relative;z-index:2;font-size:14.5px;line-height:1.5;color:rgba(255,255,255,.82);margin:0;max-width:280px}
+
+  /* rising sheet */
+  .sheet{position:relative;z-index:6;flex:1;margin-top:-30px;background:var(--card);border-radius:30px 30px 0 0;
+    padding:22px 26px 30px;box-shadow:0 -18px 50px rgba(33,29,22,.16);overflow-y:auto;scrollbar-width:none}
+  .sheet::-webkit-scrollbar{display:none}
+  .grab{width:42px;height:5px;border-radius:99px;background:color-mix(in srgb,var(--ink) 14%,transparent);margin:0 auto 18px}
+
+  .tabs{display:flex;gap:4px;padding:5px;border-radius:15px;background:color-mix(in srgb,var(--ink) 6%,transparent);margin-bottom:20px}
+  .tabs button{flex:1;border:none;background:transparent;font-size:14px;font-weight:650;color:var(--ink-2);height:42px;border-radius:11px;cursor:pointer;transition:.18s}
+  .tabs button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(33,29,22,.12)}
+
+  form{display:flex;flex-direction:column;gap:13px}
+  .field{display:flex;flex-direction:column;gap:6px}
+  .field label{font-size:12.5px;font-weight:600;color:var(--ink-2)}
+  .input{position:relative}
+  .input>svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--ink-3);pointer-events:none}
+  .input input{width:100%;height:50px;border-radius:13px;border:1px solid var(--line);background:var(--card-2);
+    padding:0 14px 0 42px;font-size:15px;color:var(--ink);outline:none;transition:border-color .16s,box-shadow .16s}
+  .input input::placeholder{color:var(--ink-3)}
+  .input input:focus{border-color:var(--accent-soft);box-shadow:0 0 0 3px var(--accent-tint);background:var(--card)}
+  .input .eye{left:auto;right:13px;cursor:pointer;pointer-events:auto}
+
+  .rowb{display:flex;align-items:center;justify-content:space-between;margin-top:-1px}
+  .check{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--ink-2);cursor:pointer}
+  .check input{width:16px;height:16px;accent-color:var(--accent)}
+  .link{font-size:12.5px;font-weight:600;color:var(--accent);cursor:pointer}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;height:52px;border-radius:14px;border:none;
+    font-size:15.5px;font-weight:650;letter-spacing:-.01em;cursor:pointer;transition:.16s;width:100%}
+  .btn:active{transform:scale(.98)}
+  .btn svg{width:18px;height:18px;stroke-width:2.2}
+  .btn-primary{background:var(--accent);color:#fff;box-shadow:0 10px 22px -10px rgba(47,93,58,.6);margin-top:4px}
+  .btn-soc{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+
+  .divider{display:flex;align-items:center;gap:12px;margin:18px 0;color:var(--ink-3);font-size:12px;font-weight:600}
+  .divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line)}
+
+  .terms{font-size:11.5px;line-height:1.5;color:var(--ink-3);text-align:center;margin:14px 0 0}
+  .terms a{color:var(--ink-2)}
+
+  body[data-mode="login"] .only-signup{display:none}
+  body[data-mode="signup"] .only-login{display:none}
+</style>
+</head>
+<body data-mode="login">
+<template id="__bundler_thumbnail" data-bg-color="#2F5D3A">
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100" height="100" rx="22" fill="#2F5D3A"/>
+  <rect x="22" y="58" width="56" height="26" rx="9" fill="#fff"/>
+  <path d="M52 20 L40 46 H50 L46 56 L62 38 H52 Z" fill="#fff"/>
+</svg>
+</template>
+
+<div class="device">
+  <div class="island"></div>
+  <div class="statusbar">
+    <div class="t">9:41</div>
+    <div class="r"><i data-lucide="signal"></i><i data-lucide="wifi"></i><i data-lucide="battery-full"></i></div>
+  </div>
+
+  <div class="screen">
+    <div class="hero">
+      <div class="mark"><img id="brandlogo" alt="GBICT Energy"></div>
+      <h1 id="heading">Welcome back.</h1>
+      <p id="subhead">Sign in and pick up where your home left off.</p>
+    </div>
+
+    <div class="sheet">
+      <div class="grab"></div>
+      <div class="tabs">
+        <button data-mode="login" class="on">Sign in</button>
+        <button data-mode="signup">Create account</button>
+      </div>
+
+      <form id="authform" autocomplete="off">
+        <div class="field only-signup">
+          <label for="name">Full name</label>
+          <div class="input"><i data-lucide="user"></i><input id="name" type="text" placeholder="Lieke de Vries"></div>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <div class="input"><i data-lucide="mail"></i><input id="email" type="email" placeholder="you@home.nl"></div>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <div class="input"><i data-lucide="lock"></i><input id="password" type="password" placeholder="••••••••"><i data-lucide="eye" class="eye" id="eye"></i></div>
+        </div>
+        <div class="rowb only-login">
+          <label class="check"><input type="checkbox" checked> Stay signed in</label>
+          <span class="link">Forgot?</span>
+        </div>
+        <button type="submit" class="btn btn-primary" id="submit">Sign in</button>
+      </form>
+
+      <div class="divider">OR</div>
+      <button class="btn btn-soc" id="sso"><i data-lucide="shield-check"></i><span id="sso-label">Continue with iDIN</span></button>
+      <p class="terms only-signup">By creating an account you agree to our <a href="#">Terms</a> & <a href="#">Privacy Policy</a>.</p>
+    </div>
+  </div>
+
+  <div class="home-ind"></div>
+</div>
+
+<script>
+  if (window.LOGO_SRC) document.getElementById('brandlogo').src = window.LOGO_SRC;
+
+  const COPY = {
+    login:  { heading:'Welcome back.',     subhead:'Sign in and pick up where your home left off.', submit:'Sign in',       sso:'Continue with iDIN', title:'GBICT Energy — App sign in' },
+    signup: { heading:'Start saving.',     subhead:'Create your account — it takes a minute.',       submit:'Create account', sso:'Sign up with iDIN',  title:'GBICT Energy — App sign up' }
+  };
+  function setMode(mode){
+    document.body.dataset.mode = mode;
+    const c = COPY[mode];
+    document.getElementById('heading').textContent = c.heading;
+    document.getElementById('subhead').textContent = c.subhead;
+    document.getElementById('submit').textContent = c.submit;
+    document.getElementById('sso-label').textContent = c.sso;
+    document.title = c.title;
+    document.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('on', b.dataset.mode === mode));
+    window.lucide && window.lucide.createIcons();
+  }
+  document.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+
+  document.getElementById('eye').addEventListener('click', function(){
+    const pw = document.getElementById('password'); const show = pw.type === 'password';
+    pw.type = show ? 'text' : 'password';
+    this.setAttribute('data-lucide', show ? 'eye-off' : 'eye'); window.lucide && window.lucide.createIcons();
+  });
+
+  // echte Supabase-auth (cookie-based via /api/auth/*)
+  function authMsg(text, ok){
+    const el = document.getElementById('subhead');
+    el.textContent = text; el.style.color = ok ? 'var(--accent-deep)' : '#C2702C';
+  }
+  document.getElementById('authform').addEventListener('submit', async e => {
+    e.preventDefault();
+    const mode = document.body.dataset.mode === 'signup' ? 'signup' : 'login';
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const btn = document.getElementById('submit'); const orig = btn.textContent;
+    btn.textContent = 'Even geduld…'; btn.disabled = true;
+    try {
+      const res = await fetch('/api/auth/' + mode, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) { authMsg(data.error || 'Er ging iets mis', false); btn.textContent = orig; btn.disabled = false; return; }
+      if (mode === 'signup' && data.needsConfirm) { authMsg('Check je e-mail om je account te bevestigen.', true); btn.textContent = orig; btn.disabled = false; return; }
+      window.location.href = '/dashboard';
+    } catch { authMsg('Geen verbinding. Probeer opnieuw.', false); btn.textContent = orig; btn.disabled = false; }
+  });
+  document.getElementById('sso').addEventListener('click', () => authMsg('iDIN-login komt binnenkort.', true));
+
+  window.lucide && window.lucide.createIcons();
+</script>
+</body>
+</html>
