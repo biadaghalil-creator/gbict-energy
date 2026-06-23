@@ -55,7 +55,7 @@ export async function createEnodeLinkSession(
       body: JSON.stringify({
         vendorType: 'vehicle',
         scopes: ['vehicle:read:data', 'vehicle:control:charging'],
-        language: 'nl',
+        language: 'nl-NL',
         redirectUri,
       }),
       signal: AbortSignal.timeout(8000),
