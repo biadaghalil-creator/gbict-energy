@@ -136,22 +136,12 @@ function App() {
       navSeq.current++;
       setPhase(isSignup ? "onboarding" : "app");
     } })),
-    phase === "onboarding" && /* @__PURE__ */ React.createElement("div", { key: "onb" + navSeq.current, className: "scr-tab", style: { position: "absolute", inset: 0, zIndex: 5 } }, /* @__PURE__ */ React.createElement(
-      Onboarding,
-      {
-        onDone: () => {
-          setDir("tab");
-          setTab("dashboard");
-          navSeq.current++;
-          setPhase("app");
-        },
-        onLogin: () => {
-          setDir("tab");
-          navSeq.current++;
-          setPhase("app");
-        }
-      }
-    )),
+    phase === "onboarding" && /* @__PURE__ */ React.createElement("div", { key: "onb" + navSeq.current, className: "scr-tab", style: { position: "absolute", inset: 0, zIndex: 5 } }, /* @__PURE__ */ React.createElement(Onboarding, { onDone: () => {
+      setDir("tab");
+      setTab("dashboard");
+      navSeq.current++;
+      setPhase("app");
+    } })),
     phase === "app" && /* @__PURE__ */ React.createElement("div", { key: current + navSeq.current, className: dirClass + (stack.length ? " pushed" : ""), style: { position: "absolute", inset: 0, zIndex: 5 } }, stack.length > 0 && /* @__PURE__ */ React.createElement("button", { className: "backorb", onClick: back }, /* @__PURE__ */ React.createElement(Icon, { name: "chevL", size: 20 })), renderScreen()),
     phase === "app" && dockTab && /* @__PURE__ */ React.createElement(Dock, { tab: dockTab, onSelect: selectTab }),
     phase === "app" && sheet && /* @__PURE__ */ React.createElement(AddSheet, { onClose: () => setSheet(false) })

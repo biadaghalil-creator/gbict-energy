@@ -15,27 +15,26 @@ function OnbProgress({ step, total }) {
   );
 }
 
-function Onboarding({ onDone, onLogin }) {
+function Onboarding({ onDone }) {
   const [step, setStep] = useStateOnb(0);
   const [picks, setPicks] = useStateOnb({ solar: true, battery: true, ev: false, contract: true });
   const [connected, setConnected] = useStateOnb(null);
-  const next = () => setStep((s) => Math.min(3, s + 1));
+  const next = () => setStep((s) => Math.min(2, s + 1));
   const back = () => setStep((s) => Math.max(0, s - 1));
 
   return (
     <div className="screen">
       <div className="screen-scroll" key={step} style={{ paddingTop: 70, display: 'flex', flexDirection: 'column' }}>
-        {step > 0 && (
-          <div className="scr-tab" style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 22 }}>
-            <button className="orb" style={{ width: 40, height: 40, background: 'color-mix(in srgb,var(--ink) 6%, transparent)' }} onClick={back}><Icon name="chevL" size={20} /></button>
-            <div style={{ flex: 1 }}><OnbProgress step={step} total={4} /></div>
-          </div>
-        )}
+        <div className="scr-tab" style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 22 }}>
+          {step > 0
+            ? <button className="orb" style={{ width: 40, height: 40, background: 'color-mix(in srgb,var(--ink) 6%, transparent)' }} onClick={back}><Icon name="chevL" size={20} /></button>
+            : <span style={{ width: 40, height: 40, flex: 'none' }} />}
+          <div style={{ flex: 1 }}><OnbProgress step={step} total={3} /></div>
+        </div>
 
-        {step === 0 && <OnbWelcome onNext={next} onLogin={onLogin} />}
-        {step === 1 && <OnbSituation picks={picks} setPicks={setPicks} onNext={next} />}
-        {step === 2 && <OnbConnect connected={connected} setConnected={setConnected} onNext={next} />}
-        {step === 3 && <OnbDone picks={picks} onDone={onDone} />}
+        {step === 0 && <OnbSituation picks={picks} setPicks={setPicks} onNext={next} />}
+        {step === 1 && <OnbConnect connected={connected} setConnected={setConnected} onNext={next} />}
+        {step === 2 && <OnbDone picks={picks} onDone={onDone} />}
       </div>
     </div>
   );
@@ -195,13 +194,18 @@ const { useState: useAuthS } = React;
 function AuthScreen({ onAuthed }) {
   const [mode, setMode] = useAuthS('login');     // 'login' | 'signup'
   const [show, setShow] = useAuthS(false);
-  const [vals, setVals] = useAuthS({ name: '', email: '', password: '' });
+  const [vals, setVals] = useAuthS({ name: '', email: '', password: '', phone: '', address: '' });
   const isSignup = mode === 'signup';
   const set = (k) => (e) => setVals((s) => ({ ...s, [k]: e.target.value }));
 
   const submit = (e) => {
     if (e) e.preventDefault();
-    const prof = { name: (vals.name || '').trim() || 'Lieke de Vries', email: (vals.email || '').trim() };
+    const prof = {
+      name: (vals.name || '').trim() || 'Lieke de Vries',
+      email: (vals.email || '').trim(),
+      phone: (vals.phone || '').trim(),
+      address: (vals.address || '').trim(),
+    };
     if (isSignup || vals.name || vals.email) {
       try {
         const prev = JSON.parse(localStorage.getItem('gbict_profile') || '{}');
@@ -264,6 +268,18 @@ function AuthScreen({ onAuthed }) {
               <span onClick={() => setShow((s) => !s)} style={{ position: 'absolute', right: 13, top: '50%', transform: 'translateY(-50%)', color: 'var(--ink-3)', cursor: 'pointer', display: 'flex' }}><Icon name={show ? 'eyeOff' : 'eye'} size={18} /></span>
             </div>
           </div>
+          {isSignup && (
+            <div>
+              <label style={lab}>Phone number</label>
+              <div style={inputWrap}><span style={leadIc}><Icon name="bell" size={18} /></span><input style={inputStyle} type="tel" placeholder="+31 6 1234 5678" value={vals.phone} onChange={set('phone')} /></div>
+            </div>
+          )}
+          {isSignup && (
+            <div>
+              <label style={lab}>Home address</label>
+              <div style={inputWrap}><span style={leadIc}><Icon name="home" size={18} /></span><input style={inputStyle} type="text" placeholder="Keizersgracht 1, Amsterdam" value={vals.address} onChange={set('address')} /></div>
+            </div>
+          )}
           {!isSignup && (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <label style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 12.5, color: 'var(--ink-2)', cursor: 'pointer' }}><input type="checkbox" defaultChecked style={{ width: 16, height: 16, accentColor: 'var(--accent)' }} /> Stay signed in</label>

@@ -120,8 +120,7 @@ function App() {
       )}
       {phase === 'onboarding' && (
         <div key={'onb' + navSeq.current} className="scr-tab" style={{ position: 'absolute', inset: 0, zIndex: 5 }}>
-          <Onboarding onDone={() => { setDir('tab'); setTab('dashboard'); navSeq.current++; setPhase('app'); }}
-                      onLogin={() => { setDir('tab'); navSeq.current++; setPhase('app'); }} />
+          <Onboarding onDone={() => { setDir('tab'); setTab('dashboard'); navSeq.current++; setPhase('app'); }} />
         </div>
       )}
       {phase === 'app' && (
