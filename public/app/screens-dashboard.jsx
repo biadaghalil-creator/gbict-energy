@@ -226,7 +226,44 @@ function DashClassic({ onOpen, run, live }) {
       </div>
       <PriceCard run={run} live={live} />
       <ScheduleCard run={run} live={live} onOpen={() => onOpen('battery')} />
-      <ForecastCard run={run} live={live} />
+      <InsightsCard live={live} />
+    </div>
+  );
+}
+
+/* GBICT AI — verbruiksvoorspelling (#1), opbrengstprognose morgen (#3),
+   anomalie-detectie (#4). Eerlijke "learning"-staat tot er data is. */
+function InsightsCard({ live }) {
+  const ai = live?.insights;
+  const tom = ai?.tomorrow;
+  const fc = ai?.forecast;
+  const anomalies = ai?.anomalies || [];
+  const active = ai && !fc?.learning;
+  return (
+    <div className="card card-pad solid rise" style={{ animationDelay: '.28s' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+        <Icon name="spark" size={18} style={{ color: 'var(--accent)' }} />
+        <b style={{ fontSize: 15.5, fontWeight: 700, color: 'var(--ink)' }}>GBICT AI</b>
+        <span className="pill" style={{ marginLeft: 'auto', height: 24, fontSize: 11, background: 'var(--accent-tint)' }}>{active ? 'Active' : 'Learning'}</span>
+      </div>
+      {tom?.available ? (
+        <p style={{ fontSize: 14, lineHeight: 1.55, color: 'var(--ink-2)', margin: '0 0 8px' }}>
+          Tomorrow we expect about <b style={{ color: 'var(--accent)' }}>€{Number(tom.estSavingsEur).toFixed(2)}</b> in savings. Cheapest power between <b style={{ color: 'var(--ink)' }}>{tom.cheapWindow}</b> — we charge then automatically.
+        </p>
+      ) : (
+        <p style={{ fontSize: 14, lineHeight: 1.55, color: 'var(--ink-2)', margin: '0 0 8px' }}>Tomorrow's prices usually arrive in the afternoon — we plan the cheapest window automatically.</p>
+      )}
+      <p style={{ fontSize: 13.5, color: 'var(--ink-2)', margin: 0 }}>
+        {fc?.learning
+          ? `Usage forecast is learning… (${fc?.dataPoints ?? 0} readings collected)`
+          : <>Expected usage: <b style={{ color: 'var(--ink)' }}>{fc.consumptionKwh} kWh/day</b></>}
+      </p>
+      {anomalies.map((a, i) => (
+        <div key={i} style={{ display: 'flex', gap: 8, alignItems: 'flex-start', marginTop: 8, padding: '10px 12px', borderRadius: 12, background: a.severity === 'warn' ? 'color-mix(in srgb,var(--sell) 12%, transparent)' : 'var(--accent-tint)' }}>
+          <Icon name={a.severity === 'warn' ? 'shield' : 'spark'} size={16} style={{ color: a.severity === 'warn' ? 'var(--sell)' : 'var(--accent)', marginTop: 1 }} />
+          <span style={{ fontSize: 13, color: 'var(--ink-2)', lineHeight: 1.45 }}>{a.message}</span>
+        </div>
+      ))}
     </div>
   );
 }

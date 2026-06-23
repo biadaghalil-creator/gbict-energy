@@ -223,9 +223,9 @@ function useLiveData() {
     let alive = true;
     const get = (u) => fetch(u, { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null);
     Promise.all([
-      get('/api/savings'), get('/api/sessy/status'), get('/api/tibber/prices'), get('/api/solar/production'),
-    ]).then(([savings, sessy, tibber, solar]) => {
-      if (alive) setData({ savings, sessy, tibber, solar });
+      get('/api/savings'), get('/api/sessy/status'), get('/api/tibber/prices'), get('/api/solar/production'), get('/api/ai/insights'),
+    ]).then(([savings, sessy, tibber, solar, insights]) => {
+      if (alive) setData({ savings, sessy, tibber, solar, insights });
     });
     return () => { alive = false; };
   }, []);

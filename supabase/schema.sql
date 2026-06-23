@@ -127,3 +127,28 @@ create policy "devices_all_own" on public.devices
 drop policy if exists "logs_select_own" on public.optimization_logs;
 create policy "logs_select_own" on public.optimization_logs
   for select using (auth.uid() = user_id);
+
+-- ── ENERGY READINGS ───────────────────────────────────────────────────────────
+-- Telemetrie-historie (per uur, per klant): de trainingsdataset voor onze eigen
+-- AI — verbruiksvoorspelling, opbrengstprognose en anomalie-detectie. Ruwe
+-- velden bewaren we apart zodat we later exact kunnen hertrainen.
+create table if not exists public.energy_readings (
+  id            bigint generated always as identity primary key,
+  user_id       uuid not null references auth.users (id) on delete cascade,
+  ts            timestamptz not null default now(),
+  consumption_w double precision,   -- huisverbruik (afgeleid uit de balans)
+  production_w  double precision,   -- zonopbrengst
+  battery_w     double precision,   -- + = laden, − = ontladen
+  grid_w        double precision,   -- + = import, − = export
+  soc           double precision,   -- batterij-laadstand in %
+  price_eur     double precision,   -- prijs €/kWh op dat moment
+  source        text                -- merk/herkomst (bv. 'sessy')
+);
+create index if not exists energy_readings_user_ts
+  on public.energy_readings (user_id, ts desc);
+
+alter table public.energy_readings enable row level security;
+-- De klant leest alleen z'n eigen metingen; de cron schrijft via de service role.
+drop policy if exists "readings_select_own" on public.energy_readings;
+create policy "readings_select_own" on public.energy_readings
+  for select using (auth.uid() = user_id);

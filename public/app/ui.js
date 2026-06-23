@@ -169,9 +169,10 @@ function useLiveData() {
       get("/api/savings"),
       get("/api/sessy/status"),
       get("/api/tibber/prices"),
-      get("/api/solar/production")
-    ]).then(([savings, sessy, tibber, solar]) => {
-      if (alive) setData({ savings, sessy, tibber, solar });
+      get("/api/solar/production"),
+      get("/api/ai/insights")
+    ]).then(([savings, sessy, tibber, solar, insights]) => {
+      if (alive) setData({ savings, sessy, tibber, solar, insights });
     });
     return () => {
       alive = false;
