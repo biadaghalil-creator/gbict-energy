@@ -224,14 +224,15 @@ function ProfileScreen() {
   const v = (k, d) => (p[k] !== undefined ? p[k] : (d || ''));
   const set = (k) => (e) => { setP((s) => ({ ...s, [k]: e.target.value })); setSaved(false); };
   const save = () => { localStorage.setItem('gbict_profile', JSON.stringify(p)); setSaved(true); setTimeout(() => setSaved(false), 2000); };
-  const name = v('name', 'Lieke de Vries').trim();
-  const init = (name.split(/\s+/).map((w) => w[0]).slice(0, 2).join('') || 'L').toUpperCase();
+  const name = v('name', '').trim();
+  const init = (name.split(/\s+/).map((w) => w[0]).slice(0, 2).join('') || '?').toUpperCase();
   const inp = { width: '100%', height: 50, borderRadius: 13, border: '1px solid var(--line)', background: 'var(--card)', padding: '0 14px', fontSize: 15, color: 'var(--ink)', fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box' };
   const lab = { fontSize: 12.5, fontWeight: 600, color: 'var(--ink-2)', display: 'block', marginBottom: 6 };
-  const Field = ({ label, k, def, type, ph }) => (
+  // render-helper (GEEN nieuwe component per render → input behoudt focus, toetsenbord springt niet)
+  const field = (label, k, type, ph) => (
     <div style={{ marginBottom: 14 }}>
       <label style={lab}>{label}</label>
-      <input style={inp} type={type || 'text'} value={v(k, def)} placeholder={ph || ''} onChange={set(k)} />
+      <input style={inp} type={type || 'text'} value={v(k, '')} placeholder={ph || ''} onChange={set(k)} />
     </div>
   );
   return (
@@ -247,10 +248,10 @@ function ProfileScreen() {
         </div>
 
         <div className="card solid card-pad rise" style={{ animationDelay: '.08s' }}>
-          <Field label="Full name" k="name" def="Lieke de Vries" />
-          <Field label="Email" k="email" type="email" ph="you@home.nl" />
-          <Field label="Phone number" k="phone" type="tel" ph="+31 6 1234 5678" />
-          <Field label="Home name" k="home" ph="Lieke's home" />
+          {field('Full name', 'name', 'text', 'Your name')}
+          {field('Email', 'email', 'email', 'you@home.nl')}
+          {field('Phone number', 'phone', 'tel', '+31 6 1234 5678')}
+          {field('Home name', 'home', 'text', "e.g. Home")}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.3fr', gap: 10 }}>
             <div><label style={lab}>Postcode</label><input style={inp} value={v('post')} placeholder="1011 AB" onChange={set('post')} /></div>
             <div><label style={lab}>City</label><input style={inp} value={v('city')} placeholder="Amsterdam" onChange={set('city')} /></div>

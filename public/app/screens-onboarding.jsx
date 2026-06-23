@@ -217,7 +217,11 @@ function AuthScreen({ onAuthed }) {
       if (isSignup && data.needsConfirm) { setErr('Check je e-mail om je account te bevestigen, log daarna in.'); setBusy(false); return; }
       try {
         const prev = JSON.parse(localStorage.getItem('gbict_profile') || '{}');
-        localStorage.setItem('gbict_profile', JSON.stringify({ ...prev, name: (vals.name || '').trim(), email, phone: (vals.phone || '').trim(), address: (vals.address || '').trim() }));
+        const merged = { ...prev, email };   // alleen invullen wat is ingetypt — bij login geen naam wissen
+        const nm = (vals.name || '').trim(); if (nm) merged.name = nm;
+        const ph = (vals.phone || '').trim(); if (ph) merged.phone = ph;
+        const ad = (vals.address || '').trim(); if (ad) merged.address = ad;
+        localStorage.setItem('gbict_profile', JSON.stringify(merged));
       } catch (e2) {}
       onAuthed(isSignup);          // signup → onboarding, login → dashboard
     } catch { setErr('Geen verbinding. Probeer opnieuw.'); setBusy(false); }

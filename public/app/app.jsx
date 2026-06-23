@@ -51,6 +51,7 @@ function App() {
     : { main: accHex, deep: accDef.deep, rgb: accDef.rgb, tint: accDef.tint };
 
   const [phase, setPhase] = useA('auth');       // 'auth' | 'onboarding' | 'app'
+  const [booting, setBooting] = useA(true);     // checkt bestaande sessie bij openen
   const [tab, setTab] = useA('dashboard');
   const [stack, setStack] = useA([]);          // pushed sub-screens
   const [dir, setDir] = useA('tab');           // push | pop | tab
@@ -73,6 +74,18 @@ function App() {
     if (!animOn && inst) inst.stop();
     return () => inst && inst.stop();
   }, [animOn, dark, accHex]);
+
+  // Bestaande sessie herstellen bij openen: cookie blijft staan, dus als je
+  // ingelogd was, sla het login-scherm over en ga direct naar de app.
+  useEffA(() => {
+    let alive = true;
+    fetch('/api/auth/me', { cache: 'no-store' })
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => { if (alive && d && d.authed) setPhase('app'); })
+      .catch(() => {})
+      .finally(() => { if (alive) setBooting(false); });
+    return () => { alive = false; };
+  }, []);
 
   const current = stack.length ? stack[stack.length - 1] : tab;
 
@@ -116,7 +129,7 @@ function App() {
                   position: 'fixed', inset: 0, background: 'var(--bg)', color: 'var(--ink)', overflow: 'hidden',
                   fontFamily: "'Satoshi', -apple-system, system-ui, sans-serif", WebkitFontSmoothing: 'antialiased' }}>
       <canvas ref={flowCv} className="flow-bg" />
-      {phase === 'auth' && (
+      {!booting && phase === 'auth' && (
         <div key={'auth' + navSeq.current} className="scr-tab" style={{ position: 'absolute', inset: 0, zIndex: 5 }}>
           <AuthScreen onAuthed={(isSignup) => { setDir('tab'); navSeq.current++; setPhase(isSignup ? 'onboarding' : 'app'); }} />
         </div>

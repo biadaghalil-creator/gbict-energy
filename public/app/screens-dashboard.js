@@ -40,10 +40,10 @@ function Greeting({ onOpen }) {
     prof = JSON.parse(localStorage.getItem("gbict_profile")) || {};
   } catch (e) {
   }
-  const name = (prof.name || "Lieke de Vries").trim();
-  const first = name.split(/\s+/)[0] || "Lieke";
-  const home = prof.home || first + "'s home";
-  const init = (name.split(/\s+/).map((w) => w[0]).slice(0, 2).join("") || "L").toUpperCase();
+  const name = (prof.name || "").trim();
+  const first = name.split(/\s+/)[0] || "";
+  const home = prof.home || (first ? first + "'s home" : "My home");
+  const init = (name.split(/\s+/).map((w) => w[0]).filter(Boolean).slice(0, 2).join("") || "?").toUpperCase();
   return /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 18 } }, /* @__PURE__ */ React.createElement("div", { style: { minWidth: 0, flex: "0 1 auto" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 14, color: "var(--ink-2)", fontWeight: 500 } }, "Good afternoon"), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 22, fontWeight: 700, color: "var(--ink)", letterSpacing: "-.02em", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, home)), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, flex: "none" } }, /* @__PURE__ */ React.createElement("div", { className: "pill live" }, "Optimising"), /* @__PURE__ */ React.createElement("button", { onClick: () => onOpen && onOpen("profile"), "aria-label": "Edit profile", style: { width: 42, height: 42, borderRadius: "50%", background: "var(--accent)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 16, border: "none", cursor: "pointer", fontFamily: "inherit" } }, init)));
 }
 function Ring({ pct, size = 130, sw = 12, run = true, label = "charged", center }) {

@@ -37,6 +37,7 @@ function App() {
   const accDef = ACCENTS[accHex] || ACCENTS["#2F5D3A"];
   const acc = dark ? { main: accDef.darkAcc, deep: accDef.darkAcc, rgb: accDef.darkRgb, tint: "color-mix(in srgb," + accDef.darkAcc + " 16%, transparent)" } : { main: accHex, deep: accDef.deep, rgb: accDef.rgb, tint: accDef.tint };
   const [phase, setPhase] = useA("auth");
+  const [booting, setBooting] = useA(true);
   const [tab, setTab] = useA("dashboard");
   const [stack, setStack] = useA([]);
   const [dir, setDir] = useA("tab");
@@ -55,6 +56,18 @@ function App() {
     if (!animOn && inst) inst.stop();
     return () => inst && inst.stop();
   }, [animOn, dark, accHex]);
+  useEffA(() => {
+    let alive = true;
+    fetch("/api/auth/me", { cache: "no-store" }).then((r) => r.ok ? r.json() : null).then((d) => {
+      if (alive && d && d.authed) setPhase("app");
+    }).catch(() => {
+    }).finally(() => {
+      if (alive) setBooting(false);
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
   const current = stack.length ? stack[stack.length - 1] : tab;
   const open = (name) => {
     if (TABS.includes(name)) {
@@ -135,7 +148,7 @@ function App() {
       }
     },
     /* @__PURE__ */ React.createElement("canvas", { ref: flowCv, className: "flow-bg" }),
-    phase === "auth" && /* @__PURE__ */ React.createElement("div", { key: "auth" + navSeq.current, className: "scr-tab", style: { position: "absolute", inset: 0, zIndex: 5 } }, /* @__PURE__ */ React.createElement(AuthScreen, { onAuthed: (isSignup) => {
+    !booting && phase === "auth" && /* @__PURE__ */ React.createElement("div", { key: "auth" + navSeq.current, className: "scr-tab", style: { position: "absolute", inset: 0, zIndex: 5 } }, /* @__PURE__ */ React.createElement(AuthScreen, { onAuthed: (isSignup) => {
       setDir("tab");
       navSeq.current++;
       setPhase(isSignup ? "onboarding" : "app");

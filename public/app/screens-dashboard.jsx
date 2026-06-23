@@ -40,10 +40,10 @@ function liveScheduleRows(sched) {
 function Greeting({ onOpen }) {
   let prof = {};
   try { prof = JSON.parse(localStorage.getItem('gbict_profile')) || {}; } catch (e) {}
-  const name = (prof.name || 'Lieke de Vries').trim();
-  const first = name.split(/\s+/)[0] || 'Lieke';
-  const home = prof.home || (first + "'s home");
-  const init = (name.split(/\s+/).map(w => w[0]).slice(0, 2).join('') || 'L').toUpperCase();
+  const name = (prof.name || '').trim();
+  const first = name.split(/\s+/)[0] || '';
+  const home = prof.home || (first ? first + "'s home" : 'My home');
+  const init = (name.split(/\s+/).map(w => w[0]).filter(Boolean).slice(0, 2).join('') || '?').toUpperCase();
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 18 }}>
       <div style={{ minWidth: 0, flex: '0 1 auto' }}>
