@@ -80,26 +80,36 @@ function Ring({ pct, size = 130, sw = 12, run = true, label = 'charged', center 
 
 function PriceCard({ run, live }) {
   const tib = live?.tibber;
-  const pts = (tib?.today?.length) ? tib.today.map((p) => p.total) : PRICE;
-  const priceNow = (typeof tib?.current === 'number') ? tib.current : null;
-  const avg = pts.reduce((a, c) => a + c, 0) / pts.length;
-  const cur = priceNow != null ? priceNow : 0.42;
-  // positie van "nu" op de curve (0..1) zodat de stip op het juiste uur staat
-  let nowPos = NOW;
-  if (tib?.today?.length) {
-    const idx = tib.today.findIndex((p) => Math.abs(p.total - cur) < 1e-9);
-    nowPos = idx >= 0 ? (idx + 0.5) / tib.today.length : 0.5;
-  }
-  const below = cur <= avg;
-  const lo = pts.indexOf(Math.min(...pts)), hi = pts.indexOf(Math.max(...pts));
+  const hasPrices = !!(tib?.today && tib.today.length);
+  const pts = hasPrices ? tib.today.map((p) => p.total) : [];
+  const cur = (typeof tib?.current === 'number') ? tib.current : null;
   const pad = (h) => String(h % 24).padStart(2, '0') + ':00';
+  // nog aan het laden / geen prijzen → eerlijke lege staat, geen demo-curve
+  if (!hasPrices) {
+    return (
+      <div className="card card-pad solid rise" style={{ animationDelay: '.16s' }}>
+        <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink-2)' }}>Power price today</div>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginTop: 3 }}>
+          <span className="num" style={{ fontSize: 24, fontWeight: 700, color: 'var(--ink)' }}>{cur != null ? '€' + cur.toFixed(2) : '—'}</span>
+          <span style={{ fontSize: 13, color: 'var(--ink-3)' }}>/kWh now</span>
+        </div>
+        <p style={{ fontSize: 13, color: 'var(--ink-3)', margin: '12px 0 0' }}>{live ? 'Prices not available right now.' : 'Loading prices…'}</p>
+      </div>
+    );
+  }
+  const avg = pts.reduce((a, c) => a + c, 0) / pts.length;
+  const price = cur != null ? cur : avg;
+  const idx = cur != null ? tib.today.findIndex((p) => Math.abs(p.total - cur) < 1e-9) : -1;
+  const nowPos = idx >= 0 ? (idx + 0.5) / tib.today.length : 0.5;
+  const below = price <= avg;
+  const lo = pts.indexOf(Math.min(...pts)), hi = pts.indexOf(Math.max(...pts));
   return (
     <div className="card card-pad solid rise" style={{ animationDelay: '.16s' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
         <div>
           <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink-2)' }}>Power price today</div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginTop: 3 }}>
-            <span className="num" style={{ fontSize: 24, fontWeight: 700, color: 'var(--ink)' }}>€{cur.toFixed(2)}</span>
+            <span className="num" style={{ fontSize: 24, fontWeight: 700, color: 'var(--ink)' }}>€{price.toFixed(2)}</span>
             <span style={{ fontSize: 13, color: 'var(--ink-3)' }}>/kWh now</span>
           </div>
         </div>
@@ -116,7 +126,7 @@ function PriceCard({ run, live }) {
 function ScheduleCard({ run, onOpen, live }) {
   const tint = { charge: 'var(--accent-tint)', solar: 'var(--sun-tint)', sell: 'color-mix(in srgb,var(--sell) 14%, transparent)' };
   const col = { charge: 'var(--accent-deep)', solar: 'var(--sun)', sell: 'var(--sell)' };
-  const rows = liveScheduleRows(live?.tibber?.optimization?.schedule) || SCHEDULE;
+  const rows = liveScheduleRows(live?.tibber?.optimization?.schedule);
   return (
     <div className="card card-pad solid rise" style={{ animationDelay: '.22s' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
@@ -124,7 +134,8 @@ function ScheduleCard({ run, onOpen, live }) {
         <button onClick={onOpen} style={{ border: 'none', background: 'none', color: 'var(--accent)', fontWeight: 600, fontSize: 13, fontFamily: 'inherit', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 3 }}>Why? <Icon name="chevR" size={14} /></button>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        {rows.map((s, i) => (
+        {!rows && <p style={{ fontSize: 13, color: 'var(--ink-3)', margin: '4px 0' }}>{live ? 'No plan yet — prices not available.' : 'Loading…'}</p>}
+        {(rows || []).map((s, i) => (
           <div key={i} className="row" style={{ padding: '11px 0' }}>
             <div className="row-ic" style={{ background: tint[s.kind], color: col[s.kind], borderRadius: 12 }}><Icon name={s.icon} size={19} /></div>
             <div className="row-tx"><b>{s.label}</b><span>{s.sub}</span></div>
@@ -152,9 +163,9 @@ function FlowStrip({ run, live }) {
     ];
   } else {
     items = [
-      { icon: 'sun', v: '2.1 kW', l: 'Solar in', c: 'var(--sun)' },
-      { icon: 'home', v: '0.8 kW', l: 'Home use', c: 'var(--ink-2)' },
-      { icon: 'battery', v: '+1.3 kW', l: 'To battery', c: 'var(--accent)' },
+      { icon: 'sun', v: '0.0 kW', l: 'Solar in', c: 'var(--sun)' },
+      { icon: 'home', v: '0.0 kW', l: 'Home use', c: 'var(--ink-2)' },
+      { icon: 'battery', v: '0.0 kW', l: 'Battery', c: 'var(--accent)' },
     ];
   }
   return (
@@ -191,11 +202,11 @@ function Dashboard({ variant = 'classic', onOpen, run = true }) {
 /* variant A — balanced cards */
 function DashClassic({ onOpen, run, live }) {
   const sv = live?.savings, ses = live?.sessy, sol = live?.solar;
-  const today = useCountUp(sv?.today_eur ?? 1.84, { run, decimals: 2 });
-  const soc = (ses && typeof ses.state_of_charge === 'number') ? Math.round(ses.state_of_charge) : 78;
-  const monthStr = fmtEur(sv?.month_eur, 2) ?? '€38.20';
-  const totalStr = (sv && sv.total_eur != null) ? '€' + Math.round(sv.total_eur) : '€412';
-  const solarStr = (sol && typeof sol.todayKwh === 'number') ? sol.todayKwh.toFixed(1) + ' kWh' : '8.4 kWh';
+  const today = useCountUp(sv?.today_eur ?? 0, { run, decimals: 2 });
+  const soc = (ses && typeof ses.state_of_charge === 'number') ? Math.round(ses.state_of_charge) : 0;
+  const monthStr = fmtEur(sv?.month_eur ?? 0, 2);
+  const totalStr = '€' + Math.round(sv?.total_eur ?? 0);
+  const solarStr = (sol && typeof sol.todayKwh === 'number') ? sol.todayKwh.toFixed(1) + ' kWh' : '0.0 kWh';
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
       <div className="card-accent rise" style={{ padding: 22 }}>
@@ -215,7 +226,7 @@ function DashClassic({ onOpen, run, live }) {
       </div>
       <PriceCard run={run} live={live} />
       <ScheduleCard run={run} live={live} onOpen={() => onOpen('battery')} />
-      <ForecastCard run={run} />
+      <ForecastCard run={run} live={live} />
     </div>
   );
 }
@@ -294,15 +305,32 @@ function DashTimeline({ onOpen, run }) {
   );
 }
 
-function ForecastCard({ run }) {
+function ForecastCard({ run, live }) {
+  const tom = live?.tibber?.tomorrow;
+  const head = (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+      <Icon name="spark" size={18} style={{ color: 'var(--accent)' }} />
+      <b style={{ fontSize: 15.5, fontWeight: 700, color: 'var(--ink)' }}>Tomorrow's forecast</b>
+    </div>
+  );
+  if (!tom || !tom.length) {
+    return (
+      <div className="card card-pad solid rise" style={{ animationDelay: '.28s' }}>
+        {head}
+        <p style={{ fontSize: 14, lineHeight: 1.55, color: 'var(--ink-2)', margin: 0 }}>Tomorrow's prices usually arrive in the afternoon. We'll plan the cheapest window automatically once they're in.</p>
+      </div>
+    );
+  }
+  const vals = tom.map((p) => p.total);
+  let bestStart = 0, best = Infinity;
+  for (let i = 0; i + 4 <= vals.length; i++) { const s = vals.slice(i, i + 4).reduce((a, c) => a + c, 0); if (s < best) { best = s; bestStart = i; } }
+  const pad = (h) => String(h % 24).padStart(2, '0') + ':00';
+  const startH = new Date(tom[bestStart].startsAt).getHours();
   return (
     <div className="card card-pad solid rise" style={{ animationDelay: '.28s' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
-        <Icon name="spark" size={18} style={{ color: 'var(--accent)' }} />
-        <b style={{ fontSize: 15.5, fontWeight: 700, color: 'var(--ink)' }}>Tomorrow's forecast</b>
-      </div>
+      {head}
       <p style={{ fontSize: 14, lineHeight: 1.55, color: 'var(--ink-2)', margin: 0 }}>
-        Sunny, with very cheap power between <b style={{ color: 'var(--ink)' }}>01:00–05:00</b>. We'll fully charge overnight and expect to save about <b style={{ color: 'var(--accent)' }}>€2.10</b>.
+        Cheapest power between <b style={{ color: 'var(--ink)' }}>{pad(startH)}–{pad(startH + 4)}</b>. We'll charge the battery in that window automatically.
       </p>
     </div>
   );
@@ -312,20 +340,16 @@ function ForecastCard({ run }) {
 function BatteryScreen({ run }) {
   const live = useLiveData();
   const ses = live?.sessy, sv = live?.savings;
-  const soc = (ses && typeof ses.state_of_charge === 'number') ? Math.round(ses.state_of_charge) : 78;
+  const soc = (ses && typeof ses.state_of_charge === 'number') ? Math.round(ses.state_of_charge) : 0;
   const cap = 5.0;
   const stored = ((soc / 100) * cap).toFixed(1);
-  const earnedStr = fmtEur(sv?.today_eur, 2) ?? '€1.84';
+  const earnedStr = fmtEur(sv?.today_eur ?? 0, 2);
   const stateLabel = ses
     ? (ses.system_state === 'DISCHARGING' ? 'Discharging to grid'
       : ses.system_state === 'CHARGING' ? 'Charging battery' : 'Idle · optimising')
-    : 'Selling to grid · €0.80/kWh';
-  const log = [
-    { t: '13:40', label: 'Started selling to grid', sub: 'Price €0.80 — above your €0.55 threshold', kind: 'sell', v: '−1.3 kW' },
-    { t: '09:10', label: 'Switched to solar', sub: 'Generation covered the home', kind: 'solar', v: '0 kW' },
-    { t: '04:55', label: 'Finished charging', sub: 'Reached 92% on cheap power', kind: 'charge', v: '+2.4 kW' },
-    { t: '02:00', label: 'Started charging', sub: 'Cheapest 3-hour window', kind: 'charge', v: '+2.4 kW' },
-  ];
+    : 'No battery connected';
+  const actions = (sv?.charge_count ?? 0) + (sv?.discharge_count ?? 0);
+  const log = [];   // echte beslis-log API bestaat nog niet → lege staat tonen
   const tint = { charge: 'var(--accent-tint)', solar: 'var(--sun-tint)', sell: 'color-mix(in srgb,var(--sell) 14%, transparent)' };
   const col = { charge: 'var(--accent-deep)', solar: 'var(--sun)', sell: 'var(--sell)' };
   return (
@@ -338,7 +362,7 @@ function BatteryScreen({ run }) {
         </div>
         <div className="grid2" style={{ marginBottom: 14 }}>
           <div className="rise" style={{ animationDelay: '.1s' }}><Stat k="Earned today" v={earnedStr} d="from this battery" dpos sm /></div>
-          <div className="rise" style={{ animationDelay: '.14s' }}><Stat k="Cycles" v="0.8" d="today · 312 total" dpos sm /></div>
+          <div className="rise" style={{ animationDelay: '.14s' }}><Stat k="Actions today" v={String(actions)} d="charge + sell moves" dpos sm /></div>
         </div>
         <div className="card card-pad solid rise" style={{ animationDelay: '.18s' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
@@ -346,6 +370,7 @@ function BatteryScreen({ run }) {
             <b style={{ fontSize: 16, fontWeight: 700, color: 'var(--ink)' }}>Decision log</b>
             <span style={{ fontSize: 12, color: 'var(--ink-3)', marginLeft: 'auto' }}>Last 30 days</span>
           </div>
+          {!log.length && <p style={{ fontSize: 13, color: 'var(--ink-3)', margin: '4px 0' }}>No activity yet — your battery's moves will show here.</p>}
           {log.map((l, i) => (
             <div key={i} className="row" style={{ padding: '12px 0' }}>
               <div className="row-ic" style={{ background: tint[l.kind], color: col[l.kind], borderRadius: 12 }}><Icon name={l.kind === 'sell' ? 'arrowUR' : l.kind === 'solar' ? 'sun' : 'arrowDn'} size={18} /></div>
@@ -363,38 +388,24 @@ function BatteryScreen({ run }) {
 function SavingsScreen({ run }) {
   const live = useLiveData();
   const sv = live?.savings;
-  const [range, setRange] = useS('30d');
-  const sets = {
-    '7d': [40,55,38,72,60,84,50].map((h,i)=>({h, kind:i===5?'hi':'lo'})),
-    '30d': Array.from({length:14},(_,i)=>({h: 30+Math.round(Math.abs(Math.sin(i*1.1))*60), kind: i%5===0?'hi':'lo'})),
-    '90d': Array.from({length:12},(_,i)=>({h: 35+Math.round(Math.abs(Math.cos(i*0.9))*55), kind: i%4===0?'hi':'lo'})),
-  };
-  const totals = { '7d': '€11.40', '30d': (fmtEur(sv?.month_eur, 2) || '€38.20'), '90d': '€121.60' };
+  const fmt = (n) => (n == null ? '—' : '€' + Number(n).toFixed(2));
   return (
     <div className="screen">
       <div className="screen-scroll">
         <div className="rise" style={{ marginBottom: 16 }}><div className="scr-eyebrow">Insights</div><h1 className="scr-title" style={{ marginTop: 6 }}>Savings</h1></div>
         <div className="grid2 rise" style={{ marginBottom: 14 }}>
-          <Stat k="All-time saved" v={(sv && sv.total_eur != null) ? '€' + Math.round(sv.total_eur) : '€412'} d="since you joined" dpos sm />
-          <Stat k="CO₂ avoided" v="184 kg" d="≈ 9 trees" dpos sm />
+          <Stat k="All-time saved" v={'€' + Math.round(sv?.total_eur ?? 0)} d="since you joined" dpos sm />
+          <Stat k="This month" v={fmt(sv?.month_eur ?? 0)} d="so far" dpos sm />
         </div>
         <div className="card card-pad solid rise" style={{ animationDelay: '.12s', marginBottom: 14 }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-            <div><div className="stat-k">Saved this period</div><div className="num" style={{ fontSize: 28, fontWeight: 700, color: 'var(--ink)', marginTop: 4 }}>{totals[range]}</div></div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+            <div><div className="stat-k">Saved today</div><div className="num" style={{ fontSize: 28, fontWeight: 700, color: 'var(--ink)', marginTop: 4 }}>{fmt(sv?.today_eur ?? 0)}</div></div>
           </div>
-          <Bars data={sets[range]} run={run} key={range} />
-          <div className="seg" style={{ marginTop: 16 }}>
-            {['7d','30d','90d'].map(r => <button key={r} className={range===r?'on':''} onClick={()=>setRange(r)}>{r==='7d'?'7 days':r==='30d'?'30 days':'90 days'}</button>)}
-          </div>
+          <p style={{ fontSize: 13, color: 'var(--ink-3)', margin: 0 }}>The totals above are live. A day-by-day history chart is coming soon.</p>
         </div>
         <div className="card card-pad solid rise" style={{ animationDelay: '.18s' }}>
           <b style={{ fontSize: 16, fontWeight: 700, color: 'var(--ink)', display: 'block', marginBottom: 6 }}>Where it came from</b>
-          {[['Arbitrage (buy low, sell high)', '€226', 55], ['Avoided peak imports', '€121', 29], ['Solar self-use', '€65', 16]].map((r,i)=>(
-            <div key={i} style={{ padding: '12px 0', borderTop: i? '.5px solid var(--line)':'none' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 7 }}><span style={{ fontSize: 14, fontWeight: 600, color: 'var(--ink)' }}>{r[0]}</span><span className="num" style={{ fontSize: 14, fontWeight: 700, color: 'var(--accent)' }}>{r[1]}</span></div>
-              <div style={{ height: 7, borderRadius: 99, background: 'color-mix(in srgb,var(--ink) 7%, transparent)', overflow: 'hidden' }}><div style={{ height: '100%', width: run? r[2]+'%':r[2]+'%', background: 'var(--accent)', borderRadius: 99, transition: 'width 1s ease' }} /></div>
-            </div>
-          ))}
+          <p style={{ fontSize: 13, color: 'var(--ink-3)', margin: '6px 0 0' }}>The breakdown (arbitrage, peak avoidance, solar self-use) appears once your battery has logged some activity.</p>
         </div>
       </div>
     </div>
