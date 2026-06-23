@@ -79,6 +79,10 @@ function App() {
     navSeq.current++;
   };
   const signOut = () => {
+    try {
+      fetch("/api/auth/logout", { method: "POST" });
+    } catch (e) {
+    }
     setStack([]);
     setTab("dashboard");
     setSheet(false);

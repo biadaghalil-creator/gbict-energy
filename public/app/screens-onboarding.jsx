@@ -195,24 +195,32 @@ function AuthScreen({ onAuthed }) {
   const [mode, setMode] = useAuthS('login');     // 'login' | 'signup'
   const [show, setShow] = useAuthS(false);
   const [vals, setVals] = useAuthS({ name: '', email: '', password: '', phone: '', address: '' });
+  const [busy, setBusy] = useAuthS(false);
+  const [err, setErr] = useAuthS('');
   const isSignup = mode === 'signup';
   const set = (k) => (e) => setVals((s) => ({ ...s, [k]: e.target.value }));
 
-  const submit = (e) => {
+  // Echte Supabase-auth (cookie-based via /api/auth/*). Pas bij succes door.
+  const submit = async (e) => {
     if (e) e.preventDefault();
-    const prof = {
-      name: (vals.name || '').trim() || 'Lieke de Vries',
-      email: (vals.email || '').trim(),
-      phone: (vals.phone || '').trim(),
-      address: (vals.address || '').trim(),
-    };
-    if (isSignup || vals.name || vals.email) {
+    const email = (vals.email || '').trim();
+    const password = vals.password || '';
+    if (!email || !password) { setErr('Vul je e-mail en wachtwoord in.'); return; }
+    setErr(''); setBusy(true);
+    try {
+      const res = await fetch('/api/auth/' + (isSignup ? 'signup' : 'login'), {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) { setErr(data.error || 'Er ging iets mis'); setBusy(false); return; }
+      if (isSignup && data.needsConfirm) { setErr('Check je e-mail om je account te bevestigen, log daarna in.'); setBusy(false); return; }
       try {
         const prev = JSON.parse(localStorage.getItem('gbict_profile') || '{}');
-        localStorage.setItem('gbict_profile', JSON.stringify({ ...prev, ...prof }));
-      } catch (err) {}
-    }
-    onAuthed(isSignup);          // signup → onboarding, login → dashboard
+        localStorage.setItem('gbict_profile', JSON.stringify({ ...prev, name: (vals.name || '').trim(), email, phone: (vals.phone || '').trim(), address: (vals.address || '').trim() }));
+      } catch (e2) {}
+      onAuthed(isSignup);          // signup → onboarding, login → dashboard
+    } catch { setErr('Geen verbinding. Probeer opnieuw.'); setBusy(false); }
   };
 
   const copy = isSignup
@@ -286,13 +294,14 @@ function AuthScreen({ onAuthed }) {
               <span style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--accent)', cursor: 'pointer' }}>Forgot?</span>
             </div>
           )}
-          <button type="submit" className="btn btn-primary" style={{ marginTop: 4 }}>{copy.submit}</button>
+          {err && <p style={{ fontSize: 12.5, fontWeight: 600, color: err.indexOf('Check je e-mail') === 0 ? 'var(--accent)' : '#C2702C', margin: '2px 0 0', textAlign: 'center' }}>{err}</p>}
+          <button type="submit" className="btn btn-primary" style={{ marginTop: 4, opacity: busy ? 0.6 : 1 }} disabled={busy}>{busy ? 'Even geduld…' : copy.submit}</button>
         </form>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '18px 0', color: 'var(--ink-3)', fontSize: 12, fontWeight: 600 }}>
           <span style={{ flex: 1, height: 1, background: 'var(--line)' }} />OR<span style={{ flex: 1, height: 1, background: 'var(--line)' }} />
         </div>
-        <button className="btn" style={{ background: 'var(--card)', color: 'var(--ink)', border: '1px solid var(--line)' }} onClick={() => submit()}><Icon name="shield" size={18} /> {copy.sso}</button>
+        <button className="btn" style={{ background: 'var(--card)', color: 'var(--ink)', border: '1px solid var(--line)' }} onClick={() => setErr('iDIN-login komt binnenkort.')}><Icon name="shield" size={18} /> {copy.sso}</button>
         {isSignup && <p style={{ fontSize: 11.5, lineHeight: 1.5, color: 'var(--ink-3)', textAlign: 'center', margin: '14px 0 0' }}>By creating an account you agree to our Terms & Privacy Policy.</p>}
       </div>
     </div>

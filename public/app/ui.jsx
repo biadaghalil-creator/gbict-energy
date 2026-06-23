@@ -214,4 +214,22 @@ function PriceCurve({ points, now = 0.5, run = true }) {
   );
 }
 
-Object.assign(window, { Icon, Mark, useCountUp, StatusBar, Device, Stat, Row, Toggle, Bars, PriceCurve });
+/* ───────────────────────── live data (echte APIs) ───────────────────── */
+// Haalt de echte data op (cookie-auth, same-origin). Geeft null tot geladen,
+// zodat schermen kunnen terugvallen op demo-waarden tot de data binnen is.
+function useLiveData() {
+  const [data, setData] = useState(null);
+  useEffect(() => {
+    let alive = true;
+    const get = (u) => fetch(u, { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null);
+    Promise.all([
+      get('/api/savings'), get('/api/sessy/status'), get('/api/tibber/prices'), get('/api/solar/production'),
+    ]).then(([savings, sessy, tibber, solar]) => {
+      if (alive) setData({ savings, sessy, tibber, solar });
+    });
+    return () => { alive = false; };
+  }, []);
+  return data;
+}
+
+Object.assign(window, { Icon, Mark, useCountUp, useLiveData, StatusBar, Device, Stat, Row, Toggle, Bars, PriceCurve });

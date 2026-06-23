@@ -84,7 +84,10 @@ function App() {
   const back = () => { setDir('pop'); setStack((s) => s.slice(0, -1)); navSeq.current++; };
   const selectTab = (id) => { setDir('tab'); setStack([]); setTab(id); navSeq.current++; };
 
-  const signOut = () => { setStack([]); setTab('dashboard'); setSheet(false); setDir('tab'); setPhase('auth'); navSeq.current++; };
+  const signOut = () => {
+    try { fetch('/api/auth/logout', { method: 'POST' }); } catch (e) {}
+    setStack([]); setTab('dashboard'); setSheet(false); setDir('tab'); setPhase('auth'); navSeq.current++;
+  };
 
   const dockTab = stack.length ? null : tab;
 

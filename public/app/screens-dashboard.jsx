@@ -10,11 +10,39 @@ const SCHEDULE = [
   { t: '17:00–20:00', icon: 'arrowUR', label: 'Sell to grid', sub: 'Peak price · €0.80/kWh', kind: 'sell' },
 ];
 
+/* helpers: format + live-schema → rijen (met demo-fallback bij geen data) */
+function fmtEur(n, d = 2) { return (n == null || isNaN(n)) ? null : '€' + Number(n).toFixed(d); }
+function liveScheduleRows(sched) {
+  if (!sched || !sched.length) return null;
+  const blocks = [];
+  sched.forEach((s) => {
+    const kind = s.action === 'discharge' ? 'sell' : s.action === 'charge' ? 'charge' : 'solar';
+    const last = blocks[blocks.length - 1];
+    if (last && last.kind === kind && s.hour === last.end) { last.end = s.hour + 1; last.prices.push(s.price); }
+    else blocks.push({ kind, start: s.hour, end: s.hour + 1, prices: [s.price] });
+  });
+  const pick = blocks.filter((b) => b.kind !== 'solar');
+  const src = (pick.length ? pick : blocks).slice(0, 3);
+  const pad = (h) => String(h % 24).padStart(2, '0') + ':00';
+  return src.map((b) => {
+    const avg = b.prices.reduce((a, c) => a + c, 0) / b.prices.length;
+    return {
+      kind: b.kind,
+      icon: b.kind === 'charge' ? 'arrowDn' : b.kind === 'sell' ? 'arrowUR' : 'sun',
+      label: b.kind === 'charge' ? 'Charge battery' : b.kind === 'sell' ? 'Sell to grid' : 'Solar + home use',
+      sub: b.kind === 'charge' ? ('Cheapest window · €' + avg.toFixed(2) + '/kWh')
+        : b.kind === 'sell' ? ('Peak price · €' + avg.toFixed(2) + '/kWh') : 'Self-consumption',
+      t: pad(b.start) + '–' + pad(b.end),
+    };
+  });
+}
+
 function Greeting({ onOpen }) {
   let prof = {};
   try { prof = JSON.parse(localStorage.getItem('gbict_profile')) || {}; } catch (e) {}
   const name = (prof.name || 'Lieke de Vries').trim();
-  const home = prof.home || "Lieke's home";
+  const first = name.split(/\s+/)[0] || 'Lieke';
+  const home = prof.home || (first + "'s home");
   const init = (name.split(/\s+/).map(w => w[0]).slice(0, 2).join('') || 'L').toUpperCase();
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 18 }}>
@@ -50,30 +78,45 @@ function Ring({ pct, size = 130, sw = 12, run = true, label = 'charged', center 
   );
 }
 
-function PriceCard({ run }) {
+function PriceCard({ run, live }) {
+  const tib = live?.tibber;
+  const pts = (tib?.today?.length) ? tib.today.map((p) => p.total) : PRICE;
+  const priceNow = (typeof tib?.current === 'number') ? tib.current : null;
+  const avg = pts.reduce((a, c) => a + c, 0) / pts.length;
+  const cur = priceNow != null ? priceNow : 0.42;
+  // positie van "nu" op de curve (0..1) zodat de stip op het juiste uur staat
+  let nowPos = NOW;
+  if (tib?.today?.length) {
+    const idx = tib.today.findIndex((p) => Math.abs(p.total - cur) < 1e-9);
+    nowPos = idx >= 0 ? (idx + 0.5) / tib.today.length : 0.5;
+  }
+  const below = cur <= avg;
+  const lo = pts.indexOf(Math.min(...pts)), hi = pts.indexOf(Math.max(...pts));
+  const pad = (h) => String(h % 24).padStart(2, '0') + ':00';
   return (
     <div className="card card-pad solid rise" style={{ animationDelay: '.16s' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
         <div>
           <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink-2)' }}>Power price today</div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginTop: 3 }}>
-            <span className="num" style={{ fontSize: 24, fontWeight: 700, color: 'var(--ink)' }}>€0.42</span>
+            <span className="num" style={{ fontSize: 24, fontWeight: 700, color: 'var(--ink)' }}>€{cur.toFixed(2)}</span>
             <span style={{ fontSize: 13, color: 'var(--ink-3)' }}>/kWh now</span>
           </div>
         </div>
-        <div className="pill" style={{ background: 'var(--accent-tint)' }}><Icon name="arrowDn" size={14} /> Below average</div>
+        <div className="pill" style={{ background: below ? 'var(--accent-tint)' : 'color-mix(in srgb,var(--sell) 14%, transparent)' }}><Icon name={below ? 'arrowDn' : 'arrowUR'} size={14} /> {below ? 'Below average' : 'Above average'}</div>
       </div>
-      <PriceCurve points={PRICE} now={NOW} run={run} />
+      <PriceCurve points={pts} now={nowPos} run={run} />
       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11.5, color: 'var(--ink-3)', marginTop: 8 }}>
-        <span>00:00</span><span>cheapest 04:00</span><span>peak 18:00</span><span>24:00</span>
+        <span>00:00</span><span>cheapest {pad(lo)}</span><span>peak {pad(hi)}</span><span>24:00</span>
       </div>
     </div>
   );
 }
 
-function ScheduleCard({ run, onOpen }) {
+function ScheduleCard({ run, onOpen, live }) {
   const tint = { charge: 'var(--accent-tint)', solar: 'var(--sun-tint)', sell: 'color-mix(in srgb,var(--sell) 14%, transparent)' };
   const col = { charge: 'var(--accent-deep)', solar: 'var(--sun)', sell: 'var(--sell)' };
+  const rows = liveScheduleRows(live?.tibber?.optimization?.schedule) || SCHEDULE;
   return (
     <div className="card card-pad solid rise" style={{ animationDelay: '.22s' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
@@ -81,7 +124,7 @@ function ScheduleCard({ run, onOpen }) {
         <button onClick={onOpen} style={{ border: 'none', background: 'none', color: 'var(--accent)', fontWeight: 600, fontSize: 13, fontFamily: 'inherit', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 3 }}>Why? <Icon name="chevR" size={14} /></button>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        {SCHEDULE.map((s, i) => (
+        {rows.map((s, i) => (
           <div key={i} className="row" style={{ padding: '11px 0' }}>
             <div className="row-ic" style={{ background: tint[s.kind], color: col[s.kind], borderRadius: 12 }}><Icon name={s.icon} size={19} /></div>
             <div className="row-tx"><b>{s.label}</b><span>{s.sub}</span></div>
@@ -93,13 +136,27 @@ function ScheduleCard({ run, onOpen }) {
   );
 }
 
-function FlowStrip({ run }) {
-  // live energy split: solar → home / battery / grid
-  const items = [
-    { icon: 'sun', v: '2.1 kW', l: 'Solar in', c: 'var(--sun)' },
-    { icon: 'home', v: '0.8 kW', l: 'Home use', c: 'var(--ink-2)' },
-    { icon: 'battery', v: '+1.3 kW', l: 'To battery', c: 'var(--accent)' },
-  ];
+function FlowStrip({ run, live }) {
+  // live energy split: solar → home / battery / grid (echte Sessy-data indien aanwezig)
+  const ses = live?.sessy;
+  const kw = (w) => (Math.abs(w) / 1000).toFixed(1) + ' kW';
+  let items;
+  if (ses) {
+    const solarW = ses.renewable_energy ?? 0;
+    const battW = ses.power ?? 0;            // + = laden, − = ontladen
+    const homeW = Math.max(0, solarW - Math.max(0, battW) - Math.max(0, ses.grid_power ?? 0));
+    items = [
+      { icon: 'sun', v: kw(solarW), l: 'Solar in', c: 'var(--sun)' },
+      { icon: 'home', v: kw(homeW), l: 'Home use', c: 'var(--ink-2)' },
+      { icon: 'battery', v: (battW >= 0 ? '+' : '−') + kw(battW), l: battW >= 0 ? 'To battery' : 'From battery', c: 'var(--accent)' },
+    ];
+  } else {
+    items = [
+      { icon: 'sun', v: '2.1 kW', l: 'Solar in', c: 'var(--sun)' },
+      { icon: 'home', v: '0.8 kW', l: 'Home use', c: 'var(--ink-2)' },
+      { icon: 'battery', v: '+1.3 kW', l: 'To battery', c: 'var(--accent)' },
+    ];
+  }
   return (
     <div className="card solid rise" style={{ animationDelay: '.12s', padding: '16px 8px', display: 'flex' }}>
       {items.map((it, i) => (
@@ -118,21 +175,27 @@ function FlowStrip({ run }) {
 
 /* ════════════════ DASHBOARD — 3 variants ════════════════ */
 function Dashboard({ variant = 'classic', onOpen, run = true }) {
+  const live = useLiveData();
   return (
     <div className="screen">
       <div className="screen-scroll">
         <div className="rise"><Greeting onOpen={onOpen} /></div>
-        {variant === 'classic' && <DashClassic onOpen={onOpen} run={run} />}
-        {variant === 'focus' && <DashFocus onOpen={onOpen} run={run} />}
-        {variant === 'timeline' && <DashTimeline onOpen={onOpen} run={run} />}
+        {variant === 'classic' && <DashClassic onOpen={onOpen} run={run} live={live} />}
+        {variant === 'focus' && <DashFocus onOpen={onOpen} run={run} live={live} />}
+        {variant === 'timeline' && <DashTimeline onOpen={onOpen} run={run} live={live} />}
       </div>
     </div>
   );
 }
 
 /* variant A — balanced cards */
-function DashClassic({ onOpen, run }) {
-  const today = useCountUp(1.84, { run, decimals: 2 });
+function DashClassic({ onOpen, run, live }) {
+  const sv = live?.savings, ses = live?.sessy, sol = live?.solar;
+  const today = useCountUp(sv?.today_eur ?? 1.84, { run, decimals: 2 });
+  const soc = (ses && typeof ses.state_of_charge === 'number') ? Math.round(ses.state_of_charge) : 78;
+  const monthStr = fmtEur(sv?.month_eur, 2) ?? '€38.20';
+  const totalStr = (sv && sv.total_eur != null) ? '€' + Math.round(sv.total_eur) : '€412';
+  const solarStr = (sol && typeof sol.todayKwh === 'number') ? sol.todayKwh.toFixed(1) + ' kWh' : '8.4 kWh';
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
       <div className="card-accent rise" style={{ padding: 22 }}>
@@ -140,18 +203,18 @@ function DashClassic({ onOpen, run }) {
           <div>
             <div style={{ fontSize: 13, fontWeight: 600, opacity: .85 }}>Saved today</div>
             <div className="num" style={{ fontSize: 42, fontWeight: 700, letterSpacing: '-.03em', margin: '4px 0' }}>€{today}</div>
-            <div style={{ fontSize: 13, opacity: .85 }}>€38.20 this month · €412 all-time</div>
+            <div style={{ fontSize: 13, opacity: .85 }}>{monthStr} this month · {totalStr} all-time</div>
           </div>
-          <Ring pct={78} size={86} sw={9} run={run} center={<><Icon name="battery" size={20} style={{ color: '#fff' }} /><div className="num" style={{ fontSize: 16, fontWeight: 700, marginTop: 3 }}>78%</div></>} />
+          <Ring pct={soc} size={86} sw={9} run={run} center={<><Icon name="battery" size={20} style={{ color: '#fff' }} /><div className="num" style={{ fontSize: 16, fontWeight: 700, marginTop: 3 }}>{soc}%</div></>} />
         </div>
       </div>
-      <FlowStrip run={run} />
+      <FlowStrip run={run} live={live} />
       <div className="grid2">
-        <div className="rise" style={{ animationDelay: '.14s' }} onClick={() => onOpen('savings')}><Stat k="This month" v="€38.20" d="↑ 12% vs last" dpos sm /></div>
-        <div className="rise" style={{ animationDelay: '.18s' }} onClick={() => onOpen('battery')}><Stat k="Solar today" v="8.4 kWh" d="3.1 kWh stored" dpos sm /></div>
+        <div className="rise" style={{ animationDelay: '.14s' }} onClick={() => onOpen('savings')}><Stat k="This month" v={monthStr} d="saved so far" dpos sm /></div>
+        <div className="rise" style={{ animationDelay: '.18s' }} onClick={() => onOpen('battery')}><Stat k="Solar today" v={solarStr} d="generated" dpos sm /></div>
       </div>
-      <PriceCard run={run} />
-      <ScheduleCard run={run} onOpen={() => onOpen('battery')} />
+      <PriceCard run={run} live={live} />
+      <ScheduleCard run={run} live={live} onOpen={() => onOpen('battery')} />
       <ForecastCard run={run} />
     </div>
   );
@@ -247,6 +310,16 @@ function ForecastCard({ run }) {
 
 /* ════════════════ BATTERY DETAIL ════════════════ */
 function BatteryScreen({ run }) {
+  const live = useLiveData();
+  const ses = live?.sessy, sv = live?.savings;
+  const soc = (ses && typeof ses.state_of_charge === 'number') ? Math.round(ses.state_of_charge) : 78;
+  const cap = 5.0;
+  const stored = ((soc / 100) * cap).toFixed(1);
+  const earnedStr = fmtEur(sv?.today_eur, 2) ?? '€1.84';
+  const stateLabel = ses
+    ? (ses.system_state === 'DISCHARGING' ? 'Discharging to grid'
+      : ses.system_state === 'CHARGING' ? 'Charging battery' : 'Idle · optimising')
+    : 'Selling to grid · €0.80/kWh';
   const log = [
     { t: '13:40', label: 'Started selling to grid', sub: 'Price €0.80 — above your €0.55 threshold', kind: 'sell', v: '−1.3 kW' },
     { t: '09:10', label: 'Switched to solar', sub: 'Generation covered the home', kind: 'solar', v: '0 kW' },
@@ -260,11 +333,11 @@ function BatteryScreen({ run }) {
       <div className="screen-scroll">
         <div className="rise" style={{ marginBottom: 16 }}><div className="scr-eyebrow">Device</div><h1 className="scr-title" style={{ marginTop: 6 }}>Battery</h1></div>
         <div className="card solid rise" style={{ padding: 24, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, marginBottom: 14 }}>
-          <Ring pct={78} size={160} sw={14} run={run} center={<><div className="num" style={{ fontSize: 42, fontWeight: 700, color: 'var(--ink)', letterSpacing: '-.02em' }}>78%</div><div style={{ fontSize: 13, color: 'var(--ink-3)' }}>3.9 / 5.0 kWh</div></>} />
-          <div className="pill live" style={{ marginTop: 6 }}>Selling to grid · €0.80/kWh</div>
+          <Ring pct={soc} size={160} sw={14} run={run} center={<><div className="num" style={{ fontSize: 42, fontWeight: 700, color: 'var(--ink)', letterSpacing: '-.02em' }}>{soc}%</div><div style={{ fontSize: 13, color: 'var(--ink-3)' }}>{stored} / {cap.toFixed(1)} kWh</div></>} />
+          <div className="pill live" style={{ marginTop: 6 }}>{stateLabel}</div>
         </div>
         <div className="grid2" style={{ marginBottom: 14 }}>
-          <div className="rise" style={{ animationDelay: '.1s' }}><Stat k="Earned today" v="€1.84" d="from this battery" dpos sm /></div>
+          <div className="rise" style={{ animationDelay: '.1s' }}><Stat k="Earned today" v={earnedStr} d="from this battery" dpos sm /></div>
           <div className="rise" style={{ animationDelay: '.14s' }}><Stat k="Cycles" v="0.8" d="today · 312 total" dpos sm /></div>
         </div>
         <div className="card card-pad solid rise" style={{ animationDelay: '.18s' }}>
@@ -288,19 +361,21 @@ function BatteryScreen({ run }) {
 
 /* ════════════════ SAVINGS ════════════════ */
 function SavingsScreen({ run }) {
+  const live = useLiveData();
+  const sv = live?.savings;
   const [range, setRange] = useS('30d');
   const sets = {
     '7d': [40,55,38,72,60,84,50].map((h,i)=>({h, kind:i===5?'hi':'lo'})),
     '30d': Array.from({length:14},(_,i)=>({h: 30+Math.round(Math.abs(Math.sin(i*1.1))*60), kind: i%5===0?'hi':'lo'})),
     '90d': Array.from({length:12},(_,i)=>({h: 35+Math.round(Math.abs(Math.cos(i*0.9))*55), kind: i%4===0?'hi':'lo'})),
   };
-  const totals = { '7d': '€11.40', '30d': '€38.20', '90d': '€121.60' };
+  const totals = { '7d': '€11.40', '30d': (fmtEur(sv?.month_eur, 2) || '€38.20'), '90d': '€121.60' };
   return (
     <div className="screen">
       <div className="screen-scroll">
         <div className="rise" style={{ marginBottom: 16 }}><div className="scr-eyebrow">Insights</div><h1 className="scr-title" style={{ marginTop: 6 }}>Savings</h1></div>
         <div className="grid2 rise" style={{ marginBottom: 14 }}>
-          <Stat k="All-time saved" v="€412" d="since March" dpos sm />
+          <Stat k="All-time saved" v={(sv && sv.total_eur != null) ? '€' + Math.round(sv.total_eur) : '€412'} d="since you joined" dpos sm />
           <Stat k="CO₂ avoided" v="184 kg" d="≈ 9 trees" dpos sm />
         </div>
         <div className="card card-pad solid rise" style={{ animationDelay: '.12s', marginBottom: 14 }}>

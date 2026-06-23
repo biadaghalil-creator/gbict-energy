@@ -160,4 +160,23 @@ function PriceCurve({ points, now = 0.5, run = true }) {
   }, [run]);
   return /* @__PURE__ */ React.createElement("svg", { viewBox: `0 0 ${W} ${H}`, width: "100%", height: H, className: "price-track", preserveAspectRatio: "none" }, /* @__PURE__ */ React.createElement("defs", null, /* @__PURE__ */ React.createElement("linearGradient", { id: "pcFill", x1: "0", y1: "0", x2: "0", y2: "1" }, /* @__PURE__ */ React.createElement("stop", { offset: "0", stopColor: "var(--accent)", stopOpacity: ".22" }), /* @__PURE__ */ React.createElement("stop", { offset: "1", stopColor: "var(--accent)", stopOpacity: "0" }))), /* @__PURE__ */ React.createElement("path", { d: area, fill: "url(#pcFill)" }), /* @__PURE__ */ React.createElement("path", { ref, d, fill: "none", stroke: "var(--accent)", strokeWidth: "2.4", strokeLinecap: "round" }), /* @__PURE__ */ React.createElement("line", { x1: nowX, y1: "2", x2: nowX, y2: H - 2, stroke: "var(--ink-3)", strokeWidth: "1", strokeDasharray: "3 3", opacity: ".5" }), /* @__PURE__ */ React.createElement("circle", { className: "price-now-dot", cx: nowX, cy: nowY, r: "5.5", fill: "var(--accent)", stroke: "var(--card)", strokeWidth: "2.5" }));
 }
-Object.assign(window, { Icon, Mark, useCountUp, StatusBar, Device, Stat, Row, Toggle, Bars, PriceCurve });
+function useLiveData() {
+  const [data, setData] = useState(null);
+  useEffect(() => {
+    let alive = true;
+    const get = (u) => fetch(u, { cache: "no-store" }).then((r) => r.ok ? r.json() : null).catch(() => null);
+    Promise.all([
+      get("/api/savings"),
+      get("/api/sessy/status"),
+      get("/api/tibber/prices"),
+      get("/api/solar/production")
+    ]).then(([savings, sessy, tibber, solar]) => {
+      if (alive) setData({ savings, sessy, tibber, solar });
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
+  return data;
+}
+Object.assign(window, { Icon, Mark, useCountUp, useLiveData, StatusBar, Device, Stat, Row, Toggle, Bars, PriceCurve });
