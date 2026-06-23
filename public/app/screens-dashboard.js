@@ -6,8 +6,16 @@ const SCHEDULE = [
   { t: "07:00\u201309:00", icon: "sun", label: "Solar + home use", sub: "Self-consumption", kind: "solar" },
   { t: "17:00\u201320:00", icon: "arrowUR", label: "Sell to grid", sub: "Peak price \xB7 \u20AC0.80/kWh", kind: "sell" }
 ];
-function Greeting() {
-  return /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 18 } }, /* @__PURE__ */ React.createElement("div", { style: { minWidth: 0, flex: "0 1 auto" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 14, color: "var(--ink-2)", fontWeight: 500 } }, "Good afternoon"), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 22, fontWeight: 700, color: "var(--ink)", letterSpacing: "-.02em", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, "Lieke's home")), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, flex: "none" } }, /* @__PURE__ */ React.createElement("div", { className: "pill live" }, "Optimising"), /* @__PURE__ */ React.createElement("div", { style: { width: 42, height: 42, borderRadius: "50%", background: "var(--accent)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 16 } }, "L")));
+function Greeting({ onOpen }) {
+  let prof = {};
+  try {
+    prof = JSON.parse(localStorage.getItem("gbict_profile")) || {};
+  } catch (e) {
+  }
+  const name = (prof.name || "Lieke de Vries").trim();
+  const home = prof.home || "Lieke's home";
+  const init = (name.split(/\s+/).map((w) => w[0]).slice(0, 2).join("") || "L").toUpperCase();
+  return /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 18 } }, /* @__PURE__ */ React.createElement("div", { style: { minWidth: 0, flex: "0 1 auto" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 14, color: "var(--ink-2)", fontWeight: 500 } }, "Good afternoon"), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 22, fontWeight: 700, color: "var(--ink)", letterSpacing: "-.02em", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, home)), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, flex: "none" } }, /* @__PURE__ */ React.createElement("div", { className: "pill live" }, "Optimising"), /* @__PURE__ */ React.createElement("button", { onClick: () => onOpen && onOpen("profile"), "aria-label": "Edit profile", style: { width: 42, height: 42, borderRadius: "50%", background: "var(--accent)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 16, border: "none", cursor: "pointer", fontFamily: "inherit" } }, init)));
 }
 function Ring({ pct, size = 130, sw = 12, run = true, label = "charged", center }) {
   const r = (size - sw) / 2, C = 2 * Math.PI * r;
@@ -46,7 +54,7 @@ function FlowStrip({ run }) {
   return /* @__PURE__ */ React.createElement("div", { className: "card solid rise", style: { animationDelay: ".12s", padding: "16px 8px", display: "flex" } }, items.map((it, i) => /* @__PURE__ */ React.createElement(React.Fragment, { key: i }, i > 0 && /* @__PURE__ */ React.createElement("div", { style: { width: ".5px", background: "var(--line)", margin: "2px 0" } }), /* @__PURE__ */ React.createElement("div", { style: { flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 5 } }, /* @__PURE__ */ React.createElement("div", { style: { color: it.c } }, /* @__PURE__ */ React.createElement(Icon, { name: it.icon, size: 22 })), /* @__PURE__ */ React.createElement("div", { className: "num", style: { fontSize: 16, fontWeight: 700, color: "var(--ink)" } }, it.v), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 11.5, color: "var(--ink-3)" } }, it.l)))));
 }
 function Dashboard({ variant = "classic", onOpen, run = true }) {
-  return /* @__PURE__ */ React.createElement("div", { className: "screen" }, /* @__PURE__ */ React.createElement("div", { className: "screen-scroll" }, /* @__PURE__ */ React.createElement("div", { className: "rise" }, /* @__PURE__ */ React.createElement(Greeting, null)), variant === "classic" && /* @__PURE__ */ React.createElement(DashClassic, { onOpen, run }), variant === "focus" && /* @__PURE__ */ React.createElement(DashFocus, { onOpen, run }), variant === "timeline" && /* @__PURE__ */ React.createElement(DashTimeline, { onOpen, run })));
+  return /* @__PURE__ */ React.createElement("div", { className: "screen" }, /* @__PURE__ */ React.createElement("div", { className: "screen-scroll" }, /* @__PURE__ */ React.createElement("div", { className: "rise" }, /* @__PURE__ */ React.createElement(Greeting, { onOpen })), variant === "classic" && /* @__PURE__ */ React.createElement(DashClassic, { onOpen, run }), variant === "focus" && /* @__PURE__ */ React.createElement(DashFocus, { onOpen, run }), variant === "timeline" && /* @__PURE__ */ React.createElement(DashTimeline, { onOpen, run })));
 }
 function DashClassic({ onOpen, run }) {
   const today = useCountUp(1.84, { run, decimals: 2 });

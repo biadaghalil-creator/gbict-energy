@@ -57,7 +57,7 @@ function OnbWelcome({ onNext, onLogin }) {
           Connect your battery, solar and dynamic contract. We charge when power is cheap, sell when it's dear — automatically.
         </p>
         <div className="rise" style={{ display: 'flex', gap: 22, animationDelay: '.28s' }}>
-          {[['€420', 'saved / yr*'], ['100%', 'hands-off'], ['2 min', 'to set up']].map((s, i) => (
+          {[['€340', 'saved / yr*'], ['100%', 'hands-off'], ['2 min', 'to set up']].map((s, i) => (
             <div key={i}>
               <div className="num" style={{ fontSize: 22, fontWeight: 700, color: 'var(--ink)', letterSpacing: '-.02em' }}>{s[0]}</div>
               <div style={{ fontSize: 12.5, color: 'var(--ink-3)', marginTop: 2 }}>{s[1]}</div>
@@ -188,3 +188,99 @@ function OnbDone({ picks, onDone }) {
 }
 
 Object.assign(window, { Onboarding });
+
+/* ════════════════ AUTH — in-app sign in / create account ════════════════ */
+const { useState: useAuthS } = React;
+
+function AuthScreen({ onAuthed }) {
+  const [mode, setMode] = useAuthS('login');     // 'login' | 'signup'
+  const [show, setShow] = useAuthS(false);
+  const [vals, setVals] = useAuthS({ name: '', email: '', password: '' });
+  const isSignup = mode === 'signup';
+  const set = (k) => (e) => setVals((s) => ({ ...s, [k]: e.target.value }));
+
+  const submit = (e) => {
+    if (e) e.preventDefault();
+    const prof = { name: (vals.name || '').trim() || 'Lieke de Vries', email: (vals.email || '').trim() };
+    if (isSignup || vals.name || vals.email) {
+      try {
+        const prev = JSON.parse(localStorage.getItem('gbict_profile') || '{}');
+        localStorage.setItem('gbict_profile', JSON.stringify({ ...prev, ...prof }));
+      } catch (err) {}
+    }
+    onAuthed(isSignup);          // signup → onboarding, login → dashboard
+  };
+
+  const copy = isSignup
+    ? { heading: 'Start saving.', sub: 'Create your account — it takes a minute.', submit: 'Create account', sso: 'Sign up with iDIN' }
+    : { heading: 'Welcome back.', sub: 'Sign in and pick up where your home left off.', submit: 'Sign in', sso: 'Continue with iDIN' };
+
+  const inputWrap = { position: 'relative' };
+  const inputStyle = { width: '100%', height: 50, borderRadius: 13, border: '1px solid var(--line)', background: 'var(--card-2)', padding: '0 14px 0 42px', fontSize: 15, color: 'var(--ink)', outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box' };
+  const leadIc = { position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'var(--ink-3)', pointerEvents: 'none', display: 'flex' };
+  const lab = { fontSize: 12.5, fontWeight: 600, color: 'var(--ink-2)', marginBottom: 6, display: 'block' };
+
+  return (
+    <div className="screen" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      {/* forest hero */}
+      <div style={{ position: 'relative', flex: 'none', height: 312, padding: '84px 30px 0', color: '#fff', overflow: 'hidden', background: 'linear-gradient(160deg,var(--accent) 0%,var(--accent-deep) 100%)' }}>
+        <div style={{ position: 'absolute', right: -90, top: -120, width: 320, height: 320, borderRadius: '50%', background: 'radial-gradient(circle,rgba(255,255,255,.16),transparent 64%)', pointerEvents: 'none' }} />
+        <div style={{ position: 'relative', zIndex: 2, height: 60, display: 'flex', alignItems: 'center' }}>
+          {(typeof window !== 'undefined' && window.LOGO_SRC)
+            ? <img src={window.LOGO_SRC} alt="GBICT Energy" style={{ height: 60, width: 'auto', display: 'block', filter: 'drop-shadow(0 8px 18px rgba(0,0,0,.28))' }} />
+            : <div style={{ width: 56, height: 56, borderRadius: 16, background: 'rgba(255,255,255,.16)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 20px rgba(0,0,0,.3)' }}><Mark size={32} color="#fff" /></div>}
+        </div>
+        <h1 style={{ position: 'relative', zIndex: 2, fontSize: 30, fontWeight: 700, letterSpacing: '-.03em', lineHeight: 1.12, margin: '22px 0 8px' }}>{copy.heading}</h1>
+        <p style={{ position: 'relative', zIndex: 2, fontSize: 14.5, lineHeight: 1.5, color: 'rgba(255,255,255,.82)', margin: 0, maxWidth: 280 }}>{copy.sub}</p>
+      </div>
+
+      {/* rising sheet */}
+      <div style={{ position: 'relative', zIndex: 6, flex: 1, marginTop: -30, background: 'var(--card)', borderRadius: '30px 30px 0 0', padding: '22px 26px 30px', boxShadow: '0 -18px 50px rgba(33,29,22,.16)', overflowY: 'auto' }}>
+        <div style={{ width: 42, height: 5, borderRadius: 99, background: 'color-mix(in srgb,var(--ink) 14%,transparent)', margin: '0 auto 18px' }} />
+
+        {/* tabs */}
+        <div style={{ display: 'flex', gap: 4, padding: 5, borderRadius: 15, background: 'color-mix(in srgb,var(--ink) 6%,transparent)', marginBottom: 20 }}>
+          {[['login', 'Sign in'], ['signup', 'Create account']].map(([m, t]) => (
+            <button key={m} onClick={() => setMode(m)} style={{ flex: 1, border: 'none', height: 42, borderRadius: 11, fontSize: 14, fontWeight: 650, cursor: 'pointer', fontFamily: 'inherit', transition: '.18s', background: mode === m ? 'var(--card)' : 'transparent', color: mode === m ? 'var(--ink)' : 'var(--ink-2)', boxShadow: mode === m ? '0 1px 3px rgba(33,29,22,.12)' : 'none' }}>{t}</button>
+          ))}
+        </div>
+
+        <form onSubmit={submit} style={{ display: 'flex', flexDirection: 'column', gap: 13 }} autoComplete="off">
+          {isSignup && (
+            <div>
+              <label style={lab}>Full name</label>
+              <div style={inputWrap}><span style={leadIc}><Icon name="user" size={18} /></span><input style={inputStyle} type="text" placeholder="Lieke de Vries" value={vals.name} onChange={set('name')} /></div>
+            </div>
+          )}
+          <div>
+            <label style={lab}>Email</label>
+            <div style={inputWrap}><span style={leadIc}><Icon name="mail" size={18} /></span><input style={inputStyle} type="email" placeholder="you@home.nl" value={vals.email} onChange={set('email')} /></div>
+          </div>
+          <div>
+            <label style={lab}>Password</label>
+            <div style={inputWrap}>
+              <span style={leadIc}><Icon name="lock" size={18} /></span>
+              <input style={inputStyle} type={show ? 'text' : 'password'} placeholder="••••••••" value={vals.password} onChange={set('password')} />
+              <span onClick={() => setShow((s) => !s)} style={{ position: 'absolute', right: 13, top: '50%', transform: 'translateY(-50%)', color: 'var(--ink-3)', cursor: 'pointer', display: 'flex' }}><Icon name={show ? 'eyeOff' : 'eye'} size={18} /></span>
+            </div>
+          </div>
+          {!isSignup && (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 12.5, color: 'var(--ink-2)', cursor: 'pointer' }}><input type="checkbox" defaultChecked style={{ width: 16, height: 16, accentColor: 'var(--accent)' }} /> Stay signed in</label>
+              <span style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--accent)', cursor: 'pointer' }}>Forgot?</span>
+            </div>
+          )}
+          <button type="submit" className="btn btn-primary" style={{ marginTop: 4 }}>{copy.submit}</button>
+        </form>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '18px 0', color: 'var(--ink-3)', fontSize: 12, fontWeight: 600 }}>
+          <span style={{ flex: 1, height: 1, background: 'var(--line)' }} />OR<span style={{ flex: 1, height: 1, background: 'var(--line)' }} />
+        </div>
+        <button className="btn" style={{ background: 'var(--card)', color: 'var(--ink)', border: '1px solid var(--line)' }} onClick={() => submit()}><Icon name="shield" size={18} /> {copy.sso}</button>
+        {isSignup && <p style={{ fontSize: 11.5, lineHeight: 1.5, color: 'var(--ink-3)', textAlign: 'center', margin: '14px 0 0' }}>By creating an account you agree to our Terms & Privacy Policy.</p>}
+      </div>
+    </div>
+  );
+}
+
+Object.assign(window, { AuthScreen });

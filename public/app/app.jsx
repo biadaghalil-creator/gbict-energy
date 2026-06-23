@@ -50,7 +50,7 @@ function App() {
     ? { main: accDef.darkAcc, deep: accDef.darkAcc, rgb: accDef.darkRgb, tint: 'color-mix(in srgb,' + accDef.darkAcc + ' 16%, transparent)' }
     : { main: accHex, deep: accDef.deep, rgb: accDef.rgb, tint: accDef.tint };
 
-  const [booted, setBooted] = useA(false);   // onboarding done?
+  const [phase, setPhase] = useA('auth');       // 'auth' | 'onboarding' | 'app'
   const [tab, setTab] = useA('dashboard');
   const [stack, setStack] = useA([]);          // pushed sub-screens
   const [dir, setDir] = useA('tab');           // push | pop | tab
@@ -84,6 +84,8 @@ function App() {
   const back = () => { setDir('pop'); setStack((s) => s.slice(0, -1)); navSeq.current++; };
   const selectTab = (id) => { setDir('tab'); setStack([]); setTab(id); navSeq.current++; };
 
+  const signOut = () => { setStack([]); setTab('dashboard'); setSheet(false); setDir('tab'); setPhase('auth'); navSeq.current++; };
+
   const dockTab = stack.length ? null : tab;
 
   const renderScreen = () => {
@@ -92,7 +94,8 @@ function App() {
       case 'battery': return <BatteryScreen run={animOn} />;
       case 'savings': return <SavingsScreen run={animOn} />;
       case 'connections': return <ConnectionsScreen onAdd={() => setSheet(true)} />;
-      case 'account': return <AccountScreen dark={dark} onToggleDark={(v) => setTweak('dark', v)} onOpen={open} />;
+      case 'account': return <AccountScreen dark={dark} onToggleDark={(v) => setTweak('dark', v)} onOpen={open} onSignOut={signOut} />;
+      case 'profile': return <ProfileScreen />;
       case 'vpp': return <VPPScreen run={animOn} />;
       case 'referral': return <ReferralScreen />;
       case 'activity': return <ActivityScreen />;
@@ -102,7 +105,7 @@ function App() {
 
   const dirClass = dir === 'push' ? 'scr-push' : dir === 'pop' ? 'scr-pop' : 'scr-tab';
 
-  // Volledig scherm: alleen de app zelf (geen showcase-canvas, geen nep-
+  // Schermvullend: alleen de app zelf (geen showcase-canvas, geen nep-
   // telefoonframe, geen tweaks-paneel). De echte iPhone levert de statusbalk.
   return (
     <div className={'theme ' + (dark ? 'dark' : 'light') + (animOn ? ' anim-on' : '')}
@@ -110,20 +113,25 @@ function App() {
                   position: 'fixed', inset: 0, background: 'var(--bg)', color: 'var(--ink)', overflow: 'hidden',
                   fontFamily: "'Satoshi', -apple-system, system-ui, sans-serif", WebkitFontSmoothing: 'antialiased' }}>
       <canvas ref={flowCv} className="flow-bg" />
-      {!booted ? (
-        <div key="onb" className={dirClass} style={{ position: 'absolute', inset: 0, zIndex: 5 }}>
-          <Onboarding onDone={() => { setBooted(true); setDir('tab'); }} onLogin={() => { setBooted(true); setDir('tab'); }} />
+      {phase === 'auth' && (
+        <div key={'auth' + navSeq.current} className="scr-tab" style={{ position: 'absolute', inset: 0, zIndex: 5 }}>
+          <AuthScreen onAuthed={(isSignup) => { setDir('tab'); navSeq.current++; setPhase(isSignup ? 'onboarding' : 'app'); }} />
         </div>
-      ) : (
-        <>
-          <div key={current + navSeq.current} className={dirClass + (stack.length ? ' pushed' : '')} style={{ position: 'absolute', inset: 0, zIndex: 5 }}>
-            {stack.length > 0 && <button className="backorb" onClick={back}><Icon name="chevL" size={20} /></button>}
-            {renderScreen()}
-          </div>
-          {dockTab && <Dock tab={dockTab} onSelect={selectTab} />}
-          {sheet && <AddSheet onClose={() => setSheet(false)} />}
-        </>
       )}
+      {phase === 'onboarding' && (
+        <div key={'onb' + navSeq.current} className="scr-tab" style={{ position: 'absolute', inset: 0, zIndex: 5 }}>
+          <Onboarding onDone={() => { setDir('tab'); setTab('dashboard'); navSeq.current++; setPhase('app'); }}
+                      onLogin={() => { setDir('tab'); navSeq.current++; setPhase('app'); }} />
+        </div>
+      )}
+      {phase === 'app' && (
+        <div key={current + navSeq.current} className={dirClass + (stack.length ? ' pushed' : '')} style={{ position: 'absolute', inset: 0, zIndex: 5 }}>
+          {stack.length > 0 && <button className="backorb" onClick={back}><Icon name="chevL" size={20} /></button>}
+          {renderScreen()}
+        </div>
+      )}
+      {phase === 'app' && dockTab && <Dock tab={dockTab} onSelect={selectTab} />}
+      {phase === 'app' && sheet && <AddSheet onClose={() => setSheet(false)} />}
     </div>
   );
 }

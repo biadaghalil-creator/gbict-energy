@@ -5,17 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>GBICT Energy</title>
 <link rel="preconnect" href="https://api.fontshare.com" />
-<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700&display=swap" rel="stylesheet" />
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700,900&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="theme.css" />
 </head>
 <body>
 <div id="root"></div>
 
-<!-- React (production UMD, no SRI) -->
+<!-- React (production UMD, no SRI — reliable in the iOS webview) -->
 <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
 
-<!-- Pre-compiled design app (esbuild classic JSX) -->
+<!-- logo + energy-flow + pre-compiled design (esbuild classic JSX, no in-browser babel) -->
+<script src="logo-data.js"></script>
 <script src="flow.js"></script>
 <script src="tweaks-panel.js"></script>
 <script src="ui.js"></script>

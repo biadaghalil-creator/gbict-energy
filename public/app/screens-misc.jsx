@@ -2,19 +2,23 @@
 const { useState: useM } = React;
 
 /* ════════════════ ACCOUNT / SETTINGS ════════════════ */
-function AccountScreen({ dark, onToggleDark, onOpen }) {
+function AccountScreen({ dark, onToggleDark, onOpen, onSignOut }) {
   const [auto, setAuto] = useM(true);
   const [mode, setMode] = useM('savings');
   const [notif, setNotif] = useM(true);
+  let prof = {};
+  try { prof = JSON.parse(localStorage.getItem('gbict_profile')) || {}; } catch (e) {}
+  const pname = (prof.name || 'Lieke de Vries').trim();
+  const pinit = (pname.split(/\s+/).map(w => w[0]).slice(0, 2).join('') || 'L').toUpperCase();
   return (
     <div className="screen">
       <div className="screen-scroll">
         <div className="rise" style={{ marginBottom: 18 }}><div className="scr-eyebrow">Account</div><h1 className="scr-title" style={{ marginTop: 6 }}>You</h1></div>
 
-        <div className="card-accent rise" style={{ padding: 20, display: 'flex', alignItems: 'center', gap: 16, marginBottom: 16 }}>
-          <div style={{ width: 54, height: 54, borderRadius: '50%', background: 'rgba(255,255,255,.22)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, fontWeight: 700 }}>L</div>
+        <div className="card-accent rise" onClick={() => onOpen('profile')} style={{ padding: 20, display: 'flex', alignItems: 'center', gap: 16, marginBottom: 16, cursor: 'pointer' }}>
+          <div style={{ width: 54, height: 54, borderRadius: '50%', background: 'rgba(255,255,255,.22)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, fontWeight: 700 }}>{pinit}</div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 18, fontWeight: 700 }}>Lieke de Vries</div>
+            <div style={{ fontSize: 18, fontWeight: 700 }}>{pname}</div>
             <div style={{ fontSize: 13, opacity: .85, marginTop: 2 }}>Pro plan · member since March</div>
           </div>
           <Icon name="chevR" size={20} />
@@ -60,6 +64,10 @@ function AccountScreen({ dark, onToggleDark, onOpen }) {
             <Toggle on={notif} onChange={setNotif} />
           </div>
         </div>
+
+        <button className="btn btn-ghost rise" style={{ animationDelay: '.26s', marginTop: 16, color: 'var(--sell)' }} onClick={() => { if (onSignOut) onSignOut(); }}>
+          <Icon name="power" size={18} /> Sign out
+        </button>
       </div>
     </div>
   );
@@ -208,4 +216,54 @@ function AddSheet({ onClose }) {
   );
 }
 
-Object.assign(window, { AccountScreen, ActivityScreen, VPPScreen, ReferralScreen, AddSheet });
+/* ════════════════ EDIT PROFILE ════════════════ */
+function ProfileScreen() {
+  const load = () => { try { return JSON.parse(localStorage.getItem('gbict_profile')) || {}; } catch (e) { return {}; } };
+  const [p, setP] = useM(load);
+  const [saved, setSaved] = useM(false);
+  const v = (k, d) => (p[k] !== undefined ? p[k] : (d || ''));
+  const set = (k) => (e) => { setP((s) => ({ ...s, [k]: e.target.value })); setSaved(false); };
+  const save = () => { localStorage.setItem('gbict_profile', JSON.stringify(p)); setSaved(true); setTimeout(() => setSaved(false), 2000); };
+  const name = v('name', 'Lieke de Vries').trim();
+  const init = (name.split(/\s+/).map((w) => w[0]).slice(0, 2).join('') || 'L').toUpperCase();
+  const inp = { width: '100%', height: 50, borderRadius: 13, border: '1px solid var(--line)', background: 'var(--card)', padding: '0 14px', fontSize: 15, color: 'var(--ink)', fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box' };
+  const lab = { fontSize: 12.5, fontWeight: 600, color: 'var(--ink-2)', display: 'block', marginBottom: 6 };
+  const Field = ({ label, k, def, type, ph }) => (
+    <div style={{ marginBottom: 14 }}>
+      <label style={lab}>{label}</label>
+      <input style={inp} type={type || 'text'} value={v(k, def)} placeholder={ph || ''} onChange={set(k)} />
+    </div>
+  );
+  return (
+    <div className="screen">
+      <div className="screen-scroll">
+        <div className="rise" style={{ marginBottom: 18 }}><div className="scr-eyebrow">Account</div><h1 className="scr-title" style={{ marginTop: 6 }}>Edit profile</h1></div>
+
+        <div className="rise" style={{ display: 'flex', justifyContent: 'center', marginBottom: 22 }}>
+          <div style={{ position: 'relative', width: 92, height: 92 }}>
+            <div style={{ width: 92, height: 92, borderRadius: '50%', background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 34, fontWeight: 700 }}>{init}</div>
+            <button style={{ position: 'absolute', right: -2, bottom: -2, width: 32, height: 32, borderRadius: '50%', background: 'var(--card)', border: '1px solid var(--line)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--ink-2)', cursor: 'pointer' }}><Icon name="plus" size={17} /></button>
+          </div>
+        </div>
+
+        <div className="card solid card-pad rise" style={{ animationDelay: '.08s' }}>
+          <Field label="Full name" k="name" def="Lieke de Vries" />
+          <Field label="Email" k="email" type="email" ph="you@home.nl" />
+          <Field label="Phone number" k="phone" type="tel" ph="+31 6 1234 5678" />
+          <Field label="Home name" k="home" ph="Lieke's home" />
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.3fr', gap: 10 }}>
+            <div><label style={lab}>Postcode</label><input style={inp} value={v('post')} placeholder="1011 AB" onChange={set('post')} /></div>
+            <div><label style={lab}>City</label><input style={inp} value={v('city')} placeholder="Amsterdam" onChange={set('city')} /></div>
+          </div>
+        </div>
+
+        <button className="btn btn-primary rise" style={{ marginTop: 16, animationDelay: '.14s' }} onClick={save}>
+          {saved ? <><Icon name="check" size={19} /> Saved</> : 'Save changes'}
+        </button>
+        <p style={{ fontSize: 12.5, color: 'var(--ink-3)', textAlign: 'center', margin: '12px 0 0' }}>Your details are stored on this device for the demo.</p>
+      </div>
+    </div>
+  );
+}
+
+Object.assign(window, { AccountScreen, ActivityScreen, VPPScreen, ReferralScreen, AddSheet, ProfileScreen });

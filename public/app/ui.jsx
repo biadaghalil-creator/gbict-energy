@@ -42,6 +42,10 @@ const ICONS = {
   refresh: 'M21 12a9 9 0 1 1-3-6.7M21 4v4h-4',
   flag:    'M5 21V4M5 4h11l-2 4 2 4H5',
   moon:    'M20 14a8 8 0 1 1-9.5-9.7A6.5 6.5 0 0 0 20 14Z',
+  mail:    'M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Zm0 .5 9 6 9-6',
+  lock:    'M6 10V8a6 6 0 0 1 12 0v2M5 10h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-8a1 1 0 0 1 1-1Z',
+  eye:     'M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Zm10 3a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z',
+  eyeOff:  'M3 3l18 18M10.6 10.6a3 3 0 0 0 4 4M9.4 5.2A9.6 9.6 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.3 4.2M6.1 6.1A17 17 0 0 0 2 12s3.5 7 10 7a9.5 9.5 0 0 0 2.9-.4',
 };
 function Icon({ name, size = 22, sw = 1.8, fill = 'none', style }) {
   const d = ICONS[name] || ICONS.info;
@@ -55,11 +59,11 @@ function Icon({ name, size = 22, sw = 1.8, fill = 'none', style }) {
 }
 
 /* brand mark */
-function Mark({ size = 26 }) {
+function Mark({ size = 26, color = 'var(--accent)' }) {
   return (
     <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
-      <path d="M14 3 25 22H3L14 3Z" stroke="var(--accent)" strokeWidth="1.7" strokeLinejoin="round"/>
-      <path d="M14 9.5 20 20H8L14 9.5Z" fill="var(--accent)"/>
+      <path d="M14 3 25 22H3L14 3Z" stroke={color} strokeWidth="1.7" strokeLinejoin="round"/>
+      <path d="M14 9.5 20 20H8L14 9.5Z" fill={color}/>
     </svg>
   );
 }

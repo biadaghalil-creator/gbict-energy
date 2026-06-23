@@ -36,7 +36,7 @@ function App() {
   const accHex = t.accent || "#2F5D3A";
   const accDef = ACCENTS[accHex] || ACCENTS["#2F5D3A"];
   const acc = dark ? { main: accDef.darkAcc, deep: accDef.darkAcc, rgb: accDef.darkRgb, tint: "color-mix(in srgb," + accDef.darkAcc + " 16%, transparent)" } : { main: accHex, deep: accDef.deep, rgb: accDef.rgb, tint: accDef.tint };
-  const [booted, setBooted] = useA(false);
+  const [phase, setPhase] = useA("auth");
   const [tab, setTab] = useA("dashboard");
   const [stack, setStack] = useA([]);
   const [dir, setDir] = useA("tab");
@@ -78,6 +78,14 @@ function App() {
     setTab(id);
     navSeq.current++;
   };
+  const signOut = () => {
+    setStack([]);
+    setTab("dashboard");
+    setSheet(false);
+    setDir("tab");
+    setPhase("auth");
+    navSeq.current++;
+  };
   const dockTab = stack.length ? null : tab;
   const renderScreen = () => {
     switch (current) {
@@ -90,7 +98,9 @@ function App() {
       case "connections":
         return /* @__PURE__ */ React.createElement(ConnectionsScreen, { onAdd: () => setSheet(true) });
       case "account":
-        return /* @__PURE__ */ React.createElement(AccountScreen, { dark, onToggleDark: (v) => setTweak("dark", v), onOpen: open });
+        return /* @__PURE__ */ React.createElement(AccountScreen, { dark, onToggleDark: (v) => setTweak("dark", v), onOpen: open, onSignOut: signOut });
+      case "profile":
+        return /* @__PURE__ */ React.createElement(ProfileScreen, null);
       case "vpp":
         return /* @__PURE__ */ React.createElement(VPPScreen, { run: animOn });
       case "referral":
@@ -121,13 +131,30 @@ function App() {
       }
     },
     /* @__PURE__ */ React.createElement("canvas", { ref: flowCv, className: "flow-bg" }),
-    !booted ? /* @__PURE__ */ React.createElement("div", { key: "onb", className: dirClass, style: { position: "absolute", inset: 0, zIndex: 5 } }, /* @__PURE__ */ React.createElement(Onboarding, { onDone: () => {
-      setBooted(true);
+    phase === "auth" && /* @__PURE__ */ React.createElement("div", { key: "auth" + navSeq.current, className: "scr-tab", style: { position: "absolute", inset: 0, zIndex: 5 } }, /* @__PURE__ */ React.createElement(AuthScreen, { onAuthed: (isSignup) => {
       setDir("tab");
-    }, onLogin: () => {
-      setBooted(true);
-      setDir("tab");
-    } })) : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { key: current + navSeq.current, className: dirClass + (stack.length ? " pushed" : ""), style: { position: "absolute", inset: 0, zIndex: 5 } }, stack.length > 0 && /* @__PURE__ */ React.createElement("button", { className: "backorb", onClick: back }, /* @__PURE__ */ React.createElement(Icon, { name: "chevL", size: 20 })), renderScreen()), dockTab && /* @__PURE__ */ React.createElement(Dock, { tab: dockTab, onSelect: selectTab }), sheet && /* @__PURE__ */ React.createElement(AddSheet, { onClose: () => setSheet(false) }))
+      navSeq.current++;
+      setPhase(isSignup ? "onboarding" : "app");
+    } })),
+    phase === "onboarding" && /* @__PURE__ */ React.createElement("div", { key: "onb" + navSeq.current, className: "scr-tab", style: { position: "absolute", inset: 0, zIndex: 5 } }, /* @__PURE__ */ React.createElement(
+      Onboarding,
+      {
+        onDone: () => {
+          setDir("tab");
+          setTab("dashboard");
+          navSeq.current++;
+          setPhase("app");
+        },
+        onLogin: () => {
+          setDir("tab");
+          navSeq.current++;
+          setPhase("app");
+        }
+      }
+    )),
+    phase === "app" && /* @__PURE__ */ React.createElement("div", { key: current + navSeq.current, className: dirClass + (stack.length ? " pushed" : ""), style: { position: "absolute", inset: 0, zIndex: 5 } }, stack.length > 0 && /* @__PURE__ */ React.createElement("button", { className: "backorb", onClick: back }, /* @__PURE__ */ React.createElement(Icon, { name: "chevL", size: 20 })), renderScreen()),
+    phase === "app" && dockTab && /* @__PURE__ */ React.createElement(Dock, { tab: dockTab, onSelect: selectTab }),
+    phase === "app" && sheet && /* @__PURE__ */ React.createElement(AddSheet, { onClose: () => setSheet(false) })
   );
 }
 ReactDOM.createRoot(document.getElementById("root")).render(/* @__PURE__ */ React.createElement(App, null));

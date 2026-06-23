@@ -10,16 +10,21 @@ const SCHEDULE = [
   { t: '17:00–20:00', icon: 'arrowUR', label: 'Sell to grid', sub: 'Peak price · €0.80/kWh', kind: 'sell' },
 ];
 
-function Greeting() {
+function Greeting({ onOpen }) {
+  let prof = {};
+  try { prof = JSON.parse(localStorage.getItem('gbict_profile')) || {}; } catch (e) {}
+  const name = (prof.name || 'Lieke de Vries').trim();
+  const home = prof.home || "Lieke's home";
+  const init = (name.split(/\s+/).map(w => w[0]).slice(0, 2).join('') || 'L').toUpperCase();
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 18 }}>
       <div style={{ minWidth: 0, flex: '0 1 auto' }}>
         <div style={{ fontSize: 14, color: 'var(--ink-2)', fontWeight: 500 }}>Good afternoon</div>
-        <div style={{ fontSize: 22, fontWeight: 700, color: 'var(--ink)', letterSpacing: '-.02em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Lieke's home</div>
+        <div style={{ fontSize: 22, fontWeight: 700, color: 'var(--ink)', letterSpacing: '-.02em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{home}</div>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 'none' }}>
         <div className="pill live">Optimising</div>
-        <div style={{ width: 42, height: 42, borderRadius: '50%', background: 'var(--accent)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 16 }}>L</div>
+        <button onClick={() => onOpen && onOpen('profile')} aria-label="Edit profile" style={{ width: 42, height: 42, borderRadius: '50%', background: 'var(--accent)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 16, border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}>{init}</button>
       </div>
     </div>
   );
@@ -116,7 +121,7 @@ function Dashboard({ variant = 'classic', onOpen, run = true }) {
   return (
     <div className="screen">
       <div className="screen-scroll">
-        <div className="rise"><Greeting /></div>
+        <div className="rise"><Greeting onOpen={onOpen} /></div>
         {variant === 'classic' && <DashClassic onOpen={onOpen} run={run} />}
         {variant === 'focus' && <DashFocus onOpen={onOpen} run={run} />}
         {variant === 'timeline' && <DashTimeline onOpen={onOpen} run={run} />}
