@@ -47,16 +47,108 @@ function ReferralScreen() {
     setTimeout(() => setCopied(false), 1600);
   } }, copied ? /* @__PURE__ */ React.createElement(Icon, { name: "check", size: 20 }) : "Copy"))), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 12 }, className: "rise" }, /* @__PURE__ */ React.createElement("button", { className: "btn btn-ghost", style: { flex: 1 } }, /* @__PURE__ */ React.createElement(Icon, { name: "share", size: 18 }), " WhatsApp"), /* @__PURE__ */ React.createElement("button", { className: "btn btn-ghost", style: { flex: 1 } }, /* @__PURE__ */ React.createElement(Icon, { name: "share", size: 18 }), " Email")), /* @__PURE__ */ React.createElement("div", { className: "card solid card-pad rise", style: { animationDelay: ".18s", marginTop: 14, display: "flex", justifyContent: "space-around", textAlign: "center" } }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "num", style: { fontSize: 26, fontWeight: 700, color: "var(--ink)" } }, "3"), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 12.5, color: "var(--ink-3)", marginTop: 2 } }, "Friends joined")), /* @__PURE__ */ React.createElement("div", { style: { width: ".5px", background: "var(--line)" } }), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "num", style: { fontSize: 26, fontWeight: 700, color: "var(--accent)" } }, "\u20AC15"), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 12.5, color: "var(--ink-3)", marginTop: 2 } }, "Credit earned")))));
 }
-const DEVICE_TYPES = [
-  { icon: "battery", t: "Home battery", s: "Sessy, Victron, Tesla, Enphase\u2026" },
-  { icon: "sun", t: "Solar inverter", s: "SolarEdge, Fronius, SMA\u2026" },
-  { icon: "car", t: "EV / charger", s: "Smart & V2G charging" },
-  { icon: "heat", t: "Heat pump", s: "Tado & more" },
-  { icon: "meter", t: "Smart meter", s: "HomeWizard P1" },
-  { icon: "contract", t: "Energy contract", s: "Tibber & dynamic suppliers" }
+const CONNECT_BRANDS = [
+  {
+    key: "battery_sessy",
+    t: "Sessy",
+    s: "Home battery",
+    icon: "battery",
+    method: "form",
+    fields: [{ k: "username", label: "Sessy e-mail", type: "email", ph: "you@home.nl" }, { k: "password", label: "Sessy password", type: "password", ph: "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022" }]
+  },
+  { key: "ev", t: "Electric car / charger", s: "Tesla, Kia, VW, Renault\u2026 (V2G)", icon: "car", method: "oauth", url: "/api/ev/connect" },
+  {
+    key: "meter_tibber",
+    t: "Tibber",
+    s: "Dynamic energy contract",
+    icon: "contract",
+    method: "form",
+    fields: [{ k: "token", label: "Tibber access token", type: "text", ph: "Token from developer.tibber.com" }]
+  },
+  {
+    key: "solar_solaredge",
+    t: "SolarEdge",
+    s: "Solar inverter",
+    icon: "sun",
+    method: "form",
+    fields: [{ k: "apiKey", label: "API key", type: "text", ph: "SolarEdge API key" }, { k: "siteId", label: "Site ID", type: "text", ph: "1234567" }]
+  },
+  { key: "solar_enphase", t: "Enphase", s: "Solar / battery", icon: "sun", method: "oauth", url: "/api/enphase/connect" },
+  {
+    key: "solar_fronius",
+    t: "Fronius",
+    s: "Solar inverter (local)",
+    icon: "sun",
+    method: "form",
+    fields: [{ k: "ip", label: "Inverter IP address", type: "text", ph: "192.168.1.50" }]
+  },
+  {
+    key: "meter_homewizard",
+    t: "HomeWizard P1",
+    s: "Smart meter (local)",
+    icon: "meter",
+    method: "form",
+    fields: [{ k: "host", label: "P1 IP address", type: "text", ph: "192.168.1.x" }]
+  },
+  {
+    key: "battery_victron",
+    t: "Victron",
+    s: "Home battery",
+    icon: "battery",
+    method: "form",
+    fields: [{ k: "username", label: "VRM e-mail", type: "email", ph: "you@home.nl" }, { k: "password", label: "VRM password", type: "password", ph: "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022" }]
+  },
+  { key: "solar_sma", t: "SMA", s: "Solar inverter", icon: "sun", method: "soon" }
 ];
-function AddSheet({ onClose }) {
-  return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "sheet-scrim", onClick: onClose }), /* @__PURE__ */ React.createElement("div", { className: "sheet" }, /* @__PURE__ */ React.createElement("div", { className: "sheet-grab" }), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 } }, /* @__PURE__ */ React.createElement("h2", { style: { fontSize: 22, fontWeight: 700, color: "var(--ink)", margin: 0, letterSpacing: "-.02em" } }, "Add a device"), /* @__PURE__ */ React.createElement("button", { className: "orb", style: { width: 38, height: 38, background: "color-mix(in srgb,var(--ink) 6%, transparent)" }, onClick: onClose }, /* @__PURE__ */ React.createElement(Icon, { name: "x", size: 19 }))), /* @__PURE__ */ React.createElement("p", { style: { fontSize: 14, color: "var(--ink-2)", margin: "0 0 16px" } }, "Hardware-agnostic \u2014 pick a type to connect."), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 10 } }, DEVICE_TYPES.map((d, i) => /* @__PURE__ */ React.createElement("button", { key: i, className: "card solid", onClick: onClose, style: { display: "flex", alignItems: "center", gap: 14, padding: 14, textAlign: "left", cursor: "pointer", border: ".5px solid var(--line)" } }, /* @__PURE__ */ React.createElement("div", { className: "row-ic" }, /* @__PURE__ */ React.createElement(Icon, { name: d.icon, size: 21 })), /* @__PURE__ */ React.createElement("div", { style: { flex: 1 } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 15.5, fontWeight: 650, color: "var(--ink)" } }, d.t), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13, color: "var(--ink-2)", marginTop: 1 } }, d.s)), /* @__PURE__ */ React.createElement(Icon, { name: "chevR", size: 18, style: { color: "var(--ink-3)" } }))))));
+function AddSheet({ onClose, onConnected }) {
+  const [brand, setBrand] = useM(null);
+  const [vals, setVals] = useM({});
+  const [busy, setBusy] = useM(false);
+  const [err, setErr] = useM("");
+  const set = (k) => (e) => setVals((s) => ({ ...s, [k]: e.target.value }));
+  const pick = (b) => {
+    setErr("");
+    if (b.method === "soon") {
+      setErr(b.t + " komt binnenkort beschikbaar.");
+      return;
+    }
+    if (b.method === "oauth") {
+      window.location.href = b.url;
+      return;
+    }
+    setVals({});
+    setBrand(b);
+  };
+  const submit = async () => {
+    if (!brand) return;
+    for (const f of brand.fields) {
+      if (!(vals[f.k] || "").trim()) {
+        setErr('Vul "' + f.label + '" in');
+        return;
+      }
+    }
+    setErr("");
+    setBusy(true);
+    try {
+      const res = await fetch("/api/devices/connect", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: brand.key, config: vals }) });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setErr(data.error || "Koppelen mislukt");
+        setBusy(false);
+        return;
+      }
+      onConnected && onConnected();
+    } catch {
+      setErr("Geen verbinding. Probeer opnieuw.");
+      setBusy(false);
+    }
+  };
+  const inp = { width: "100%", height: 50, borderRadius: 13, border: "1px solid var(--line)", background: "var(--card)", padding: "0 14px", fontSize: 15, color: "var(--ink)", fontFamily: "inherit", outline: "none", boxSizing: "border-box" };
+  const lab = { fontSize: 12.5, fontWeight: 600, color: "var(--ink-2)", display: "block", marginBottom: 6 };
+  return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "sheet-scrim", onClick: onClose }), /* @__PURE__ */ React.createElement("div", { className: "sheet" }, /* @__PURE__ */ React.createElement("div", { className: "sheet-grab" }), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 } }, /* @__PURE__ */ React.createElement("h2", { style: { fontSize: 22, fontWeight: 700, color: "var(--ink)", margin: 0, letterSpacing: "-.02em" } }, brand ? "Connect " + brand.t : "Add a device"), /* @__PURE__ */ React.createElement("button", { className: "orb", style: { width: 38, height: 38, background: "color-mix(in srgb,var(--ink) 6%, transparent)" }, onClick: brand ? () => {
+    setBrand(null);
+    setErr("");
+  } : onClose }, /* @__PURE__ */ React.createElement(Icon, { name: brand ? "chevL" : "x", size: 19 }))), !brand && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", { style: { fontSize: 14, color: "var(--ink-2)", margin: "0 0 16px" } }, "Pick a device \u2014 it links securely to your account."), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 10 } }, CONNECT_BRANDS.map((b, i) => /* @__PURE__ */ React.createElement("button", { key: i, className: "card solid", onClick: () => pick(b), style: { display: "flex", alignItems: "center", gap: 14, padding: 14, textAlign: "left", cursor: "pointer", border: ".5px solid var(--line)" } }, /* @__PURE__ */ React.createElement("div", { className: "row-ic" }, /* @__PURE__ */ React.createElement(Icon, { name: b.icon, size: 21 })), /* @__PURE__ */ React.createElement("div", { style: { flex: 1 } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 15.5, fontWeight: 650, color: "var(--ink)" } }, b.t), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13, color: "var(--ink-2)", marginTop: 1 } }, b.s, b.method === "soon" ? " \xB7 coming soon" : "")), /* @__PURE__ */ React.createElement(Icon, { name: "chevR", size: 18, style: { color: "var(--ink-3)" } })))), err && /* @__PURE__ */ React.createElement("p", { style: { fontSize: 12.5, fontWeight: 600, color: "var(--ink-2)", textAlign: "center", margin: "14px 0 0" } }, err)), brand && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", { style: { fontSize: 14, color: "var(--ink-2)", margin: "0 0 16px" } }, "Enter your ", brand.t, " details. We store them securely and only use them to read your data."), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 12 } }, brand.fields.map((f) => /* @__PURE__ */ React.createElement("div", { key: f.k }, /* @__PURE__ */ React.createElement("label", { style: lab }, f.label), /* @__PURE__ */ React.createElement("input", { style: inp, type: f.type || "text", placeholder: f.ph || "", value: vals[f.k] || "", onChange: set(f.k), autoCapitalize: "none", autoCorrect: "off" }))), err && /* @__PURE__ */ React.createElement("p", { style: { fontSize: 12.5, fontWeight: 600, color: "#C2702C", margin: "2px 0 0" } }, err), /* @__PURE__ */ React.createElement("button", { className: "btn btn-primary", disabled: busy, onClick: submit, style: { marginTop: 4, opacity: busy ? 0.6 : 1 } }, busy ? "Connecting\u2026" : "Connect")))));
 }
 function ProfileScreen() {
   const load = () => {

@@ -42,6 +42,7 @@ function App() {
   const [stack, setStack] = useA([]);
   const [dir, setDir] = useA("tab");
   const [sheet, setSheet] = useA(false);
+  const [connNonce, setConnNonce] = useA(0);
   const navSeq = useRefA(0);
   useEffA(() => {
     const r = document.documentElement.style;
@@ -113,7 +114,7 @@ function App() {
       case "savings":
         return /* @__PURE__ */ React.createElement(SavingsScreen, { run: animOn });
       case "connections":
-        return /* @__PURE__ */ React.createElement(ConnectionsScreen, { onAdd: () => setSheet(true) });
+        return /* @__PURE__ */ React.createElement(ConnectionsScreen, { onAdd: () => setSheet(true), nonce: connNonce });
       case "account":
         return /* @__PURE__ */ React.createElement(AccountScreen, { dark, onToggleDark: (v) => setTweak("dark", v), onOpen: open, onSignOut: signOut });
       case "profile":
@@ -161,7 +162,10 @@ function App() {
     } })),
     phase === "app" && /* @__PURE__ */ React.createElement("div", { key: current + navSeq.current, className: dirClass + (stack.length ? " pushed" : ""), style: { position: "absolute", inset: 0, zIndex: 5 } }, stack.length > 0 && /* @__PURE__ */ React.createElement("button", { className: "backorb", onClick: back }, /* @__PURE__ */ React.createElement(Icon, { name: "chevL", size: 20 })), renderScreen()),
     phase === "app" && dockTab && /* @__PURE__ */ React.createElement(Dock, { tab: dockTab, onSelect: selectTab }),
-    phase === "app" && sheet && /* @__PURE__ */ React.createElement(AddSheet, { onClose: () => setSheet(false) })
+    phase === "app" && sheet && /* @__PURE__ */ React.createElement(AddSheet, { onClose: () => setSheet(false), onConnected: () => {
+      setConnNonce((n) => n + 1);
+      setSheet(false);
+    } })
   );
 }
 ReactDOM.createRoot(document.getElementById("root")).render(/* @__PURE__ */ React.createElement(App, null));

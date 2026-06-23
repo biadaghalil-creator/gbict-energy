@@ -413,13 +413,34 @@ function SavingsScreen({ run }) {
 }
 
 /* ════════════════ CONNECTIONS ════════════════ */
-const CONNECTED = [
-  { icon: 'meter', t: 'HomeWizard P1', s: 'Smart meter', status: 'Live' },
-  { icon: 'contract', t: 'Tibber', s: 'Dynamic contract', status: 'Live' },
-  { icon: 'battery', t: 'Sessy', s: '5.0 kWh battery', status: 'Live' },
-  { icon: 'sun', t: 'SolarEdge', s: '4.2 kWp array', status: 'Live' },
-];
-function ConnectionsScreen({ onAdd }) {
+const DEVICE_META = {
+  battery_sessy:     { icon: 'battery',  t: 'Sessy',         s: 'Home battery' },
+  battery_victron:   { icon: 'battery',  t: 'Victron',       s: 'Home battery' },
+  battery_enphase:   { icon: 'battery',  t: 'Enphase',       s: 'Battery / solar' },
+  battery_solaredge: { icon: 'battery',  t: 'SolarEdge',     s: 'Battery / solar' },
+  meter_tibber:      { icon: 'contract', t: 'Tibber',        s: 'Dynamic contract' },
+  meter_homewizard:  { icon: 'meter',    t: 'HomeWizard P1', s: 'Smart meter' },
+  solar_solaredge:   { icon: 'sun',      t: 'SolarEdge',     s: 'Solar inverter' },
+  solar_fronius:     { icon: 'sun',      t: 'Fronius',       s: 'Solar inverter' },
+  solar_enphase:     { icon: 'sun',      t: 'Enphase',       s: 'Solar inverter' },
+  solar_sma:         { icon: 'sun',      t: 'SMA',           s: 'Solar inverter' },
+  ev:                { icon: 'car',      t: 'Electric car',  s: 'Smart & V2G charging' },
+};
+function deviceMeta(d) { return DEVICE_META[d.type] || { icon: 'plug', t: d.brand || d.name || d.type, s: 'Connected device' }; }
+function ConnectionsScreen({ onAdd, nonce }) {
+  const [devices, setDevices] = useS(null);
+  React.useEffect(() => {
+    let alive = true;
+    fetch('/api/devices', { cache: 'no-store' }).then((r) => r.ok ? r.json() : null)
+      .then((d) => { if (alive) setDevices(Array.isArray(d) ? d : []); })
+      .catch(() => { if (alive) setDevices([]); });
+    return () => { alive = false; };
+  }, [nonce]);
+  const disconnect = (id) => {
+    setDevices((ds) => (ds || []).filter((d) => d.id !== id));
+    fetch('/api/devices/disconnect', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) }).catch(() => {});
+  };
+  const list = devices || [];
   return (
     <div className="screen">
       <div className="screen-scroll">
@@ -427,11 +448,21 @@ function ConnectionsScreen({ onAdd }) {
           <div><div className="scr-eyebrow">Setup</div><h1 className="scr-title" style={{ marginTop: 6 }}>Connections</h1></div>
           <button className="btn btn-primary btn-sm" style={{ width: 'auto' }} onClick={onAdd}><Icon name="plus" size={18} /> Add</button>
         </div>
-        <div className="card solid rise card-pad" style={{ animationDelay: '.08s', marginBottom: 14 }}>
-          {CONNECTED.map((c,i)=>(
-            <Row key={i} icon={c.icon} title={c.t} sub={c.s} right={<div className="pill live" style={{ height: 26, fontSize: 11.5 }}>{c.status}</div>} />
-          ))}
-        </div>
+        {list.length > 0 && (
+          <div className="card solid rise card-pad" style={{ animationDelay: '.08s', marginBottom: 14 }}>
+            {list.map((d) => { const m = deviceMeta(d); return (
+              <Row key={d.id} icon={m.icon} title={d.name || m.t} sub={m.s}
+                right={<button onClick={() => disconnect(d.id)} style={{ border: 'none', background: 'none', color: 'var(--ink-3)', fontSize: 12.5, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Disconnect</button>} />
+            ); })}
+          </div>
+        )}
+        {devices && list.length === 0 && (
+          <div className="card solid rise card-pad" style={{ animationDelay: '.08s', marginBottom: 14, textAlign: 'center', padding: '26px 18px' }}>
+            <div className="row-ic" style={{ background: 'var(--accent-tint)', margin: '0 auto 10px' }}><Icon name="plug" size={22} /></div>
+            <div style={{ fontSize: 15.5, fontWeight: 650, color: 'var(--ink)' }}>No devices connected yet</div>
+            <div style={{ fontSize: 13, color: 'var(--ink-2)', marginTop: 3 }}>Connect your battery, solar, EV or contract to see live data.</div>
+          </div>
+        )}
         <button className="card solid rise" onClick={onAdd} style={{ animationDelay: '.16s', width: '100%', padding: 18, display: 'flex', alignItems: 'center', gap: 14, cursor: 'pointer', border: '1.5px dashed var(--line)', background: 'transparent' }}>
           <div className="row-ic" style={{ background: 'var(--accent-tint)' }}><Icon name="plus" size={22} /></div>
           <div style={{ textAlign: 'left' }}><div style={{ fontSize: 15.5, fontWeight: 650, color: 'var(--ink)' }}>Add a device</div><div style={{ fontSize: 13, color: 'var(--ink-2)' }}>Battery, EV, heat pump & more</div></div>

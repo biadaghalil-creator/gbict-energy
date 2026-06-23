@@ -183,34 +183,95 @@ function ReferralScreen() {
 }
 
 /* ════════════════ ADD-DEVICE SHEET ════════════════ */
-const DEVICE_TYPES = [
-  { icon: 'battery', t: 'Home battery', s: 'Sessy, Victron, Tesla, Enphase…' },
-  { icon: 'sun', t: 'Solar inverter', s: 'SolarEdge, Fronius, SMA…' },
-  { icon: 'car', t: 'EV / charger', s: 'Smart & V2G charging' },
-  { icon: 'heat', t: 'Heat pump', s: 'Tado & more' },
-  { icon: 'meter', t: 'Smart meter', s: 'HomeWizard P1' },
-  { icon: 'contract', t: 'Energy contract', s: 'Tibber & dynamic suppliers' },
+// Echte koppelbare merken. method: 'form' = credentials → /api/devices/connect,
+// 'oauth' = redirect naar de koppelpagina, 'soon' = nog niet beschikbaar.
+const CONNECT_BRANDS = [
+  { key: 'battery_sessy', t: 'Sessy', s: 'Home battery', icon: 'battery', method: 'form',
+    fields: [{ k: 'username', label: 'Sessy e-mail', type: 'email', ph: 'you@home.nl' }, { k: 'password', label: 'Sessy password', type: 'password', ph: '••••••••' }] },
+  { key: 'ev', t: 'Electric car / charger', s: 'Tesla, Kia, VW, Renault… (V2G)', icon: 'car', method: 'oauth', url: '/api/ev/connect' },
+  { key: 'meter_tibber', t: 'Tibber', s: 'Dynamic energy contract', icon: 'contract', method: 'form',
+    fields: [{ k: 'token', label: 'Tibber access token', type: 'text', ph: 'Token from developer.tibber.com' }] },
+  { key: 'solar_solaredge', t: 'SolarEdge', s: 'Solar inverter', icon: 'sun', method: 'form',
+    fields: [{ k: 'apiKey', label: 'API key', type: 'text', ph: 'SolarEdge API key' }, { k: 'siteId', label: 'Site ID', type: 'text', ph: '1234567' }] },
+  { key: 'solar_enphase', t: 'Enphase', s: 'Solar / battery', icon: 'sun', method: 'oauth', url: '/api/enphase/connect' },
+  { key: 'solar_fronius', t: 'Fronius', s: 'Solar inverter (local)', icon: 'sun', method: 'form',
+    fields: [{ k: 'ip', label: 'Inverter IP address', type: 'text', ph: '192.168.1.50' }] },
+  { key: 'meter_homewizard', t: 'HomeWizard P1', s: 'Smart meter (local)', icon: 'meter', method: 'form',
+    fields: [{ k: 'host', label: 'P1 IP address', type: 'text', ph: '192.168.1.x' }] },
+  { key: 'battery_victron', t: 'Victron', s: 'Home battery', icon: 'battery', method: 'form',
+    fields: [{ k: 'username', label: 'VRM e-mail', type: 'email', ph: 'you@home.nl' }, { k: 'password', label: 'VRM password', type: 'password', ph: '••••••••' }] },
+  { key: 'solar_sma', t: 'SMA', s: 'Solar inverter', icon: 'sun', method: 'soon' },
 ];
-function AddSheet({ onClose }) {
+function AddSheet({ onClose, onConnected }) {
+  const [brand, setBrand] = useM(null);   // gekozen merk (form-flow)
+  const [vals, setVals] = useM({});
+  const [busy, setBusy] = useM(false);
+  const [err, setErr] = useM('');
+  const set = (k) => (e) => setVals((s) => ({ ...s, [k]: e.target.value }));
+
+  const pick = (b) => {
+    setErr('');
+    if (b.method === 'soon') { setErr(b.t + ' komt binnenkort beschikbaar.'); return; }
+    if (b.method === 'oauth') { window.location.href = b.url; return; }
+    setVals({}); setBrand(b);
+  };
+
+  const submit = async () => {
+    if (!brand) return;
+    for (const f of brand.fields) { if (!(vals[f.k] || '').trim()) { setErr('Vul "' + f.label + '" in'); return; } }
+    setErr(''); setBusy(true);
+    try {
+      const res = await fetch('/api/devices/connect', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type: brand.key, config: vals }) });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) { setErr(data.error || 'Koppelen mislukt'); setBusy(false); return; }
+      onConnected && onConnected();
+    } catch { setErr('Geen verbinding. Probeer opnieuw.'); setBusy(false); }
+  };
+
+  const inp = { width: '100%', height: 50, borderRadius: 13, border: '1px solid var(--line)', background: 'var(--card)', padding: '0 14px', fontSize: 15, color: 'var(--ink)', fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box' };
+  const lab = { fontSize: 12.5, fontWeight: 600, color: 'var(--ink-2)', display: 'block', marginBottom: 6 };
+
   return (
     <>
       <div className="sheet-scrim" onClick={onClose} />
       <div className="sheet">
         <div className="sheet-grab" />
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
-          <h2 style={{ fontSize: 22, fontWeight: 700, color: 'var(--ink)', margin: 0, letterSpacing: '-.02em' }}>Add a device</h2>
-          <button className="orb" style={{ width: 38, height: 38, background: 'color-mix(in srgb,var(--ink) 6%, transparent)' }} onClick={onClose}><Icon name="x" size={19} /></button>
+          <h2 style={{ fontSize: 22, fontWeight: 700, color: 'var(--ink)', margin: 0, letterSpacing: '-.02em' }}>{brand ? 'Connect ' + brand.t : 'Add a device'}</h2>
+          <button className="orb" style={{ width: 38, height: 38, background: 'color-mix(in srgb,var(--ink) 6%, transparent)' }} onClick={brand ? () => { setBrand(null); setErr(''); } : onClose}><Icon name={brand ? 'chevL' : 'x'} size={19} /></button>
         </div>
-        <p style={{ fontSize: 14, color: 'var(--ink-2)', margin: '0 0 16px' }}>Hardware-agnostic — pick a type to connect.</p>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {DEVICE_TYPES.map((d, i) => (
-            <button key={i} className="card solid" onClick={onClose} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: 14, textAlign: 'left', cursor: 'pointer', border: '.5px solid var(--line)' }}>
-              <div className="row-ic"><Icon name={d.icon} size={21} /></div>
-              <div style={{ flex: 1 }}><div style={{ fontSize: 15.5, fontWeight: 650, color: 'var(--ink)' }}>{d.t}</div><div style={{ fontSize: 13, color: 'var(--ink-2)', marginTop: 1 }}>{d.s}</div></div>
-              <Icon name="chevR" size={18} style={{ color: 'var(--ink-3)' }} />
-            </button>
-          ))}
-        </div>
+
+        {!brand && (
+          <>
+            <p style={{ fontSize: 14, color: 'var(--ink-2)', margin: '0 0 16px' }}>Pick a device — it links securely to your account.</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {CONNECT_BRANDS.map((b, i) => (
+                <button key={i} className="card solid" onClick={() => pick(b)} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: 14, textAlign: 'left', cursor: 'pointer', border: '.5px solid var(--line)' }}>
+                  <div className="row-ic"><Icon name={b.icon} size={21} /></div>
+                  <div style={{ flex: 1 }}><div style={{ fontSize: 15.5, fontWeight: 650, color: 'var(--ink)' }}>{b.t}</div><div style={{ fontSize: 13, color: 'var(--ink-2)', marginTop: 1 }}>{b.s}{b.method === 'soon' ? ' · coming soon' : ''}</div></div>
+                  <Icon name="chevR" size={18} style={{ color: 'var(--ink-3)' }} />
+                </button>
+              ))}
+            </div>
+            {err && <p style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--ink-2)', textAlign: 'center', margin: '14px 0 0' }}>{err}</p>}
+          </>
+        )}
+
+        {brand && (
+          <>
+            <p style={{ fontSize: 14, color: 'var(--ink-2)', margin: '0 0 16px' }}>Enter your {brand.t} details. We store them securely and only use them to read your data.</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {brand.fields.map((f) => (
+                <div key={f.k}>
+                  <label style={lab}>{f.label}</label>
+                  <input style={inp} type={f.type || 'text'} placeholder={f.ph || ''} value={vals[f.k] || ''} onChange={set(f.k)} autoCapitalize="none" autoCorrect="off" />
+                </div>
+              ))}
+              {err && <p style={{ fontSize: 12.5, fontWeight: 600, color: '#C2702C', margin: '2px 0 0' }}>{err}</p>}
+              <button className="btn btn-primary" disabled={busy} onClick={submit} style={{ marginTop: 4, opacity: busy ? 0.6 : 1 }}>{busy ? 'Connecting…' : 'Connect'}</button>
+            </div>
+          </>
+        )}
       </div>
     </>
   );

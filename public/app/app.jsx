@@ -56,6 +56,7 @@ function App() {
   const [stack, setStack] = useA([]);          // pushed sub-screens
   const [dir, setDir] = useA('tab');           // push | pop | tab
   const [sheet, setSheet] = useA(false);
+  const [connNonce, setConnNonce] = useA(0);   // bump → Connections herlaadt apparaten
   const navSeq = useRefA(0);
 
   // mirror theme vars onto :root so flow.js (reads documentElement) recolors
@@ -109,7 +110,7 @@ function App() {
       case 'dashboard': return <Dashboard variant={t.layout || 'classic'} onOpen={open} run={animOn} />;
       case 'battery': return <BatteryScreen run={animOn} />;
       case 'savings': return <SavingsScreen run={animOn} />;
-      case 'connections': return <ConnectionsScreen onAdd={() => setSheet(true)} />;
+      case 'connections': return <ConnectionsScreen onAdd={() => setSheet(true)} nonce={connNonce} />;
       case 'account': return <AccountScreen dark={dark} onToggleDark={(v) => setTweak('dark', v)} onOpen={open} onSignOut={signOut} />;
       case 'profile': return <ProfileScreen />;
       case 'vpp': return <VPPScreen run={animOn} />;
@@ -146,7 +147,7 @@ function App() {
         </div>
       )}
       {phase === 'app' && dockTab && <Dock tab={dockTab} onSelect={selectTab} />}
-      {phase === 'app' && sheet && <AddSheet onClose={() => setSheet(false)} />}
+      {phase === 'app' && sheet && <AddSheet onClose={() => setSheet(false)} onConnected={() => { setConnNonce((n) => n + 1); setSheet(false); }} />}
     </div>
   );
 }

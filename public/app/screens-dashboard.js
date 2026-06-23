@@ -178,13 +178,53 @@ function SavingsScreen({ run }) {
   const fmt = (n) => n == null ? "\u2014" : "\u20AC" + Number(n).toFixed(2);
   return /* @__PURE__ */ React.createElement("div", { className: "screen" }, /* @__PURE__ */ React.createElement("div", { className: "screen-scroll" }, /* @__PURE__ */ React.createElement("div", { className: "rise", style: { marginBottom: 16 } }, /* @__PURE__ */ React.createElement("div", { className: "scr-eyebrow" }, "Insights"), /* @__PURE__ */ React.createElement("h1", { className: "scr-title", style: { marginTop: 6 } }, "Savings")), /* @__PURE__ */ React.createElement("div", { className: "grid2 rise", style: { marginBottom: 14 } }, /* @__PURE__ */ React.createElement(Stat, { k: "All-time saved", v: "\u20AC" + Math.round((_a = sv == null ? void 0 : sv.total_eur) != null ? _a : 0), d: "since you joined", dpos: true, sm: true }), /* @__PURE__ */ React.createElement(Stat, { k: "This month", v: fmt((_b = sv == null ? void 0 : sv.month_eur) != null ? _b : 0), d: "so far", dpos: true, sm: true })), /* @__PURE__ */ React.createElement("div", { className: "card card-pad solid rise", style: { animationDelay: ".12s", marginBottom: 14 } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 } }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "stat-k" }, "Saved today"), /* @__PURE__ */ React.createElement("div", { className: "num", style: { fontSize: 28, fontWeight: 700, color: "var(--ink)", marginTop: 4 } }, fmt((_c = sv == null ? void 0 : sv.today_eur) != null ? _c : 0)))), /* @__PURE__ */ React.createElement("p", { style: { fontSize: 13, color: "var(--ink-3)", margin: 0 } }, "The totals above are live. A day-by-day history chart is coming soon.")), /* @__PURE__ */ React.createElement("div", { className: "card card-pad solid rise", style: { animationDelay: ".18s" } }, /* @__PURE__ */ React.createElement("b", { style: { fontSize: 16, fontWeight: 700, color: "var(--ink)", display: "block", marginBottom: 6 } }, "Where it came from"), /* @__PURE__ */ React.createElement("p", { style: { fontSize: 13, color: "var(--ink-3)", margin: "6px 0 0" } }, "The breakdown (arbitrage, peak avoidance, solar self-use) appears once your battery has logged some activity."))));
 }
-const CONNECTED = [
-  { icon: "meter", t: "HomeWizard P1", s: "Smart meter", status: "Live" },
-  { icon: "contract", t: "Tibber", s: "Dynamic contract", status: "Live" },
-  { icon: "battery", t: "Sessy", s: "5.0 kWh battery", status: "Live" },
-  { icon: "sun", t: "SolarEdge", s: "4.2 kWp array", status: "Live" }
-];
-function ConnectionsScreen({ onAdd }) {
-  return /* @__PURE__ */ React.createElement("div", { className: "screen" }, /* @__PURE__ */ React.createElement("div", { className: "screen-scroll" }, /* @__PURE__ */ React.createElement("div", { className: "rise", style: { display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: 18 } }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "scr-eyebrow" }, "Setup"), /* @__PURE__ */ React.createElement("h1", { className: "scr-title", style: { marginTop: 6 } }, "Connections")), /* @__PURE__ */ React.createElement("button", { className: "btn btn-primary btn-sm", style: { width: "auto" }, onClick: onAdd }, /* @__PURE__ */ React.createElement(Icon, { name: "plus", size: 18 }), " Add")), /* @__PURE__ */ React.createElement("div", { className: "card solid rise card-pad", style: { animationDelay: ".08s", marginBottom: 14 } }, CONNECTED.map((c, i) => /* @__PURE__ */ React.createElement(Row, { key: i, icon: c.icon, title: c.t, sub: c.s, right: /* @__PURE__ */ React.createElement("div", { className: "pill live", style: { height: 26, fontSize: 11.5 } }, c.status) }))), /* @__PURE__ */ React.createElement("button", { className: "card solid rise", onClick: onAdd, style: { animationDelay: ".16s", width: "100%", padding: 18, display: "flex", alignItems: "center", gap: 14, cursor: "pointer", border: "1.5px dashed var(--line)", background: "transparent" } }, /* @__PURE__ */ React.createElement("div", { className: "row-ic", style: { background: "var(--accent-tint)" } }, /* @__PURE__ */ React.createElement(Icon, { name: "plus", size: 22 })), /* @__PURE__ */ React.createElement("div", { style: { textAlign: "left" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 15.5, fontWeight: 650, color: "var(--ink)" } }, "Add a device"), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13, color: "var(--ink-2)" } }, "Battery, EV, heat pump & more")))));
+const DEVICE_META = {
+  battery_sessy: { icon: "battery", t: "Sessy", s: "Home battery" },
+  battery_victron: { icon: "battery", t: "Victron", s: "Home battery" },
+  battery_enphase: { icon: "battery", t: "Enphase", s: "Battery / solar" },
+  battery_solaredge: { icon: "battery", t: "SolarEdge", s: "Battery / solar" },
+  meter_tibber: { icon: "contract", t: "Tibber", s: "Dynamic contract" },
+  meter_homewizard: { icon: "meter", t: "HomeWizard P1", s: "Smart meter" },
+  solar_solaredge: { icon: "sun", t: "SolarEdge", s: "Solar inverter" },
+  solar_fronius: { icon: "sun", t: "Fronius", s: "Solar inverter" },
+  solar_enphase: { icon: "sun", t: "Enphase", s: "Solar inverter" },
+  solar_sma: { icon: "sun", t: "SMA", s: "Solar inverter" },
+  ev: { icon: "car", t: "Electric car", s: "Smart & V2G charging" }
+};
+function deviceMeta(d) {
+  return DEVICE_META[d.type] || { icon: "plug", t: d.brand || d.name || d.type, s: "Connected device" };
+}
+function ConnectionsScreen({ onAdd, nonce }) {
+  const [devices, setDevices] = useS(null);
+  React.useEffect(() => {
+    let alive = true;
+    fetch("/api/devices", { cache: "no-store" }).then((r) => r.ok ? r.json() : null).then((d) => {
+      if (alive) setDevices(Array.isArray(d) ? d : []);
+    }).catch(() => {
+      if (alive) setDevices([]);
+    });
+    return () => {
+      alive = false;
+    };
+  }, [nonce]);
+  const disconnect = (id) => {
+    setDevices((ds) => (ds || []).filter((d) => d.id !== id));
+    fetch("/api/devices/disconnect", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id }) }).catch(() => {
+    });
+  };
+  const list = devices || [];
+  return /* @__PURE__ */ React.createElement("div", { className: "screen" }, /* @__PURE__ */ React.createElement("div", { className: "screen-scroll" }, /* @__PURE__ */ React.createElement("div", { className: "rise", style: { display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: 18 } }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "scr-eyebrow" }, "Setup"), /* @__PURE__ */ React.createElement("h1", { className: "scr-title", style: { marginTop: 6 } }, "Connections")), /* @__PURE__ */ React.createElement("button", { className: "btn btn-primary btn-sm", style: { width: "auto" }, onClick: onAdd }, /* @__PURE__ */ React.createElement(Icon, { name: "plus", size: 18 }), " Add")), list.length > 0 && /* @__PURE__ */ React.createElement("div", { className: "card solid rise card-pad", style: { animationDelay: ".08s", marginBottom: 14 } }, list.map((d) => {
+    const m = deviceMeta(d);
+    return /* @__PURE__ */ React.createElement(
+      Row,
+      {
+        key: d.id,
+        icon: m.icon,
+        title: d.name || m.t,
+        sub: m.s,
+        right: /* @__PURE__ */ React.createElement("button", { onClick: () => disconnect(d.id), style: { border: "none", background: "none", color: "var(--ink-3)", fontSize: 12.5, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" } }, "Disconnect")
+      }
+    );
+  })), devices && list.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "card solid rise card-pad", style: { animationDelay: ".08s", marginBottom: 14, textAlign: "center", padding: "26px 18px" } }, /* @__PURE__ */ React.createElement("div", { className: "row-ic", style: { background: "var(--accent-tint)", margin: "0 auto 10px" } }, /* @__PURE__ */ React.createElement(Icon, { name: "plug", size: 22 })), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 15.5, fontWeight: 650, color: "var(--ink)" } }, "No devices connected yet"), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13, color: "var(--ink-2)", marginTop: 3 } }, "Connect your battery, solar, EV or contract to see live data.")), /* @__PURE__ */ React.createElement("button", { className: "card solid rise", onClick: onAdd, style: { animationDelay: ".16s", width: "100%", padding: 18, display: "flex", alignItems: "center", gap: 14, cursor: "pointer", border: "1.5px dashed var(--line)", background: "transparent" } }, /* @__PURE__ */ React.createElement("div", { className: "row-ic", style: { background: "var(--accent-tint)" } }, /* @__PURE__ */ React.createElement(Icon, { name: "plus", size: 22 })), /* @__PURE__ */ React.createElement("div", { style: { textAlign: "left" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 15.5, fontWeight: 650, color: "var(--ink)" } }, "Add a device"), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13, color: "var(--ink-2)" } }, "Battery, EV, heat pump & more")))));
 }
 Object.assign(window, { Dashboard, BatteryScreen, SavingsScreen, ConnectionsScreen });
