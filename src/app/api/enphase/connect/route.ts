@@ -9,14 +9,15 @@ export async function GET(request: Request) {
   const { data: { user } } = await supabase.auth.getUser()
   const origin = new URL(request.url).origin
 
+  const app = `${origin}/app/index.html`
   if (!user) {
-    return NextResponse.redirect(`${origin}/login`)
+    return NextResponse.redirect(app)
   }
 
   const redirectUri = `${origin}/api/enphase/callback`
   const authUrl = enphaseAuthUrl(redirectUri)
   if (!authUrl) {
-    return NextResponse.redirect(`${origin}/dashboard/koppelingen?enphase=unavailable`)
+    return NextResponse.redirect(`${app}?enphase=unavailable`)
   }
   return NextResponse.redirect(authUrl)
 }

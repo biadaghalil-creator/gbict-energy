@@ -8,11 +8,11 @@ import { exchangeEnphaseCode, getEnphaseSystems } from '@/lib/enphase'
 export async function GET(request: Request) {
   const url = new URL(request.url)
   const origin = url.origin
-  const koppelingen = `${origin}/dashboard/koppelingen`
+  const koppelingen = `${origin}/app/index.html`   // terug naar de app i.p.v. oude web-dashboard
 
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.redirect(`${origin}/login`)
+  if (!user) return NextResponse.redirect(koppelingen)
 
   const code = url.searchParams.get('code')
   const error = url.searchParams.get('error')

@@ -207,12 +207,27 @@ function AddSheet({ onClose, onConnected }) {
   const [vals, setVals] = useM({});
   const [busy, setBusy] = useM(false);
   const [err, setErr] = useM('');
+  const [intg, setIntg] = useM(null);     // welke OAuth-koppelingen zijn ingesteld
+  React.useEffect(() => {
+    let alive = true;
+    fetch('/api/integrations/status', { cache: 'no-store' }).then((r) => r.ok ? r.json() : null)
+      .then((d) => { if (alive) setIntg(d || {}); }).catch(() => { if (alive) setIntg({}); });
+    return () => { alive = false; };
+  }, []);
   const set = (k) => (e) => setVals((s) => ({ ...s, [k]: e.target.value }));
+
+  // OAuth pas tonen als de provider echt geconfigureerd is, anders "coming soon".
+  const oauthReady = (b) => b.key === 'ev' ? !!intg?.ev : b.key === 'solar_enphase' ? !!intg?.enphase : true;
+  const isSoon = (b) => b.method === 'soon' || (b.method === 'oauth' && intg && !oauthReady(b));
 
   const pick = (b) => {
     setErr('');
-    if (b.method === 'soon') { setErr(b.t + ' komt binnenkort beschikbaar.'); return; }
-    if (b.method === 'oauth') { window.location.href = b.url; return; }
+    if (isSoon(b)) { setErr(b.t + ' komt binnenkort beschikbaar.'); return; }
+    if (b.method === 'oauth') {
+      if (!intg) { setErr('Even laden…'); return; }
+      window.location.href = b.url;   // echte koppelpagina van de provider
+      return;
+    }
     setVals({}); setBrand(b);
   };
 
@@ -248,7 +263,7 @@ function AddSheet({ onClose, onConnected }) {
               {CONNECT_BRANDS.map((b, i) => (
                 <button key={i} className="card solid" onClick={() => pick(b)} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: 14, textAlign: 'left', cursor: 'pointer', border: '.5px solid var(--line)' }}>
                   <div className="row-ic"><Icon name={b.icon} size={21} /></div>
-                  <div style={{ flex: 1 }}><div style={{ fontSize: 15.5, fontWeight: 650, color: 'var(--ink)' }}>{b.t}</div><div style={{ fontSize: 13, color: 'var(--ink-2)', marginTop: 1 }}>{b.s}{b.method === 'soon' ? ' · coming soon' : ''}</div></div>
+                  <div style={{ flex: 1 }}><div style={{ fontSize: 15.5, fontWeight: 650, color: 'var(--ink)' }}>{b.t}</div><div style={{ fontSize: 13, color: 'var(--ink-2)', marginTop: 1 }}>{b.s}{isSoon(b) ? ' · coming soon' : ''}</div></div>
                   <Icon name="chevR" size={18} style={{ color: 'var(--ink-3)' }} />
                 </button>
               ))}

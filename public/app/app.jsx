@@ -57,6 +57,7 @@ function App() {
   const [dir, setDir] = useA('tab');           // push | pop | tab
   const [sheet, setSheet] = useA(false);
   const [connNonce, setConnNonce] = useA(0);   // bump → Connections herlaadt apparaten
+  const [toast, setToast] = useA('');
   const navSeq = useRefA(0);
 
   // mirror theme vars onto :root so flow.js (reads documentElement) recolors
@@ -87,6 +88,27 @@ function App() {
       .finally(() => { if (alive) setBooting(false); });
     return () => { alive = false; };
   }, []);
+
+  // Feedback na terugkeer uit een OAuth-koppeling (EV/Enphase) → toast + lijst verversen.
+  useEffA(() => {
+    try {
+      const q = new URLSearchParams(window.location.search);
+      const ev = q.get('ev'), en = q.get('enphase');
+      let msg = '';
+      if (ev === 'connected') msg = 'Auto gekoppeld ✓';
+      else if (ev === 'unavailable') msg = 'EV-koppeling is nog niet ingesteld.';
+      else if (ev === 'error') msg = 'EV koppelen mislukt — probeer opnieuw.';
+      else if (en === 'connected') msg = 'Enphase gekoppeld ✓';
+      else if (en === 'unavailable') msg = 'Enphase-koppeling is nog niet ingesteld.';
+      else if (en) msg = 'Enphase koppelen mislukt — probeer opnieuw.';
+      if (msg) {
+        setToast(msg);
+        setConnNonce((n) => n + 1);
+        window.history.replaceState({}, '', '/app/index.html');
+      }
+    } catch (e) {}
+  }, []);
+  useEffA(() => { if (!toast) return; const id = setTimeout(() => setToast(''), 3500); return () => clearTimeout(id); }, [toast]);
 
   const current = stack.length ? stack[stack.length - 1] : tab;
 
@@ -147,7 +169,12 @@ function App() {
         </div>
       )}
       {phase === 'app' && dockTab && <Dock tab={dockTab} onSelect={selectTab} />}
-      {phase === 'app' && sheet && <AddSheet onClose={() => setSheet(false)} onConnected={() => { setConnNonce((n) => n + 1); setSheet(false); }} />}
+      {phase === 'app' && sheet && <AddSheet onClose={() => setSheet(false)} onConnected={() => { setConnNonce((n) => n + 1); setSheet(false); setToast('Apparaat gekoppeld ✓'); }} />}
+      {toast && (
+        <div style={{ position: 'fixed', left: 0, right: 0, bottom: 'calc(96px + env(safe-area-inset-bottom))', display: 'flex', justifyContent: 'center', zIndex: 90, pointerEvents: 'none' }}>
+          <div style={{ background: 'var(--ink)', color: 'var(--bg)', padding: '10px 18px', borderRadius: 99, fontSize: 13.5, fontWeight: 600, boxShadow: 'var(--shadow-lg)' }}>{toast}</div>
+        </div>
+      )}
     </div>
   );
 }
