@@ -26,15 +26,6 @@ export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
   const { pathname } = request.nextUrl
 
-  // Oude *.vercel.app-URL doorsturen naar het echte domein, zodat er geen
-  // dubbele site live staat. Uitzondering: de iOS-app (/app) laadt nog vanaf
-  // vercel.app, en OAuth/webhook-callbacks lopen via /api — die laten we met
-  // rust zodat de app en koppelingen blijven werken.
-  const host = request.headers.get('host') || ''
-  if (host === 'gbict-energy.vercel.app' && !pathname.startsWith('/app') && !pathname.startsWith('/api')) {
-    return NextResponse.redirect(`https://gbict-energy.com${pathname}${request.nextUrl.search}`, 308)
-  }
-
   // Resolve the signed-in user only when Supabase is configured. A missing or
   // failing auth backend must NEVER take down the public site, so this is
   // best-effort: on any problem we treat the visitor as logged out and let the
