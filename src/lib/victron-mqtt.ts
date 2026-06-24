@@ -1,16 +1,16 @@
-// Victron VRM cloud MQTT — echte ESS-aansturing (setpoint schrijven).
+// Victron VRM cloud MQTT — real ESS control (writing the setpoint).
 // Spec: https://github.com/victronenergy/dbus-flashmq
 //
-// De VRM REST-API is read-only voor besturing; de cloud MQTT-broker laat wél
-// naar de ESS AC-power setpoint SCHRIJVEN. Voorwaarde: de installatie moet
-// "two-way communication / remote control" toestaan (VRM → installatie →
-// instellingen). Auth = VRM-token, identiek aan de REST-login.
+// The VRM REST API is read-only for control; the cloud MQTT broker does allow
+// WRITING to the ESS AC power setpoint. Requirement: the installation must
+// allow "two-way communication / remote control" (VRM → installation →
+// settings). Auth = VRM token, identical to the REST login.
 
 import mqtt, { type MqttClient } from 'mqtt'
 
 /**
- * Bepaal de juiste broker-host uit de VRM portal-ID:
- * som van de char-codes van de (lowercase) portal-ID, modulo 128.
+ * Determine the correct broker host from the VRM portal ID:
+ * sum of the char codes of the (lowercase) portal ID, modulo 128.
  */
 export function vrmBrokerHost(portalId: string): string {
   let sum = 0
@@ -19,13 +19,13 @@ export function vrmBrokerHost(portalId: string): string {
 }
 
 /**
- * Schrijf de ESS AC-power setpoint (in watt) via de VRM cloud MQTT-broker.
- *   positief  = vermogen uit het net halen (batterij laden)
- *   negatief  = terugleveren / ontladen
- * Auth: MQTT-user = VRM e-mail, wachtwoord = `Token <vrm-token>`.
+ * Write the ESS AC power setpoint (in watts) via the VRM cloud MQTT broker.
+ *   positive  = draw power from the grid (charge the battery)
+ *   negative  = feed back / discharge
+ * Auth: MQTT user = VRM email, password = `Token <vrm-token>`.
  *
- * Geeft true bij een geslaagde publish, anders false. Gooit nooit — de cron
- * mag hier nooit op stuklopen.
+ * Returns true on a successful publish, otherwise false. Never throws — the cron
+ * must never break on this.
  */
 export async function setVictronSetpointViaMqtt(opts: {
   portalId: string
@@ -56,7 +56,7 @@ export async function setVictronSetpointViaMqtt(opts: {
         username: email,
         password: `Token ${token}`,
         connectTimeout: timeoutMs,
-        reconnectPeriod: 0, // éénmalige publish — niet opnieuw verbinden
+        reconnectPeriod: 0, // one-time publish — don't reconnect
         protocolVersion: 4,
       })
     } catch {

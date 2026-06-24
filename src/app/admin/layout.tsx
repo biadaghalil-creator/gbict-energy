@@ -19,9 +19,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <div className="flex items-center gap-3">
             <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-500 text-sm font-bold text-white">G</div>
             <span className="text-sm font-semibold">GBICT Admin</span>
-            <span className="rounded-full bg-emerald-900/50 px-2 py-0.5 text-[10px] font-medium text-emerald-400">INTERN</span>
+            <span className="rounded-full bg-emerald-900/50 px-2 py-0.5 text-[10px] font-medium text-emerald-400">INTERNAL</span>
           </div>
-          <Link href="/dashboard" className="text-xs text-zinc-500 hover:text-zinc-300">← Terug naar dashboard</Link>
+          <Link href="/dashboard" className="text-xs text-zinc-500 hover:text-zinc-300">← Back to dashboard</Link>
         </div>
       </header>
       <main className="mx-auto max-w-7xl px-6 py-8">{children}</main>

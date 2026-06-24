@@ -47,7 +47,7 @@ export async function POST(req: Request) {
   const origin =
     process.env.NEXT_PUBLIC_SITE_URL ||
     req.headers.get('origin') ||
-    'https://gbict-energy.vercel.app'
+    'https://gbict-energy.com'
 
   try {
     const session = await stripe.checkout.sessions.create({

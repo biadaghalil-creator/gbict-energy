@@ -3,10 +3,10 @@ import { redirect } from 'next/navigation'
 import DashboardShell from './DashboardShell'
 import NoAccess from './NoAccess'
 
-// ── Toegang ────────────────────────────────────────────────────────────────
-// Tijdelijke privé-fase: ALLEEN deze gebruikers mogen de app in. De rest ziet
-// een "geen toegang"-scherm. Toegestane gebruikers krijgen volledige toegang
-// zonder betaal-gate (Stripe komt later). Voeg hier e-mails toe om door te laten.
+// ── Access ─────────────────────────────────────────────────────────────────
+// Temporary private phase: ONLY these users may enter the app. Everyone else
+// sees a "no access" screen. Allowed users get full access without a payment
+// gate (Stripe comes later). Add emails here to let them through.
 const ALLOWED_EMAILS = ['ghalil@gbict.nl']
 
 export default async function DashboardLayout({
@@ -23,8 +23,8 @@ export default async function DashboardLayout({
 
   const email = (user.email ?? '').trim().toLowerCase()
   if (!ALLOWED_EMAILS.includes(email)) {
-    // Niemand anders mag er nu in. Geen redirect (voorkomt loops) — gewoon
-    // een duidelijk scherm met de mogelijkheid om uit te loggen.
+    // No one else may enter right now. No redirect (prevents loops) — just
+    // a clear screen with the option to sign out.
     return <NoAccess email={user.email ?? ''} />
   }
 

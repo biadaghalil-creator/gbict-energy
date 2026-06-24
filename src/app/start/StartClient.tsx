@@ -4,8 +4,8 @@ import { useState } from 'react'
 import { Check, Loader2 } from 'lucide-react'
 
 const PLAN_OPTIONS = [
-  { id: 'starter', name: 'Starter', price: 15, features: ['1 batterij + 1 meter', 'Automatische optimalisatie', 'Besparingsoverzicht'] },
-  { id: 'pro', name: 'Pro', price: 25, features: ['Onbeperkt apparaten', 'Zonne-optimalisatie', 'VPP / virtueel energienet', 'Prioriteit support'] },
+  { id: 'starter', name: 'Starter', price: 15, features: ['1 battery + 1 meter', 'Automatic optimization', 'Savings overview'] },
+  { id: 'pro', name: 'Pro', price: 25, features: ['Unlimited devices', 'Solar optimization', 'VPP / virtual power plant', 'Priority support'] },
 ] as const
 
 export default function StartClient() {
@@ -23,9 +23,9 @@ export default function StartClient() {
       })
       const data = await res.json()
       if (data.url) window.location.href = data.url
-      else { setError(data.error ?? 'Er ging iets mis.'); setLoading(null) }
+      else { setError(data.error ?? 'Something went wrong.'); setLoading(null) }
     } catch {
-      setError('Kon de betaalpagina niet openen.')
+      setError('Could not open the payment page.')
       setLoading(null)
     }
   }
@@ -33,10 +33,10 @@ export default function StartClient() {
   return (
     <div className="w-full max-w-2xl">
       <div className="text-center">
-        <h1 className="text-[26px] font-extrabold tracking-tight text-[var(--text)]">Start je proefperiode</h1>
+        <h1 className="text-[26px] font-extrabold tracking-tight text-[var(--text)]">Start your trial</h1>
         <p className="mt-2 text-[14px] text-[var(--text-muted)]">
-          14 dagen gratis. Je betaalt nu niets — we leggen alleen je kaart vast. Daarna {''}
-          maandelijks opzegbaar.
+          14 days free. You pay nothing now — we only save your card. After that, {''}
+          cancel anytime, monthly.
         </p>
       </div>
 
@@ -45,7 +45,7 @@ export default function StartClient() {
           <div key={p.id} className="flex flex-col rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 backdrop-blur">
             <div className="flex items-baseline justify-between">
               <span className="text-[16px] font-bold text-[var(--text)]">{p.name}</span>
-              <span className="text-[16px] font-bold text-[var(--text)]">€{p.price}<span className="text-[12px] font-medium text-[var(--text-faint)]">/mnd</span></span>
+              <span className="text-[16px] font-bold text-[var(--text)]">€{p.price}<span className="text-[12px] font-medium text-[var(--text-faint)]">/mo</span></span>
             </div>
             <ul className="mt-4 flex-1 space-y-2">
               {p.features.map((f) => (
@@ -61,7 +61,7 @@ export default function StartClient() {
               className="mt-6 inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#047857] px-6 text-[15px] font-semibold text-white transition-colors hover:bg-[#059669] disabled:opacity-50"
             >
               {loading === p.id && <Loader2 className="h-4 w-4 animate-spin" />}
-              Start 14 dagen gratis
+              Start 14 days free
             </button>
           </div>
         ))}

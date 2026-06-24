@@ -31,12 +31,12 @@ export default function SavingsCards() {
 
   return (
     <>
-      {/* Vandaag bespaard */}
+      {/* Saved today */}
       <Card className="border-[var(--border)] bg-[var(--surface)]">
         <CardHeader className="pb-2">
           <CardTitle className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-[var(--text-faint)]">
             <TrendingDown className="h-3.5 w-3.5" />
-            Vandaag bespaard
+            Saved today
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -49,21 +49,21 @@ export default function SavingsCards() {
               </p>
               <p className="mt-1 text-xs text-[var(--text-faint)]">
                 {data && data.logs_today > 0
-                  ? `${data.discharge_count}× ontladen · ${data.charge_count}× geladen`
-                  : 'Nog geen acties vandaag'}
+                  ? `${data.discharge_count}× discharged · ${data.charge_count}× charged`
+                  : 'No actions yet today.'}
               </p>
             </>
           )}
         </CardContent>
       </Card>
 
-      {/* Deze maand */}
+      {/* This month */}
       <Link href="/dashboard/besparingen" className="block">
         <Card className="h-full border-[var(--border)] bg-[var(--surface)] transition-colors hover:border-emerald-800/50 hover:bg-[var(--surface)]">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-[var(--text-faint)]">
               <TrendingUp className="h-3.5 w-3.5" />
-              Deze maand
+              This month
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -76,8 +76,8 @@ export default function SavingsCards() {
                 </p>
                 <p className="mt-1 text-xs text-[var(--text-faint)]">
                   {data && data.total_eur > 0
-                    ? `Totaal ooit: ${fmt(data.total_eur)}`
-                    : 'Koppel Sessy voor automatisch besparen'}
+                    ? `All-time total: ${fmt(data.total_eur)}`
+                    : 'Connect Sessy to save automatically.'}
                 </p>
               </>
             )}

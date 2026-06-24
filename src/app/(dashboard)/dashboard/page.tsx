@@ -10,8 +10,8 @@ export default async function DashboardPage() {
     .from('profiles').select('onboarding_completed').eq('id', user.id).single()
   if (!profile?.onboarding_completed) redirect('/onboarding')
 
-  // De webdashboard-weergave = exact het door de gebruiker aangeleverde design
-  // (public/webapp/, GBICT-WEBAPP33) — niet nagebouwd. De toegang is al
-  // afgeschermd door (dashboard)/layout.tsx (alleen toegestane e-mails).
+  // The web dashboard view = exactly the design provided by the user
+  // (public/webapp/, GBICT-WEBAPP33) — not rebuilt. Access is already
+  // restricted by (dashboard)/layout.tsx (allowed emails only).
   redirect('/webapp/index.html')
 }

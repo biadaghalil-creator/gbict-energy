@@ -16,16 +16,16 @@ const tabs: { href: string; key: keyof TranslationDict['dashboard']['nav']; icon
   { href: '/dashboard/instellingen', key: 'profile',     icon: Settings },
 ]
 
-// Eén cirkel-slot is 56px breed (w-14); de actieve highlight schuift hierlangs.
+// Each circular slot is 56px wide (w-14); the active highlight slides along it.
 const SLOT = 56
 
 /**
- * Zwevende, ronde bottom-navigatie — ALLEEN in de native app.
- * Een glazen pill die onderaan los van de schermrand zweeft, met een
- * vloeiend schuivende 3D emerald-orb achter het actieve icoon. Kleurt
- * automatisch mee met light/dark (de --surface/--border/--text variabelen
- * wisselen met de tijd van dag — zie ThemeController). Op het web verschijnt
- * deze balk niet; daar staat de horizontale topbalk.
+ * Floating, rounded bottom navigation — ONLY in the native app.
+ * A glass pill that floats free of the screen edge at the bottom, with a
+ * smoothly sliding 3D emerald orb behind the active icon. It adapts
+ * automatically to light/dark (the --surface/--border/--text variables
+ * change with the time of day — see ThemeController). It does not appear on
+ * the web; the horizontal top bar is used there instead.
  */
 export default function NativeTabBar() {
   const native = useIsNative()
@@ -41,7 +41,7 @@ export default function NativeTabBar() {
   return (
     <nav
       className="pointer-events-none fixed inset-x-0 bottom-0 z-[60] flex justify-center pb-[calc(env(safe-area-inset-bottom)+14px)]"
-      aria-label="Hoofdnavigatie"
+      aria-label="Main navigation"
     >
       <div
         className="pointer-events-auto relative flex rounded-full bg-[var(--surface)] p-1.5 backdrop-blur-2xl"
@@ -51,7 +51,7 @@ export default function NativeTabBar() {
             '0 12px 34px -10px rgba(2,6,23,0.35), 0 6px 18px -10px rgba(16,185,129,0.45), inset 0 1px 0 rgba(255,255,255,0.10), 0 0 0 1px var(--border)',
         }}
       >
-        {/* Vloeiend schuivende 3D emerald-orb achter het actieve icoon */}
+        {/* Smoothly sliding 3D emerald orb behind the active icon */}
         <span
           aria-hidden
           className={cn(

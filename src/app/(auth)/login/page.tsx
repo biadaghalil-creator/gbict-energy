@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 
-// De web-login = exact het door de gebruiker aangeleverde design (public/auth/).
+// The web login = exactly the design provided by the user (public/auth/).
 export default function LoginPage() {
   redirect('/auth/web-login.html')
 }

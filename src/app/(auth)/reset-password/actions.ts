@@ -12,7 +12,7 @@ export async function updatePassword(formData: FormData) {
     const { error } = await supabase.auth.updateUser({ password })
     if (error) errorMessage = error.message
   } catch (e) {
-    errorMessage = e instanceof Error ? e.message : 'Onbekende fout'
+    errorMessage = e instanceof Error ? e.message : 'Something went wrong.'
   }
 
   if (errorMessage) {

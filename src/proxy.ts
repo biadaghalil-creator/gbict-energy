@@ -16,6 +16,12 @@ function detectLocale(acceptLanguage: string | null): Locale {
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
+// Privé-fase: alleen deze e-mails mogen het dashboard in (zelfde lijst als
+// (dashboard)/layout.tsx en /api/auth/me). Toegestane gebruikers sturen we
+// rechtstreeks naar het nieuwe statische dashboard, zonder de oude React-shell
+// te renderen (anders flitst het oude dashboard eerst in beeld).
+const ALLOWED_EMAILS = ['ghalil@gbict.nl']
+
 export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
   const { pathname } = request.nextUrl
@@ -75,6 +81,17 @@ export async function proxy(request: NextRequest) {
     const loginUrl = request.nextUrl.clone()
     loginUrl.pathname = '/login'
     return NextResponse.redirect(loginUrl)
+  }
+
+  // Ingelogde, toegestane gebruiker op /dashboard → direct naar het nieuwe
+  // statische dashboard (public/webapp). Voorkomt dat de oude React-shell
+  // eerst rendert. Niet-toegestane gebruikers vallen door naar /dashboard,
+  // dat dan het "geen toegang"-scherm toont (geen redirect-loop).
+  if (user && pathname === '/dashboard') {
+    const email = (user.email ?? '').trim().toLowerCase()
+    if (ALLOWED_EMAILS.includes(email)) {
+      return NextResponse.redirect(new URL('/webapp/index.html', request.url))
+    }
   }
 
   // Ingelogde gebruikers wegsturen van auth-pagina's

@@ -3,23 +3,23 @@ import Image from 'next/image'
 import { Code, Cloud, Globe, Monitor, Wrench, Bot } from 'lucide-react'
 
 export const metadata = {
-  title: 'Over GBICT — Nederlands softwarebedrijf',
-  description: 'GBICT is een Nederlands softwarebedrijf. We bouwen apps, platforms en AI-oplossingen voor bedrijven die willen groeien.',
+  title: 'About GBICT — Dutch software company',
+  description: 'GBICT is a Dutch software company. We build apps, platforms, and AI solutions for businesses that want to grow.',
 }
 
 const services = [
-  { icon: Code, title: 'Softwareontwikkeling', description: 'Van idee tot werkende app. Web, mobiel of intern platform — volledig op maat gebouwd.', color: 'rgba(250,204,21,0.1)' },
-  { icon: Cloud, title: 'Cloud oplossingen', description: 'Schaalbare infrastructuur die meegroeit met je bedrijf. Kosten omlaag, betrouwbaarheid omhoog.', color: 'rgba(34,211,238,0.1)' },
-  { icon: Globe, title: 'Websites', description: 'Snelle, mooie websites die écht converteren. Geen templates — gebouwd op jouw merk.', color: 'rgba(99,102,241,0.1)' },
-  { icon: Monitor, title: 'Werkplekbeheer', description: 'Je IT-omgeving, volledig geregeld. Zonder gedoe, zonder verrassingen op de factuur.', color: 'rgba(52,211,153,0.1)' },
-  { icon: Wrench, title: 'Technische support', description: 'Directe hulp als er iets misgaat. Geen wachttijden, geen callcenters — wij zijn bereikbaar.', color: 'rgba(168,85,247,0.1)' },
-  { icon: Bot, title: 'AI & Data', description: 'Slimme oplossingen die je processen automatiseren. Van chatbots tot voorspellende modellen.', color: 'rgba(251,146,60,0.1)' },
+  { icon: Code, title: 'Software development', description: 'From idea to working app. Web, mobile, or internal platform — fully custom-built.', color: 'rgba(250,204,21,0.1)' },
+  { icon: Cloud, title: 'Cloud solutions', description: 'Scalable infrastructure that grows with your business. Lower costs, higher reliability.', color: 'rgba(34,211,238,0.1)' },
+  { icon: Globe, title: 'Websites', description: 'Fast, beautiful websites that actually convert. No templates — built around your brand.', color: 'rgba(99,102,241,0.1)' },
+  { icon: Monitor, title: 'Workplace management', description: 'Your IT environment, fully taken care of. No hassle, no surprises on the invoice.', color: 'rgba(52,211,153,0.1)' },
+  { icon: Wrench, title: 'Technical support', description: 'Immediate help when something goes wrong. No waiting times, no call centers — we are reachable.', color: 'rgba(168,85,247,0.1)' },
+  { icon: Bot, title: 'AI & Data', description: 'Smart solutions that automate your processes. From chatbots to predictive models.', color: 'rgba(251,146,60,0.1)' },
 ]
 
 const whyUs = [
-  { title: 'Op maat', description: 'Geen templates, geen standaard-pakketten. Alles gebouwd voor jouw situatie, jouw processen, jouw schaal.' },
-  { title: 'Nederlandstalig', description: 'Directe communicatie, geen tussenpersonen. Je praat altijd met de mensen die het daadwerkelijk bouwen.' },
-  { title: 'Van idee tot live', description: 'We begeleiden het hele traject — van eerste schets tot live product en verdere doorontwikkeling.' },
+  { title: 'Tailor-made', description: 'No templates, no off-the-shelf packages. Everything built for your situation, your processes, your scale.' },
+  { title: 'Direct communication', description: 'Direct communication, no middlemen. You always talk to the people who actually build it.' },
+  { title: 'From idea to live', description: 'We guide the entire journey — from first sketch to a live product and ongoing development.' },
 ]
 
 export default function AboutPage() {
@@ -47,7 +47,7 @@ export default function AboutPage() {
           </nav>
           <a href="https://gbict.nl" target="_blank" rel="noopener noreferrer"
             className="btn-3d-sm">
-            Ga naar gbict.nl →
+            Go to gbict.nl →
           </a>
         </div>
       </header>
@@ -63,21 +63,21 @@ export default function AboutPage() {
           <div className="relative mx-auto max-w-6xl px-6 py-28 md:py-40">
             <div className="mb-8 inline-flex items-center gap-2.5 rounded-full badge-glow px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-emerald-300">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              Nederlands softwarebedrijf
+              Dutch software company
             </div>
 
             <div className="flex flex-col gap-10 md:flex-row md:items-center">
               <div className="flex-1 max-w-3xl">
                 <h1 className="text-5xl font-extrabold tracking-tight md:text-7xl"
                   style={{ letterSpacing: '-0.03em' }}>
-                  <span className="text-[var(--text)]">Wij bouwen software</span>
+                  <span className="text-[var(--text)]">We build software</span>
                   <br />
-                  <span className="text-gradient-blue">die werkt</span>
+                  <span className="text-gradient-blue">that works</span>
                 </h1>
                 <p className="mt-7 max-w-xl text-lg leading-relaxed text-[var(--text-muted)]">
-                  GBICT is een Nederlands softwarebedrijf. We bouwen apps, platforms en AI-oplossingen
-                  voor bedrijven die willen groeien. Geen standaard software — alles op maat,
-                  voor jouw situatie.
+                  GBICT is a Dutch software company. We build apps, platforms, and AI solutions
+                  for businesses that want to grow. No off-the-shelf software — everything tailor-made,
+                  for your situation.
                 </p>
               </div>
 
@@ -98,15 +98,15 @@ export default function AboutPage() {
             <div className="mt-14 flex flex-wrap gap-4">
               <div className="glow-card px-8 py-5">
                 <p className="text-gradient-gold font-extrabold" style={{ fontSize: '2rem', lineHeight: 1, letterSpacing: '-0.04em' }}>8+</p>
-                <p className="mt-1.5 text-sm text-[var(--text-muted)]">jaar ervaring</p>
+                <p className="mt-1.5 text-sm text-[var(--text-muted)]">years of experience</p>
               </div>
               <div className="glow-card px-8 py-5">
                 <p className="text-gradient-gold font-extrabold" style={{ fontSize: '2rem', lineHeight: 1, letterSpacing: '-0.04em' }}>100+</p>
-                <p className="mt-1.5 text-sm text-[var(--text-muted)]">projecten opgeleverd</p>
+                <p className="mt-1.5 text-sm text-[var(--text-muted)]">projects delivered</p>
               </div>
               <div className="glow-card px-8 py-5">
                 <p className="text-gradient-blue font-extrabold" style={{ fontSize: '2rem', lineHeight: 1, letterSpacing: '-0.04em' }}>NL</p>
-                <p className="mt-1.5 text-sm text-[var(--text-muted)]">gevestigd in Nederland</p>
+                <p className="mt-1.5 text-sm text-[var(--text-muted)]">based in the Netherlands</p>
               </div>
             </div>
           </div>
@@ -114,14 +114,14 @@ export default function AboutPage() {
 
         {/* ── SERVICES ─────────────────────────────────────── */}
         <section className="mx-auto max-w-6xl px-6 py-28">
-          <div className="mb-4 text-xs font-bold uppercase tracking-widest text-emerald-400">Diensten</div>
+          <div className="mb-4 text-xs font-bold uppercase tracking-widest text-emerald-400">Services</div>
           <h2 className="text-4xl font-extrabold tracking-tight text-[var(--text)] md:text-5xl max-w-2xl"
             style={{ letterSpacing: '-0.03em' }}>
-            Wat we doen
+            What we do
           </h2>
           <p className="mt-5 max-w-2xl text-[var(--text-muted)] leading-relaxed">
-            Van software-ontwikkeling tot cloud-infrastructuur en AI — we dekken het hele spectrum
-            van digitale oplossingen.
+            From software development to cloud infrastructure and AI — we cover the entire spectrum
+            of digital solutions.
           </p>
           <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {services.map((service) => {
@@ -154,7 +154,7 @@ export default function AboutPage() {
               }}>
               <div className="mb-5">
                 <span className="inline-flex items-center rounded-full badge-glow px-3 py-1 text-xs font-bold text-emerald-300 uppercase tracking-widest">
-                  Ons nieuwste product
+                  Our newest product
                 </span>
               </div>
               <div className="flex flex-col gap-10 md:flex-row md:items-center">
@@ -167,13 +167,13 @@ export default function AboutPage() {
                     </h2>
                   </div>
                   <p className="text-[var(--text-muted)] leading-relaxed max-w-xl">
-                    We bouwen niet alleen voor klanten — we bouwen ook eigen producten. GBICT Energy is
-                    ons eerste SaaS-platform voor de energiemarkt. Het optimaliseert thuisbatterijen
-                    automatisch op basis van dynamische energieprijzen en helpt huishoudens en bedrijven
-                    fors besparen op hun energierekening.
+                    We do not just build for clients — we build our own products too. GBICT Energy is
+                    our first SaaS platform for the energy market. It optimizes home batteries
+                    automatically based on dynamic energy prices and helps households and businesses
+                    save significantly on their energy bill.
                   </p>
                   <div className="mt-6 flex flex-wrap gap-2">
-                    {['Thuisbatterij-optimalisatie', 'Dynamische energieprijzen', 'Virtueel Powerplant (VPP)', 'Hardware-agnostisch'].map(tag => (
+                    {['Home battery optimization', 'Dynamic energy prices', 'Virtual power plant (VPP)', 'Hardware-agnostic'].map(tag => (
                       <span key={tag} className="rounded-full border border-[var(--border)] bg-[var(--surface-2)] px-3 py-1 text-xs text-[var(--text-muted)]">
                         {tag}
                       </span>
@@ -182,7 +182,7 @@ export default function AboutPage() {
                 </div>
                 <div className="flex-shrink-0">
                   <Link href="/" className="btn-3d-primary">
-                    Bekijk GBICT Energy →
+                    View GBICT Energy →
                   </Link>
                 </div>
               </div>
@@ -192,10 +192,10 @@ export default function AboutPage() {
 
         {/* ── WHY GBICT ────────────────────────────────────── */}
         <section className="mx-auto max-w-6xl px-6 py-28">
-          <div className="mb-4 text-xs font-bold uppercase tracking-widest text-emerald-400">Waarom wij</div>
+          <div className="mb-4 text-xs font-bold uppercase tracking-widest text-emerald-400">Why us</div>
           <h2 className="text-4xl font-extrabold tracking-tight text-[var(--text)] mb-14"
             style={{ letterSpacing: '-0.03em' }}>
-            Waarom{' '}
+            Why{' '}
             <span className="text-gradient-blue">GBICT?</span>
           </h2>
           <div className="grid gap-8 md:grid-cols-3">
@@ -219,20 +219,20 @@ export default function AboutPage() {
           <div className="relative mx-auto max-w-2xl px-6 text-center">
             <h2 className="text-4xl font-extrabold tracking-tight text-white md:text-5xl"
               style={{ letterSpacing: '-0.03em' }}>
-              Heb je een{' '}
+              Have a{' '}
               <span className="text-gradient-blue">project?</span>
             </h2>
             <p className="mt-5 text-lg text-[var(--text-muted)] leading-relaxed">
-              Plan een gesprek in en vertel ons wat je wil bouwen.
-              We reageren binnen één werkdag.
+              Schedule a call and tell us what you want to build.
+              We respond within one business day.
             </p>
             <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
               <a href="https://gbict.nl" target="_blank" rel="noopener noreferrer"
                 className="btn-3d-primary">
-                Stuur ons een bericht →
+                Send us a message →
               </a>
               <Link href="/" className="btn-3d-secondary">
-                GBICT Energy bekijken
+                View GBICT Energy
               </Link>
             </div>
           </div>

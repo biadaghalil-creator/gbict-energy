@@ -239,19 +239,21 @@
     const password = document.getElementById('password').value;
     const btn = document.getElementById('submit');
     const orig = btn.textContent;
-    btn.textContent = 'Even geduld…'; btn.disabled = true;
+    btn.textContent = 'Please wait…'; btn.disabled = true;
     try {
       const res = await fetch('/api/auth/' + mode, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) { authMsg(data.error || 'Er ging iets mis', false); btn.textContent = orig; btn.disabled = false; return; }
-      if (mode === 'signup' && data.needsConfirm) { authMsg('Check je e-mail om je account te bevestigen.', true); btn.textContent = orig; btn.disabled = false; return; }
+      if (!res.ok) { authMsg(data.error || 'Something went wrong.', false); btn.textContent = orig; btn.disabled = false; return; }
+      if (mode === 'signup' && data.needsConfirm) { authMsg('Check your email to confirm your account.', true); btn.textContent = orig; btn.disabled = false; return; }
+      // Create account → set up profile; sign in → straight to the dashboard.
+      if (mode === 'signup') { window.location.href = '/auth/web-profile.html?email=' + encodeURIComponent(email); return; }
       window.location.href = '/dashboard';
-    } catch { authMsg('Geen verbinding. Probeer opnieuw.', false); btn.textContent = orig; btn.disabled = false; }
+    } catch { authMsg('No connection. Please try again.', false); btn.textContent = orig; btn.disabled = false; }
   });
-  document.getElementById('sso').addEventListener('click', () => authMsg('iDIN-login komt binnenkort.', true));
+  document.getElementById('sso').addEventListener('click', () => authMsg('iDIN sign-in is coming soon.', true));
 
   window.lucide && window.lucide.createIcons();
 </script>

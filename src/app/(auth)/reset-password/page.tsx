@@ -15,10 +15,10 @@ export default async function ResetPasswordPage({
   return (
     <div className="rounded-[28px] border border-[rgba(33,29,22,0.07)] bg-white px-8 py-9 shadow-[0_2px_6px_rgba(33,29,22,0.06),0_24px_60px_rgba(33,29,22,0.10)]">
       <h1 className="text-[26px] font-bold leading-tight tracking-[-0.03em] text-[#211D16]">
-        Nieuw wachtwoord instellen
+        Set a new password
       </h1>
       <p className="mt-2 text-[14.5px] leading-relaxed text-[#5C5648]">
-        Kies een nieuw wachtwoord voor je account.
+        Choose a new password for your account.
       </p>
 
       <form action={updatePassword} className="mt-7 flex flex-col gap-5">
@@ -30,11 +30,11 @@ export default async function ResetPasswordPage({
 
         <div>
           <label htmlFor="password" className="mb-1.5 block text-sm font-semibold text-[#5C5648]">
-            Nieuw wachtwoord
+            New password
           </label>
           <input
             id="password" name="password" type="password"
-            placeholder="Minimaal 8 tekens" required minLength={8}
+            placeholder="At least 8 characters" required minLength={8}
             className={inputCls}
           />
         </div>
@@ -43,13 +43,13 @@ export default async function ResetPasswordPage({
           type="submit"
           className="mt-1 inline-flex w-full items-center justify-center rounded-full bg-[#2F5D3A] px-7 py-3.5 text-[16px] font-semibold tracking-[-0.01em] text-white shadow-[0_8px_20px_rgba(47,93,58,0.32)] transition hover:bg-[#24492D] active:scale-[0.98]"
         >
-          Wachtwoord opslaan
+          Save password
         </button>
       </form>
 
       <p className="mt-7 text-center text-sm text-[#5C5648]">
         <Link href="/login" className="font-semibold text-[#2F5D3A] transition-colors hover:text-[#24492D]">
-          Terug naar inloggen
+          Back to sign in
         </Link>
       </p>
     </div>

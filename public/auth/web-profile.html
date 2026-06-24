@@ -207,8 +207,36 @@
     this.setAttribute('data-lucide', show ? 'eye-off' : 'eye'); window.lucide && window.lucide.createIcons();
   });
 
-  // finish → dashboard
-  document.getElementById('profileform').addEventListener('submit', e => { e.preventDefault(); window.location.href = 'web-login.html'; });
+  // prefill email from the sign-up step (?email=) and lock it
+  try {
+    const qEmail = new URLSearchParams(location.search).get('email');
+    if (qEmail) { const em = document.getElementById('email'); em.value = qEmail; em.readOnly = true; }
+  } catch (_) {}
+
+  // finish → echte profiel-opslag (Supabase) → dashboard
+  function profMsg(text, ok) { const p = document.querySelector('.note'); p.textContent = text; p.style.color = ok ? 'var(--accent-deep)' : '#C2702C'; }
+  document.getElementById('profileform').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = e.target.querySelector('button[type="submit"]');
+    const orig = btn.innerHTML;
+    btn.disabled = true; btn.textContent = 'Please wait…';
+    const chip = k => { const c = document.querySelector('#chips .chip[data-k="' + k + '"]'); return !!(c && c.classList.contains('on')); };
+    const body = {
+      postcode: document.getElementById('post').value.trim(),
+      has_battery: chip('battery'),
+      has_solar: chip('solar'),
+      has_meter: chip('meter'),
+    };
+    try {
+      const res = await fetch('/api/auth/profile', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) { profMsg(data.error || 'Saving failed. Please try again.', false); btn.disabled = false; btn.innerHTML = orig; window.lucide && window.lucide.createIcons(); return; }
+      window.location.href = '/dashboard';
+    } catch (_) { profMsg('No connection. Please try again.', false); btn.disabled = false; btn.innerHTML = orig; window.lucide && window.lucide.createIcons(); }
+  });
 
   window.lucide && window.lucide.createIcons();
 </script>

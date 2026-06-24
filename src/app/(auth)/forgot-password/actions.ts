@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 
 export async function requestReset(formData: FormData) {
   const email = formData.get('email') as string
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://gbict-energy.vercel.app'
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://gbict-energy.com'
 
   let errorMessage: string | null = null
   try {
@@ -15,7 +15,7 @@ export async function requestReset(formData: FormData) {
     })
     if (error) errorMessage = error.message
   } catch (e) {
-    errorMessage = e instanceof Error ? e.message : 'Onbekende fout'
+    errorMessage = e instanceof Error ? e.message : 'Something went wrong.'
   }
 
   if (errorMessage) {

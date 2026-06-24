@@ -14,9 +14,9 @@ type DashboardData = TibberPriceData & {
 }
 
 const levelConfig = {
-  low:    { label: 'Goedkoop',  barColor: 'bg-emerald-400', textColor: 'text-emerald-400' },
-  normal: { label: 'Normaal', barColor: 'bg-amber-400',   textColor: 'text-amber-400'   },
-  high:   { label: 'Piek',   barColor: 'bg-red-400',     textColor: 'text-red-400'     },
+  low:    { label: 'Cheap',  barColor: 'bg-emerald-400', textColor: 'text-emerald-400' },
+  normal: { label: 'Normal', barColor: 'bg-amber-400',   textColor: 'text-amber-400'   },
+  high:   { label: 'Peak',   barColor: 'bg-red-400',     textColor: 'text-red-400'     },
 }
 
 export default function TibberData() {
@@ -43,7 +43,7 @@ export default function TibberData() {
       {/* Current price card */}
       <div className="overflow-hidden rounded-[26px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_2px_26px_-16px_rgba(20,24,15,0.30)] p-6">
         <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--text-faint)]">
-          Spotprijs nu
+          Spot price now
         </p>
         {loading ? (
           <Skeleton className="mt-3 h-10 w-28 bg-[var(--surface-2)]" />
@@ -117,7 +117,7 @@ export default function TibberData() {
               ))}
           </div>
           <p className="mt-5 text-[11.5px] text-[var(--text-faint)]">
-            Het schema wordt dagelijks bijgewerkt op basis van EPEX-spotprijzen.
+            The schedule is updated daily based on EPEX spot prices.
           </p>
         </div>
       )}
@@ -173,7 +173,7 @@ export default function TibberData() {
       {!loading && tomorrowPrices.length === 0 && todayPrices.length > 0 && (
         <div className="col-span-full rounded-2xl border border-dashed border-[var(--border)] bg-[var(--surface)]/50 p-5 text-center">
           <p className="text-[12.5px] text-[var(--text-faint)]">
-            De prijzen van morgen verschijnen tussen 13:00 en 15:00.
+            Tomorrow's prices appear between 1:00 PM and 3:00 PM.
           </p>
         </div>
       )}

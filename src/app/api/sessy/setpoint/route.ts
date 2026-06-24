@@ -21,11 +21,11 @@ export async function POST(req: Request) {
     .maybeSingle()
 
   if (!device?.config?.username || !device?.config?.password) {
-    return NextResponse.json({ ok: false, error: 'Geen Sessy gekoppeld' }, { status: 400 })
+    return NextResponse.json({ ok: false, error: 'No Sessy connected.' }, { status: 400 })
   }
 
   const tokenData = await getSessyToken(device.config.username, device.config.password)
-  if (!tokenData) return NextResponse.json({ ok: false, error: 'Sessy login mislukt' }, { status: 500 })
+  if (!tokenData) return NextResponse.json({ ok: false, error: 'Sessy sign-in failed.' }, { status: 500 })
 
   const ok = await setSessySetpoint(tokenData.access_token, setpoint)
   return NextResponse.json({ ok })

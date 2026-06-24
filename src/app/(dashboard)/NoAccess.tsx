@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation'
 import { Lock } from 'lucide-react'
 
 /**
- * Getoond aan ingelogde gebruikers die (nog) geen toegang hebben tijdens de
- * privé-fase. Geen redirect — voorkomt login-loops. Wel uitloggen mogelijk.
+ * Shown to signed-in users who do not (yet) have access during the
+ * private phase. No redirect — prevents login loops. Signing out is allowed.
  */
 export default function NoAccess({ email }: { email: string }) {
   const router = useRouter()
@@ -24,17 +24,17 @@ export default function NoAccess({ email }: { email: string }) {
         <Lock className="h-7 w-7 text-emerald-500" />
       </div>
       <h1 className="mt-6 text-2xl font-extrabold tracking-tight text-[var(--text)]">
-        Nog geen toegang
+        No access
       </h1>
       <p className="mt-3 max-w-sm text-sm text-[var(--text-muted)]">
-        GBICT Energy is op dit moment alleen voor genodigden. Je account
-        {email ? ` (${email})` : ''} staat nog niet op de lijst.
+        GBICT Energy is currently invite-only. Your account
+        {email ? ` (${email})` : ''} is not on the list yet.
       </p>
       <button
         onClick={handleLogout}
         className="mt-8 rounded-full bg-emerald-600 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-emerald-700"
       >
-        Uitloggen
+        Sign out
       </button>
     </div>
   )

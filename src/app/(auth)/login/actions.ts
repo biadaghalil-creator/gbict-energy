@@ -13,7 +13,7 @@ export async function login(formData: FormData) {
     const { error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) errorMessage = error.message
   } catch (e) {
-    errorMessage = e instanceof Error ? e.message : 'Onbekende fout bij inloggen'
+    errorMessage = e instanceof Error ? e.message : 'An unknown error occurred while signing in.'
   }
 
   if (errorMessage) {

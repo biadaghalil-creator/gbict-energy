@@ -6,9 +6,9 @@ export const runtime = 'nodejs'
 export async function POST(req: Request) {
   let email = '', password = ''
   try { ({ email, password } = await req.json()) } catch { /* ignore */ }
-  if (!email || !password) return NextResponse.json({ error: 'Vul je e-mail en wachtwoord in.' }, { status: 400 })
-  if (password.length < 6) return NextResponse.json({ error: 'Wachtwoord moet minstens 6 tekens zijn.' }, { status: 400 })
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://gbict-energy.vercel.app'
+  if (!email || !password) return NextResponse.json({ error: 'Please enter your email and password.' }, { status: 400 })
+  if (password.length < 6) return NextResponse.json({ error: 'Password must be at least 6 characters.' }, { status: 400 })
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://gbict-energy.com'
   const supabase = await createClient()
   const { data, error } = await supabase.auth.signUp({
     email: email.trim(), password,

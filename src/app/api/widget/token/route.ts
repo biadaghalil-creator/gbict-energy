@@ -12,6 +12,6 @@ export async function GET() {
 
   return NextResponse.json({
     token: signWidgetToken(user.id),
-    baseUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://gbict-energy.vercel.app',
+    baseUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://gbict-energy.com',
   })
 }

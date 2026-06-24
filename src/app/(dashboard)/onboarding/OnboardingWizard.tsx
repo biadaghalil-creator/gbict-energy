@@ -94,7 +94,7 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
     },
   ]
 
-  // Step 1 — Welkom
+  // Step 1 — Welcome
   if (step === 1) {
     return (
       <div className="flex min-h-[70vh] flex-col items-center justify-center px-4 text-center">
@@ -121,7 +121,7 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
     )
   }
 
-  // Step 2 — Situatie
+  // Step 2 — Situation
   if (step === 2) {
     return (
       <div className="mx-auto max-w-lg px-4">
@@ -181,7 +181,7 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
     )
   }
 
-  // Step 3 — Eerste koppeling
+  // Step 3 — First connection
   if (step === 3) {
     return (
       <div className="mx-auto max-w-lg px-4">
@@ -235,7 +235,7 @@ export default function OnboardingWizard({ userId: _userId }: OnboardingWizardPr
     )
   }
 
-  // Step 4 — Klaar!
+  // Step 4 — Done!
   if (step === 4) {
     return (
       <div className="flex min-h-[70vh] flex-col items-center justify-center px-4 text-center">

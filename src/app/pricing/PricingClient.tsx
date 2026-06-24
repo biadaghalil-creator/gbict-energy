@@ -33,15 +33,15 @@ export function PricingClient({ translations: t }: Props) {
       name: 'Starter',
       price: '€15',
       per: t.pricing.perMonth,
-      description: 'Voor een thuisbatterij op een dynamisch contract.',
+      description: 'For a single home battery on a dynamic contract.',
       features: [
-        '14 dagen gratis proberen',
-        'Automatische prijs-optimalisatie',
-        'Live energieprijzen (EPEX)',
-        'Morgen-prognose',
-        'Besparingshistoriek',
-        'Alle batterijmerken',
-        'E-mail notificaties',
+        '14 days free trial',
+        'Automatic price optimization',
+        'Live energy prices (EPEX)',
+        'Day-ahead forecast',
+        'Savings history',
+        'All battery brands',
+        'Email notifications',
       ],
       cta: t.pricing.ctaTrial,
       href: '/signup?plan=starter',
@@ -53,33 +53,33 @@ export function PricingClient({ translations: t }: Props) {
       name: 'Pro',
       price: '€25',
       per: t.pricing.perMonth,
-      description: 'Maximale besparing + verdien mee via het virtuele energienet.',
+      description: 'Maximum savings, plus earn extra through the virtual power plant.',
       features: [
-        'Alles uit Starter',
-        'Onbeperkt apparaten koppelen',
-        'Zonne-paneel optimalisatie',
-        'VPP — virtueel energienet (verdien extra)',
-        'EV / V2G slim laden',
-        'Prioriteit support',
+        'Everything in Starter',
+        'Connect unlimited devices',
+        'Solar panel optimization',
+        'VPP — virtual power plant (earn extra)',
+        'EV / V2G smart charging',
+        'Priority support',
       ],
       cta: t.pricing.ctaTrial,
       href: '/signup?plan=pro',
       highlight: true,
-      badge: 'Populairste' as string | null,
+      badge: 'Most popular' as string | null,
       trial: true,
     },
     {
       name: 'Enterprise',
       price: t.pricing.priceCustom,
       per: '',
-      description: 'Voor bedrijven en grote portefeuilles.',
+      description: 'For businesses and large portfolios.',
       features: [
-        'Alles uit Pro',
-        'Meerdere locaties / woningen',
-        'Zakelijke rapportage',
-        'Dedicated accountmanager',
-        'Maatwerk integraties',
-        'Facturering op rekening',
+        'Everything in Pro',
+        'Multiple locations / homes',
+        'Business reporting',
+        'Dedicated account manager',
+        'Custom integrations',
+        'Invoice billing',
       ],
       cta: t.pricing.ctaContact,
       href: '#enterprise-contact',
@@ -90,12 +90,12 @@ export function PricingClient({ translations: t }: Props) {
   ]
 
   const FAQ = [
-    { q: 'Hoe werkt de gratis proefperiode?', a: 'Je start gratis, koppelt je apparaten en ziet direct je besparingen. Na 14 dagen kies je een abonnement. Geen automatische afschrijving zonder bevestiging.' },
-    { q: 'Werkt het met mijn batterij?', a: 'We ondersteunen Sessy, Victron, Enphase, SolarEdge en Fronius. Meer merken worden continu toegevoegd. Je koppelt je batterij in minder dan 2 minuten.' },
-    { q: 'Hoeveel kan ik besparen?', a: 'Gemiddeld rond €420 per jaar bij een typische installatie (thuisbatterij + zonnepanelen op een dynamisch contract). Je werkelijke besparing hangt af van je verbruik en de prijzen — en zie je live in de app.' },
-    { q: 'Wat is VPP?', a: 'Virtueel Powerplant — jouw batterij levert flexibiliteitsdiensten aan het elektriciteitsnet. Je verdient extra inkomsten naast de gewone optimalisatie. Onderdeel van Pro.' },
-    { q: 'Kan ik opzeggen wanneer ik wil?', a: 'Ja, je kunt maandelijks opzeggen. Geen contract, geen opzegtermijn, geen verborgen kosten.' },
-    { q: 'Is mijn data veilig?', a: 'Alle data staat versleuteld opgeslagen in de EU. We verkopen nooit data aan derden. Je API-sleutels worden versleuteld bewaard.' },
+    { q: 'How does the free trial work?', a: 'You start for free, connect your devices, and see your savings right away. After 14 days, you choose a plan. No automatic charges without confirmation.' },
+    { q: 'Does it work with my battery?', a: 'We support Sessy, Victron, Enphase, SolarEdge, and Fronius. More brands are added continuously. You can connect your battery in under 2 minutes.' },
+    { q: 'How much can I save?', a: 'On average around €420 per year with a typical setup (home battery + solar panels on a dynamic contract). Your actual savings depend on your usage and prices — and you can see them live in the app.' },
+    { q: 'What is VPP?', a: 'Virtual Power Plant — your battery provides flexibility services to the electricity grid. You earn extra income on top of regular optimization. Included with Pro.' },
+    { q: 'Can I cancel anytime?', a: 'Yes, you can cancel monthly. No contract, no notice period, no hidden fees.' },
+    { q: 'Is my data safe?', a: 'All data is stored encrypted in the EU. We never sell data to third parties. Your API keys are stored encrypted.' },
   ]
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
@@ -142,7 +142,7 @@ export function PricingClient({ translations: t }: Props) {
 
         {/* Hero */}
         <div className="text-center">
-          <div className="mb-5 text-xs font-bold uppercase tracking-widest text-emerald-400">Abonnementen</div>
+          <div className="mb-5 text-xs font-bold uppercase tracking-widest text-emerald-400">Plans</div>
           <h1 className="text-5xl font-extrabold tracking-tight text-[var(--text)] md:text-6xl"
             style={{ letterSpacing: '-0.03em' }}>
             <span className="text-gradient-blue">{t.pricing.title}</span>
@@ -256,50 +256,50 @@ export function PricingClient({ translations: t }: Props) {
                   <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full step-circle">
                     <Check className="h-7 w-7 text-slate-900" />
                   </div>
-                  <p className="text-lg font-bold text-[var(--text)]">Aanvraag ontvangen!</p>
-                  <p className="mt-2 text-sm text-[var(--text-muted)]">We nemen binnen 1 werkdag contact met je op.</p>
+                  <p className="text-lg font-bold text-[var(--text)]">Request received!</p>
+                  <p className="mt-2 text-sm text-[var(--text-muted)]">We'll get in touch within 1 business day.</p>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-5">
                   <div className="grid gap-5 sm:grid-cols-2">
-                    <Field label="Naam" required>
+                    <Field label="Name" required>
                       <input type="text" name="name" required value={form.name} onChange={handleChange}
-                        placeholder="Jan de Vries" className="input-dark" />
+                        placeholder="John Smith" className="input-dark" />
                     </Field>
-                    <Field label="E-mailadres" required>
+                    <Field label="Email address" required>
                       <input type="email" name="email" required value={form.email} onChange={handleChange}
-                        placeholder="jan@bedrijf.nl" className="input-dark" />
+                        placeholder="john@company.com" className="input-dark" />
                     </Field>
                   </div>
-                  <Field label="Bedrijfsnaam" required>
+                  <Field label="Company name" required>
                     <input type="text" name="company" required value={form.company} onChange={handleChange}
-                      placeholder="Jouw bedrijf B.V." className="input-dark" />
+                      placeholder="Your Company Inc." className="input-dark" />
                   </Field>
                   <div className="grid gap-5 sm:grid-cols-2">
-                    <Field label="Aantal batterijen / woningen">
+                    <Field label="Number of batteries / homes">
                       <select name="batteries" value={form.batteries} onChange={handleChange} className="input-dark">
-                        <option value="">Selecteer...</option>
+                        <option value="">Select...</option>
                         <option value="10-50">10 – 50</option>
                         <option value="50-200">50 – 200</option>
-                        <option value="200-1000">200 – 1.000</option>
-                        <option value="1000+">1.000+</option>
+                        <option value="200-1000">200 – 1,000</option>
+                        <option value="1000+">1,000+</option>
                       </select>
                     </Field>
-                    <Field label="Type organisatie">
+                    <Field label="Type of organization">
                       <select name="locations" value={form.locations} onChange={handleChange} className="input-dark">
-                        <option value="">Selecteer...</option>
-                        <option value="installateur">Installateur</option>
-                        <option value="woningcorporatie">Woningcorporatie</option>
-                        <option value="energiebedrijf">Energiebedrijf / leverancier</option>
-                        <option value="vve">VvE / appartementencomplex</option>
-                        <option value="zakelijk">Zakelijk vastgoed</option>
-                        <option value="anders">Anders</option>
+                        <option value="">Select...</option>
+                        <option value="installateur">Installer</option>
+                        <option value="woningcorporatie">Housing association</option>
+                        <option value="energiebedrijf">Energy company / supplier</option>
+                        <option value="vve">HOA / apartment complex</option>
+                        <option value="zakelijk">Commercial real estate</option>
+                        <option value="anders">Other</option>
                       </select>
                     </Field>
                   </div>
-                  <Field label="Toelichting">
+                  <Field label="Details">
                     <textarea name="message" rows={4} value={form.message} onChange={handleChange}
-                      placeholder="Beschrijf kort wat je nodig hebt — bestaande hardware, gewenste integraties, tijdlijn..."
+                      placeholder="Briefly describe what you need — existing hardware, desired integrations, timeline..."
                       className="input-dark resize-none" />
                   </Field>
                   <button type="submit" disabled={loading}
@@ -308,7 +308,7 @@ export function PricingClient({ translations: t }: Props) {
                     {loading ? t.common.loading : `${t.common.submit} →`}
                   </button>
                   <p className="text-center text-xs text-[var(--text-faint)]">
-                    We nemen binnen 1 werkdag contact op. Geen spam, geen verplichtingen.
+                    We'll get in touch within 1 business day. No spam, no obligations.
                   </p>
                 </form>
               )}
@@ -322,7 +322,7 @@ export function PricingClient({ translations: t }: Props) {
           <div className="pointer-events-none absolute inset-0 grid-pattern opacity-30" />
           <div className="relative">
             <h2 className="text-3xl font-extrabold tracking-tight text-white" style={{ letterSpacing: '-0.03em' }}>
-              Begin vandaag met besparen
+              Start saving today
             </h2>
             <p className="mt-3 text-[var(--text-muted)]">{t.common.free14days}. {t.common.cancel}.</p>
             <Link href="/signup" className="btn-3d-primary mt-8 inline-flex">
@@ -337,7 +337,7 @@ export function PricingClient({ translations: t }: Props) {
           <span>© {new Date().getFullYear()} GBICT Energy</span>
           <div className="flex gap-6">
             <Link href="/" className="hover:text-[var(--text)] transition-colors">Home</Link>
-            <Link href="/about" className="hover:text-[var(--text)] transition-colors">Over GBICT</Link>
+            <Link href="/about" className="hover:text-[var(--text)] transition-colors">About GBICT</Link>
             <Link href="/login" className="hover:text-[var(--text)] transition-colors">{t.nav.login}</Link>
           </div>
         </div>

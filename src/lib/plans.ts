@@ -21,9 +21,9 @@ export const PLANS: Record<PlanId, Plan> = {
     priceEur: 15,
     priceId: process.env.STRIPE_PRICE_STARTER,
     features: [
-      '1 batterij + 1 meter',
-      'Automatische prijs-optimalisatie',
-      'Besparingsoverzicht',
+      '1 battery + 1 meter',
+      'Automatic price optimization',
+      'Savings overview',
     ],
   },
   pro: {
@@ -32,10 +32,10 @@ export const PLANS: Record<PlanId, Plan> = {
     priceEur: 25,
     priceId: process.env.STRIPE_PRICE_PRO,
     features: [
-      'Onbeperkt apparaten',
-      'Zonne-paneel optimalisatie',
-      'VPP / virtueel energienet',
-      'Prioriteit support',
+      'Unlimited devices',
+      'Solar-panel optimization',
+      'VPP / virtual power plant',
+      'Priority support',
     ],
   },
 }

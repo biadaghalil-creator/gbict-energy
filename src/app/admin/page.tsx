@@ -68,28 +68,28 @@ export default async function AdminPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Platform overzicht</h1>
-        <p className="mt-1 text-sm text-zinc-500">Realtime statistieken van alle gebruikers en apparaten.</p>
+        <h1 className="text-2xl font-semibold tracking-tight">Platform overview</h1>
+        <p className="mt-1 text-sm text-zinc-500">Real-time statistics across all users and devices.</p>
       </div>
 
       {noKey && (
         <div className="rounded-xl border border-amber-800/50 bg-amber-950/20 p-4 text-sm text-amber-400">
-          ⚠️ <strong>SUPABASE_SERVICE_ROLE_KEY</strong> niet ingesteld. Voeg deze toe in Vercel env vars (Supabase → Settings → API → service_role key).
+          ⚠️ <strong>SUPABASE_SERVICE_ROLE_KEY</strong> is not set. Add it to your Vercel env vars (Supabase → Settings → API → service_role key).
         </div>
       )}
 
-      {/* Hoofd statistieken */}
+      {/* Main statistics */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard label="Gebruikers" value={stats?.totalUsers ?? '—'} sub="geregistreerd" color="zinc" />
-        <StatCard label="Actieve apparaten" value={stats?.activeDevices ?? '—'} sub="gekoppeld" color="blue" />
-        <StatCard label="Totaal bespaard" value={stats?.totalSavings != null ? `€${stats.totalSavings.toFixed(2)}` : '—'} sub="platform-breed" color="emerald" />
-        <StatCard label="VPP ingeschreven" value={stats?.vppEnrolled ?? '—'} sub="batterijen in net" color="amber" />
+        <StatCard label="Users" value={stats?.totalUsers ?? '—'} sub="registered" color="zinc" />
+        <StatCard label="Active devices" value={stats?.activeDevices ?? '—'} sub="connected" color="blue" />
+        <StatCard label="Total saved" value={stats?.totalSavings != null ? `€${stats.totalSavings.toFixed(2)}` : '—'} sub="platform-wide" color="emerald" />
+        <StatCard label="VPP enrolled" value={stats?.vppEnrolled ?? '—'} sub="batteries in grid" color="amber" />
       </div>
 
       {/* Device breakdown */}
       {stats?.byType && Object.keys(stats.byType).length > 0 && (
         <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-5">
-          <p className="mb-4 text-sm font-medium text-zinc-300">Apparaten per type</p>
+          <p className="mb-4 text-sm font-medium text-zinc-300">Devices by type</p>
           <div className="grid gap-2 sm:grid-cols-3 lg:grid-cols-6">
             {Object.entries(stats.byType).map(([type, count]) => (
               <div key={type} className="rounded-xl border border-zinc-800 bg-zinc-800/50 p-3 text-center">
@@ -101,18 +101,18 @@ export default async function AdminPage() {
         </div>
       )}
 
-      {/* Recente acties */}
+      {/* Recent actions */}
       {stats?.recentLogs && stats.recentLogs.length > 0 && (
         <div className="rounded-2xl border border-zinc-800 bg-zinc-900">
           <div className="border-b border-zinc-800 px-5 py-4">
-            <p className="text-sm font-medium text-zinc-300">Recente optimalisaties</p>
+            <p className="text-sm font-medium text-zinc-300">Recent optimizations</p>
           </div>
           <div className="divide-y divide-zinc-800">
             {stats.recentLogs.map((log: { action: string; savings_eur: number; source: string; created_at: string }, i: number) => (
               <div key={i} className="flex items-center justify-between px-5 py-3">
                 <div className="flex items-center gap-3">
                   <span className={`text-sm ${log.action === 'charge' ? 'text-emerald-400' : log.action === 'discharge' ? 'text-orange-400' : 'text-zinc-500'}`}>
-                    {log.action === 'charge' ? '↑ Laden' : log.action === 'discharge' ? '↓ Ontladen' : 'Idle'}
+                    {log.action === 'charge' ? '↑ Charging' : log.action === 'discharge' ? '↓ Discharging' : 'Idle'}
                   </span>
                   <span className="rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-500">{log.source}</span>
                 </div>
@@ -130,10 +130,10 @@ export default async function AdminPage() {
         </div>
       )}
 
-      {/* Recente signups */}
+      {/* Recent signups */}
       {stats?.recentUsers && stats.recentUsers.length > 0 && (
         <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-5">
-          <p className="mb-3 text-sm font-medium text-zinc-300">Laatste {stats.recentUsers.length} aanmeldingen</p>
+          <p className="mb-3 text-sm font-medium text-zinc-300">Latest {stats.recentUsers.length} signups</p>
           <div className="space-y-1.5">
             {stats.recentUsers.map((u: { id: string; created_at: string }) => (
               <div key={u.id} className="flex items-center justify-between rounded-lg bg-zinc-800/50 px-3 py-2">

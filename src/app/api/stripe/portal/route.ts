@@ -25,7 +25,7 @@ export async function POST(req: Request) {
 
   const customerId = profile?.stripe_customer_id as string | null | undefined
   if (!customerId) {
-    return NextResponse.json({ error: 'Geen abonnement gevonden.' }, { status: 400 })
+    return NextResponse.json({ error: 'No subscription found.' }, { status: 400 })
   }
 
   const stripe = getStripe()
@@ -33,7 +33,7 @@ export async function POST(req: Request) {
   const origin =
     process.env.NEXT_PUBLIC_SITE_URL ||
     req.headers.get('origin') ||
-    'https://gbict-energy.vercel.app'
+    'https://gbict-energy.com'
 
   const session = await stripe.billingPortal.sessions.create({
     customer: customerId,

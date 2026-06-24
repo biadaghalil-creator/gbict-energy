@@ -10,7 +10,7 @@ export default async function OnboardingPage() {
 
   if (!user) redirect('/login')
 
-  // If already onboarded, go to dashboard
+  // If already onboarded, go to the dashboard
   const { data: profile } = await supabase
     .from('profiles')
     .select('onboarding_completed')

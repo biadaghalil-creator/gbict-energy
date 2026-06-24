@@ -15,6 +15,6 @@ export async function GET(request: Request) {
   }
 
   return NextResponse.redirect(
-    `${origin}/login?error=${encodeURIComponent('Kon je niet inloggen. Probeer het opnieuw.')}`
+    `${origin}/login?error=${encodeURIComponent('Couldn\'t sign you in. Please try again.')}`
   )
 }

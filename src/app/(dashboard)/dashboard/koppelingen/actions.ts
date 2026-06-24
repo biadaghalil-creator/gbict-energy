@@ -94,19 +94,19 @@ export async function testTibberToken(
     })
 
     if (!res.ok) {
-      return { ok: false, error: 'Verbinding mislukt. Controleer je token.' }
+      return { ok: false, error: 'Connection failed. Check your token.' }
     }
 
     const json = await res.json()
 
     if (json.errors) {
-      return { ok: false, error: 'Ongeldig token.' }
+      return { ok: false, error: 'Invalid token.' }
     }
 
-    const name = json.data?.viewer?.name ?? 'onbekend'
+    const name = json.data?.viewer?.name ?? 'unknown'
     return { ok: true, name }
   } catch {
-    return { ok: false, error: 'Kon Tibber niet bereiken.' }
+    return { ok: false, error: 'Couldn\'t reach Tibber.' }
   }
 }
 
@@ -118,7 +118,7 @@ export async function testSessyCredentials(
 ): Promise<{ ok: boolean; error?: string }> {
   const { getSessyToken } = await import('@/lib/sessy')
   const token = await getSessyToken(username, password)
-  if (!token) return { ok: false, error: 'Inloggegevens onjuist of Sessy niet bereikbaar.' }
+  if (!token) return { ok: false, error: 'Wrong credentials or Sessy is unreachable.' }
   return { ok: true }
 }
 
@@ -137,14 +137,14 @@ export async function testVictronCredentials(
 
   const auth = await getVictronToken(email, password)
   if (!auth) {
-    return { ok: false, error: 'Inloggegevens onjuist of VRM niet bereikbaar.' }
+    return { ok: false, error: 'Wrong credentials or VRM is unreachable.' }
   }
 
   const installations = await getVictronInstallations(auth.token, auth.idUser)
   if (!installations.length) {
     return {
       ok: false,
-      error: 'Geen installaties gevonden op dit account. Controleer je VRM portal.',
+      error: 'No installations found on this account. Check your VRM portal.',
     }
   }
 
@@ -152,10 +152,10 @@ export async function testVictronCredentials(
 }
 
 // ── Enphase ──────────────────────────────────────────────────────────────────
-// Enphase v4 vereist een geregistreerde GBICT-app + OAuth-consent flow (geen
-// simpele key+id meer — de oude v2 key-API is uitgefaseerd). Zolang de app-env-
-// vars niet gezet zijn, is de koppeling niet beschikbaar; de UI toont Enphase
-// daarom als 'binnenkort'. Signatuur blijft staan zodat de UI blijft compileren.
+// Enphase v4 requires a registered GBICT app + OAuth consent flow (no more
+// simple key+id — the old v2 key API has been phased out). As long as the app
+// env vars aren't set, the connection isn't available; the UI therefore shows
+// Enphase as 'coming soon'. The signature stays so the UI keeps compiling.
 
 export async function testEnphaseCredentials(
   _apiKey: string,
@@ -163,10 +163,10 @@ export async function testEnphaseCredentials(
 ): Promise<{ ok: boolean; systemName?: string; error?: string }> {
   const { enphaseConfigured } = await import('@/lib/enphase')
   if (!enphaseConfigured()) {
-    return { ok: false, error: 'Enphase-koppeling is binnenkort beschikbaar via "Koppel met Enphase".' }
+    return { ok: false, error: 'Enphase connection is coming soon via "Connect with Enphase".' }
   }
-  // App geregistreerd → koppelen verloopt via de OAuth-consent flow, niet via key+id.
-  return { ok: false, error: 'Koppel je Enphase-account via de knop "Koppel met Enphase".' }
+  // App registered → connecting goes through the OAuth consent flow, not key+id.
+  return { ok: false, error: 'Connect your Enphase account with the "Connect with Enphase" button.' }
 }
 
 // ── SolarEdge ────────────────────────────────────────────────────────────────
@@ -198,9 +198,9 @@ export async function testSmaCredentials(
   return _test(email, password)
 }
 
-// ── Tado (warmtepomp / thermostaat) — OAuth device-code flow ──────────────────
-// Sinds maart 2025 is de wachtwoord-login dood. We starten een device-code flow:
-// de gebruiker keurt de koppeling goed op een Tado-URL, wij pollen de token.
+// ── Tado (heat pump / thermostat) — OAuth device-code flow ────────────────────
+// Since March 2025, password login is dead. We start a device-code flow:
+// the user approves the connection on a Tado URL, and we poll for the token.
 
 export async function startTadoAuth(): Promise<{
   ok: boolean
@@ -212,7 +212,7 @@ export async function startTadoAuth(): Promise<{
 }> {
   const { startTadoDeviceAuth } = await import('@/lib/tado')
   const auth = await startTadoDeviceAuth()
-  if (!auth) return { ok: false, error: 'Kon Tado niet bereiken. Probeer het later opnieuw.' }
+  if (!auth) return { ok: false, error: 'Couldn\'t reach Tado. Please try again later.' }
   return {
     ok: true,
     deviceCode: auth.deviceCode,

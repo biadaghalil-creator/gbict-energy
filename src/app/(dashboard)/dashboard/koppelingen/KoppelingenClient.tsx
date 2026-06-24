@@ -130,7 +130,7 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
   const [seError,   setSeError]   = useState('')
   const [seTesting, setSeTesting] = useState(false)
 
-  // SolarEdge Solar (zonnepanelen)
+  // SolarEdge Solar (solar panels)
   const [solarSeKey,     setSolarSeKey]     = useState('')
   const [solarSeSiteId,  setSolarSeSiteId]  = useState('')
   const [solarSeName,    setSolarSeName]    = useState('')
@@ -150,31 +150,31 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
   const [smaError,   setSmaError]   = useState('')
   const [smaTesting, setSmaTesting] = useState(false)
 
-  // Warmtepomp (Tado device-code flow / handmatig)
+  // Heat pump (Tado device-code flow / manual)
   const [heatpumpBrand,   setHeatpumpBrand]   = useState<'tado' | 'generic'>('tado')
   const [heatpumpLabel,   setHeatpumpLabel]   = useState('')
   const [heatpumpHome,    setHeatpumpHome]    = useState('')
   const [heatpumpError,   setHeatpumpError]   = useState('')
-  // Tado device-flow status: idle → waiting (gebruiker keurt goed) → connected
+  // Tado device-flow status: idle → waiting (user approves) → connected
   const [tadoStatus,    setTadoStatus]    = useState<'idle' | 'starting' | 'waiting' | 'connected'>('idle')
   const [tadoUserCode,  setTadoUserCode]  = useState('')
   const [tadoVerifyUrl, setTadoVerifyUrl] = useState('')
   const tadoDeviceCode = useRef('')
   const tadoTimer = useRef<ReturnType<typeof setInterval> | null>(null)
 
-  // Elektrische auto (EV / V2G) — merk-onafhankelijk registreren
+  // Electric car (EV / V2G) — register brand-agnostically
   const [evBrand,     setEvBrand]     = useState('')
   const [evCapacity,  setEvCapacity]  = useState('')
   const [evV2g,       setEvV2g]       = useState(false)
   const [evMinCharge, setEvMinCharge] = useState('80')
   const [evError,     setEvError]     = useState('')
 
-  // Andere batterij (merk-onafhankelijk registreren)
+  // Other battery (register brand-agnostically)
   const [otherBrand, setOtherBrand] = useState('')
   const [otherLabel, setOtherLabel] = useState('')
   const [otherError, setOtherError] = useState('')
 
-  // Thermostaat (generiek)
+  // Thermostat (generic)
   const [thermoLabel, setThermoLabel] = useState('')
   const [thermoError, setThermoError] = useState('')
 
@@ -203,16 +203,16 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
   }
   function closeModal() { resetTado(); setStep('idle') }
 
-  // De modal wordt via een portal in document.body gerenderd, buiten alle
-  // stacking-contexts — pas na mount (portal werkt niet tijdens SSR).
-  // eslint-disable-next-line react-hooks/set-state-in-effect -- mount-detectie is browser-only
+  // The modal is rendered through a portal into document.body, outside all
+  // stacking contexts — only after mount (the portal doesn't work during SSR).
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- mount detection is browser-only
   useEffect(() => { setMounted(true) }, [])
 
-  // Stop de Tado-poll als de modal sluit / component unmount.
+  // Stop the Tado poll when the modal closes / the component unmounts.
   useEffect(() => () => { if (tadoTimer.current) clearInterval(tadoTimer.current) }, [])
 
-  // Vergrendel het scrollen van de pagina-achtergrond zolang de modal open is,
-  // zodat de lijst niet "wegglijdt" achter het venster (iOS rubber-band).
+  // Lock scrolling of the page background while the modal is open,
+  // so the list doesn't "slide away" behind the window (iOS rubber-band).
   useEffect(() => {
     if (step === 'idle') return
     const prev = document.body.style.overflow
@@ -269,12 +269,12 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
     if (!sessyOk) return
     startTransition(async () => {
       const r = await saveDevice({
-        type: 'battery_sessy', brand: 'Sessy', label: 'Sessy Batterij',
+        type: 'battery_sessy', brand: 'Sessy', label: 'Sessy Battery',
         config: { username: sessyUser.trim(), password: sessyPass.trim() },
         status: 'active',
       })
       if (r.error) { setSessyError(r.error); return }
-      addDevice({ type: 'battery_sessy', brand: 'Sessy', name: 'Sessy Batterij', status: 'active' })
+      addDevice({ type: 'battery_sessy', brand: 'Sessy', name: 'Sessy Battery', status: 'active' })
     })
   }
 
@@ -301,7 +301,7 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
       const r = await saveDevice({
         type: 'battery_victron',
         brand: 'Victron Energy',
-        label: victronSiteName || 'Victron Batterij',
+        label: victronSiteName || 'Victron Battery',
         config: {
           email: victronEmail.trim(),
           password: victronPass.trim(),
@@ -311,7 +311,7 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
         status: 'active',
       })
       if (r.error) { setVictronError(r.error); return }
-      addDevice({ type: 'battery_victron', brand: 'Victron Energy', name: victronSiteName || 'Victron Batterij', status: 'active' })
+      addDevice({ type: 'battery_victron', brand: 'Victron Energy', name: victronSiteName || 'Victron Battery', status: 'active' })
     })
   }
 
@@ -406,9 +406,9 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
     setSmaError(r.error ?? c.errUnknown)
   }
 
-  // ── Warmtepomp — Tado device-code flow ─────────────────────────────────────
-  // 1. Start: vraag een device-code aan en open de Tado-goedkeuringspagina.
-  // 2. Poll: wacht tot de gebruiker goedkeurt, sla dan het refresh-token op.
+  // ── Heat pump — Tado device-code flow ──────────────────────────────────────
+  // 1. Start: request a device code and open the Tado approval page.
+  // 2. Poll: wait until the user approves, then store the refresh token.
   async function handleStartTado() {
     setHeatpumpError(''); resetTado(); setTadoStatus('starting')
     const r = await startTadoAuth()
@@ -419,7 +419,7 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
     setTadoUserCode(r.userCode)
     setTadoVerifyUrl(r.verificationUri)
     setTadoStatus('waiting')
-    // Open de goedkeuringspagina meteen in een nieuw tabblad.
+    // Open the approval page immediately in a new tab.
     window.open(r.verificationUri, '_blank', 'noopener,noreferrer')
     const intervalMs = Math.max((r.interval ?? 5), 5) * 1000
     tadoTimer.current = setInterval(pollTado, intervalMs)
@@ -437,7 +437,7 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
     }
     setHeatpumpHome(r.homeName ?? '')
     const refreshToken = r.refreshToken
-    const name = r.homeName ? `Tado (${r.homeName})` : 'Warmtepomp'
+    const name = r.homeName ? `Tado (${r.homeName})` : 'Heat pump'
     startTransition(async () => {
       const save = await saveDevice({
         type: 'heatpump_tado', brand: 'Tado', label: name,
@@ -451,24 +451,24 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
   }
 
   function handleSaveHeatpumpGeneric() {
-    const label = heatpumpLabel.trim() || 'Warmtepomp'
+    const label = heatpumpLabel.trim() || 'Heat pump'
     startTransition(async () => {
       const r = await saveDevice({
-        type: 'heatpump_generic', brand: 'Warmtepomp', label,
+        type: 'heatpump_generic', brand: 'Heat pump', label,
         config: {}, status: 'pending',
       })
       if (r.error) { setHeatpumpError(r.error); return }
-      addDevice({ type: 'heatpump_generic', brand: 'Warmtepomp', name: label, status: 'pending' })
+      addDevice({ type: 'heatpump_generic', brand: 'Heat pump', name: label, status: 'pending' })
     })
   }
 
-  // ── Elektrische auto (EV / V2G) ────────────────────────────────────────────
-  // Merk-onafhankelijk: we registreren de auto als flexibele accu. Echte
-  // aansturing (slim laden / V2G-teruglevering) gaat live zodra de partner-
-  // integratie is gekoppeld — vandaar status 'pending'.
+  // ── Electric car (EV / V2G) ────────────────────────────────────────────────
+  // Brand-agnostic: we register the car as a flexible battery. Real
+  // control (smart charging / V2G feed-back) goes live once the partner
+  // integration is connected — hence status 'pending'.
   function handleSaveEv() {
     setEvError('')
-    const brand = evBrand.trim() || 'Elektrische auto'
+    const brand = evBrand.trim() || 'Electric car'
     startTransition(async () => {
       const r = await saveDevice({
         type: evV2g ? 'ev_v2g' : 'ev_generic',
@@ -486,7 +486,7 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
     })
   }
 
-  // ── Andere batterij (merk-onafhankelijk) ───────────────────────────────────
+  // ── Other battery (brand-agnostic) ─────────────────────────────────────────
   function handleSaveBatteryOther() {
     setOtherError('')
     const brand = otherBrand.trim()
@@ -499,18 +499,18 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
     })
   }
 
-  // ── Thermostaat (generiek) ─────────────────────────────────────────────────
+  // ── Thermostat (generic) ───────────────────────────────────────────────────
   function handleSaveThermostat() {
     setThermoError('')
-    const label = thermoLabel.trim() || 'Thermostaat'
+    const label = thermoLabel.trim() || 'Thermostat'
     startTransition(async () => {
-      const r = await saveDevice({ type: 'thermostat_generic', brand: 'Thermostaat', label, config: {}, status: 'pending' })
+      const r = await saveDevice({ type: 'thermostat_generic', brand: 'Thermostat', label, config: {}, status: 'pending' })
       if (r.error) { setThermoError(r.error); return }
-      addDevice({ type: 'thermostat_generic', brand: 'Thermostaat', name: label, status: 'pending' })
+      addDevice({ type: 'thermostat_generic', brand: 'Thermostat', name: label, status: 'pending' })
     })
   }
 
-  // ── Verwijderen ──────────────────────────────────────────────────────────
+  // ── Delete ─────────────────────────────────────────────────────────────────
   function handleDelete(id: string) {
     setDeletingId(id)
     startTransition(async () => {
@@ -579,14 +579,14 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
         </div>
       )}
 
-      {/* Modal — bottom-sheet op mobiel, gecentreerde kaart op desktop.
-          z-[80] zodat hij boven de zwevende orb-balk (z-60) en de topbalk
-          (z-30) staat. flex-col met scrollende body voorkomt dat de titel/
-          sluitknop op iOS van het scherm worden geduwd. */}
+      {/* Modal — bottom sheet on mobile, centered card on desktop.
+          z-[80] so it sits above the floating orb bar (z-60) and the top bar
+          (z-30). flex-col with a scrolling body prevents the title/close
+          button from being pushed off-screen on iOS. */}
       {step !== 'idle' && mounted && createPortal(
         <div className="fixed inset-0 z-[80] flex items-end justify-center sm:items-center">
           <button
-            aria-label="Sluiten"
+            aria-label="Close"
             onClick={closeModal}
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
           />
@@ -597,7 +597,7 @@ export default function KoppelingenClient({ initialDevices }: { initialDevices: 
               marginTop: 'env(safe-area-inset-top)',
             }}
           >
-            {/* Sleep-handvat (alleen mobiel) */}
+            {/* Drag handle (mobile only) */}
             <div className="flex shrink-0 justify-center pt-2.5 sm:hidden">
               <span className="h-1 w-9 rounded-full bg-[var(--border)]" />
             </div>
@@ -993,7 +993,7 @@ function SessyStep({ c, username, password, onUsernameChange, onPasswordChange, 
         <p className="mt-0.5 text-xs text-[var(--text-muted)]">{c.sessyAccountDesc}</p>
       </div>
       <Field label={c.email}>
-        <Input type="email" value={username} onChange={e => onUsernameChange(e.target.value)} placeholder="naam@email.nl" />
+        <Input type="email" value={username} onChange={e => onUsernameChange(e.target.value)} placeholder="name@email.com" />
       </Field>
       <Field label={c.password}>
         <Input type="password" value={password} onChange={e => onPasswordChange(e.target.value)} placeholder="••••••••" />
@@ -1037,7 +1037,7 @@ function VictronStep({ c,
         </p>
       </div>
       <Field label={c.email}>
-        <Input type="email" value={email} onChange={e => onEmailChange(e.target.value)} placeholder="naam@email.nl" />
+        <Input type="email" value={email} onChange={e => onEmailChange(e.target.value)} placeholder="name@email.com" />
       </Field>
       <Field label={c.password}>
         <Input type="password" value={password} onChange={e => onPasswordChange(e.target.value)} placeholder="••••••••" />
@@ -1079,8 +1079,8 @@ function VictronStep({ c,
 // ── Enphase step ───────────────────────────────────────────────────────────
 
 function EnphaseStep({ c, onBack }: { onBack: () => void; c: Conn }) {
-  // Enphase v4 verloopt via OAuth: de gebruiker keurt de toegang goed bij
-  // Enphase zelf. Geen API-key/systeem-ID meer invoeren — gewoon doorklikken.
+  // Enphase v4 runs via OAuth: the user approves access at Enphase
+  // itself. No more entering an API key/system ID — just click through.
   return (
     <div className="space-y-4">
       <div className="rounded-xl bg-[var(--surface-2)] px-4 py-3">
@@ -1119,7 +1119,7 @@ function SolarEdgeStep({ c,
       <div className="rounded-xl bg-[var(--surface-2)] px-4 py-3">
         <p className="text-xs font-medium text-[var(--text-muted)]">{c.solarEdgeAccessTitle}</p>
         <p className="mt-0.5 text-xs text-[var(--text-muted)]">
-          Activeer API toegang via{' '}
+          Enable API access via{' '}
           <a href="https://monitoring.solaredge.com" target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:underline">monitoring.solaredge.com</a>{' '}
           → Admin → Site Access → API Access.
         </p>
@@ -1183,7 +1183,7 @@ function SolarSolarEdgeStep({ c,
       <div className="rounded-xl bg-[var(--surface-2)] px-4 py-3">
         <p className="text-xs font-medium text-[var(--text-muted)]">{c.solarEdgeAccessTitle}</p>
         <p className="mt-0.5 text-xs text-[var(--text-muted)]">
-          Activeer API toegang via{' '}
+          Enable API access via{' '}
           <a href="https://monitoring.solaredge.com" target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:underline">monitoring.solaredge.com</a>{' '}
           → Admin → Site Access → API Access.
         </p>
@@ -1263,7 +1263,7 @@ function SmaStep({ c,
         </p>
       </div>
       <Field label={c.smaEmailLabel}>
-        <Input type="email" value={email} onChange={e => onEmailChange(e.target.value)} placeholder="naam@email.nl" />
+        <Input type="email" value={email} onChange={e => onEmailChange(e.target.value)} placeholder="name@email.com" />
       </Field>
       <Field label={c.password}>
         <Input type="password" value={password} onChange={e => onPasswordChange(e.target.value)} placeholder="••••••••" />
@@ -1376,7 +1376,7 @@ function HeatpumpStep({ c,
             </p>
           </div>
           <Field label={c.heatpumpNameLabel} hint={c.heatpumpNameHint}>
-            <Input type="text" value={label} onChange={e => onLabelChange(e.target.value)} placeholder="Warmtepomp" />
+            <Input type="text" value={label} onChange={e => onLabelChange(e.target.value)} placeholder="Heat pump" />
           </Field>
           {error && <ErrorBox msg={error} />}
           <div className="flex gap-2 pt-1">
@@ -1406,8 +1406,8 @@ function EvStep({ c,
   savePending: boolean; error: string
   c: Conn
 }) {
-  // Automatisch koppelen verschijnt zodra de EV-partner-koppeling aanstaat
-  // (NEXT_PUBLIC_EV_AUTOCONNECT). Tot die tijd: handmatig registreren.
+  // Automatic connection appears once the EV partner integration is enabled
+  // (NEXT_PUBLIC_EV_AUTOCONNECT). Until then: register manually.
   const autoConnect = process.env.NEXT_PUBLIC_EV_AUTOCONNECT === '1'
 
   return (
@@ -1480,7 +1480,7 @@ function EvStep({ c,
 
 // ── Battery other step ─────────────────────────────────────────────────────
 
-const OTHER_BRANDS = ['Tesla Powerwall', 'GoodWe', 'Growatt', 'Huawei FusionSolar', 'Alpha ESS', 'Pylontech', 'Anders']
+const OTHER_BRANDS = ['Tesla Powerwall', 'GoodWe', 'Growatt', 'Huawei FusionSolar', 'Alpha ESS', 'Pylontech', 'Other']
 
 function BatteryOtherStep({ c, brand, onBrandChange, label, onLabelChange, onSave, onBack, savePending, error }: {
   brand: string; onBrandChange: (v: string) => void
@@ -1515,7 +1515,7 @@ function BatteryOtherStep({ c, brand, onBrandChange, label, onLabelChange, onSav
         </div>
       </div>
       <Field label={c.heatpumpNameLabel} hint={c.batteryOtherNameHint}>
-        <Input type="text" value={label} onChange={e => onLabelChange(e.target.value)} placeholder={brand || 'Thuisbatterij'} />
+        <Input type="text" value={label} onChange={e => onLabelChange(e.target.value)} placeholder={brand || 'Home battery'} />
       </Field>
       {error && <ErrorBox msg={error} />}
       <div className="flex gap-2 pt-1">
@@ -1538,7 +1538,7 @@ function ThermostatStep({ c, label, onLabelChange, onSave, onBack, savePending, 
     <div className="space-y-4">
       <p className="text-sm text-[var(--text-faint)]">{c.thermostatIntro}</p>
       <Field label={c.heatpumpNameLabel} hint={c.thermostatNameHint}>
-        <Input type="text" value={label} onChange={e => onLabelChange(e.target.value)} placeholder="Thermostaat" />
+        <Input type="text" value={label} onChange={e => onLabelChange(e.target.value)} placeholder="Thermostat" />
       </Field>
       {error && <ErrorBox msg={error} />}
       <div className="flex gap-2 pt-1">

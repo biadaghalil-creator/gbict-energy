@@ -37,7 +37,7 @@ export default function SolarCard() {
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-[var(--text-faint)]">
           <Sun className="h-3.5 w-3.5 text-amber-400" />
-          Zonneopbrengst
+          Solar production
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -50,7 +50,7 @@ export default function SolarCard() {
             </p>
             {data.todayKwh > 0 && (
               <p className="mt-1 text-xs text-[var(--text-faint)]">
-                vandaag {data.todayKwh.toFixed(2)} kWh
+                today {data.todayKwh.toFixed(2)} kWh
               </p>
             )}
           </>
@@ -59,7 +59,7 @@ export default function SolarCard() {
             <p className="text-2xl font-semibold tracking-tight text-[var(--text-faint)]">— kW</p>
             <p className="mt-1 text-xs">
               <Link href="/dashboard/koppelingen" className="text-emerald-400 hover:text-emerald-400 hover:underline">
-                Koppel zonnepanelen →
+                Connect solar panels →
               </Link>
             </p>
           </>

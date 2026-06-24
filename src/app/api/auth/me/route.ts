@@ -5,7 +5,7 @@ export const runtime = 'nodejs'
 
 const ALLOWED_EMAILS = ['ghalil@gbict.nl']
 
-// Lichte sessie-check voor de statische dashboard-pagina (public/webapp/).
+// Lightweight session check for the static dashboard page (public/webapp/).
 export async function GET() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()

@@ -30,7 +30,7 @@ export async function saveOnboarding(data: OnboardingData) {
   })
 
   if (error) {
-    console.error('Onboarding opslaan mislukt:', error.message)
+    console.error('Failed to save onboarding:', error.message)
     return { error: error.message }
   }
 

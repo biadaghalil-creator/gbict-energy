@@ -26,7 +26,7 @@ export async function testSmaCredentials(
   // een OAuth2 'Connect with SMA'-flow — niet via e-mail/wachtwoord.
   return {
     ok: false,
-    error: 'SMA-koppeling verloopt via een partnerkoppeling met SMA. Neem contact op — we zetten je op de wachtlijst.',
+    error: 'SMA connections run through a partner integration with SMA. Get in touch — we\'ll add you to the waitlist.',
   }
 }
 

@@ -39,7 +39,7 @@ export default function ReferralClient({
     setTimeout(() => setCopied(false), 2000)
   }
 
-  const shareUrl = `https://gbict-energy.vercel.app/signup?ref=${referralCode}`
+  const shareUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://gbict-energy.com'}/signup?ref=${referralCode}`
   const shareText = fill(t.dashboard.referral.shareText, { code: referralCode, url: shareUrl })
   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`
   const mailtoUrl = `mailto:?subject=${encodeURIComponent(t.dashboard.referral.shareSubject)}&body=${encodeURIComponent(shareText)}`

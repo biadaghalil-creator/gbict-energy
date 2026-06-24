@@ -16,15 +16,15 @@ export default async function ForgotPasswordPage({
   return (
     <div className="rounded-[28px] border border-[rgba(33,29,22,0.07)] bg-white px-8 py-9 shadow-[0_2px_6px_rgba(33,29,22,0.06),0_24px_60px_rgba(33,29,22,0.10)]">
       <h1 className="text-[26px] font-bold leading-tight tracking-[-0.03em] text-[#211D16]">
-        Wachtwoord vergeten
+        Forgot password
       </h1>
       <p className="mt-2 text-[14.5px] leading-relaxed text-[#5C5648]">
-        Vul je e-mailadres in. We sturen je een link om een nieuw wachtwoord in te stellen.
+        Enter your email address. We&apos;ll send you a link to set a new password.
       </p>
 
       {sent ? (
         <div className="mt-7 rounded-2xl border border-[rgba(47,93,58,0.25)] bg-[#E7EEE0] px-4 py-4 text-sm text-[#24492D]">
-          Gelukt. Als er een account bij dit e-mailadres hoort, ontvang je zo een resetlink in je inbox.
+          Done. If an account exists for this email address, you&apos;ll receive a reset link in your inbox shortly.
         </div>
       ) : (
         <form action={requestReset} className="mt-7 flex flex-col gap-5">
@@ -36,24 +36,24 @@ export default async function ForgotPasswordPage({
 
           <div>
             <label htmlFor="email" className="mb-1.5 block text-sm font-semibold text-[#5C5648]">
-              E-mailadres
+              Email
             </label>
-            <input id="email" name="email" type="email" placeholder="jij@email.nl" required className={inputCls} />
+            <input id="email" name="email" type="email" placeholder="you@email.com" required className={inputCls} />
           </div>
 
           <button
             type="submit"
             className="mt-1 inline-flex w-full items-center justify-center rounded-full bg-[#2F5D3A] px-7 py-3.5 text-[16px] font-semibold tracking-[-0.01em] text-white shadow-[0_8px_20px_rgba(47,93,58,0.32)] transition hover:bg-[#24492D] active:scale-[0.98]"
           >
-            Stuur resetlink
+            Send reset link
           </button>
         </form>
       )}
 
       <p className="mt-7 text-center text-sm text-[#5C5648]">
-        Wachtwoord weer te binnen?{' '}
+        Remember your password?{' '}
         <Link href="/login" className="font-semibold text-[#2F5D3A] transition-colors hover:text-[#24492D]">
-          Inloggen
+          Sign in
         </Link>
       </p>
     </div>

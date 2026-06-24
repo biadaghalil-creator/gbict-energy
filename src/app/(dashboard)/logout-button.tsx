@@ -18,7 +18,7 @@ export function LogoutButton() {
       onClick={handleLogout}
       className="rounded-full border border-zinc-300 px-3 py-1.5 text-xs font-medium text-zinc-600 transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800"
     >
-      Uitloggen
+      Sign out
     </button>
   )
 }

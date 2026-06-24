@@ -6,8 +6,8 @@ import { getSolarEdgeStatus } from '@/lib/solaredge'
 
 export const runtime = 'nodejs'
 
-// Apparaten die via credentials/token gekoppeld worden (geen OAuth).
-// OAuth-merken (Enphase, EV via Enode) lopen via hun eigen /connect-redirect.
+// Devices that connect via credentials/token (not OAuth).
+// OAuth brands (Enphase, EV via Enode) go through their own /connect redirect.
 const BRANDS: Record<
   string,
   { brand: string; name: string; fields: string[] }
@@ -25,38 +25,38 @@ export async function POST(req: Request) {
   const {
     data: { user },
   } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Niet ingelogd' }, { status: 401 })
+  if (!user) return NextResponse.json({ error: 'Not signed in.' }, { status: 401 })
 
   const body = await req.json().catch(() => ({}))
   const type: string = body?.type
   const config: Record<string, string> = body?.config || {}
   const meta = BRANDS[type]
-  if (!meta) return NextResponse.json({ error: 'Onbekend apparaat' }, { status: 400 })
+  if (!meta) return NextResponse.json({ error: 'Unknown device.' }, { status: 400 })
 
   for (const f of meta.fields) {
     if (!config[f] || !String(config[f]).trim()) {
-      return NextResponse.json({ error: `Vul "${f}" in` }, { status: 400 })
+      return NextResponse.json({ error: `Please fill in "${f}".` }, { status: 400 })
     }
   }
 
-  // Echte verificatie waar het kan (cloud-API's); lokale apparaten kunnen we
-  // vanaf de server niet bereiken, die slaan we op zonder live-check.
+  // Real verification where possible (cloud APIs); local devices can't be
+  // reached from the server, so we save those without a live check.
   try {
     if (type === 'battery_sessy') {
       const tok = await getSessyToken(config.username, config.password)
-      if (!tok) return NextResponse.json({ error: 'Inloggen bij Sessy mislukt — controleer e-mail en wachtwoord' }, { status: 400 })
+      if (!tok) return NextResponse.json({ error: 'Couldn\'t sign in to Sessy — check your email and password.' }, { status: 400 })
     } else if (type === 'meter_tibber') {
       const data = await fetchTibberPrices(config.token)
-      if (!data) return NextResponse.json({ error: 'Tibber-token werkt niet — controleer je token' }, { status: 400 })
+      if (!data) return NextResponse.json({ error: 'That Tibber token doesn\'t work — check your token.' }, { status: 400 })
     } else if (type === 'solar_solaredge') {
       const st = await getSolarEdgeStatus(config.apiKey, config.siteId)
-      if (!st) return NextResponse.json({ error: 'SolarEdge-gegevens kloppen niet — controleer API-key en Site ID' }, { status: 400 })
+      if (!st) return NextResponse.json({ error: 'SolarEdge details don\'t match — check your API key and Site ID.' }, { status: 400 })
     }
   } catch {
-    return NextResponse.json({ error: 'Kon de koppeling niet verifiëren — probeer het opnieuw' }, { status: 400 })
+    return NextResponse.json({ error: 'Couldn\'t verify the connection — please try again.' }, { status: 400 })
   }
 
-  // Eén actief apparaat per type: bestaande vervangen.
+  // One active device per type: replace the existing one.
   await supabase.from('devices').delete().eq('user_id', user.id).eq('type', type)
   const { error } = await supabase.from('devices').insert({
     user_id: user.id,
@@ -66,7 +66,7 @@ export async function POST(req: Request) {
     config,
     status: 'active',
   })
-  if (error) return NextResponse.json({ error: 'Opslaan mislukt' }, { status: 500 })
+  if (error) return NextResponse.json({ error: 'Couldn\'t save.' }, { status: 500 })
 
   return NextResponse.json({ ok: true })
 }

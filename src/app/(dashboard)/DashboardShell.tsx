@@ -36,8 +36,8 @@ export default function DashboardShell({
   const native = useIsNative()
   const { t, locale } = useT()
 
-  // De onboarding-flow is een schoon volledig-scherm proces: geen topbalk en
-  // geen zwevende orb-navigatie eromheen (anders kun je er middenin wegtikken).
+  // The onboarding flow is a clean full-screen process: no top bar and no
+  // floating orb navigation around it (otherwise you could tap away mid-flow).
   const hideChrome = pathname === '/onboarding'
 
   const isActive = (item: typeof navItems[number]) =>
@@ -58,11 +58,11 @@ export default function DashboardShell({
       'flex flex-col bg-[var(--bg)] text-[var(--text)] antialiased',
       native ? 'h-screen overflow-hidden' : 'min-h-screen'
     )}>
-      {/* Subtiel grid op de achtergrond — geen groene waas */}
+      {/* Subtle grid in the background — no green haze */}
       <div className="pointer-events-none fixed inset-0 z-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_100%_80%_at_50%_0%,#000_40%,transparent_90%)]" />
       <WidgetSync />
 
-      {/* ── Horizontale topbalk (zoals de website) — verborgen tijdens onboarding ── */}
+      {/* ── Horizontal top bar (like the website) — hidden during onboarding ── */}
       {!hideChrome && (
       <header
         className={cn(
@@ -72,8 +72,8 @@ export default function DashboardShell({
       >
         <div className="mx-auto flex h-[60px] w-full max-w-7xl items-center gap-5 px-5">
           {native ? (
-            /* In de app: alleen de paginatitel — navigeren gaat via de
-               zwevende orb-balk onderaan. */
+            /* In the app: only the page title — navigation happens via the
+               floating orb bar at the bottom. */
             <span className="text-[17px] font-bold tracking-[-0.02em] text-[var(--text)]">
               {currentTitle}
             </span>
@@ -94,7 +94,7 @@ export default function DashboardShell({
                 </div>
               </Link>
 
-              {/* Nav-links — horizontaal, scrollt op smal scherm */}
+              {/* Nav links — horizontal, scrolls on narrow screens */}
               <nav className="flex flex-1 items-center gap-1 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 {navItems.map((item) => {
                   const active = isActive(item)
@@ -122,7 +122,7 @@ export default function DashboardShell({
             </>
           )}
 
-          {/* Rechts: taal, thema, notificaties, account, uitloggen */}
+          {/* Right: language, theme, notifications, account, sign out */}
           <div className="ml-auto flex shrink-0 items-center gap-1.5">
             <LanguageSwitcher currentLocale={locale} />
             <ThemeToggle />
@@ -157,7 +157,7 @@ export default function DashboardShell({
           className={cn(
             'mx-auto w-full max-w-6xl px-5 py-8',
             native && !hideChrome && 'pb-28',
-            // Geen topbalk tijdens onboarding → zelf de notch-ruimte vrijhouden.
+            // No top bar during onboarding → reserve the notch space ourselves.
             hideChrome && native && 'pt-[calc(env(safe-area-inset-top)+8px)]'
           )}
         >
@@ -165,7 +165,7 @@ export default function DashboardShell({
         </div>
       </main>
 
-      {/* Zwevende orb-navigatie — alleen in de native app (onderaan), niet tijdens onboarding */}
+      {/* Floating orb navigation — only in the native app (bottom), not during onboarding */}
       {!hideChrome && <NativeTabBar />}
     </div>
   )
