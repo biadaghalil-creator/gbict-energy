@@ -3,7 +3,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2F5D3A">
 <title>GBICT Energy — Sign in</title>
 <link rel="preconnect" href="https://api.fontshare.com">
 <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700,900&display=swap" rel="stylesheet">
@@ -26,11 +27,13 @@
     --font:'Satoshi',-apple-system,system-ui,sans-serif;
   }
   *{box-sizing:border-box}
-  body{margin:0;font-family:var(--font);color:var(--ink);-webkit-font-smoothing:antialiased;background:var(--bg)}
+  /* iPhone: geen crème "lijn" bij overscroll + design vult tot onder de notch */
+  html{background:var(--accent-deep);overscroll-behavior:none}
+  body{margin:0;font-family:var(--font);color:var(--ink);-webkit-font-smoothing:antialiased;background:var(--bg);overscroll-behavior:none}
   ::selection{background:var(--accent-tint)}
   button,input{font-family:inherit}
 
-  .shell{display:flex;min-height:100vh}
+  .shell{display:flex;min-height:100vh;min-height:100dvh}
 
   /* ---------- LEFT brand panel ---------- */
   .brandpane{position:relative;overflow:hidden;flex:0 0 46%;display:flex;flex-direction:column;
