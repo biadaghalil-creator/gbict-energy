@@ -17,7 +17,7 @@ const config: CapacitorConfig = {
   server: {
     // De app opent het door de gebruiker aangeleverde app-design
     // (public/app/ — design10, schermvullend: login -> onboarding -> app).
-    url: 'https://gbict-energy.vercel.app/app/index.html',
+    url: 'https://www.gbict-energy.com/app/index.html',
     cleartext: false,
     androidScheme: 'https',
   },
