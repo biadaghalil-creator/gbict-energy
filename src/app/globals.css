@@ -659,7 +659,19 @@ html.native-app.dark {
   .gbict-landing .nav-cta .btn { padding: 9px 15px; font-size: 13.5px; }
 }
 @media (max-width: 600px) {
-  .gbict-landing .nav-cta .btn-ghost { display: none; }  /* alleen "Get started" houden */
+  /* "Log in" zichtbaar houden op mobiel — als slanke tekstlink naast Get started,
+     zodat inloggen direct kan (niet meer via de abonnement-pagina). */
+  .gbict-landing .nav-cta .btn-ghost {
+    display: inline-flex; padding: 8px 6px; background: transparent; border: none;
+    font-size: 14px; font-weight: 600;
+  }
+  /* Nette frosted header onder de notch — ook bovenaan, niet alleen na scrollen,
+     zodat de bovenkant over het hele iPhone-scherm strak oogt. */
+  .gbict-landing .nav {
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(14px) saturate(1.4); -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    border-bottom-color: var(--border);
+  }
 }
 
 /* ---- Hero ---- */

@@ -30,7 +30,7 @@ export function SiteNav() {
           {NAV.map((n) => <Link key={n.href} href={n.href}>{n.label}</Link>)}
         </div>
         <div className="nav-cta">
-          <Link className="btn btn-ghost" href="/start">Log in</Link>
+          <Link className="btn btn-ghost" href="/login">Log in</Link>
           <Link className="btn btn-primary" href="/#pricing">Get started</Link>
         </div>
       </div>
