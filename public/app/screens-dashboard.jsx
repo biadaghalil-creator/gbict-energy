@@ -254,7 +254,7 @@ function InsightsCard({ live }) {
         <p style={{ fontSize: 14, lineHeight: 1.55, color: 'var(--ink-2)', margin: '0 0 8px' }}>Tomorrow's prices usually arrive in the afternoon — we plan the cheapest window automatically.</p>
       )}
       <p style={{ fontSize: 13.5, color: 'var(--ink-2)', margin: 0 }}>
-        {fc?.learning
+        {!fc || fc.learning
           ? `Usage forecast is learning… (${fc?.dataPoints ?? 0} readings collected)`
           : <>Expected usage: <b style={{ color: 'var(--ink)' }}>{fc.consumptionKwh} kWh/day</b></>}
       </p>
