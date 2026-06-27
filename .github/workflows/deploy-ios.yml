@@ -7,7 +7,7 @@ on:
     paths:
       - 'ios/**'
       - 'capacitor.config.ts'
-      - 'public/**'
+      - 'public/app/**'
       - '.github/workflows/deploy-ios.yml'
 
   # Allow manual trigger from GitHub Actions tab

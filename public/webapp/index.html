@@ -309,6 +309,27 @@
     .page-head{flex-direction:column;align-items:flex-start}
     .hero{padding:26px 22px}.hero-ring{display:none}
   }
+  /* ---- connect modal ---- */
+  .cx-overlay{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(20,18,14,.45);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+  .cx-overlay.on{display:flex}
+  .cx-modal{width:100%;max-width:440px;background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:0 24px 60px rgba(0,0,0,.25);overflow:hidden;max-height:88vh;display:flex;flex-direction:column}
+  .cx-head{display:flex;align-items:center;gap:10px;padding:16px 18px;border-bottom:1px solid var(--line)}
+  .cx-head h3{flex:1;margin:0;font-size:16px;font-weight:700;color:var(--ink)}
+  .cx-ico{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:var(--card-2);display:grid;place-items:center;cursor:pointer;color:var(--ink-2)}
+  .cx-ico svg{width:18px;height:18px}
+  .cx-ico[hidden]{display:none}
+  .cx-body{padding:14px 18px 20px;overflow:auto}
+  .cx-field{margin-bottom:12px}
+  .cx-field label{display:block;font-size:13px;font-weight:600;color:var(--ink-2);margin-bottom:6px}
+  .cx-field input{width:100%;height:46px;border-radius:12px;border:1px solid var(--line);background:var(--card-2);padding:0 14px;font:inherit;font-size:14px;color:var(--ink);outline:none}
+  .cx-field input:focus{border-color:var(--accent)}
+  .cx-msg{font-size:13px;margin:8px 0 0;min-height:1px}
+  .cx-msg.err{color:#c2702c}
+  .cx-msg.ok{color:var(--accent)}
+  .cx-note{font-size:12.5px;color:var(--ink-3);margin:12px 0 0;line-height:1.5}
+  .cx-soon{font-size:13.5px;color:var(--ink-3);padding:10px 0;line-height:1.5}
+  .cx-dis{width:28px;height:28px;border-radius:8px;border:1px solid var(--line);background:var(--card);display:grid;place-items:center;cursor:pointer;color:var(--ink-3);margin-left:8px}
+  .cx-dis svg{width:15px;height:15px}
 </style>
 </head>
 <body>
@@ -387,7 +408,7 @@
           <div class="sub">€38.20 this month · €412 all-time</div>
           <div class="hero-cta">
             <button class="btn btn-white"><i data-lucide="trending-up"></i>View savings</button>
-            <button class="btn btn-glass"><i data-lucide="plug"></i>Connect device</button>
+            <button class="btn btn-glass js-connect"><i data-lucide="plug"></i>Connect device</button>
           </div>
         </div>
         <div class="hero-ring">
@@ -498,7 +519,7 @@
 <section class="page" data-page="connections">
   <div class="page-head">
     <div><div class="eyebrow">Setup</div><h1>Connections</h1></div>
-    <div class="head-r"><button class="btn btn-dark"><i data-lucide="plus"></i>Add device</button></div>
+    <div class="head-r"><button class="btn btn-dark js-connect"><i data-lucide="plus"></i>Add device</button></div>
   </div>
   <div class="bento">
     <div class="card pad col8 rv">
@@ -661,6 +682,18 @@
 
 </div>
 
+<!-- ====== CONNECT MODAL ====== -->
+<div class="cx-overlay" id="cxModal" aria-hidden="true">
+  <div class="cx-modal" role="dialog" aria-modal="true">
+    <div class="cx-head">
+      <button class="cx-ico" id="cxBack" hidden aria-label="Back"><i data-lucide="chevron-left"></i></button>
+      <h3 id="cxTitle">Add a device</h3>
+      <button class="cx-ico" id="cxClose" aria-label="Close"><i data-lucide="x"></i></button>
+    </div>
+    <div class="cx-body" id="cxBody"></div>
+  </div>
+</div>
+
 <script>
   // brand logo
   if (window.LOGO_SRC) document.getElementById('brandlogo').src = window.LOGO_SRC;
@@ -734,35 +767,161 @@
   fillRing(document.getElementById('heroRing'), 50, 78);
   fillRing(document.getElementById('batRing'), 56, 78);
 
-  // ---- connections: connected devices ----
-  const DEVICES = [
-    { icon:'gauge',            t:'HomeWizard P1', s:'Smart meter' },
-    { icon:'file-text',        t:'Tibber',        s:'Dynamic contract' },
-    { icon:'battery-charging', t:'Sessy',         s:'5.0 kWh battery' },
-    { icon:'sun', cls:'sun',   t:'SolarEdge',     s:'4.2 kWp array' },
-  ];
-  document.getElementById('devlist').innerHTML = DEVICES.map(d => `
-    <div class="lrow">
-      <div class="lic ${d.cls||''}"><i data-lucide="${d.icon}"></i></div>
-      <div class="lt"><b>${d.t}</b><span>${d.s}</span></div>
-      <div class="lr"><span class="pill-on"><span class="di"></span>Live</span><i data-lucide="chevron-right" class="chev"></i></div>
-    </div>`).join('');
+  // ===== connections: REAL device connect flow =====
+  const cxIcons = () => window.lucide && window.lucide.createIcons();
 
-  // ---- connections: add-a-device types ----
-  const ADD = [
-    { icon:'battery-charging', t:'Home battery',   s:'Sessy, Victron, Tesla…' },
-    { icon:'sun', cls:'sun',   t:'Solar inverter', s:'SolarEdge, Fronius, SMA…' },
-    { icon:'car',              t:'EV / charger',   s:'Smart & V2G charging' },
-    { icon:'thermometer',      t:'Heat pump',      s:'Tado & more' },
-    { icon:'gauge',            t:'Smart meter',    s:'HomeWizard P1' },
-    { icon:'file-text',        t:'Energy contract',s:'Tibber & dynamic suppliers' },
+  // Device catalogue — maps to the backend (/api/devices/connect types + fields).
+  const CATALOG = [
+    { cat:'Home battery', icon:'battery-charging', sub:'Sessy, Victron', brands:[
+      { type:'battery_sessy', label:'Sessy', fields:[{k:'username',label:'Sessy email',type:'text'},{k:'password',label:'Sessy password',type:'password'}] },
+      { type:'battery_victron', label:'Victron (VRM)', fields:[{k:'username',label:'VRM email',type:'text'},{k:'password',label:'VRM password',type:'password'}] },
+    ]},
+    { cat:'Solar inverter', icon:'sun', cls:'sun', sub:'SolarEdge, Fronius, Enphase', brands:[
+      { type:'solar_solaredge', label:'SolarEdge', fields:[{k:'apiKey',label:'API key',type:'text'},{k:'siteId',label:'Site ID',type:'text'}] },
+      { type:'solar_fronius', label:'Fronius', fields:[{k:'ip',label:'Inverter IP on your network',type:'text'}], note:'Fronius is read locally — only reachable on the same Wi-Fi.' },
+      { type:'oauth_enphase', label:'Enphase', oauth:'/api/enphase/connect', needs:'enphase' },
+    ]},
+    { cat:'Smart meter', icon:'gauge', sub:'HomeWizard P1', brands:[
+      { type:'meter_homewizard', label:'HomeWizard P1', fields:[{k:'host',label:'P1 IP / host on your network',type:'text'}], note:'HomeWizard P1 is read locally on your network.' },
+    ]},
+    { cat:'Energy contract', icon:'file-text', sub:'Tibber & dynamic suppliers', brands:[
+      { type:'meter_tibber', label:'Tibber', fields:[{k:'token',label:'Tibber API token',type:'text'}], note:'Create a token at developer.tibber.com.' },
+    ]},
+    { cat:'EV / charger', icon:'car', sub:'Smart & V2G charging', brands:[
+      { type:'oauth_ev', label:'EV / charger', oauth:'/api/ev/connect', needs:'ev' },
+    ]},
+    { cat:'Heat pump', icon:'thermometer', sub:'Tado & more', soon:true, brands:[] },
   ];
-  document.getElementById('addlist').innerHTML = ADD.map(d => `
-    <div class="lrow click">
-      <div class="lic ${d.cls||''}"><i data-lucide="${d.icon}"></i></div>
-      <div class="lt"><b>${d.t}</b><span>${d.s}</span></div>
+
+  let cxInteg = { ev:false, enphase:false };
+  fetch('/api/integrations/status').then(r => r.ok ? r.json() : {}).then(d => { cxInteg = d || cxInteg; }).catch(()=>{});
+
+  const cxModal = document.getElementById('cxModal');
+  const cxBody  = document.getElementById('cxBody');
+  const cxTitle = document.getElementById('cxTitle');
+  const cxBack  = document.getElementById('cxBack');
+
+  function cxSetHead(title, back){ cxTitle.textContent = title; cxBack.hidden = !back; }
+  function cxOpen(){ cxRenderCats(); cxModal.classList.add('on'); cxModal.setAttribute('aria-hidden','false'); }
+  function cxCloseFn(){ cxModal.classList.remove('on'); cxModal.setAttribute('aria-hidden','true'); }
+
+  function cxRenderCats(){
+    cxSetHead('Add a device', false);
+    cxBody.innerHTML = CATALOG.map((c,i) => `
+      <div class="lrow click" data-cat="${i}">
+        <div class="lic ${c.cls||''}"><i data-lucide="${c.icon}"></i></div>
+        <div class="lt"><b>${c.cat}</b><span>${c.sub||''}</span></div>
+        <div class="lr"><i data-lucide="chevron-right" class="chev"></i></div>
+      </div>`).join('');
+    cxBody.querySelectorAll('[data-cat]').forEach(el => el.addEventListener('click', () => cxPickCat(+el.dataset.cat)));
+    cxIcons();
+  }
+
+  function cxPickCat(i){
+    const c = CATALOG[i];
+    if (c.soon || !c.brands.length){ cxSetHead(c.cat, true); cxBody.innerHTML = `<div class="cx-soon">${c.cat} support is coming soon.</div>`; cxIcons(); return; }
+    if (c.brands.length === 1){ cxPickBrand(i, 0); return; }
+    cxSetHead(c.cat, true);
+    cxBody.innerHTML = c.brands.map((b,j) => `
+      <div class="lrow click" data-brand="${j}">
+        <div class="lic"><i data-lucide="plug"></i></div>
+        <div class="lt"><b>${b.label}</b><span>${b.oauth ? 'Secure sign-in' : 'Connect with your account'}</span></div>
+        <div class="lr"><i data-lucide="chevron-right" class="chev"></i></div>
+      </div>`).join('');
+    cxBody.querySelectorAll('[data-brand]').forEach(el => el.addEventListener('click', () => cxPickBrand(i, +el.dataset.brand)));
+    cxIcons();
+  }
+
+  function cxPickBrand(i, j){
+    const b = CATALOG[i].brands[j];
+    cxSetHead(b.label, true);
+    if (b.oauth){
+      const ok = !!cxInteg[b.needs];
+      cxBody.innerHTML = ok
+        ? `<p class="cx-note">You'll be sent to ${b.label} to authorise the connection, then brought back here.</p>
+           <button class="btn btn-dark" id="cxOauth" style="width:100%;margin-top:6px"><i data-lucide="shield-check"></i>Continue</button>`
+        : `<div class="cx-soon">${b.label} connection is coming soon.</div>`;
+      cxIcons();
+      const ob = document.getElementById('cxOauth');
+      if (ob) ob.addEventListener('click', () => { window.location.href = b.oauth; });
+      return;
+    }
+    cxBody.innerHTML =
+      b.fields.map(f => `<div class="cx-field"><label>${f.label}</label><input data-k="${f.k}" type="${f.type}" autocomplete="off" autocapitalize="off" spellcheck="false"></div>`).join('') +
+      `<div class="cx-msg" id="cxMsg"></div>` +
+      `<button class="btn btn-dark" id="cxSubmit" style="width:100%;margin-top:6px"><i data-lucide="plug"></i>Connect</button>` +
+      (b.note ? `<p class="cx-note">${b.note}</p>` : '');
+    cxIcons();
+    document.getElementById('cxSubmit').addEventListener('click', () => cxSubmit(b));
+  }
+
+  async function cxSubmit(b){
+    const cfg = {}; let filled = true;
+    cxBody.querySelectorAll('input[data-k]').forEach(inp => { const v = inp.value.trim(); cfg[inp.dataset.k] = v; if (!v) filled = false; });
+    const msg = document.getElementById('cxMsg'), btn = document.getElementById('cxSubmit');
+    if (!filled){ msg.className = 'cx-msg err'; msg.textContent = 'Please fill in all fields.'; return; }
+    const orig = btn.innerHTML; btn.disabled = true; btn.textContent = 'Connecting…';
+    try {
+      const res = await fetch('/api/devices/connect', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ type:b.type, config:cfg }) });
+      const d = await res.json().catch(() => ({}));
+      if (!res.ok){ msg.className = 'cx-msg err'; msg.textContent = d.error || 'Could not connect.'; btn.disabled = false; btn.innerHTML = orig; cxIcons(); return; }
+      cxCloseFn(); loadDevices();
+    } catch { msg.className = 'cx-msg err'; msg.textContent = 'No connection. Please try again.'; btn.disabled = false; btn.innerHTML = orig; cxIcons(); }
+  }
+
+  function cxIconFor(t){
+    if (!t) return 'plug';
+    if (t.indexOf('battery') === 0) return 'battery-charging';
+    if (t.indexOf('solar') === 0 || t.indexOf('enphase') >= 0) return 'sun';
+    if (t.indexOf('tibber') >= 0) return 'file-text';
+    if (t.indexOf('homewizard') >= 0 || t.indexOf('meter') === 0) return 'gauge';
+    if (t.indexOf('ev') >= 0) return 'car';
+    return 'plug';
+  }
+
+  async function loadDevices(){
+    let list = [];
+    try { const r = await fetch('/api/devices', { cache:'no-store' }); if (r.ok) list = await r.json(); } catch {}
+    if (!Array.isArray(list)) list = [];
+    const dl = document.getElementById('devlist');
+    const sub = document.querySelector('section[data-page="connections"] .csub');
+    if (!list.length){
+      dl.innerHTML = `<div style="padding:16px 0;color:var(--ink-3);font-size:14px">No devices connected yet — add one to start optimising.</div>`;
+    } else {
+      dl.innerHTML = list.map(d => `
+        <div class="lrow">
+          <div class="lic"><i data-lucide="${cxIconFor(d.type)}"></i></div>
+          <div class="lt"><b>${d.brand || d.name || 'Device'}</b><span>${d.name || ''}</span></div>
+          <div class="lr"><span class="pill-on"><span class="di"></span>Live</span><button class="cx-dis" data-id="${d.id}" aria-label="Disconnect"><i data-lucide="x"></i></button></div>
+        </div>`).join('');
+      dl.querySelectorAll('.cx-dis').forEach(b => b.addEventListener('click', () => cxDisconnect(b.dataset.id)));
+    }
+    if (sub) sub.textContent = list.length ? `${list.length} device${list.length>1?'s':''} · live and optimising` : 'Nothing connected yet';
+    cxIcons();
+  }
+
+  async function cxDisconnect(id){
+    try { await fetch('/api/devices/disconnect', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ id }) }); } catch {}
+    loadDevices();
+  }
+
+  // "Add a device" shortcut list opens the modal straight at that category.
+  document.getElementById('addlist').innerHTML = CATALOG.map((c,i) => `
+    <div class="lrow click" data-add="${i}">
+      <div class="lic ${c.cls||''}"><i data-lucide="${c.icon}"></i></div>
+      <div class="lt"><b>${c.cat}</b><span>${c.sub||''}</span></div>
       <div class="lr"><i data-lucide="chevron-right" class="chev"></i></div>
     </div>`).join('');
+  document.querySelectorAll('#addlist [data-add]').forEach(el => el.addEventListener('click', () => { cxOpen(); cxPickCat(+el.dataset.add); }));
+
+  // wiring: header buttons, back, close, backdrop
+  document.querySelectorAll('.js-connect').forEach(b => b.addEventListener('click', cxOpen));
+  document.getElementById('cxClose').addEventListener('click', cxCloseFn);
+  cxBack.addEventListener('click', cxRenderCats);
+  cxModal.addEventListener('click', e => { if (e.target === cxModal) cxCloseFn(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') cxCloseFn(); });
+
+  loadDevices();
 
   // ---- savings: bars + range ----
   const SAV = {
